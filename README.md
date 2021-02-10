@@ -1,9 +1,14 @@
-# Fabric Example Mod
+Infinity Modification (Fabric)
 
-## Setup
+//~ using for Eclipse:
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+Write to PowerSheel
+./gradlew genSources 
+./gradlew Eclipse
 
-## License
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+//~ using for Intellij:
+
+Open Project with file build.gradle
+
+
