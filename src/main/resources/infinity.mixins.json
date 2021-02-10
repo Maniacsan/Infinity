@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "compatibilityLevel": "JAVA_8",
+   "package": "me.infinity.mixin",
+  "client": [
+  "MinecraftClientMixin",
+  "ClientPlayerEntityMixin",
+  "ClientConnectionMixin",
+  "ClientPlayNetworkHandlerMixin",
+  "KeyboardMixin",
+  "InGameHudMixin",
+  "EntityMixin",
+  "GameRendererMixin"
+  ]
+}
