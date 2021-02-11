@@ -20,7 +20,6 @@ public class GuiMod extends Module {
 	@Override
 	public void onEnable() {
 		MinecraftClient.getInstance().openScreen(new ClickMenu());
-		enable();
 		super.onEnable();
 	}
 	

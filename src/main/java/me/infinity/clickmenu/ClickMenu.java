@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFW;
 
 import me.infinity.InfMain;
 import me.infinity.features.visual.GuiMod;
-import me.infinity.utils.Helper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -62,10 +61,15 @@ public class ClickMenu extends Screen {
 	}
 
 	@Override
+	public void onClose() {
+		InfMain.getModuleManager().getModuleByClass(GuiMod.class).setEnabled(false);
+		super.onClose();
+	}
+
+	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
 			onClose();
-			Helper.minecraftClient.currentScreen = null;
 		}
 		panel.keyPressed(keyCode, scanCode, modifiers);
 		return false;

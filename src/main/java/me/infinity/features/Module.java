@@ -56,11 +56,9 @@ public class Module {
 	}
 
 	public void onEnable() {
-		Helper.getPlayer().sendChatMessage(this.getName() + " - Enabled");
 	}
 
 	public void onDisable() {
-		Helper.getPlayer().sendChatMessage(this.getName() + " - Disabled");
 	}
 
 	// CCBluex base (defolt sravnenie setting s modulem ne rabotaet)

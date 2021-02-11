@@ -135,7 +135,7 @@ public class ConfigButton {
 			for (ConfigListButton listButton : configList) {
 				if (listButton.select) {
 					listButton.config.load();
-					System.out.println("Load !!!!!!!!!!!!!!!!!!!!!!!");
+					//System.out.println("Load !!!!!!!!!!!!!!!!!!!!!!!");
 				}
 			}
 		}

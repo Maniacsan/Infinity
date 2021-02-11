@@ -2,6 +2,7 @@ package me.infinity.utils;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.network.Packet;
 import net.minecraft.world.World;
 
 public class Helper {
@@ -40,6 +41,12 @@ public class Helper {
 
 	public static RenderUtil getRenderUtil() {
 		return renderUtil;
+	}
+	
+	//
+	
+	public static void sendPacket(Packet<?> packet) {
+		getPlayer().networkHandler.sendPacket(packet);
 	}
 
 }

@@ -1,6 +1,8 @@
 package me.infinity.utils;
 
 public class TimeHelper {
+	
+	public static TimeHelper INSTANCE = new TimeHelper();
 
 	private long lastMS = -1L;
 
