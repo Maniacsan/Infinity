@@ -28,6 +28,8 @@ public class KillAura extends Module {
 	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D);
 
 	public static Entity target;
+	
+	private TimeHelper timer = new TimeHelper();
 
 	@Override
 	public void onDisable() {
@@ -44,10 +46,10 @@ public class KillAura extends Module {
 				return;
 
 			if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
-					: TimeHelper.INSTANCE.hasReached(aps.getCurrentValueDouble())) {
+					: timer.hasReached(aps.getCurrentValueDouble())) {
 				Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
 				EntityUtil.swing(!noSwing.isToggle());
-				TimeHelper.INSTANCE.reset();
+				timer.reset();
 			}
 		} else if (event.getType().equals(EventType.POST)) {
 			float[] look = RotationUtils.lookAtEntity(target, getKey(), getKey());

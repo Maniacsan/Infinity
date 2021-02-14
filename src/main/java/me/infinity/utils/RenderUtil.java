@@ -1,6 +1,7 @@
 package me.infinity.utils;
 
 import java.awt.Color;
+import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
@@ -8,11 +9,15 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.texture.PlayerSkinTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 
 /**
@@ -72,7 +77,8 @@ public class RenderUtil {
 
 	public static void drawCenteredString(String text, double x, double y, int color) {
 		MatrixStack matrix = getMatrixStack();
-		Helper.minecraftClient.textRenderer.draw(matrix, text, (float) x - textRenderer.getWidth(text) / 2, (float) y, color);
+		Helper.minecraftClient.textRenderer.draw(matrix, text, (float) x - textRenderer.getWidth(text) / 2, (float) y,
+				color);
 	}
 
 	/**
@@ -144,61 +150,42 @@ public class RenderUtil {
 	public static void drawOutline(double x, double y, double w, double h, int color) {
 		fill(GL11.GL_LINE_LOOP, x / 2.0, y / 2.0, x / 2.0 + w / 2.0, y / 2.0 + h / 2.0, color);
 	}
-	
-	/**
-	 * Pryamougolnik s kruglimi uglami (avtor hz nashol v flewke)
-	 * @param x
-	 * @param y
-	 * @param x1
-	 * @param y1
-	 * @param borderC
-	 * @param insideC
-	 */
-    public static void drawRoundedRect(float x, float y, float x1, float y1, int borderC, int insideC) {
-        GL11.glScalef((float)0.5f, (float)0.5f, (float)0.5f);
-        drawVLine(x *= 2.0f, (y *= 2.0f) + 1.0f, (y1 *= 2.0f) - 2.0f, borderC);
-        drawVLine((x1 *= 2.0f) - 1.0f, y + 1.0f, y1 - 2.0f, borderC);
-        drawHLine(x + 2.0f, x1 - 3.0f, y, borderC);
-        drawHLine(x + 2.0f, x1 - 3.0f, y1 - 1.0f, borderC);
-        drawHLine(x + 1.0f, x + 1.0f, y + 1.0f, borderC);
-        drawHLine(x1 - 2.0f, x1 - 2.0f, y + 1.0f, borderC);
-        drawHLine(x1 - 2.0f, x1 - 2.0f, y1 - 2.0f, borderC);
-        drawHLine(x + 1.0f, x + 1.0f, y1 - 2.0f, borderC);
-        drawRect(x + 1.0f, y + 1.0f, x1 - 1.0f, y1 - 1.0f, insideC);
-        GL11.glScalef((float)2.0f, (float)2.0f, (float)2.0f);
-    }
-    
-    /**
-     * Horizontal Line
-     * @param par1
-     * @param par2
-     * @param par3
-     * @param par4
-     */
-    public static void drawHLine(float par1, float par2, float par3, int par4) {
-        if (par2 < par1) {
-            float var5 = par1;
-            par1 = par2;
-            par2 = var5;
-        }
-        drawRect(par1, par3, par2 + 1.0f, par3 + 1.0f, par4);
-    }
 
-    /**
-     * Verical Line
-     * @param par1
-     * @param par2
-     * @param par3
-     * @param par4
-     */
-    public static void drawVLine(float par1, float par2, float par3, int par4) {
-        if (par3 < par2) {
-            float var5 = par2;
-            par2 = par3;
-            par3 = var5;
-        }
-        drawRect(par1, par2 + 1.0f, par1 + 1.0f, par3, par4);
-    }
+	private static void bindSkinTexture(String name) {
+		Identifier location = AbstractClientPlayerEntity.getSkinId(name);
 
+		try {
+			PlayerSkinTexture img = AbstractClientPlayerEntity.loadSkin(location, name);
+			img.load(Helper.minecraftClient.getResourceManager());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		Helper.minecraftClient.getTextureManager().bindTexture(location);
+	}
+
+	public static void drawFace(MatrixStack matrixStack, String name, int x, int y, int w, int h, boolean selected) {
+		try {
+			bindSkinTexture(name);
+			GL11.glEnable(GL11.GL_BLEND);
+
+			if (selected)
+				GL11.glColor4f(1, 1, 1, 1);
+			else
+				GL11.glColor4f(0.9F, 0.9F, 0.9F, 1);
+
+			int fw = 192;
+			int fh = 192;
+			float u = 24;
+			float v = 24;
+			DrawableHelper.drawTexture(matrixStack, x, y, u, v, w, h, fw, fh);
+
+			GL11.glDisable(GL11.GL_BLEND);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }

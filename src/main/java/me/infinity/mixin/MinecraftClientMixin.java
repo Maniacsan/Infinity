@@ -12,7 +12,7 @@ import me.infinity.utils.Helper;
 import net.minecraft.client.MinecraftClient;
 
 @Mixin(MinecraftClient.class)
-public class MinecraftClientMixin {
+public abstract class MinecraftClientMixin {
 
 	@Inject(at = @At("TAIL"), method = "tick")
 	private void tick(CallbackInfo info) {

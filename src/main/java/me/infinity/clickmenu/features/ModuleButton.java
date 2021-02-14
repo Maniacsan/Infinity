@@ -54,8 +54,9 @@ public class ModuleButton {
 		this.x = x;
 		this.y = y;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		Render2D.drawRectWH(matrices, x, y, width, height,
-				module.isEnabled() ? ColorUtils.CHECK_TOGGLE : hovered ? 0x70FFFFFF : 0x70000000);
+		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF161616);
+		Render2D.drawRectWH(matrices, x + 1.5, y + 1.5, width - 3, height - 3,
+				module.isEnabled() ? ColorUtils.CHECK_TOGGLE : hovered ? 0xFF414040 : 0xFF222020);
 		FontUtils.drawHVCenteredString(matrices, name, x + 34, y + 9, -1);
 		if (open) {
 			double yOffset = 2;
@@ -79,8 +80,6 @@ public class ModuleButton {
 			}
 		}
 		if (open) {
-			mouseX /= 0.8;
-			mouseY /= 0.8;
 			for (SettingButton setBut : settingButton) {
 				setBut.mouseClicked(mouseX, mouseY, button);
 			}
@@ -89,8 +88,6 @@ public class ModuleButton {
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		if (open) {
-			mouseX /= 0.8;
-			mouseY /= 0.8;
 			for (SettingButton setBut : settingButton) {
 				setBut.mouseReleased(mouseX, mouseY, button);
 			}

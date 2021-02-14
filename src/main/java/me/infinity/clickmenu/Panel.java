@@ -6,12 +6,14 @@ import me.infinity.clickmenu.features.CategoryButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Module.Category;
+import me.infinity.utils.Helper;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public class Panel {
 
-	private static final Identifier AVATAR = new Identifier("/assets/infinity/avatar.png");
+	private static final Identifier AVATAR = new Identifier("infinity", "avatar.png");
 	private ArrayList<CategoryButton> catButton = new ArrayList<>();
 	private double x;
 	private double y;
@@ -46,6 +48,10 @@ public class Panel {
 		Render2D.drawRectWH(matrices, x, y - 9, width, 9, ColorUtils.dragPanelColor);
 		Render2D.drawRectWH(matrices, x, y + 2, 66, height - 4, ColorUtils.lineColor);
 		Render2D.drawRectWH(matrices, x + 1, y + 3, 64, height - 6, ColorUtils.backGroundLine);
+		
+		Helper.minecraftClient.getTextureManager().bindTexture(AVATAR);
+		DrawableHelper.drawTexture(matrices, (int)x + 16, (int) y + 4, 0, 0, 34, 36, 34, 36);
+		Render2D.drawRectWH(matrices, x, y + 41, 65, 1, ColorUtils.lineColor);
 		double yOff = 3;
 		for (CategoryButton catButton : catButton) {
 			if (catButton.displayModulePanel) {

@@ -134,7 +134,7 @@ public class Config {
 				}
 				json.add(data.getName(), dataJson);
 			}
-			this.saveJsonObjectToFile(json, configFile);
+			FileUtil.saveJsonObjectToFile(json, configFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -153,10 +153,6 @@ public class Config {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public void saveJsonObjectToFile(JsonObject object, File file) {
-		FileUtil.saveJsonFile(FileUtil.recreateFile(file), object);
 	}
 
 	public void delete() {

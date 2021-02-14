@@ -31,6 +31,11 @@ public class Console extends Screen {
 	protected void init() {
 		this.client.keyboard.setRepeatEvents(true);
 		this.textField = new TextField(this.x, this.y, 270);
+		refresh();
+	}
+	
+	private void refresh() {
+		messages.remove(messages.size() - 1);
 		this.button.add(new ConsoleButton());
 	}
 
@@ -57,6 +62,7 @@ public class Console extends Screen {
 			if (!string.isEmpty()) {
 				this.sendMessage(string);
 				this.messages.add(string);
+				refresh();
 			}
 			return true;
 		}
@@ -114,7 +120,7 @@ public class Console extends Screen {
 		for (ConsoleButton button : button) {
 			for (String historyTexts : this.messages)
 				button.render(matrices, historyTexts, x, yOffset);
-			yOffset += 15;
+			yOffset += 10;
 		}
 
 		super.render(matrices, mouseX, mouseY, delta);

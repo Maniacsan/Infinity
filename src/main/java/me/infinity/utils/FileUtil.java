@@ -14,6 +14,20 @@ public class FileUtil {
 	public static File createJsonFile(File dir, String name) {
 		return new File(dir, name + ".json");
 	}
+	
+	public static void saveJsonObjectToFile(JsonObject object, File file) {
+		FileUtil.saveJsonFile(FileUtil.recreateFile(file), object);
+	}
+
+	public static void createFile(File file) {
+		if (file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {	
+				e.printStackTrace();
+			}
+		}
+	}
 
 	public static File recreateFile(File file) {
 		if (file.exists()) {

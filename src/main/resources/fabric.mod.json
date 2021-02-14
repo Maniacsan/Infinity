@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "infinity",
-  "version": "${version}",
+  "version": "1.5",
 
   "name": "Infinity",
   "description": "Minecraft Utility Modification",
