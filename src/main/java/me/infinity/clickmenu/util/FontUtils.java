@@ -68,6 +68,11 @@ public class FontUtils {
     public static int getStringWidth(String string) {
         return tr.getWidth(string);
     }
+    
+    public static int getStringWidth(String string, double height) {
+        return (int) (getStringWidth(string) * (height / getFontHeight()));
+    }
+
 
     public static int getFontHeight() {
         return tr.fontHeight;

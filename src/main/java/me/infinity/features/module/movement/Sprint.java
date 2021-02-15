@@ -1,4 +1,4 @@
-package me.infinity.features.movement;
+package me.infinity.features.module.movement;
 
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;

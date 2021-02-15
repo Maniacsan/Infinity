@@ -1,4 +1,4 @@
-package me.infinity.features.combat;
+package me.infinity.features.module.combat;
 
 import java.awt.Color;
 import java.util.ArrayList;

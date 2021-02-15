@@ -8,7 +8,7 @@ import me.infinity.InfMain;
 import me.infinity.clickmenu.Panel;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.config.Config;
+import me.infinity.features.impl.config.Config;
 import me.infinity.utils.TimeHelper;
 import net.minecraft.client.util.math.MatrixStack;
 

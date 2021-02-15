@@ -1,4 +1,4 @@
-package me.infinity.features.combat;
+package me.infinity.features.module.combat;
 
 import org.lwjgl.glfw.GLFW;
 

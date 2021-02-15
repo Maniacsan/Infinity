@@ -8,8 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import me.infinity.InfMain;
-import me.infinity.ui.console.Console;
-import me.infinity.utils.Helper;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
 
@@ -27,9 +25,7 @@ public class KeyboardMixin {
 	private void onKey(long window, int key, int scancode, int i, int j, CallbackInfo callbackInfo) {
 		if (key != -1 || key != -2) {
 			InfMain.getHookManager().onKeyPressed(key);
-		}
-		if (key == 96) {
-			Helper.minecraftClient.openScreen(new Console());
+			InfMain.getHookManager().onMacro(key);
 		}
 	}
 }

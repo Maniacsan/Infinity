@@ -3,7 +3,7 @@ package me.infinity.clickmenu.features.settings;
 import me.infinity.InfMain;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
-import me.infinity.features.visual.XRay;
+import me.infinity.features.module.visual.XRay;
 import me.infinity.utils.Helper;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;

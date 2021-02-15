@@ -1,4 +1,4 @@
-package me.infinity.features.visual;
+package me.infinity.features.module.visual;
 
 import java.util.ArrayList;
 import java.util.Collections;

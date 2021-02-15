@@ -1,9 +1,7 @@
 package me.infinity.clickmenu;
 
-import org.lwjgl.glfw.GLFW;
-
 import me.infinity.InfMain;
-import me.infinity.features.visual.GuiMod;
+import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -42,7 +40,7 @@ public class ClickMenu extends Screen {
 		mouseX /= scale;
 		mouseY /= scale;
 		panel.mouseClicked(mouseX, mouseY, button);
-		return false;
+		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
@@ -51,13 +49,13 @@ public class ClickMenu extends Screen {
 		mouseX /= scale;
 		mouseY /= scale;
 		panel.mouseReleased(mouseX, mouseY, button);
-		return false;
+		return super.mouseReleased(mouseX, mouseY, button);
 	}
 
 	@Override
 	public boolean charTyped(char chr, int keyCode) {
 		panel.charTyped(chr, keyCode);
-		return false;
+		return super.charTyped(chr, keyCode);
 	}
 
 	@Override
@@ -68,11 +66,8 @@ public class ClickMenu extends Screen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-			onClose();
-		}
 		panel.keyPressed(keyCode, scanCode, modifiers);
-		return false;
+		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 }

@@ -6,9 +6,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import me.infinity.features.Module.Category;
-import me.infinity.features.combat.*;
-import me.infinity.features.movement.*;
-import me.infinity.features.visual.*;
+import me.infinity.features.module.combat.*;
+import me.infinity.features.module.movement.*;
+import me.infinity.features.module.visual.*;
 
 public class ModuleManager {
 

@@ -1,4 +1,4 @@
-package me.infinity.config;
+package me.infinity.features.impl.config;
 
 import java.io.File;
 import java.io.IOException;

@@ -3,14 +3,14 @@ package me.infinity.utils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.text.LiteralText;
+import net.minecraft.util.Formatting;
 import net.minecraft.world.World;
 
 public class Helper {
 
-
 	// from net.minecraft
 	public static MinecraftClient minecraftClient = MinecraftClient.getInstance();
-	
 
 	// Utils
 	private static MoveUtil moveUtil = new MoveUtil();
@@ -47,6 +47,11 @@ public class Helper {
 
 	public static void sendPacket(Packet<?> packet) {
 		getPlayer().networkHandler.sendPacket(packet);
+	}
+
+	public static void infoMessage(String message) {
+		minecraftClient.inGameHud.getChatHud()
+				.addMessage(new LiteralText(Formatting.BLUE + "Infinity" + Formatting.WHITE + ": " + message));
 	}
 
 }

@@ -24,7 +24,7 @@ public class MultiplayerScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
-		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 20,
+		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 0,
 				new Identifier("infinity", "alt.png"), 20, 20,
 				buttonWidget -> Helper.minecraftClient.openScreen(new GuiAccountSwitcher(this)),
 				new TranslatableText("Account"));

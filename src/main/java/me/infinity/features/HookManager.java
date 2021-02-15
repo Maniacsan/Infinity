@@ -1,43 +1,57 @@
 package me.infinity.features;
 
 import me.infinity.InfMain;
+import me.infinity.utils.Helper;
 
 public class HookManager {
 
 	/**
 	 * Keyboard class , method = onKey
+	 * 
 	 * @param keyCode
 	 */
 	public void onKeyPressed(int keyCode) {
-		for (Module module : InfMain.getModuleManager().getList()) {
-			if (module.getKey() == keyCode)
-				module.enable();
-		}
+		InfMain.getModuleManager().getList().forEach(m -> {
+			if (m.getKey() == keyCode)
+				m.enable();
+		});
 	}
 
 	/**
 	 * Update Client Player ticks (old method name onUpdate)
 	 */
 	public void onPlayerTick() {
-		for (Module m : InfMain.getModuleManager().getList()) {
+		InfMain.getModuleManager().getList().forEach(m -> {
 			if (m.isEnabled()) {
 				m.onPlayerTick();
 			}
-		}
+		});
 	}
-	
 
 	/**
 	 * Rendering HUD in game (2D)
+	 * 
 	 * @param scaledWidth
 	 * @param scaledHeight
 	 */
 	public void onRender(int scaledWidth, int scaledHeight) {
-		for (Module m : InfMain.getModuleManager().getList()) {
+		InfMain.getModuleManager().getList().forEach(m -> {
 			if (m.isEnabled()) {
 				m.onRender(scaledWidth, scaledHeight);
 			}
-		}
+		});
+	}
+
+	/**
+	 * Make macro binds
+	 * @param key
+	 */
+	public void onMacro(int key) {
+		InfMain.getMacroManager().getList().forEach(macro -> {
+			if (macro.getKey() == key) {
+				Helper.getPlayer().sendChatMessage(macro.getMessage());
+			}
+		});
 	}
 
 }
