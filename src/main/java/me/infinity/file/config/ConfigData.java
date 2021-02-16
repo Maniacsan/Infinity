@@ -1,4 +1,4 @@
-package me.infinity.features.impl.config;
+package me.infinity.file.config;
 
 import me.infinity.features.Module;
 

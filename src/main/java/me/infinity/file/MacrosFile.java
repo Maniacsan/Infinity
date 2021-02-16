@@ -12,7 +12,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import me.infinity.InfMain;
-import me.infinity.features.impl.macro.Macro;
+import me.infinity.features.component.macro.Macro;
 import me.infinity.utils.FileUtil;
 
 public class MacrosFile {

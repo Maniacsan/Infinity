@@ -19,6 +19,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 public class GuiAccountSwitcher extends Screen {
 
@@ -109,7 +110,7 @@ public class GuiAccountSwitcher extends Screen {
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		FontUtils.drawHVCenteredString(matrixStack, "Account Manager", this.width / 2, 27, -1);
 		FontUtils.drawStringWithShadow(matrixStack,
-				"Logged in as : §7" + Helper.minecraftClient.getSession().getUsername(), 2, 5, 0xFFFFFFFF);
+				"Logged in as : " + Formatting.GRAY + Helper.minecraftClient.getSession().getUsername(), 2, 5, 0xFFFFFFFF);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
@@ -217,7 +218,7 @@ public class GuiAccountSwitcher extends Screen {
 
 			RenderUtil.drawFace(matrixStack, alt.getUsername(), x + 1, y + 1, 25, 25, isSelectedItem(id));
 
-			String status = alt.isMojang() ? "§2Mojang" : alt.isNickname() ? "§7Nickname" : "§cFailed";
+			String status = alt.isMojang() ? "ï¿½2Mojang" : alt.isNickname() ? "ï¿½7Nickname" : "ï¿½cFailed";
 
 			client.textRenderer.draw(matrixStack, name, x + 31, y + 3, -1);
 			client.textRenderer.draw(matrixStack, status, x + 31, y + 15, 10526880);

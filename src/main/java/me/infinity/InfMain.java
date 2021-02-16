@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import me.infinity.features.HookManager;
 import me.infinity.features.ModuleManager;
 import me.infinity.features.command.CommandManager;
-import me.infinity.features.impl.config.ConfigManager;
-import me.infinity.features.impl.macro.MacroManager;
+import me.infinity.features.component.macro.MacroManager;
+import me.infinity.file.config.ConfigManager;
 import me.infinity.ui.account.main.AccountManager;
 import me.infinity.utils.Helper;
 

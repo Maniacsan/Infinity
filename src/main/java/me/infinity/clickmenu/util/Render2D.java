@@ -40,6 +40,10 @@ public class Render2D {
 	public static void drawRectWH(MatrixStack matrices, double x, double y, double width, double height, int color) {
 		fill(matrices.peek().getModel(), x, y, x + width, y + height, color);
 	}
+	
+	public static void drawGradientRect(MatrixStack matrices, double x1, double y1, double x2, double y2, int startColor, int endColor) {
+		fillGradient(matrices.peek().getModel(), x1, y1, x1 + x2, y1 + y2, startColor, endColor);
+	}
 
 	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
 		if (j < i) {
@@ -94,57 +98,46 @@ public class Render2D {
 		RenderSystem.disableBlend();
 	}
 
-	public static void drawRectangle(double d, double e, double f, double g, int paramColor) {
-		float alpha = (float) (paramColor >> 24 & 255) / 255.0f;
-		float red = (float) (paramColor >> 16 & 255) / 255.0f;
-		float green = (float) (paramColor >> 8 & 255) / 255.0f;
-		float blue = (float) (paramColor & 255) / 255.0f;
-		GL11.glEnable((int) 3042);
-		GL11.glDisable((int) 3553);
-		GL11.glBlendFunc((int) 770, (int) 771);
-		GL11.glEnable((int) 2848);
-		GL11.glPushMatrix();
-		GL11.glColor4f((float) red, (float) green, (float) blue, (float) alpha);
-		GL11.glBegin((int) 7);
-		GL11.glVertex2d((double) f, (double) e);
-		GL11.glVertex2d((double) d, (double) e);
-		GL11.glVertex2d((double) d, (double) g);
-		GL11.glVertex2d((double) f, (double) g);
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		GL11.glEnable((int) 3553);
-		GL11.glDisable((int) 3042);
-		GL11.glDisable((int) 2848);
-	}
+	public static void fillGradient(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int startColor, int endColor) {
+		double j;
+		if (x1 < x2) {
+			j = x1;
+			x1 = x2;
+			x2 = j;
+		}
 
-	public static void drawGradientRect(double x, double y, double x2, double y2, int startColor, int endColor) {
-		float f = (float) (startColor >> 24 & 255) / 255.0f;
-		float f1 = (float) (startColor >> 16 & 255) / 255.0f;
-		float f2 = (float) (startColor >> 8 & 255) / 255.0f;
-		float f3 = (float) (startColor & 255) / 255.0f;
-		float f4 = (float) (endColor >> 24 & 255) / 255.0f;
-		float f5 = (float) (endColor >> 16 & 255) / 255.0f;
-		float f6 = (float) (endColor >> 8 & 255) / 255.0f;
-		float f7 = (float) (endColor & 255) / 255.0f;
-		GL11.glEnable((int) 3042);
-		GL11.glDisable((int) 3553);
-		GL11.glBlendFunc((int) 770, (int) 771);
-		GL11.glEnable((int) 2848);
-		GL11.glShadeModel((int) 7425);
-		GL11.glPushMatrix();
-		GL11.glBegin((int) 7);
-		GL11.glColor4f((float) f1, (float) f2, (float) f3, (float) f);
-		GL11.glVertex2d((double) x2, (double) y);
-		GL11.glVertex2d((double) x, (double) y);
-		GL11.glColor4f((float) f5, (float) f6, (float) f7, (float) f4);
-		GL11.glVertex2d((double) x, (double) y2);
-		GL11.glVertex2d((double) x2, (double) y2);
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		GL11.glEnable((int) 3553);
-		GL11.glDisable((int) 3042);
-		GL11.glDisable((int) 2848);
-		GL11.glShadeModel((int) 7424);
+		if (y1 < y2) {
+			j = y1;
+			y1 = y2;
+			y2 = j;
+		}
+		float f = (float) (startColor >> 24 & 255) / 255.0F;
+		float g = (float) (startColor >> 16 & 255) / 255.0F;
+		float h = (float) (startColor >> 8 & 255) / 255.0F;
+		float k = (float) (startColor & 255) / 255.0F;
+		float f1 = (float) (endColor >> 24 & 255) / 255.0F;
+		float g1 = (float) (endColor >> 16 & 255) / 255.0F;
+		float h1 = (float) (endColor >> 8 & 255) / 255.0F;
+		float k1 = (float) (endColor & 255) / 255.0F;
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.defaultBlendFunc();
+		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.end();
+		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 	public static void setColor(Color color) {
@@ -174,21 +167,6 @@ public class Render2D {
 
 	public static boolean isHovered(float mouseX, float mouseY, float x, float y, float width, float height) {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
-	}
-
-	// Color Picker
-	public static boolean isHoveredTemp(double mouseX, double mouseY, double x1, double x2, double y1, double y2) {
-		if (x1 > x2) {
-			double temp = x1;
-			x1 = x2;
-			x2 = temp;
-		}
-		if (y1 > y2) {
-			double temp = y1;
-			y1 = y2;
-			y2 = temp;
-		}
-		return (mouseX > x1 && mouseX < x2 && mouseY > y1 && mouseY < y2);
 	}
 
 }

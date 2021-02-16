@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.features.impl.config.Config;
+import me.infinity.file.config.Config;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class ConfigListButton {

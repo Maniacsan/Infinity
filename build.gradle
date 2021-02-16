@@ -16,10 +16,6 @@ repositories {
 	jcenter()
 }
 
-ext {
-    imguiVersion = '4e5eec4af9'
-}
-
 dependencies {
 	def dependency = { id ->
 		modImplementation id

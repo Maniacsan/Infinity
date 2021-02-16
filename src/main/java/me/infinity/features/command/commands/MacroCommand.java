@@ -3,7 +3,7 @@ package me.infinity.features.command.commands;
 import me.infinity.InfMain;
 import me.infinity.features.command.Command;
 import me.infinity.features.command.CommandInfo;
-import me.infinity.features.impl.macro.Macro;
+import me.infinity.features.component.macro.Macro;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Formatting;
 

@@ -1,4 +1,4 @@
-package me.infinity.features.impl.macro;
+package me.infinity.features.component.macro;
 
 public class Macro {
 
