@@ -1,0 +1,3 @@
+git add . - добавить файлы, . - все файлы 
+git commit -u "SYUDA COMMENTARIY K OBNOVLENIYU" s skobkami
+git push -u origin master - 4tobi загрузить файл в гитхаб
