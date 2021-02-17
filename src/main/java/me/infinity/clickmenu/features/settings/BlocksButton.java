@@ -1,8 +1,8 @@
 package me.infinity.clickmenu.features.settings;
 
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.features.Settings;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;
 

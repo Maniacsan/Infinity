@@ -17,7 +17,7 @@ public class TestValues extends Module {
 	private Settings testInt = new Settings(this, "TestNum", 5, 0, 10);
 	private Settings testMode = new Settings(this, "TestMode", "SUCK",
 			new ArrayList<>(Arrays.asList(new String[] { "SUCK", "SUCK2", "OMG" })));
-	private Settings testColor = new Settings(this, "TestColor", new Color(250, 50, 50), 50, 20, 100);
+	private Settings testColor = new Settings(this, "TestColor", new Color(250, 50, 50));
 
 
 }

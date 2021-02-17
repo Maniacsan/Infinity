@@ -3,7 +3,6 @@ package me.infinity.features;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import me.infinity.InfMain;
 import net.minecraft.block.Block;
 
 /**
@@ -81,12 +80,9 @@ public class Settings {
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor, float hue, float saturation, float brightness) {
+	public Settings(Module module, String name, Color currentColor) {
 		this.module = module;
 		this.name = name;
-		this.setHue(hue);
-		this.setSaturation(saturation);
-		this.setBrightness(brightness);
 		this.color = currentColor;
 		Color hsb = Color.getHSBColor(hue, saturation, brightness);
 		currentColor = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
@@ -99,26 +95,6 @@ public class Settings {
 		this.blocks = blocks;
 		this.renderBlocks = renderBlocks;
 		this.category = Category.BLOCKS;
-	}
-
-	public String getCollectSettings() {
-		String list = "";
-		for (Module m : InfMain.getModuleManager().getList()) {
-			for (Settings s : m.getSettings()) {
-				if (s.isBoolean()) {
-					list =(Boolean.toString(isToggle()));
-				} else if (s.isMode()) {
-					list = (getCurrentMode());
-				} else if (s.isValueDouble()) {
-					list = (Double.toString(getCurrentValueDouble()));
-				} else if (s.isValueFloat()) {
-					list = (Float.toString(getCurrentValueFloat()));
-				} else if (s.isValueInt()) {
-					list = (Integer.toString(getCurrentValueInt()));
-				}
-			}
-		}
-		return list;
 	}
 
 	public ArrayList<Block> getRenderBlocks() {
@@ -245,8 +221,8 @@ public class Settings {
 		return color;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setColor(int color) {
+		this.color = new Color(color);
 	}
 
 	public ArrayList<Block> getBlocks() {
