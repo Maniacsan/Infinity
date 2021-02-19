@@ -14,6 +14,8 @@ import net.minecraft.client.MinecraftClient;
 @ModuleInfo(category = Module.Category.VISUAL, desc = "ImGui based hack gui", key = GLFW.GLFW_KEY_RIGHT_SHIFT, name = "Gui", visible = false)
 public class GuiMod extends Module {
 
+	public Settings theme = new Settings(this, "Theme", "Dark%",
+			new ArrayList<>(Arrays.asList(new String[] { "Dark", "Light" })));
 	public Settings scale = new Settings(this, "Scale", "60%",
 			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })));
 

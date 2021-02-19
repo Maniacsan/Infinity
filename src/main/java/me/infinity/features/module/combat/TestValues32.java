@@ -12,8 +12,8 @@ import me.infinity.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "TEST", key = 49, name = "TestValues", visible = true)
-public class TestValues extends Module {
+@ModuleInfo(category = Module.Category.COMBAT, desc = "TEST", key = 49, name = "TestValues32", visible = true)
+public class TestValues32 extends Module {
 
 	private Settings testbool = new Settings(this, "TestBool", true);
 	private Settings testbool2 = new Settings(this, "TestBool2", true);

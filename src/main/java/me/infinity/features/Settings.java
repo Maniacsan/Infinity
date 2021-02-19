@@ -3,8 +3,8 @@ package me.infinity.features;
 import java.awt.Color;
 import java.util.ArrayList;
 
-import me.infinity.InfMain;
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemStack;
 
 /**
  * @Enaium base
@@ -81,12 +81,9 @@ public class Settings {
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor, float hue, float saturation, float brightness) {
+	public Settings(Module module, String name, Color currentColor) {
 		this.module = module;
 		this.name = name;
-		this.setHue(hue);
-		this.setSaturation(saturation);
-		this.setBrightness(brightness);
 		this.color = currentColor;
 		Color hsb = Color.getHSBColor(hue, saturation, brightness);
 		currentColor = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
@@ -103,10 +100,6 @@ public class Settings {
 
 	public ArrayList<Block> getRenderBlocks() {
 		return renderBlocks;
-	}
-
-	public void setRenderBlocks(ArrayList<Block> renderBlocks) {
-		this.renderBlocks = renderBlocks;
 	}
 
 	public Module getModule() {
@@ -225,8 +218,8 @@ public class Settings {
 		return color;
 	}
 
-	public void setColor(Color color) {
-		this.color = color;
+	public void setColor(int color) {
+		this.color = new Color(color);
 	}
 
 	public ArrayList<Block> getBlocks() {

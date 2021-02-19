@@ -3,6 +3,7 @@ package me.infinity.clickmenu.features;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.infinity.InfMain;
 import me.infinity.clickmenu.features.settings.BlocksButton;
 import me.infinity.clickmenu.features.settings.BooleanButton;
 import me.infinity.clickmenu.features.settings.ColorButton;
@@ -14,6 +15,7 @@ import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Module;
 import me.infinity.features.Settings;
+import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class ModuleButton {
@@ -23,6 +25,11 @@ public class ModuleButton {
 	private Module module;
 	private String name;
 	private boolean hovered;
+	private boolean setHovered;
+	public double calcHeight;
+	private int offset;
+	private int offsetY;
+	private int height;
 	public boolean open;
 
 	public ModuleButton(Module module, String name, CategoryButton catBut) {
@@ -49,30 +56,48 @@ public class ModuleButton {
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double setX, double setY, double setWidth, double setHeight) {
+		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode()
+				.equalsIgnoreCase("Light");
+		this.calcHeight = height;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF161616);
-		Render2D.drawRectWH(matrices, x + 1.5, y + 1.5, width - 3, height - 3,
-				module.isEnabled() ? ColorUtils.CHECK_TOGGLE : hovered ? 0xFF414040 : 0xFF222020);
-		FontUtils.drawHVCenteredString(matrices, name, x + 34, y + 9, -1);
+		this.setHovered = Render2D.isHovered(mouseX, mouseY, setX + 224, setY + 6, setWidth, setHeight - 8);
+		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF706D6D);
+		Render2D.drawRectWH(matrices, x, y + 0.5, width, height,
+				module.isEnabled() ? 0xFF2A2C2A : hovered ? 0xFF414040 : 0xFF343434);
+		FontUtils.drawStringWithShadow(matrices, name, x + 5, y + 5, module.isEnabled() ? 0xFF1AB41E : -1);
+		if (!this.module.getSettings().isEmpty()) {
+			Render2D.drawRectWH(matrices, x, y, 0.5, height, open ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
+		}
+		Render2D.startScissor(setX + 224, setY + 6, setWidth, setHeight - 8);
 		if (open) {
 			double yOffset = 2;
 			double xOffset = 0;
-			for (SettingButton setBut : settingButton) {
-				setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 212, yOffset + setY + 6, width + 30,
-						height);
-				if (setBut instanceof BooleanButton) {
-					yOffset += 15;
-				} else if (setBut instanceof BlocksButton) {
-					xOffset += 80;
-					if (xOffset > 120) {
-						yOffset += 20;
-						xOffset = 0;
+			if (offsetY > this.height) {
+				Render2D.drawRectWH(matrices, setX + 372, setY + 5, 2.4, setHeight - 10, 0xFF505050);
+				Render2D.drawRectWH(matrices, setX + 372, setY + 5 + offset, 2.4, setHeight - 10 - getCurrentHeight(),
+						0xFFD2D2D2);
+			}
+			if (isArea(yOffset + setY + 6, setHeight - 8)) {
+				for (SettingButton setBut : settingButton) {
+					this.height = (int) setHeight;
+					this.offsetY = (int) (yOffset + setY + 6);
+					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
+							width + 30, height);
+					if (setBut instanceof BooleanButton) {
+						yOffset += 15;
+					} else if (setBut instanceof BlocksButton) {
+						yOffset += 120;
+					} else {
+						yOffset += 19;
 					}
-				} else {
-					yOffset += 19;
 				}
 			}
 		}
+		Render2D.stopScissor();
+	}
+
+	private boolean isArea(double y, double height) {
+		return y - this.offset <= height;
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -98,6 +123,32 @@ public class ModuleButton {
 		if (open) {
 			for (SettingButton setBut : settingButton) {
 				setBut.mouseReleased(mouseX, mouseY, button);
+			}
+		}
+	}
+
+	private float getCurrentHeight() {
+		float cHeight = 0;
+		for (SettingButton setBut : settingButton) {
+			cHeight += setBut.height;
+		}
+		return cHeight;
+	}
+
+	public void mouseScrolled(double d, double e, double amount) {
+		if (open && setHovered) {
+			if (amount < 0) {
+				if (offsetY > height) {
+					this.offset += 35;
+					if (this.offset > getCurrentHeight()) {
+						this.offset = (int) getCurrentHeight();
+					}
+				}
+			} else if (amount > 0) {
+				this.offset -= 35;
+				if (this.offset < 0) {
+					this.offset = 0;
+				}
 			}
 		}
 	}
