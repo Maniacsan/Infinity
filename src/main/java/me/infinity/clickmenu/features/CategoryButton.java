@@ -8,7 +8,6 @@ import me.infinity.clickmenu.config.ConfigButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CategoryButton {
@@ -35,15 +34,13 @@ public class CategoryButton {
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double yMod, double setX, double setY, double setWidth, double setHeight) {
-		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode().equalsIgnoreCase("Light");
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		if (displayModulePanel) {
 			Render2D.drawRectWH(matrices, x - 1, y - 1, width + 3, height + 2, ColorUtils.lineColor);
-			Render2D.drawRectWH(matrices, x, y, width + 6, height, ColorUtils.backNight);
+			Render2D.drawRectWH(matrices, x, y, width + 6, height, ColorUtils.backGroundLine);
 		}
-		Render2D.drawRectWH(matrices, x, y, 0.5, height, 0xFF989494);
-		Render2D.drawRectWH(matrices, x + 0.5, y, width, height,
-				displayModulePanel ? ColorUtils.backNight : hovered ? ColorUtils.SELECT : 0x50000000);
+		Render2D.drawRectWH(matrices, x, y, width, height,
+				displayModulePanel ? ColorUtils.backGroundLine : hovered ? ColorUtils.SELECT : 0x50000000);
 		FontUtils.drawHVCenteredString(matrices, getName(), x + 30, y + 11,
 				displayModulePanel ? ColorUtils.openColor : -1);
 		if (displayModulePanel) {
@@ -58,9 +55,9 @@ public class CategoryButton {
 						Render2D.drawRectWH(matrices, setX + 210, setY + 2, width + 108, setHeight - 4,
 								ColorUtils.lineColor);
 						Render2D.drawRectWH(matrices, setX + 211, setY + 3, width + 106, setHeight - 6,
-								ColorUtils.backNight);
+								ColorUtils.backGroundLine);
 					}
-					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 65, yOffset + yMod + 5, width + 6,
+					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 66, yOffset + yMod + 5, width + 6,
 							height - 3, setX, setY, setWidth, setHeight);
 					xOffset += 68;
 					if (xOffset > 120) {

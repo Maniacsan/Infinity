@@ -3,6 +3,7 @@ package me.infinity.features;
 import java.awt.Color;
 import java.util.ArrayList;
 
+import me.infinity.InfMain;
 import net.minecraft.block.Block;
 
 /**
@@ -80,9 +81,12 @@ public class Settings {
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor) {
+	public Settings(Module module, String name, Color currentColor, float hue, float saturation, float brightness) {
 		this.module = module;
 		this.name = name;
+		this.setHue(hue);
+		this.setSaturation(saturation);
+		this.setBrightness(brightness);
 		this.color = currentColor;
 		Color hsb = Color.getHSBColor(hue, saturation, brightness);
 		currentColor = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
@@ -221,8 +225,8 @@ public class Settings {
 		return color;
 	}
 
-	public void setColor(int color) {
-		this.color = new Color(color);
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	public ArrayList<Block> getBlocks() {

@@ -19,13 +19,11 @@ public class BooleanButton extends SettingButton {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
-		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 5);
+		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 
-		Render2D.drawRectWH(matrices, x + 2, y + 0.2, 10, 10, setting.isToggle() ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
-		Render2D.drawRectWH(matrices, x + 2.8, y + 1, 8, height - 9, ColorUtils.backNight);
-		if (setting.isToggle()) {
-			Render2D.drawRectWH(matrices, x + 4, y + 2, 6, 6, ColorUtils.CHECK_TOGGLE);
-		}
+		Render2D.drawRectWH(matrices, x + 2, y + 0.2, 10, 10, ColorUtils.shadow);
+		Render2D.drawRectWH(matrices, x + 2.8, y + 1, 8, height - 9,
+				setting.isToggle() ? ColorUtils.booleanToogle : ColorUtils.CHECK_BG);
 		FontUtils.drawStringWithShadow(matrices, this.setting.getName(), x + 18, y + 1.3, Color.WHITE.getRGB());
 	}
 

@@ -84,8 +84,6 @@ public class Config {
 											} else if (setting.isMode()) {
 												setting.setCurrentMode(
 														jsonObject.get(setting.getName()).getAsString());
-											} else if (setting.isColor()) {
-												setting.setColor(jsonObject.get(setting.getName()).getAsInt());
 											}
 										}
 									}
@@ -128,8 +126,7 @@ public class Config {
 									dataJson.addProperty(setting.getName(), setting.getCurrentValueInt());
 								} else if (setting.isMode()) {
 									dataJson.addProperty(setting.getName(), setting.getCurrentMode());
-								} else if (setting.isColor()) {
-									dataJson.addProperty(setting.getName(), setting.getColor().getRGB());
+
 								}
 							}
 						}

@@ -20,8 +20,8 @@ public class ModeStringButton extends SettingButton {
 			double height) {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
+		FontUtils.drawStringWithShadow(matrices, setting.getName() + " - " + setting.getCurrentMode(), x + 2, y + 5, Color.WHITE.getRGB());
 		
-		FontUtils.drawStringWithShadow(matrices, setting.getName() + " - " + setting.getCurrentMode(), x + 4, y + 5, Color.WHITE.getRGB());
 	}
 
 	@Override

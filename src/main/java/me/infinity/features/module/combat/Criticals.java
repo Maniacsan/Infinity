@@ -31,6 +31,7 @@ public class Criticals extends Module {
 					PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
 					if (packet.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
 						criticalHit(event);
+						Helper.minecraftClient.player.sendChatMessage("Ya udaril");
 					}
 				}
 			}

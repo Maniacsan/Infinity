@@ -3,18 +3,17 @@ package me.infinity.clickmenu.features;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.infinity.InfMain;
 import me.infinity.clickmenu.features.settings.BlocksButton;
 import me.infinity.clickmenu.features.settings.BooleanButton;
 import me.infinity.clickmenu.features.settings.ColorButton;
 import me.infinity.clickmenu.features.settings.ModeStringButton;
 import me.infinity.clickmenu.features.settings.SettingButton;
 import me.infinity.clickmenu.features.settings.SliderButton;
+import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Module;
 import me.infinity.features.Settings;
-import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class ModuleButton {
@@ -50,14 +49,11 @@ public class ModuleButton {
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double setX, double setY, double setWidth, double setHeight) {
-		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode().equalsIgnoreCase("Light");
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF706D6D);
-		Render2D.drawRectWH(matrices, x, y + 0.5, width, height, module.isEnabled() ? 0xFF2A2C2A : hovered ? 0xFF414040 : 0xFF343434);
-		FontUtils.drawStringWithShadow(matrices, name, x + 5, y + 5, module.isEnabled() ? 0xFF1AB41E : -1);
-		if (!this.module.getSettings().isEmpty()) {
-			Render2D.drawRectWH(matrices, x, y, 0.5, height, open ? 0xFF9E9E9D : 0xFFFFFFFF);
-		}
+		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF161616);
+		Render2D.drawRectWH(matrices, x + 1.5, y + 1.5, width - 3, height - 3,
+				module.isEnabled() ? ColorUtils.CHECK_TOGGLE : hovered ? 0xFF414040 : 0xFF222020);
+		FontUtils.drawHVCenteredString(matrices, name, x + 34, y + 9, -1);
 		if (open) {
 			double yOffset = 2;
 			double xOffset = 0;

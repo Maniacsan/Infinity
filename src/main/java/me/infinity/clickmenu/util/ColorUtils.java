@@ -16,8 +16,6 @@ public class ColorUtils {
 	public static int sliderColor = -1;
 	public static int shadow = 0xFF0F0F0F;
 	public static int booleanToogle = 0xFF079922;
-	// Night
-	public static int backNight = 0xFF1D1C1C; 
 
 	
 }
