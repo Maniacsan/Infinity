@@ -51,6 +51,13 @@ public class ClickMenu extends Screen {
 		panel.mouseReleased(mouseX, mouseY, button);
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
+	
+
+	@Override
+	public boolean mouseScrolled(double d, double e, double amount) {
+		panel.mouseScrolled(d, e, amount);
+		return super.mouseScrolled(e, e, amount);
+	}
 
 	@Override
 	public boolean charTyped(char chr, int keyCode) {

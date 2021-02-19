@@ -53,5 +53,14 @@ public class Helper {
 		minecraftClient.inGameHud.getChatHud()
 				.addMessage(new LiteralText(Formatting.BLUE + "Infinity" + Formatting.WHITE + ": " + message));
 	}
+	
+	/**
+	 * Убирает надпись с строки null , если String равен null
+	 * @param str
+	 * @return
+	 */
+	public static String replaceNull(String str) {
+		return str == null ? "" : str + " ";
+	}
 
 }
