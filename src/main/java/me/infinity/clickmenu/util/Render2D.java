@@ -6,6 +6,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import me.infinity.InfMain;
+import me.infinity.features.module.visual.GuiMod;
 import me.infinity.utils.Helper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
@@ -14,6 +16,7 @@ import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 public class Render2D {
@@ -223,10 +226,28 @@ public class Render2D {
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
 				/ Helper.minecraftClient.getWindow().getScaledHeight();
-
+		
 		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
 		GL11.glScissor((int) (x * scaleWidth),
-				(Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight),
+				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
+				(int) (width * scaleWidth), (int) (height * scaleHeight));
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
+	}
+	
+	// for clickmenu scale 
+	public static void startMenuScissor(double x, double y, double width, double height) {
+		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
+				/ Helper.minecraftClient.getWindow().getScaledWidth();
+		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
+				/ Helper.minecraftClient.getWindow().getScaledHeight();
+		
+		scaleWidth *= scale;
+		scaleHeight *= scale;
+		
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glScissor((int) (x * scaleWidth),
+				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
@@ -235,5 +256,4 @@ public class Render2D {
 		GL11.glDisable(GL11.GL_SCISSOR_TEST);
 		GL11.glPopAttrib();
 	}
-
 }

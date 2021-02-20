@@ -58,7 +58,7 @@ public class ModuleButton {
 			double height, double setX, double setY, double setWidth, double setHeight) {
 		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode()
 				.equalsIgnoreCase("Light");
-		this.calcHeight = height;
+		this.calcHeight = height / 4;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		this.setHovered = Render2D.isHovered(mouseX, mouseY, setX + 224, setY + 6, setWidth, setHeight - 8);
 		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF706D6D);
@@ -68,7 +68,7 @@ public class ModuleButton {
 		if (!this.module.getSettings().isEmpty()) {
 			Render2D.drawRectWH(matrices, x, y, 0.5, height, open ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
 		}
-		Render2D.startScissor(setX + 224, setY + 6, setWidth, setHeight - 8);
+		Render2D.startMenuScissor(setX + 224, setY + 6, setWidth, setHeight - 8);
 		if (open) {
 			double yOffset = 2;
 			double xOffset = 0;
@@ -77,27 +77,21 @@ public class ModuleButton {
 				Render2D.drawRectWH(matrices, setX + 372, setY + 5 + offset, 2.4, setHeight - 10 - getCurrentHeight(),
 						0xFFD2D2D2);
 			}
-			if (isArea(yOffset + setY + 6, setHeight - 8)) {
-				for (SettingButton setBut : settingButton) {
-					this.height = (int) setHeight;
-					this.offsetY = (int) (yOffset + setY + 6);
-					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
-							width + 30, height);
-					if (setBut instanceof BooleanButton) {
-						yOffset += 15;
-					} else if (setBut instanceof BlocksButton) {
-						yOffset += 120;
-					} else {
-						yOffset += 19;
-					}
+			for (SettingButton setBut : settingButton) {
+				this.height = (int) setHeight;
+				this.offsetY = (int) (yOffset + setY + 6);
+				setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
+						width + 30, height);
+				if (setBut instanceof BooleanButton) {
+					yOffset += 15;
+				} else if (setBut instanceof BlocksButton) {
+					yOffset += 45;
+				} else {
+					yOffset += 19;
 				}
 			}
 		}
 		Render2D.stopScissor();
-	}
-
-	private boolean isArea(double y, double height) {
-		return y - this.offset <= height;
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -130,6 +124,9 @@ public class ModuleButton {
 	private float getCurrentHeight() {
 		float cHeight = 0;
 		for (SettingButton setBut : settingButton) {
+			if (setBut instanceof BlocksButton) {
+				cHeight += ((BlocksButton)setBut).y;
+			} else
 			cHeight += setBut.height;
 		}
 		return cHeight;

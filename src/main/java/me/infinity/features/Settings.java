@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockState;
 
 /**
  * @Enaium base
@@ -96,10 +96,6 @@ public class Settings {
 		this.blocks = blocks;
 		this.renderBlocks = renderBlocks;
 		this.category = Category.BLOCKS;
-	}
-
-	public ArrayList<Block> getRenderBlocks() {
-		return renderBlocks;
 	}
 
 	public Module getModule() {
@@ -224,6 +220,16 @@ public class Settings {
 
 	public ArrayList<Block> getBlocks() {
 		return blocks;
+	}
+
+	public void addBlockFromId(int id) {
+		System.out.println("AddBlock");
+		BlockState block = Block.getStateFromRawId(id);
+		this.getBlocks().add(block.getBlock());
+	}
+
+	public ArrayList<Block> getRenderBlocks() {
+		return renderBlocks;
 	}
 
 	public int getCurrentModeIndex() {

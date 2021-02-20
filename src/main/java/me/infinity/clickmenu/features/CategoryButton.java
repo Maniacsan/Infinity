@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import me.infinity.InfMain;
 import me.infinity.clickmenu.Panel;
 import me.infinity.clickmenu.config.ConfigButton;
+import me.infinity.clickmenu.features.settings.SettingButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
@@ -66,26 +67,25 @@ public class CategoryButton {
 				if (offsetY > this.height) {
 					double border = offsetY / 3;
 					Render2D.drawRectWH(matrices, setX + 213, setY + 5, 2.4, setHeight - 10, 0xFF505050);
-					Render2D.drawRectWH(matrices, setX + 213, setY + 5 + offset, 2.4, setHeight - 10 - border, 0xFFD2D2D2);
+					Render2D.drawRectWH(matrices, setX + 213, setY + 5 + offset, 2.4, setHeight - 10 - border,
+							0xFFD2D2D2);
 				}
 			}
 			if (getName() == "CONFIGS") {
 				configButton.render(matrices, mouseX, mouseY, delta, xOffset, yOffset, width, height, yMod, setX, setY,
 						setWidth, setHeight);
 			} else {
-				Render2D.startScissor(setX + 65, yMod + 5, width + 93, setHeight - 8);
-				if (isArea(yOffset + yMod + 5, setHeight - 8)) {
-					for (ModuleButton modButton : modButton) {
-						this.height = (int) setHeight;
-						this.offsetY = (int) (yOffset + height);
-						this.offsetBorder = (int) (height - 3);
-						modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 65, yOffset + yMod + 5 - offset,
-								width + 6, height - 3, setX, setY, setWidth, setHeight);
-						xOffset += 70;
-						if (xOffset > 120) {
-							xOffset = 2;
-							yOffset += 19;
-						}
+				Render2D.startMenuScissor(setX + 65, yMod + 5, width + 93, setHeight - 8);
+				for (ModuleButton modButton : modButton) {
+					this.height = (int) setHeight;
+					this.offsetY = (int) (yOffset + height);
+					this.offsetBorder = (int) (height - 3);
+					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 65, yOffset + yMod + 5 - offset,
+							width + 6, height - 3, setX, setY, setWidth, setHeight);
+					xOffset += 70;
+					if (xOffset > 120) {
+						xOffset = 2;
+						yOffset += 19;
 					}
 				}
 				Render2D.stopScissor();
@@ -93,8 +93,12 @@ public class CategoryButton {
 		}
 	}
 
-	private boolean isArea(double y, double height) {
-		return y - this.offset <= height;
+	private float getCurrentHeight() {
+		float cHeight = 0;
+		for (ModuleButton modButton : modButton) {
+			cHeight += modButton.calcHeight;
+		}
+		return cHeight;
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -123,9 +127,9 @@ public class CategoryButton {
 				if (amount < 0) {
 					if (offsetY > height) {
 						this.offset += 35;
-						double border = offsetY / 3;
+						double border = getCurrentHeight();
 						if (this.offset > border) {
-							this.offset = (int) offsetY / 3;
+							this.offset = (int) getCurrentHeight();
 						}
 					}
 				} else if (amount > 0) {

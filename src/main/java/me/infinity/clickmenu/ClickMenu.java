@@ -1,5 +1,7 @@
 package me.infinity.clickmenu;
 
+import org.lwjgl.opengl.GL11;
+
 import me.infinity.InfMain;
 import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.gui.screen.Screen;
@@ -28,9 +30,10 @@ public class ClickMenu extends Screen {
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		mouseX /= scale;
 		mouseY /= scale;
-		matrices.scale(scale, scale, scale);
+		GL11.glPushMatrix();
+		GL11.glScalef(scale, scale, scale);
 		panel.render(matrices, mouseX, mouseY, delta);
-		matrices.scale(1F, 1F, 1F);
+		GL11.glPopMatrix();
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
