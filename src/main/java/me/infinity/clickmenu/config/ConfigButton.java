@@ -9,8 +9,10 @@ import me.infinity.clickmenu.Panel;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.file.config.Config;
+import me.infinity.utils.Helper;
 import me.infinity.utils.TimeHelper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 
 public class ConfigButton {
 
@@ -33,12 +35,14 @@ public class ConfigButton {
 
 	public ConfigButton(Panel panel) {
 		refresh();
+		configFull = false;
 	}
 
 	public void refresh() {
 		configList.clear();
 		InfMain.getConfigManager().getConfigList()
 				.forEach(config -> configList.add(new ConfigListButton(config, this)));
+		configFull = false;
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
@@ -54,36 +58,33 @@ public class ConfigButton {
 		Render2D.drawRectWH(matrices, setX + 151, setY + 2, 159, 15, 0xFF1C1B1B);
 		FontUtils.drawStringWithShadow(matrices, content, setX + 154, setY + 6, -1);
 		if (focused && FontUtils.getStringWidth(content) < 150) {
-			if (timer.hasReached(600)) {
-				Render2D.drawRectWH(matrices, setX + 153 + FontUtils.getStringWidth(content) + 2, setY + 13, 3, 1, -1);
-				timer.reset();
-			}
+			Render2D.drawRectWH(matrices, setX + 153 + FontUtils.getStringWidth(content) + 2, setY + 13, 3, 1, -1);
 		}
 
 		// add button
-		Render2D.drawRectWH(matrices, setX + 76, setY + 5, 62, 12, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 77, setY + 6, 60, 10, addHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "add", setX + 108, setY + 11, -1);
+		Render2D.drawRectWH(matrices, setX + 76, setY + 5, 62, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 77, setY + 6, 60, 12, addHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "add", setX + 108, setY + 12, -1);
 
 		// delete button
-		Render2D.drawRectWH(matrices, setX + 76, setY + 23, 62, 12, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 77, setY + 24, 60, 10, deleteHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "delete", setX + 108, setY + 29, -1);
+		Render2D.drawRectWH(matrices, setX + 76, setY + 23, 62, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 77, setY + 24, 60, 12, deleteHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "delete", setX + 108, setY + 30, -1);
 
 		// save button
-		Render2D.drawRectWH(matrices, setX + 76, setY + 41, 62, 12, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 77, setY + 42, 60, 10, saveHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "save", setX + 108, setY + 47, -1);
+		Render2D.drawRectWH(matrices, setX + 76, setY + 41, 62, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 77, setY + 42, 60, 12, saveHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "save", setX + 108, setY + 48, -1);
 
 		// refresh button
-		Render2D.drawRectWH(matrices, setX + 316, setY + 5, 56, 12, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 317, setY + 6, 54, 10, refreshHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "refresh", setX + 345, setY + 11, -1);
+		Render2D.drawRectWH(matrices, setX + 316, setY + 5, 56, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 317, setY + 6, 54, 12, refreshHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "refresh", setX + 345, setY + 12, -1);
 
 		// load button
-		Render2D.drawRectWH(matrices, setX + 316, setY + 23, 56, 12, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 317, setY + 24, 54, 10, loadHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "load", setX + 344, setY + 29, -1);
+		Render2D.drawRectWH(matrices, setX + 316, setY + 23, 56, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 317, setY + 24, 54, 12, loadHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "load", setX + 344, setY + 30, -1);
 
 		if (InfMain.getConfigManager().getConfigList().size() > 15 && configFull) {
 			FontUtils.drawHVCenteredString(matrices, "Configs", setX + 108, setY + 65, 0xFFE24343);
@@ -100,24 +101,28 @@ public class ConfigButton {
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.addHovered && button == 0) {
-			if (InfMain.getConfigManager().getConfigList().size() > 15) {
+			if (!(InfMain.getConfigManager().getConfigList().size() > 15)) {
 				configFull = true;
-				return;
-			}
-			if (!content.isEmpty()) {
-				if (InfMain.getConfigManager().fromName((content)) == null) {
-					InfMain.getConfigManager().loadConfig(false);
-					Config config = new Config(content);
-					config.save();
-					InfMain.getConfigManager().add(config);
-					content = "";
-					refresh();
+				if (!content.isEmpty()) {
+					if (InfMain.getConfigManager().fromName((content)) == null) {
+						InfMain.getConfigManager().loadConfig(false);
+						Config config = new Config(content);
+						config.save();
+						InfMain.getConfigManager().add(config);
+						content = "";
+						refresh();
+						Helper.infoMessage(Formatting.GRAY + "New config" + Formatting.WHITE + content + Formatting.AQUA
+								+ "added");
+					}
 				}
+			} else {
+				configFull = true;
 			}
 		} else if (this.deleteHovered && button == 0) {
 			for (ConfigListButton listButton : configList) {
 				if (listButton.select) {
 					InfMain.getConfigManager().delete(listButton.config);
+					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.GRAY + "deleted");
 					refresh();
 				}
 			}
@@ -126,6 +131,7 @@ public class ConfigButton {
 			for (ConfigListButton listButton : configList) {
 				if (listButton.select) {
 					listButton.config.save();
+					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "saved");
 				}
 			}
 		} else if (this.refreshHovered && button == 0) {
@@ -135,7 +141,7 @@ public class ConfigButton {
 			for (ConfigListButton listButton : configList) {
 				if (listButton.select) {
 					listButton.config.load();
-					//System.out.println("Load !!!!!!!!!!!!!!!!!!!!!!!");
+					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "loaded");
 				}
 			}
 		}

@@ -10,7 +10,6 @@ import me.infinity.clickmenu.features.settings.ColorButton;
 import me.infinity.clickmenu.features.settings.ModeStringButton;
 import me.infinity.clickmenu.features.settings.SettingButton;
 import me.infinity.clickmenu.features.settings.SliderButton;
-import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Module;
@@ -66,7 +65,7 @@ public class ModuleButton {
 				module.isEnabled() ? 0xFF2A2C2A : hovered ? 0xFF414040 : 0xFF343434);
 		FontUtils.drawStringWithShadow(matrices, name, x + 5, y + 5, module.isEnabled() ? 0xFF1AB41E : -1);
 		if (!this.module.getSettings().isEmpty()) {
-			Render2D.drawRectWH(matrices, x, y, 0.5, height, open ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
+			Render2D.drawRightTriangle((int) x + 68, (int) ((int) y + height / 2 + 2), 4, open ? -1 : 0xFF7A7979);
 		}
 		Render2D.startMenuScissor(setX + 224, setY + 6, setWidth, setHeight - 8);
 		if (open) {
@@ -86,6 +85,8 @@ public class ModuleButton {
 					yOffset += 15;
 				} else if (setBut instanceof BlocksButton) {
 					yOffset += 45;
+				} else if (setBut instanceof ModeStringButton) {
+					yOffset += 21;
 				} else {
 					yOffset += 19;
 				}
@@ -125,9 +126,9 @@ public class ModuleButton {
 		float cHeight = 0;
 		for (SettingButton setBut : settingButton) {
 			if (setBut instanceof BlocksButton) {
-				cHeight += ((BlocksButton)setBut).y;
+				cHeight += ((BlocksButton) setBut).y;
 			} else
-			cHeight += setBut.height;
+				cHeight += setBut.height;
 		}
 		return cHeight;
 	}

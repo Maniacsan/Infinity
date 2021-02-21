@@ -15,7 +15,7 @@ import net.minecraft.block.Blocks;
 public class XRay extends Module {
 
 	private ArrayList<Block> blocks = new ArrayList<>();
-	public Settings block = new Settings(this, blocks,
+	public Settings block = new Settings(this, "Blocks", blocks,
 			new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE, Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE,
 					Blocks.IRON_ORE, Blocks.LAPIS_ORE, Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE,
 					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE

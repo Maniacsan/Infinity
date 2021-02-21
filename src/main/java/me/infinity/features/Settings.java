@@ -91,8 +91,9 @@ public class Settings {
 	}
 
 	// Blocks
-	public Settings(Module module, ArrayList<Block> blocks, ArrayList<Block> renderBlocks) {
+	public Settings(Module module, String name, ArrayList<Block> blocks, ArrayList<Block> renderBlocks) {
 		this.module = module;
+		this.name = name;
 		this.blocks = blocks;
 		this.renderBlocks = renderBlocks;
 		this.category = Category.BLOCKS;
@@ -223,9 +224,10 @@ public class Settings {
 	}
 
 	public void addBlockFromId(int id) {
-		System.out.println("AddBlock");
 		BlockState block = Block.getStateFromRawId(id);
-		this.getBlocks().add(block.getBlock());
+		if (!blocks.contains(block.getBlock())) {
+			blocks.add(block.getBlock());
+		}
 	}
 
 	public ArrayList<Block> getRenderBlocks() {

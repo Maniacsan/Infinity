@@ -80,9 +80,9 @@ public class CategoryButton {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + height);
 					this.offsetBorder = (int) (height - 3);
-					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 65, yOffset + yMod + 5 - offset,
-							width + 6, height - 3, setX, setY, setWidth, setHeight);
-					xOffset += 70;
+					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 64, yOffset + yMod + 5 - offset,
+							width + 10, height - 3, setX, setY, setWidth, setHeight);
+					xOffset += 72;
 					if (xOffset > 120) {
 						xOffset = 2;
 						yOffset += 19;

@@ -16,7 +16,6 @@ import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 public class Render2D {
@@ -191,6 +190,36 @@ public class Render2D {
 		RenderSystem.disableBlend();
 	}
 
+	/**
+	 * Treugolnik povernutiy na pravo
+	 * @param x
+	 * @param y
+	 * @param size
+	 * @param color
+	 */
+	public static void drawRightTriangle(int x, int y, int size, int color) {
+		float f = (color >> 24 & 0xFF) / 255.0F;
+		float f1 = (color >> 16 & 0xFF) / 255.0F;
+		float f2 = (color >> 8 & 0xFF) / 255.0F;
+		float f3 = (color & 0xFF) / 255.0F;
+		GL11.glPushMatrix();
+		GL11.glColor4f(f1, f2, f3, 255.0F);
+		GL11.glEnable(3042);
+		GL11.glDisable(3553);
+		GL11.glEnable(2848);
+		GL11.glBlendFunc(770, 771);
+		GL11.glBegin(4);
+		GL11.glVertex2d(x, y);
+		GL11.glVertex2d((x - size), (y - size));
+		GL11.glVertex2d((x - size), (y + size));
+		GL11.glEnd();
+		GL11.glDisable(2848);
+		GL11.glEnable(3553);
+		GL11.glDisable(3042);
+		GL11.glRotatef(-180.0F, 0.0F, 0.0F, 1.0F);
+		GL11.glPopMatrix();
+	}
+
 	public static void setColor(Color color) {
 		GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f,
 				color.getAlpha() / 255.0f);
@@ -226,25 +255,25 @@ public class Render2D {
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
 				/ Helper.minecraftClient.getWindow().getScaledHeight();
-		
+
 		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
 		GL11.glScissor((int) (x * scaleWidth),
 				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
 		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
-	
-	// for clickmenu scale 
+
+	// for clickmenu scale
 	public static void startMenuScissor(double x, double y, double width, double height) {
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
 				/ Helper.minecraftClient.getWindow().getScaledHeight();
-		
+
 		scaleWidth *= scale;
 		scaleHeight *= scale;
-		
+
 		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
 		GL11.glScissor((int) (x * scaleWidth),
 				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),

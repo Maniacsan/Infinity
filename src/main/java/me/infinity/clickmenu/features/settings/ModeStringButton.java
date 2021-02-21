@@ -2,6 +2,7 @@ package me.infinity.clickmenu.features.settings;
 
 import java.awt.Color;
 
+import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
@@ -20,8 +21,10 @@ public class ModeStringButton extends SettingButton {
 			double height) {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		
-		FontUtils.drawStringWithShadow(matrices, setting.getName() + " - " + setting.getCurrentMode(), x + 4, y + 5, Color.WHITE.getRGB());
+		Render2D.drawRectWH(matrices, x + 1, y, width, height, 0xFF787878);
+		Render2D.drawRectWH(matrices, x + 1, y + 0.5, width, height - 1, 0xFF343434);
+		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 4.4, Color.WHITE.getRGB());
+		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(), x + width - FontUtils.getStringWidth(setting.getCurrentMode()), y + 4.4, Color.WHITE.getRGB());
 	}
 
 	@Override

@@ -87,6 +87,18 @@ public class Config {
 												setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
 											} else if (setting.isColor()) {
 												setting.setColor(jsonObject.get(setting.getName()).getAsInt());
+											} else if (setting.isBlock()) {
+												JsonArray jsonArray = null;
+												final JsonElement blockIds = jsonObject.get(setting.getName());
+												if (blockIds != null)
+													jsonArray = blockIds.getAsJsonArray();
+												System.out.println("BLOCK");
+												if (jsonArray != null) {
+													setting.getBlocks().clear();
+													for (JsonElement jsonElement : jsonArray) {
+														setting.addBlockFromId(jsonElement.getAsInt());
+													}
+												}
 											}
 										}
 									}
@@ -136,7 +148,7 @@ public class Config {
 									for (Block blocks : setting.getBlocks()) {
 										jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
 									}
-									dataJson.add("Blocks", jsonArray);
+									dataJson.add(setting.getName(), jsonArray);
 								}
 							}
 						}

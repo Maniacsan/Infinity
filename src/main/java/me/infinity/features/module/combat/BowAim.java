@@ -19,7 +19,8 @@ public class BowAim extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true);
 	private Settings mobs = new Settings(this, "Mobs", true);
 	private Settings animals = new Settings(this, "Animals", true);
-	private Settings range = new Settings(this, "Range", 40, 80, 1);
+	private Settings range = new Settings(this, "Range", 40, 1, 80);
+	private Settings speed = new Settings(this, "Speed", 90, 1, 100);
 
 	public static Entity target;
 
@@ -27,8 +28,8 @@ public class BowAim extends Module {
 	public void onPlayerTick() {
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()
 				&& Helper.getPlayer().getItemUseTime() >= 3) {
-			target = EntityUtil.setTarget(range.getCurrentValueInt(), players.isToggle(), invisibles.isToggle(), mobs.isToggle(),
-					animals.isToggle());
+			target = EntityUtil.setTarget(range.getCurrentValueInt(), players.isToggle(), invisibles.isToggle(),
+					mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
 			double xPos = target.getX();
@@ -39,7 +40,8 @@ public class BowAim extends Module {
 			double upMultiplier = (Helper.getPlayer().squaredDistanceTo(target) / 320) * 1.1;
 			Vec3d vecPos = new Vec3d((xPos - 0.5) + (xPos - target.lastRenderX) * sideMultiplier, yPos + upMultiplier,
 					(zPos - 0.5) + (zPos - target.lastRenderZ) * sideMultiplier);
-			float[] lookVec = RotationUtils.lookAtVecPos(vecPos, 100f, 100f);
+			float[] lookVec = RotationUtils.lookAtVecPos(vecPos, speed.getCurrentValueInt(),
+					speed.getCurrentValueInt());
 			Helper.getPlayer().yaw = lookVec[0];
 			Helper.getPlayer().pitch = lookVec[1];
 		}
