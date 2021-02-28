@@ -15,7 +15,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+public class EntityMixin {
 
 	@Inject(method = "move", at = @At("HEAD"))
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {
@@ -24,7 +24,7 @@ public abstract class EntityMixin {
 		MoveEvent moveEvent = new MoveEvent(EventType.PRE, type, movement);
 		EventManager.call(moveEvent);
 	}
-	
+
 	@Inject(method = "move", at = @At("RETURN"))
 	private void onMovePost(MovementType type, Vec3d movement, CallbackInfo info) {
 		if ((Object) this != Helper.minecraftClient.player)
@@ -32,6 +32,5 @@ public abstract class EntityMixin {
 		MoveEvent moveEvent = new MoveEvent(EventType.POST, type, movement);
 		EventManager.call(moveEvent);
 	}
-
 
 }

@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import me.infinity.InfMain;
 import me.infinity.clickmenu.Panel;
 import me.infinity.clickmenu.config.ConfigButton;
-import me.infinity.clickmenu.features.settings.SettingButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CategoryButton {
@@ -23,7 +21,6 @@ public class CategoryButton {
 	public boolean displayModulePanel;
 	private boolean modHovered;
 	private int offset;
-	private int offsetBorder;
 	private int offsetY;
 	private int height;
 
@@ -41,8 +38,6 @@ public class CategoryButton {
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double yMod, double setX, double setY, double setWidth, double setHeight) {
-		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode()
-				.equalsIgnoreCase("Light");
 		this.modHovered = Render2D.isHovered(mouseX, mouseY, setX + 65, yMod + 5, width + 93, setHeight - 8);
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		if (displayModulePanel) {
@@ -64,7 +59,7 @@ public class CategoryButton {
 					Render2D.drawRectWH(matrices, setX + 222, setY + 3, width + 95, setHeight - 6,
 							ColorUtils.backNight);
 				}
-				if (offsetY > this.height) {
+				if (modHovered && offsetY > this.height) {
 					double border = offsetY / 3;
 					Render2D.drawRectWH(matrices, setX + 213, setY + 5, 2.4, setHeight - 10, 0xFF505050);
 					Render2D.drawRectWH(matrices, setX + 213, setY + 5 + offset, 2.4, setHeight - 10 - border,
@@ -79,7 +74,6 @@ public class CategoryButton {
 				for (ModuleButton modButton : modButton) {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + height);
-					this.offsetBorder = (int) (height - 3);
 					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 64, yOffset + yMod + 5 - offset,
 							width + 10, height - 3, setX, setY, setWidth, setHeight);
 					xOffset += 72;

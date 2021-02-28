@@ -39,7 +39,7 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 			info.cancel();
 		}
 	}
-	
+
 	@Inject(at = @At("RETURN"), method = "sendMovementPackets")
 	private void sendMovementPacketsPost(CallbackInfo info) {
 		MotionEvent motionEvent = new MotionEvent(EventType.POST);

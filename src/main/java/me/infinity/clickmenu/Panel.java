@@ -48,8 +48,6 @@ public class Panel {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, this.x, this.y - 11, this.width, 11);
 		this.closeHovered = Render2D.isHovered(mouseX, mouseY, this.x + width - 20, this.y - 11, 20, 11);
-		boolean theme = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).theme.getCurrentMode()
-				.equalsIgnoreCase("Light");
 		if (this.dragging) {
 			this.x = this.prevX + mouseX;
 			this.y = this.prevY + mouseY;
@@ -79,13 +77,13 @@ public class Panel {
 		Render2D.drawRectWH(matrices, x, y - 11, width, 11, 0xFFDFDFDF);
 		Render2D.drawRectWH(matrices, x, y + 2, 66, height - 4, ColorUtils.lineColor);
 		Render2D.drawRectWH(matrices, x + 1, y + 3, 64, height - 6, ColorUtils.backNight);
-		
-		
+
 		String dirStr = "C:\\license\\infinity.jar";
 		FontUtils.drawString(matrices, dirStr, (int) x + 1, (int) y - 8, 0xFF8E8E8E);
-		//close button
+		// close button
 		Render2D.drawRectWH(matrices, x + width - 20, y - 11, 19, 10, closeHovered ? 0xFFF31919 : 0xFFBAB7B7);
-		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10, closeHovered ? 0xFFECEAEA : 0xFF181818);
+		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10,
+				closeHovered ? 0xFFECEAEA : 0xFF181818);
 
 		Helper.minecraftClient.getTextureManager().bindTexture(AVATAR);
 		DrawableHelper.drawTexture(matrices, (int) x + 16, (int) y + 4, 0, 0, 34, 36, 34, 36);

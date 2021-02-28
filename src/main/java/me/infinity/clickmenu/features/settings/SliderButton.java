@@ -47,7 +47,8 @@ public class SliderButton extends SettingButton {
 									: setting.getMaxValueInt() - setting.getMinValueInt();
 
 			final double percentBar = MathHelper.clamp((mouseX - x) / width, 0.0, 1.0);
-			final double val = setting.getMinValueDouble() + percentBar * diff;
+			final double val = setting.isValueInt() ? setting.getMinValueInt() + percentBar * diff
+					: setting.getMinValueDouble() + percentBar * diff;
 
 			if (setting.isValueDouble()) {
 				setting.setCurrentValueDouble(val);

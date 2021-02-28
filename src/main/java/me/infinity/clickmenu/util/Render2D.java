@@ -192,6 +192,7 @@ public class Render2D {
 
 	/**
 	 * Treugolnik povernutiy na pravo
+	 * 
 	 * @param x
 	 * @param y
 	 * @param size
@@ -247,6 +248,28 @@ public class Render2D {
 
 	public static boolean isHovered(float mouseX, float mouseY, float x, float y, float width, float height) {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
+	}
+
+	public static void drawTriangle(double x, double y, double size, int k) {
+		GL11.glRotatef(180.0F, 0.0F, 0.0F, 1.0F);
+		float f = (k >> 24 & 0xFF) / 255.0F;
+		float f1 = (k >> 16 & 0xFF) / 255.0F;
+		float f2 = (k >> 8 & 0xFF) / 255.0F;
+		float f3 = (k & 0xFF) / 255.0F;
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glEnable(3042);
+		GL11.glDisable(3553);
+		GL11.glEnable(2848);
+		GL11.glBlendFunc(770, 771);
+		GL11.glBegin(4);
+		GL11.glVertex2d(x, y);
+		GL11.glVertex2d((x - size), (y - size));
+		GL11.glVertex2d((x - size), (y + size));
+		GL11.glEnd();
+		GL11.glDisable(2848);
+		GL11.glEnable(3553);
+		GL11.glDisable(3042);
+		GL11.glRotatef(-180.0F, 0.0F, 0.0F, 1.0F);
 	}
 
 	// scroll

@@ -20,6 +20,10 @@ public class ClickMenu extends Screen {
 
 	public ClickMenu() {
 		super(new LiteralText(""));
+	}
+
+	@Override	
+	public void init() {
 		int x = 20;
 		int y = 20;
 		panel = new Panel(this, x, y, 380, 250);
@@ -54,7 +58,6 @@ public class ClickMenu extends Screen {
 		panel.mouseReleased(mouseX, mouseY, button);
 		return super.mouseReleased(mouseX, mouseY, button);
 	}
-	
 
 	@Override
 	public boolean mouseScrolled(double d, double e, double amount) {

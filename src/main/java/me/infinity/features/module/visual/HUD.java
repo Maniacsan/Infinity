@@ -1,6 +1,7 @@
 package me.infinity.features.module.visual;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -15,28 +16,28 @@ import net.minecraft.client.util.math.MatrixStack;
 public class HUD extends Module {
 
 	@Override
+	public void onDisable() {
+	}
+
+	@Override
 	public void onRender(MatrixStack matrices, int width, int height) {
 		Helper.getRenderUtil().draw("Infinity", 2, 2, -1);
 
-		// sort
-		InfMain.getModuleManager().getList().sort(new Comparator<Module>() {
-			@Override
-			public int compare(Module m, Module m2) {
-				return ((Integer) FontUtils.getStringWidth(m2.toCompare()))
-						.compareTo(FontUtils.getStringWidth(m.toCompare()));
-			}
+		List<String> arrayList = new ArrayList<>();
+
+		InfMain.getModuleManager().getList().forEach(module -> {
+			if (module.isEnabled() && module.isVisible())
+				arrayList.add(module.getSortedName() + " " + Helper.replaceNull(module.getSuffix()));
 		});
 
+		// sort
+		arrayList.sort((a, b) -> Integer.compare(FontUtils.getStringWidth(b), FontUtils.getStringWidth(a)));
+
 		float yOffset = 2;
-		for (Module module : InfMain.getModuleManager().getList()) {
-			if (module.isEnabled() && module.isVisible()) {
-				float widthOffset = width - FontUtils
-						.getStringWidth(module.getSortedName() + " " + Helper.replaceNull(module.getSuffix()));
-				FontUtils.drawStringWithShadow(matrices,
-						module.getSortedName() + " " + Helper.replaceNull(module.getSuffix()), widthOffset, yOffset,
-						-1);
-				yOffset += 10;
-			}
+		for (String module : arrayList) {
+			float widthOffset = width - FontUtils.getStringWidth(module);
+			FontUtils.drawStringWithShadow(matrices, module, widthOffset, yOffset, -1);
+			yOffset += 10;
 		}
-	}
+	}	
 }

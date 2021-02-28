@@ -37,6 +37,7 @@ public class RotationUtils {
 
 	/**
 	 * Look to target -> float[] look = RotationUtils.lookAtEntity(values):
+	 * 
 	 * @param targetEntity
 	 * @param maxYawChange
 	 * @param maxPitchChange
@@ -59,8 +60,8 @@ public class RotationUtils {
 		float j = (float) (-(MathHelper.atan2(g, h) * 57.2957763671875D));
 		float yaw = Helper.getPlayer().yaw;
 		float pitch = Helper.getPlayer().pitch;
-		pitch = updateAngle(pitch, j, maxPitchChange);
-		yaw = updateAngle(yaw, i, maxYawChange);
+		pitch = limitAngleChange(pitch, j, maxPitchChange);
+		yaw = limitAngleChange(yaw, i, maxYawChange);
 		return new float[] { yaw, pitch };
 	}
 
@@ -86,7 +87,7 @@ public class RotationUtils {
 		yaw = updateAngle(yaw, i, maxYawChange);
 		return new float[] {yaw, pitch};
 	}
-
+	
 	private static float updateAngle(float oldAngle, float newAngle, float maxChangeInAngle) {
 		float f = MathHelper.wrapDegrees(newAngle - oldAngle);
 		if (f > maxChangeInAngle) {
@@ -98,6 +99,57 @@ public class RotationUtils {
 		}
 
 		return oldAngle + f;
+	}
+
+	public static float getAngleDifference(final float a, final float b) {
+		return ((((a - b) % 360F) + 540F) % 360F) - 180F;
+	}
+
+	public static float limitAngleChange(final float currentRotation, final float targetRotation, final float turnSpeed) {
+		final float diff = RotationUtils.getAngleDifference(targetRotation, currentRotation);
+
+		return currentRotation + (diff > turnSpeed ? turnSpeed : Math.max(diff, -turnSpeed));
+	}
+
+	public static float[] getEntityBox(Entity entity) {
+		return getEntityBox(entity, 6.5F);
+	}
+
+	public static float getYawDifference(float currentYaw, float neededYaw) {
+		float yawDifference = neededYaw - currentYaw;
+		if (yawDifference > 180)
+			yawDifference = -((360F - neededYaw) + currentYaw);
+		else if (yawDifference < -180)
+			yawDifference = ((360F - currentYaw) + neededYaw);
+
+		return yawDifference;
+	}
+
+	/**
+	 * @return Maximum/minimum rotation leniency allowed to still be considered
+	 *         'inside' of a given entity.
+	 */
+	public static float[] getEntityBox(Entity entity, float distance) {
+		float distanceRatio = distance / Helper.getPlayer().distanceTo(entity);
+		float entitySize = 4.8F;
+		return new float[] { distanceRatio * entity.getWidth() * entitySize,
+				distanceRatio * entity.getHeight() * entitySize };
+	}
+
+	// Entity.class raycasting vector rotations
+
+	public static final Vec3d getRotationVec(float yaw, float pitch) {
+		return getRotationVector(pitch, yaw);
+	}
+
+	protected static final Vec3d getRotationVector(float pitch, float yaw) {
+		float f = pitch * 0.017453292F;
+		float g = -yaw * 0.017453292F;
+		float h = MathHelper.cos(g);
+		float i = MathHelper.sin(g);
+		float j = MathHelper.cos(f);
+		float k = MathHelper.sin(f);
+		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
 	}
 
 }

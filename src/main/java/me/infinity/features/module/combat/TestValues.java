@@ -12,7 +12,7 @@ import me.infinity.utils.ItemHelper;
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "TEST", key = 49, name = "TestValues", visible = true)
+@ModuleInfo(category = Module.Category.COMBAT, desc = "TEST", key = -2, name = "TestValues", visible = true)
 public class TestValues extends Module {
 
 	private Settings testbool = new Settings(this, "TestBool", true);

@@ -1,7 +1,5 @@
 package me.infinity.features.module.combat;
 
-import org.lwjgl.glfw.GLFW;
-
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -12,7 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.BowItem;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Aimbot for bow to target", key = GLFW.GLFW_KEY_R, name = "BowAim", visible = true)
+@ModuleInfo(category = Module.Category.COMBAT, desc = "Aimbot for bow to target", key = -2, name = "BowAim", visible = true)
 public class BowAim extends Module {
 
 	private Settings players = new Settings(this, "Players", true);

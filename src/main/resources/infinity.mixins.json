@@ -12,7 +12,9 @@
   "InGameHudMixin",
   "EntityMixin",
   "GameRendererMixin",
-  "MultiplayerScreenMixin"
+  "MultiplayerScreenMixin",
+  "IPlayerMoveC2SPacket",
+  "IPlayerPositionLookS2CPacket"
   ],
     "injectors": {
     "defaultRequire": 1

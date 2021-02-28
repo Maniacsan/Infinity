@@ -11,13 +11,6 @@ public class BindCommand extends Command {
 
 	@Override
 	public void command(String[] args, String msg) {
-		if (args.length >= 1 && args[0].equalsIgnoreCase("list")) {
-			InfMain.getModuleManager().getList().forEach(m -> {
-				if (m.getKey() != -2) {
-					set(Formatting.GRAY + m.getName() + " - " + Formatting.WHITE + m.getKey());
-				}
-			});
-		}
 		me.infinity.features.Module module = InfMain.getModuleManager().getModuleByName(args[1]);
 		if (args[0].equalsIgnoreCase("add")) {
 			module.setKey(InputUtil.fromTranslationKey("key.keyboard." + args[2].toLowerCase()).getCode());
@@ -31,6 +24,12 @@ public class BindCommand extends Command {
 				m.setKey(-2);
 			});
 			set(Formatting.GRAY + "Binds cleared");
+		} else if (args[0].equalsIgnoreCase("list")) {
+			InfMain.getModuleManager().getList().forEach(m -> {
+				if (m.getKey() != -2) {
+					set(Formatting.GRAY + m.getName() + " - " + Formatting.WHITE + m.getKey());
+				}
+			});
 		}
 	}
 
