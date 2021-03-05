@@ -16,7 +16,6 @@ public class GuiEdit extends Screen {
 
 	private GuiAccountSwitcher prev;
 	private ButtonWidget buttonSave;
-	private ButtonWidget buttonBack;
 	private TextFieldWidget accountName;
 	private TextFieldWidget password;
 	private Account account;
@@ -54,7 +53,7 @@ public class GuiEdit extends Screen {
 					prev.refresh();
 				}));
 
-		this.buttonBack = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 100,
+		this.addButton(new ButtonWidget(this.width / 2 - 100,
 				this.height / 4 + 96 + 28, 200, 20, new TranslatableText("Cancel"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 					prev.refresh();

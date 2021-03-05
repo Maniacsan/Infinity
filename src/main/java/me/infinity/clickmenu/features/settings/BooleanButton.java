@@ -16,6 +16,7 @@ public class BooleanButton extends SettingButton {
 		super(setting);
 	}
 
+	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
@@ -29,11 +30,17 @@ public class BooleanButton extends SettingButton {
 		FontUtils.drawStringWithShadow(matrices, this.setting.getName(), x + 18, y + 1.3, Color.WHITE.getRGB());
 	}
 
+	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.hovered && button == 0) {
 			this.setting.setToggle(!this.setting.isToggle());
 		}
 		super.mouseClicked(mouseX, mouseY, button);
+	}
+	
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
 	}
 
 }

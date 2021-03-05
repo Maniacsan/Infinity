@@ -9,7 +9,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
 /**
- * ClickMenu design from csgo cheats
  * 
  * @author spray
  *
@@ -20,13 +19,14 @@ public class ClickMenu extends Screen {
 
 	public ClickMenu() {
 		super(new LiteralText(""));
+		int x = 20;
+		int y = 20;
+		panel = new Panel(this, x, y, 380, 250);
 	}
 
 	@Override	
 	public void init() {
-		int x = 20;
-		int y = 20;
-		panel = new Panel(this, x, y, 380, 250);
+
 	}
 
 	@Override

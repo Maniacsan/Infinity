@@ -73,4 +73,9 @@ public class SliderButton extends SettingButton {
 		this.dragging = false;
 	}
 
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
+	}
+
 }

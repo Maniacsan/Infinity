@@ -13,12 +13,12 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Aimbot for bow to target", key = -2, name = "BowAim", visible = true)
 public class BowAim extends Module {
 
-	private Settings players = new Settings(this, "Players", true);
-	private Settings invisibles = new Settings(this, "Invisibles", true);
-	private Settings mobs = new Settings(this, "Mobs", true);
-	private Settings animals = new Settings(this, "Animals", true);
-	private Settings range = new Settings(this, "Range", 40, 1, 80);
-	private Settings speed = new Settings(this, "Speed", 90, 1, 100);
+	private Settings players = new Settings(this, "Players", true, true);
+	private Settings invisibles = new Settings(this, "Invisibles", true, true);
+	private Settings mobs = new Settings(this, "Mobs", true, true);
+	private Settings animals = new Settings(this, "Animals", true, true);
+	private Settings range = new Settings(this, "Range", 40, 1, 80, true);
+	private Settings speed = new Settings(this, "Speed", 90, 1, 180, true);
 
 	public static Entity target;
 

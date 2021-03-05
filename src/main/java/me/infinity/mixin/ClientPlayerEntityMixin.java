@@ -11,6 +11,8 @@ import com.mojang.authlib.GameProfile;
 
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
+import me.infinity.features.module.movement.SafeWalk;
+import me.infinity.features.module.player.Scaffold;
 import me.infinity.utils.Helper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -48,6 +50,12 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 		if (motionEvent.isCancelled()) {
 			info.cancel();
 		}
+	}
+	
+	@Override
+	protected boolean clipAtLedge() {
+		return super.clipAtLedge() || InfMain.getModuleManager().getModuleByClass(SafeWalk.class).isEnabled()
+				|| (InfMain.getModuleManager().getModuleByClass(Scaffold.class).isEnabled());
 	}
 
 }

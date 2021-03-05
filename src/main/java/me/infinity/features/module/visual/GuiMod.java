@@ -15,7 +15,7 @@ import net.minecraft.client.MinecraftClient;
 public class GuiMod extends Module {
 
 	public Settings scale = new Settings(this, "Scale", "60%",
-			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })));
+			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })), true);
 
 	@Override
 	public void onEnable() {

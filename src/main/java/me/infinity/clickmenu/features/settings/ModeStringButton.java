@@ -2,7 +2,6 @@ package me.infinity.clickmenu.features.settings;
 
 import java.awt.Color;
 
-import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
@@ -11,7 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 public class ModeStringButton extends SettingButton {
 
 	private boolean addHovered;
-	
+
 	public ModeStringButton(Settings setting) {
 		super(setting);
 	}
@@ -24,22 +23,29 @@ public class ModeStringButton extends SettingButton {
 		Render2D.drawRectWH(matrices, x + 1, y, width, height, 0xFF787878);
 		Render2D.drawRectWH(matrices, x + 1, y + 0.5, width, height - 1, 0xFF343434);
 		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 4.4, Color.WHITE.getRGB());
-		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(), x + width - FontUtils.getStringWidth(setting.getCurrentMode()), y + 4.4, Color.WHITE.getRGB());
+		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(),
+				x + width - FontUtils.getStringWidth(setting.getCurrentMode()), y + 4.4, Color.WHITE.getRGB());
 	}
 
 	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.addHovered) {
 			if (button == 0) {
-			if (this.setting.isMode()) {
-				try {
-					this.setting.setCurrentMode(this.setting.getModes().get(this.setting.getCurrentModeIndex() + 1));
-				} catch (Exception e) {
-					this.setting.setCurrentMode(this.setting.getModes().get(0));
+				if (this.setting.isMode()) {
+					try {
+						this.setting
+								.setCurrentMode(this.setting.getModes().get(this.setting.getCurrentModeIndex() + 1));
+					} catch (Exception e) {
+						this.setting.setCurrentMode(this.setting.getModes().get(0));
+					}
 				}
 			}
-			}
 		}
+	}
+
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
 	}
 
 }

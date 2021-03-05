@@ -18,7 +18,7 @@ import me.infinity.utils.FileUtil;
 
 public class AccountsFile {
 
-	public static File dir = new File(InfMain.getInfDirection() + File.separator + "accounts");
+	public static File dir = new File(InfMain.getInfDirection() + File.separator);
 	public static File accountFile = FileUtil.createJsonFile(dir, "accounts");
 
 	public void loadAccounts() {

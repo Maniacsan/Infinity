@@ -8,6 +8,7 @@ import java.util.List;
 import me.infinity.features.Module.Category;
 import me.infinity.features.module.combat.*;
 import me.infinity.features.module.movement.*;
+import me.infinity.features.module.player.*;
 import me.infinity.features.module.visual.*;
 
 public class ModuleManager {
@@ -17,10 +18,13 @@ public class ModuleManager {
 			new HUD(),
 			new Sprint(),
 			new GuiMod(),
-			new TestValues(),
 			new Criticals(),
 			new BowAim(),
-			new XRay()
+			new XRay(),
+			new Velocity(),
+			new Tracers(),
+			new Scaffold(),
+			new SafeWalk()
 			);
 
 	public List<Module> getList() {

@@ -11,7 +11,7 @@ public class MoveUtil {
 		return (Helper.getPlayer().forwardSpeed != 0 || Helper.getPlayer().sidewaysSpeed != 0);
 	}
 
-	private final float getYaw() {
+	public static float getYaw() {
 		float moveYaw = (Helper.getPlayer()).yaw;
 		float forward = 1.0F;
 		if ((Helper.getPlayer()).forwardSpeed < 0.0F) {

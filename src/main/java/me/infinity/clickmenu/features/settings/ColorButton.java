@@ -119,5 +119,10 @@ public class ColorButton extends SettingButton {
 		pressedhue = false;
 		pressedSB = false;
 	}
+	
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
+	}
 
 }

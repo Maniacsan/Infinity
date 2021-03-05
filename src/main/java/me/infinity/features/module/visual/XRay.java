@@ -20,7 +20,7 @@ public class XRay extends Module {
 					Blocks.IRON_ORE, Blocks.LAPIS_ORE, Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE,
 					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE
 
-			)));
+			)), true);
 
 	@Override
 	public void onDisable() {

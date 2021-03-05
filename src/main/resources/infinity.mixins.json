@@ -6,6 +6,7 @@
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
   "ClientPlayNetworkHandlerMixin",
+  "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
   "MinecraftClientMixin",
   "KeyboardMixin",

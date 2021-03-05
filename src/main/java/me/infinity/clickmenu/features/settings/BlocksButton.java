@@ -38,6 +38,7 @@ public class BlocksButton extends SettingButton {
 		}
 	}
 
+	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		int xOffset = 3;
 		int yOffset = 0;
@@ -60,6 +61,11 @@ public class BlocksButton extends SettingButton {
 			}
 		}
 		super.mouseClicked(mouseX, mouseY, button);
+	}
+	
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
 	}
 
 }

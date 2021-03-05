@@ -1,6 +1,5 @@
 package me.infinity.ui.account;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,13 +24,9 @@ public class GuiAccountSwitcher extends Screen {
 
 	private Screen prev;
 	public ListGui listGui;
-	private ButtonWidget buttonAdd;
 	private ButtonWidget buttonDelete;
 	private ButtonWidget buttonLogin;
-	private ButtonWidget buttonBack;
-	private ButtonWidget buttonRefresh;
 	private ButtonWidget buttonEdit;
-	private ButtonWidget buttonDirect;
 	private AccountThread accountThread;
 
 	public GuiAccountSwitcher(Screen prev) {
@@ -43,7 +38,7 @@ public class GuiAccountSwitcher extends Screen {
 	@Override
 	public void init() {
 		listGui = new ListGui(client, this, getListAccount());
-		buttonAdd = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
+		this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
 				new TranslatableText("Add"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiAddAccount(this));
 					refresh();
@@ -76,16 +71,16 @@ public class GuiAccountSwitcher extends Screen {
 						Helper.minecraftClient.openScreen(new GuiEdit(this, selectAccount));
 					refresh();
 				}));
-		buttonDirect = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
+		this.addButton(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
 				new TranslatableText("Direct"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiDirect(this));
 					refresh();
 				}));
-		buttonRefresh = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
+		this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
 				new TranslatableText("Refresh"), (buttonWidget) -> {
 					refresh();
 				}));
-		buttonBack = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
+		this.addButton(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
 				new TranslatableText("Back"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 				}));

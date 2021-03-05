@@ -11,23 +11,20 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.utils.Helper;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 
 @ModuleInfo(category = Module.Category.VISUAL, desc = "Ingame Infinity Hud", key = GLFW.GLFW_KEY_N, name = "HUD", visible = true)
 public class HUD extends Module {
 
 	@Override
-	public void onDisable() {
-	}
-
-	@Override
-	public void onRender(MatrixStack matrices, int width, int height) {
+	public void onRender(MatrixStack matrices, float tick, int width, int height) {
 		Helper.getRenderUtil().draw("Infinity", 2, 2, -1);
 
 		List<String> arrayList = new ArrayList<>();
 
 		InfMain.getModuleManager().getList().forEach(module -> {
 			if (module.isEnabled() && module.isVisible())
-				arrayList.add(module.getSortedName() + " " + Helper.replaceNull(module.getSuffix()));
+				arrayList.add(module.getSortedName() + " " + Formatting.BLUE + Helper.replaceNull(module.getSuffix()));
 		});
 
 		// sort

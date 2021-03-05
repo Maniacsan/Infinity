@@ -19,10 +19,14 @@ public class SettingButton {
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 	}
-	
+
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 	}
-	
-	public void mouseScrolled(double d, double e, double amount) {	
+
+	public void mouseScrolled(double d, double e, double amount) {
+	}
+
+	public boolean isVisible() {
+		return true;
 	}
 }

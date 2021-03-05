@@ -41,7 +41,7 @@ public class Module {
 	public void onPlayerTick() {
 	}
 
-	public void onRender(MatrixStack matrices, int scaledWidth, int scaledHeight) {
+	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 	}
 
 	// Fast use

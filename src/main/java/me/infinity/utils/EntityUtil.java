@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.mob.Monster;
@@ -18,6 +19,7 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -42,13 +44,26 @@ public class EntityUtil {
 		return entity;
 	}
 
+	public static Entity setRenderTarget(boolean players, boolean invisibles, boolean mobs, boolean animals) {
+		Entity entity = null;
+		for (Object o : Helper.minecraftClient.world.getEntities()) {
+			if (o instanceof Entity) {
+				Entity target = (Entity) o;
+				if (isTarget(target, players, invisibles, mobs, animals)) {
+					entity = target;
+				}
+			}
+		}
+		return entity;
+	}
+
 	public static List<Entity> getTargets(boolean players, boolean invisibles, boolean mobs, boolean animals) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
 				.filter(entity -> isTarget(entity, players, invisibles, mobs, animals)).collect(Collectors.toList());
 	}
 
 	public static boolean isTarget(Entity entity, boolean players, boolean invisibles, boolean mobs, boolean animals) {
-		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer())
+		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
 		if (invisibles && entity.isInvisible())
@@ -107,6 +122,7 @@ public class EntityUtil {
 						Helper.minecraftClient.crosshairTarget = entityHitResult;
 						if (entity2 instanceof LivingEntity || entity2 instanceof ItemFrameEntity) {
 							target = entity2;
+							Helper.minecraftClient.targetedEntity = entity2;
 						}
 					}
 				}
@@ -115,19 +131,87 @@ public class EntityUtil {
 			}
 		}
 	}
+	
+	// raycast to block rotation
+	public static void updateBlockRaycast(HitResult crosshairTarget, float yaw, float pitch) {
+		float tickDelta = Helper.minecraftClient.getTickDelta();
+		Entity entity = Helper.minecraftClient.getCameraEntity();
+		if (entity != null) {
+			if (Helper.minecraftClient.world != null) {
+				Helper.minecraftClient.getProfiler().push("pick");
+				double d = Helper.minecraftClient.interactionManager.getReachDistance();
+				Helper.minecraftClient.crosshairTarget = entity.raycast(d, tickDelta, false);
+				Vec3d vec3d = entity.getCameraPosVec(tickDelta);
+				boolean bl = false;
+				double e = d;
 
-	public static Vec3d getInterpolatedPos(Entity entity, float ticks) {
-		return (new Vec3d(entity.lastRenderX, entity.lastRenderY, entity.lastRenderZ))
-				.add(getInterpolatedAmount(entity, ticks));
+				e *= e;
+				if (Helper.minecraftClient.crosshairTarget != null) {
+					e = Helper.minecraftClient.crosshairTarget.getPos().squaredDistanceTo(vec3d);
+				}
+
+				Vec3d vec3d2 = RotationUtils.getRotationVec(yaw, pitch);
+				Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
+				Box box = entity.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0D, 1.0D, 1.0D);
+				EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, (entityx) -> {
+					return !entityx.isSpectator() && entityx.collides();
+				}, e);
+				if (entityHitResult != null) {
+					Vec3d vec3d4 = entityHitResult.getPos();
+					double g = vec3d.squaredDistanceTo(vec3d4);
+					if (bl && g > 9.0D) {
+						Helper.minecraftClient.crosshairTarget = BlockHitResult.createMissed(vec3d4,
+								Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), new BlockPos(vec3d4));
+						crosshairTarget = BlockHitResult.createMissed(vec3d4,
+								Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), new BlockPos(vec3d4));
+					} else if (g < e || Helper.minecraftClient.crosshairTarget == null) {
+						Helper.minecraftClient.crosshairTarget = entityHitResult;
+						crosshairTarget = entityHitResult;
+					}
+				}
+
+				Helper.minecraftClient.getProfiler().pop();
+			}
+		}
 	}
 
-	public static Vec3d getInterpolatedAmount(Entity entity, double x, double y, double z) {
-		return new Vec3d((entity.getX() - entity.lastRenderX) * x, (entity.getY() - entity.lastRenderY) * y,
-				(entity.getZ() - entity.lastRenderZ) * z);
-	}
+	public static boolean placeBlock(Hand hand, BlockPos pos) {
+		if (!Helper.minecraftClient.world.getBlockState(pos).getMaterial().isReplaceable())
+			return false;
 
-	public static Vec3d getInterpolatedAmount(Entity entity, double ticks) {
-		return getInterpolatedAmount(entity, ticks, ticks, ticks);
+		Vec3d hitVec = null;
+		BlockPos neighbor = null;
+		Direction side2 = null;
+		for (Direction side : Direction.values()) {
+			neighbor = pos.offset(side);
+			side2 = side.getOpposite();
+
+			// check place block position on air
+			if (Helper.minecraftClient.world.getBlockState(neighbor).isAir()) {
+				neighbor = null;
+				side2 = null;
+				continue;
+			}
+
+			hitVec = new Vec3d(neighbor.getX(), neighbor.getY(), neighbor.getZ()).add(0.5, 0.5, 0.5)
+					.add(new Vec3d(side2.getUnitVector()).multiply(0.5));
+			break;
+		}
+
+		if (neighbor == null)
+			neighbor = pos;
+		if (side2 == null)
+			side2 = Direction.UP;
+		if (hitVec == null)
+			return false;
+
+		if (hitVec != null) {
+			Helper.minecraftClient.interactionManager.interactBlock(Helper.getPlayer(), Helper.minecraftClient.world,
+					hand, new BlockHitResult(hitVec, side2, neighbor, false));
+			Helper.getPlayer().swingHand(hand);
+		}
+
+		return true;
 	}
 
 	public static void swing(boolean animation) {

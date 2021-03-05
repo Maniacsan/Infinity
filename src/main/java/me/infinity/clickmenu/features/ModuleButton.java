@@ -23,7 +23,6 @@ public class ModuleButton {
 	private String name;
 	private boolean hovered;
 	private boolean setHovered;
-	private boolean modHovered;
 	public double calcHeight;
 	private int offset;
 	private int offsetY;
@@ -56,7 +55,6 @@ public class ModuleButton {
 			double height, double setX, double setY, double setWidth, double setHeight) {
 		this.calcHeight = height / 4;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		this.modHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		this.setHovered = Render2D.isHovered(mouseX, mouseY, setX + 224, setY + 6, setWidth, setHeight - 8);
 		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF706D6D);
 		Render2D.drawRectWH(matrices, x, y + 0.5, width, height,
@@ -75,18 +73,20 @@ public class ModuleButton {
 						0xFFD2D2D2);
 			}
 			for (SettingButton setBut : settingButton) {
-				this.height = (int) setHeight;
-				this.offsetY = (int) (yOffset + setY + 6);
-				setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
-						width + 30, height);
-				if (setBut instanceof BooleanButton) {
-					yOffset += 15;
-				} else if (setBut instanceof BlocksButton) {
-					yOffset += 45;
-				} else if (setBut instanceof ModeStringButton) {
-					yOffset += 21;
-				} else {
-					yOffset += 19;
+				if (setBut.isVisible()) {
+					this.height = (int) setHeight;
+					this.offsetY = (int) (yOffset + setY + 6);
+					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
+							width + 30, height);
+					if (setBut instanceof BooleanButton) {
+						yOffset += 15;
+					} else if (setBut instanceof BlocksButton) {
+						yOffset += 45;
+					} else if (setBut instanceof ModeStringButton) {
+						yOffset += 21;
+					} else {
+						yOffset += 19;
+					}
 				}
 			}
 		}
@@ -107,7 +107,8 @@ public class ModuleButton {
 		}
 		if (open) {
 			for (SettingButton setBut : settingButton) {
-				setBut.mouseClicked(mouseX, mouseY, button);
+				if (setBut.isVisible()) 
+					setBut.mouseClicked(mouseX, mouseY, button);
 			}
 		}
 	}
@@ -115,7 +116,8 @@ public class ModuleButton {
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		if (open) {
 			for (SettingButton setBut : settingButton) {
-				setBut.mouseReleased(mouseX, mouseY, button);
+				if (setBut.isVisible())
+					setBut.mouseReleased(mouseX, mouseY, button);
 			}
 		}
 	}
@@ -123,10 +125,12 @@ public class ModuleButton {
 	private float getCurrentHeight() {
 		float cHeight = 0;
 		for (SettingButton setBut : settingButton) {
-			if (setBut instanceof BlocksButton) {
-				cHeight += ((BlocksButton) setBut).y;
-			} else
-				cHeight += setBut.height;
+			if (setBut.isVisible()) {
+				if (setBut instanceof BlocksButton) {
+					cHeight += ((BlocksButton) setBut).y;
+				} else
+					cHeight += setBut.height;
+			}
 		}
 		return cHeight;
 	}

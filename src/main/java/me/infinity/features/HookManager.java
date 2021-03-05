@@ -35,10 +35,10 @@ public class HookManager {
 	 * @param scaledWidth
 	 * @param scaledHeight
 	 */
-	public void onRender(MatrixStack matrices, int scaledWidth, int scaledHeight) {
+	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 		InfMain.getModuleManager().getList().forEach(m -> {
 			if (m.isEnabled()) {
-				m.onRender(matrices, scaledWidth, scaledHeight);
+				m.onRender(matrices, tickDelta, scaledWidth, scaledHeight);
 			}
 		});
 	}

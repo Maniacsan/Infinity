@@ -25,7 +25,7 @@ public class InGameHudMixin {
 
 	@Inject(at = @At(value = "RETURN"), method = "render")
 	private void onRender(MatrixStack matrices, float tickDelta, CallbackInfo info) {
-		InfMain.getHookManager().onRender(matrices, scaledWidth, scaledHeight);
+		InfMain.getHookManager().onRender(matrices, tickDelta, scaledWidth, scaledHeight);
 		HudRenderEvent hudRenderEvent = new HudRenderEvent(MinecraftClient.getInstance().getWindow(), scaledWidth,
 				scaledHeight, matrices);
 		EventManager.call(hudRenderEvent);

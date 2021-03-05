@@ -17,7 +17,7 @@ import me.infinity.utils.FileUtil;
 
 public class MacrosFile {
 
-	public static File dir = new File(InfMain.getInfDirection() + File.separator + "macros");
+	public static File dir = new File(InfMain.getInfDirection() + File.separator);
 	public static File macroFile = FileUtil.createJsonFile(dir, "macro");
 
 	public void loadMacro() {

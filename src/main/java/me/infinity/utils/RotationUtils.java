@@ -42,8 +42,7 @@ public class RotationUtils {
 	 * @param maxYawChange
 	 * @param maxPitchChange
 	 */
-	public static float[] lookAtEntity(Entity targetEntity, float maxYawChange,
-			float maxPitchChange) {
+	public static float[] lookAtEntity(Entity targetEntity, float maxYawChange, float maxPitchChange) {
 		double d = targetEntity.getX() - Helper.getPlayer().getX();
 		double e = targetEntity.getZ() - Helper.getPlayer().getZ();
 		double g;
@@ -62,18 +61,19 @@ public class RotationUtils {
 		float pitch = Helper.getPlayer().pitch;
 		pitch = limitAngleChange(pitch, j, maxPitchChange);
 		yaw = limitAngleChange(yaw, i, maxYawChange);
+		fixSensitivity((float) Helper.minecraftClient.options.mouseSensitivity, yaw, pitch);
 		return new float[] { yaw, pitch };
 	}
 
 	/**
-	 * Look to target with Vec3d component 
+	 * Look to target with Vec3d component
+	 * 
 	 * @param targetEntity
 	 * @param maxYawChange
 	 * @param maxPitchChange
 	 * @return
 	 */
-	public static float[] lookAtVecPos(Vec3d targetEntity, float maxYawChange,
-			float maxPitchChange) {
+	public static float[] lookAtVecPos(Vec3d targetEntity, float maxYawChange, float maxPitchChange) {
 		double d = targetEntity.getX() + 0.5 - Helper.getPlayer().getX();
 		double g = targetEntity.getY() - Helper.getPlayer().getY();
 		double e = targetEntity.getZ() + 0.5 - Helper.getPlayer().getZ();
@@ -85,9 +85,10 @@ public class RotationUtils {
 		float pitch = Helper.getPlayer().pitch;
 		pitch = updateAngle(pitch, j, maxPitchChange);
 		yaw = updateAngle(yaw, i, maxYawChange);
-		return new float[] {yaw, pitch};
+		fixSensitivity((float) Helper.minecraftClient.options.mouseSensitivity, yaw, pitch);
+		return new float[] { yaw, pitch };
 	}
-	
+
 	private static float updateAngle(float oldAngle, float newAngle, float maxChangeInAngle) {
 		float f = MathHelper.wrapDegrees(newAngle - oldAngle);
 		if (f > maxChangeInAngle) {
@@ -105,7 +106,8 @@ public class RotationUtils {
 		return ((((a - b) % 360F) + 540F) % 360F) - 180F;
 	}
 
-	public static float limitAngleChange(final float currentRotation, final float targetRotation, final float turnSpeed) {
+	public static float limitAngleChange(final float currentRotation, final float targetRotation,
+			final float turnSpeed) {
 		final float diff = RotationUtils.getAngleDifference(targetRotation, currentRotation);
 
 		return currentRotation + (diff > turnSpeed ? turnSpeed : Math.max(diff, -turnSpeed));
@@ -125,6 +127,15 @@ public class RotationUtils {
 		return yawDifference;
 	}
 
+	public static void fixSensitivity(float sensitivy, float yaw, float pitch) {
+		float f = sensitivy * 0.6F + 0.2F;
+		float gcd = f * f * f * 1.2F;
+
+		yaw -= yaw % gcd;
+		pitch -= pitch % gcd;
+
+	}
+
 	/**
 	 * @return Maximum/minimum rotation leniency allowed to still be considered
 	 *         'inside' of a given entity.
@@ -134,6 +145,14 @@ public class RotationUtils {
 		float entitySize = 4.8F;
 		return new float[] { distanceRatio * entity.getWidth() * entitySize,
 				distanceRatio * entity.getHeight() * entitySize };
+	}
+
+	public static float getYaw(Entity entity) {
+		double x = entity.getX() - Helper.getPlayer().getX();
+		double y = entity.getY() - Helper.getPlayer().getY();
+		double z = entity.getZ() - Helper.getPlayer().getZ();
+		double yaw = Math.atan2(x, z) * 57.29577951308232;
+		return (float) yaw;
 	}
 
 	// Entity.class raycasting vector rotations
