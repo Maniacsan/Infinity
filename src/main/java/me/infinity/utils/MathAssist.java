@@ -1,6 +1,6 @@
 package me.infinity.utils;
 
-public class MathHelper {
+public class MathAssist {
 
 	public static int clamp(int num, int min, int max) {
 		return (num < min) ? min : ((num > max) ? max : num);
@@ -12,6 +12,10 @@ public class MathHelper {
 
 	public static double clamp(double num, double min, double max) {
 		return (num < min) ? min : ((num > max) ? max : num);
+	}
+
+	public static double random(double min, double max) {
+		return Math.random() * (max - min) + min;
 	}
 
 }

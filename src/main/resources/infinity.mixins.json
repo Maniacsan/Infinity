@@ -3,6 +3,8 @@
   "compatibilityLevel": "JAVA_8",
    "package": "me.infinity.mixin",
   "client": [
+  "BoxMixin",
+  "EntityRenderDispatcherMixin",
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
   "ClientPlayNetworkHandlerMixin",
@@ -15,7 +17,8 @@
   "GameRendererMixin",
   "MultiplayerScreenMixin",
   "IPlayerMoveC2SPacket",
-  "IPlayerPositionLookS2CPacket"
+  "IPlayerPositionLookS2CPacket",
+  "RenderTickCounterMixin"
   ],
     "injectors": {
     "defaultRequire": 1

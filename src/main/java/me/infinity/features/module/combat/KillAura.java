@@ -48,7 +48,7 @@ public class KillAura extends Module {
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
 
-	private Settings maxSpeed = new Settings(this, "Max Speed", 80.0D, 0.0D, 180.0D, () -> true);
+	private Settings maxSpeed = new Settings(this, "Max Speed", 135.0D, 0.0D, 180.0D, () -> true);
 	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, () -> true);
 	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, () -> true);
 	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
