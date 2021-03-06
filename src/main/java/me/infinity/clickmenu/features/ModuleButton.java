@@ -17,7 +17,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public class ModuleButton {
 
-	private ArrayList<SettingButton> settingButton = new ArrayList<>();
+	public ArrayList<SettingButton> settingButton = new ArrayList<>();
 	private CategoryButton catBut;
 	public Module module;
 	private String name;

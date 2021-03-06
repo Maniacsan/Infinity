@@ -15,15 +15,13 @@ import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.mixin.IPlayerMoveC2SPacket;
-import me.infinity.mixin.IPlayerPositionLookS2CPacket;
 import me.infinity.utils.EntityUtil;
 import me.infinity.utils.Helper;
+import me.infinity.utils.MoveUtil;
+import me.infinity.utils.PacketUtil;
 import me.infinity.utils.RotationUtils;
 import me.infinity.utils.TimeHelper;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -31,18 +29,29 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = GLFW.GLFW_KEY_R, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
+	private Settings rotation = new Settings(this, "Rotation", "Focus",
+			new ArrayList<>(Arrays.asList("Smash", "Focus")), true);
 	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")), true);
+	// targets
 	private Settings players = new Settings(this, "Players", true, true);
 	private Settings invisibles = new Settings(this, "Invisibles", true, true);
 	private Settings mobs = new Settings(this, "Mobs", true, true);
 	private Settings animals = new Settings(this, "Animals", true, true);
+	
+	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", false, true);
+	
+	// matrix packet rotation strafing check
+	private Settings badStrafe = new Settings(this, "Bad Strafe", false, true);
+	
 	private Settings noSwing = new Settings(this, "No Swing", false, true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, true);
+	
 	private Settings maxSpeed = new Settings(this, "Max Speed", 80.0D, 0.0D, 180.0D, true);
 	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, true);
 	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, true);
 	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, true);
+	
 	// target
 	public static Entity target;
 
@@ -79,12 +88,16 @@ public class KillAura extends Module {
 	public void onPlayerTick() {
 		if (target == null)
 			return;
+		
+		if (badStrafe.isToggle()) {
+			MoveUtil.silentStrafe(0.08f);
+		}
 
 		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
 				+ minSpeed.getCurrentValueDouble());
 		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 
-		// raycasting rotation
+		// raycasting
 		if (rayCast.isToggle())
 			EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), lookEntity[0], lookEntity[1]);
 	}
@@ -99,7 +112,12 @@ public class KillAura extends Module {
 			if (target == null)
 				return;
 
-			rotationTick();
+			float[] focus = focus();
+
+			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				Helper.getPlayer().yaw = focus[0];
+				Helper.getPlayer().pitch = focus[1];
+			}
 
 			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
 				attack();
@@ -117,28 +135,25 @@ public class KillAura extends Module {
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
-		if (event.getType().equals(EventType.SEND)) {
-			float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-					+ minSpeed.getCurrentValueDouble());
-			float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-			if (event.getPacket() instanceof PlayerMoveC2SPacket) {
-				PlayerMoveC2SPacket cp = (PlayerMoveC2SPacket) event.getPacket();
-				if (!Float.isNaN(lookEntity[0]) || !Float.isNaN(lookEntity[1]) || lookEntity[1] < 90
-						|| lookEntity[1] > -90) {
-					((IPlayerMoveC2SPacket) cp).setYaw(lookEntity[0]);
-					((IPlayerMoveC2SPacket) cp).setPitch(lookEntity[1]);
+
+		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+				+ minSpeed.getCurrentValueDouble());
+
+		// smashed
+		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+		float[] focus = focus();
+
+		if (target != null) {
+			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				if (lookEntity[1] < 90 || lookEntity[1] > -90) {
+					PacketUtil.setRotation(event, lookEntity[0], lookEntity[1]);
 				}
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				PacketUtil.setRotation(event, focus[0], focus[1]);
 			}
+			PacketUtil.cancelServerRotation(event);
 		}
-		if (event.getType().equals(EventType.RECIEVE)) {
-			if (event.getPacket() instanceof PlayerPositionLookS2CPacket) {
-				PlayerPositionLookS2CPacket serverLook = (PlayerPositionLookS2CPacket) event.getPacket();
-				if (target != null) {
-					((IPlayerPositionLookS2CPacket) serverLook).setYaw(Helper.getPlayer().yaw);
-					((IPlayerPositionLookS2CPacket) serverLook).setPitch(Helper.getPlayer().pitch);
-				}
-			}
-		}
+
 	}
 
 	public void attack() {
@@ -150,14 +165,16 @@ public class KillAura extends Module {
 		}
 	}
 
-	private void rotationTick() {
+	public float[] focus() {
 		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
 				+ minSpeed.getCurrentValueDouble());
-		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-		if (Float.isNaN(lookEntity[0]) || Float.isNaN(lookEntity[1]) || lookEntity[1] > 90 || lookEntity[1] < -90)
-			return;
-		Helper.getPlayer().yaw = lookEntity[0];
-		Helper.getPlayer().pitch = lookEntity[1];
+		float[] toCenter = RotationUtils.lookAtEntity(target, speed, speed);
+		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005F);
+		float m = 0.005f * sens;
+		float gcd = m * m * m * 1.2f;
+		toCenter[0] -= toCenter[0] % gcd;
+		toCenter[1] -= toCenter[1] % gcd;
+		return new float[] { toCenter[0], toCenter[1] };
 	}
 
 	private float[] predictRotation(final Vec3d vec) {
@@ -197,7 +214,7 @@ public class KillAura extends Module {
 		} else {
 			float randomYaw = RotationUtils.limitAngleChange(Helper.getPlayer().yaw, randomRotation[0], speed);
 			float randomPitch = RotationUtils.limitAngleChange(Helper.getPlayer().pitch, randomRotation[1], speed);
-
+			yaw = randomYaw;
 			pitch = randomPitch;
 		}
 

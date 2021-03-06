@@ -1,6 +1,7 @@
 package me.infinity.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,6 +17,9 @@ import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
 public class EntityMixin {
+	
+	@Shadow
+	private Vec3d pos;
 
 	@Inject(method = "move", at = @At("HEAD"))
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {

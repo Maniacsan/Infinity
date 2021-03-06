@@ -51,11 +51,13 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 			info.cancel();
 		}
 	}
-	
+
 	@Override
 	protected boolean clipAtLedge() {
 		return super.clipAtLedge() || InfMain.getModuleManager().getModuleByClass(SafeWalk.class).isEnabled()
-				|| (InfMain.getModuleManager().getModuleByClass(Scaffold.class).isEnabled());
+				|| (InfMain.getModuleManager().getModuleByClass(Scaffold.class).isEnabled()
+						&& ((Scaffold) InfMain.getModuleManager().getModuleByClass(Scaffold.class)).safeWalk
+								.isToggle());
 	}
 
 }

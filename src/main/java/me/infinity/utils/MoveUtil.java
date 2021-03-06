@@ -1,5 +1,7 @@
 package me.infinity.utils;
 
+import net.minecraft.util.math.Vec3d;
+
 public class MoveUtil {
 
 	/**
@@ -7,7 +9,7 @@ public class MoveUtil {
 	 * 
 	 * @return
 	 */
-	public boolean isMoving() {
+	public static boolean isMoving() {
 		return (Helper.getPlayer().forwardSpeed != 0 || Helper.getPlayer().sidewaysSpeed != 0);
 	}
 
@@ -26,6 +28,14 @@ public class MoveUtil {
 			moveYaw += 90.0F * forward;
 		moveYaw = (float) Math.toRadians(moveYaw);
 		return moveYaw;
+	}
+
+	public static void silentStrafe(float speed) {
+		if (isMoving()) {
+			Helper.getPlayer().setVelocity(new Vec3d(0, Helper.getPlayer().getVelocity().y, 0));
+			Helper.getPlayer().updateVelocity(speed,
+					new Vec3d(Helper.getPlayer().sidewaysSpeed, 0, Helper.getPlayer().forwardSpeed));
+		}
 	}
 
 }

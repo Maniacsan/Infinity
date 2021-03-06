@@ -48,10 +48,10 @@ public class RotationUtils {
 		double g;
 		if (targetEntity instanceof LivingEntity) {
 			LivingEntity livingEntity = (LivingEntity) targetEntity;
-			g = livingEntity.getEyeY() - Helper.getPlayer().getEyeY();
+			g = livingEntity.getEyeY() - Helper.getPlayer().getEyeY() - 0.5;
 		} else {
 			g = (targetEntity.getBoundingBox().minY + targetEntity.getBoundingBox().maxY) / 2.0D
-					- Helper.getPlayer().getEyeY();
+					- Helper.getPlayer().getY() + Helper.getPlayer().getEyeY() - 0.5;
 		}
 
 		double h = (double) MathHelper.sqrt(d * d + e * e);
@@ -142,17 +142,16 @@ public class RotationUtils {
 	 */
 	public static float[] getEntityBox(Entity entity, float distance) {
 		float distanceRatio = distance / Helper.getPlayer().distanceTo(entity);
-		float entitySize = 4.8F;
+		float entitySize = 6F;
 		return new float[] { distanceRatio * entity.getWidth() * entitySize,
 				distanceRatio * entity.getHeight() * entitySize };
 	}
 
 	public static float getYaw(Entity entity) {
 		double x = entity.getX() - Helper.getPlayer().getX();
-		double y = entity.getY() - Helper.getPlayer().getY();
 		double z = entity.getZ() - Helper.getPlayer().getZ();
-		double yaw = Math.atan2(x, z) * 57.29577951308232;
-		return (float) yaw;
+		float yaw = (float) (Math.atan2(x, z) * 57.29577951308232);
+		return yaw;
 	}
 
 	// Entity.class raycasting vector rotations

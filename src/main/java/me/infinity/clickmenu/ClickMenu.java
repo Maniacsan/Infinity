@@ -15,22 +15,19 @@ import net.minecraft.text.LiteralText;
  */
 public class ClickMenu extends Screen {
 
-	private Panel panel;
+	public Panel panel;
 
 	public ClickMenu() {
 		super(new LiteralText(""));
-		int x = 20;
-		int y = 20;
-		panel = new Panel(this, x, y, 380, 250);
 	}
-
-	@Override	
+	
 	public void init() {
-
+		panel = new Panel(this, 20, 20, 380, 250);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		super.render(matrices, mouseX, mouseY, delta);
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		mouseX /= scale;
 		mouseY /= scale;
@@ -38,7 +35,6 @@ public class ClickMenu extends Screen {
 		GL11.glScalef(scale, scale, scale);
 		panel.render(matrices, mouseX, mouseY, delta);
 		GL11.glPopMatrix();
-		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -70,7 +66,12 @@ public class ClickMenu extends Screen {
 		panel.charTyped(chr, keyCode);
 		return super.charTyped(chr, keyCode);
 	}
-
+	
+	@Override
+	public boolean isPauseScreen() {
+		return false;
+	}
+	
 	@Override
 	public void onClose() {
 		InfMain.getModuleManager().getModuleByClass(GuiMod.class).setEnabled(false);

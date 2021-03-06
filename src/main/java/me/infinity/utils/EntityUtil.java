@@ -46,12 +46,9 @@ public class EntityUtil {
 
 	public static Entity setRenderTarget(boolean players, boolean invisibles, boolean mobs, boolean animals) {
 		Entity entity = null;
-		for (Object o : Helper.minecraftClient.world.getEntities()) {
-			if (o instanceof Entity) {
-				Entity target = (Entity) o;
-				if (isTarget(target, players, invisibles, mobs, animals)) {
-					entity = target;
-				}
+		for (Entity target : Helper.minecraftClient.world.getEntities()) {
+			if (isTarget(target, players, invisibles, mobs, animals)) {
+				entity = target;
 			}
 		}
 		return entity;
@@ -74,6 +71,10 @@ public class EntityUtil {
 			return true;
 		if (animals && isAnimal(entity))
 			return true;
+
+		// entity dead check
+		if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
+			return false;
 
 		return false;
 	}
@@ -131,7 +132,7 @@ public class EntityUtil {
 			}
 		}
 	}
-	
+
 	// raycast to block rotation
 	public static void updateBlockRaycast(HitResult crosshairTarget, float yaw, float pitch) {
 		float tickDelta = Helper.minecraftClient.getTickDelta();

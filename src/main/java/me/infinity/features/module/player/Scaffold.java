@@ -4,11 +4,13 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
+import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.EntityUtil;
 import me.infinity.utils.Helper;
+import me.infinity.utils.PacketUtil;
 import me.infinity.utils.RotationUtils;
 import me.infinity.utils.TimeHelper;
 import net.minecraft.block.Block;
@@ -17,8 +19,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -27,6 +27,7 @@ import net.minecraft.util.math.Vec3d;
 public class Scaffold extends Module {
 
 	private Settings eagle = new Settings(this, "Eagle", false, true);
+	public Settings safeWalk = new Settings(this, "SafeWalk", true, true);
 	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, true);
 	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, true);
 
@@ -34,15 +35,30 @@ public class Scaffold extends Module {
 
 	private TimeHelper timer = new TimeHelper();
 
-	// raycast this shit
-	public HitResult crosshairTarget;
+	// target pos
+	public static BlockPos pos;
 
 	private float prevYaw;
 	private float prevPitch;
-	
+
 	@Override
-	public void onEnable() {
-		timer.reset();
+	public void onDisable() {
+		pos = null;
+	}
+
+	@Override
+	public void onPlayerTick() {
+		// eagle
+		BlockPos eaglePos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1,
+				Helper.getPlayer().getZ());
+
+		if (eagle.isToggle()) {
+			if (Helper.minecraftClient.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {
+				Helper.minecraftClient.options.keySneak.setPressed(false);
+			} else {
+				Helper.minecraftClient.options.keySneak.setPressed(true);
+			}
+		}
 	}
 
 	@EventTarget
@@ -52,69 +68,62 @@ public class Scaffold extends Module {
 			prevYaw = Helper.getPlayer().yaw;
 			prevPitch = Helper.getPlayer().pitch;
 
-			BlockPos pos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getBoundingBox().minY - 0.5,
+			pos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getBoundingBox().minY - 1,
 					Helper.getPlayer().getZ());
 
 			if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
 
-				if (calculatePosition()) {
+				if (pos == null) {
+					timer.reset();
+					return;
+				}
 
-					if (eagle.isToggle()) {
-						Helper.minecraftClient.options.keySneak.setPressed(true);
+				// slot calculate
+				int blockSlot = -2;
+				for (int i = 0; i < 9; i++) {
+					ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+					if (isBlock(stack.getItem())) {
+						blockSlot = i;
 					}
+				}
 
-					// slot calculate
-					int blockSlot = -2;
-					for (int i = 0; i < 9; i++) {
-						ItemStack stack = Helper.getPlayer().inventory.getStack(i);
-						if (isBlock(stack.getItem())) {
-							blockSlot = i;
+				// placing
+				if (blockSlot != -2) {
+
+					if (timer.hasReached(
+							Math.random() * (maxDelay.getCurrentValueDouble() - minDelay.getCurrentValueDouble())
+									+ minDelay.getCurrentValueDouble())) {
+
+						int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
+						Helper.getPlayer().inventory.selectedSlot = blockSlot;
+
+						if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos)) {
+							pos = null;
+							Helper.getPlayer().inventory.selectedSlot = selectedSlot;
 						}
-					}
-
-					// rotation
-					rotation(pos);
-
-					// fucking raycast
-
-					BlockHitResult blockHitResult = (BlockHitResult) Helper.minecraftClient.crosshairTarget;
-					BlockPos placePos = blockHitResult.getBlockPos();
-					// placing
-					if (blockSlot != -2 && blockHitResult != null) {
-
-						if (timer.hasReached(
-								Math.random() * (maxDelay.getCurrentValueDouble() - minDelay.getCurrentValueDouble())
-										+ minDelay.getCurrentValueDouble())) {
-
-							int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
-							Helper.getPlayer().inventory.selectedSlot = blockSlot;
-
-							if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos)) {
-								Helper.getPlayer().inventory.selectedSlot = selectedSlot;
-							}
-							timer.reset();
-							if (eagle.isToggle()) {
-								Helper.minecraftClient.options.keySneak.setPressed(false);
-							}
-						}
+						timer.reset();
 					}
 				}
 			}
 
 		} else if (event.getType().equals(EventType.POST)) {
-
+			// spoof rotation
+			Helper.getPlayer().yaw = prevYaw;
+			Helper.getPlayer().pitch = prevPitch;
 		}
 	}
 
-	public void rotation(BlockPos pos) {
-		int i = 1;
-		BlockPos rotationPos = new BlockPos(
-				Helper.getPlayer().getX() + (Helper.getPlayer().getHorizontalFacing() == Direction.WEST ? -i
-						: Helper.getPlayer().getHorizontalFacing() == Direction.EAST ? i : 0),
-				Helper.getPlayer().getY()
-						- (Helper.getPlayer().getY() == (int) Helper.getPlayer().getY() + 0.5D ? 0D : 1.0D),
-				Helper.getPlayer().getZ() + (Helper.getPlayer().getHorizontalFacing() == Direction.NORTH ? -i
-						: Helper.getPlayer().getHorizontalFacing() == Direction.SOUTH ? i : 0));
+	@EventTarget
+	public void onPacket(PacketEvent event) {
+		float[] look = rotation(pos);
+		PacketUtil.setRotation(event, look[0], look[1]);
+
+		if (pos != null) {
+			PacketUtil.cancelServerRotation(event);
+		}
+	}
+
+	public float[] rotation(BlockPos pos) {
 		Vec3d hitVec = null;
 		BlockPos neighbor = null;
 		Direction side2 = null;
@@ -133,17 +142,6 @@ public class Scaffold extends Module {
 			break;
 		}
 
-		Vec3d rotationVec = new Vec3d(rotationPos.getX(), rotationPos.getY(), rotationPos.getZ());
-		float[] toBlockRotation = RotationUtils.lookAtVecPos(rotationVec, (float) speed.getCurrentValueDouble(),
-				(float) speed.getCurrentValueDouble());
-
-		if (hitVec == null) {
-			Helper.getPlayer().yaw = toBlockRotation[0];
-			Helper.getPlayer().pitch = toBlockRotation[1];
-			Helper.getPlayer().bodyYaw = toBlockRotation[0];
-			Helper.getPlayer().headYaw = toBlockRotation[0];
-		}
-
 		if (neighbor == null)
 			neighbor = pos;
 		if (side2 == null)
@@ -152,11 +150,9 @@ public class Scaffold extends Module {
 		float[] rotation = RotationUtils.lookAtVecPos(hitVec, (float) speed.getCurrentValueDouble(),
 				(float) speed.getCurrentValueDouble());
 		if (hitVec != null) {
-			Helper.getPlayer().yaw = rotation[0];
-			Helper.getPlayer().pitch = rotation[1];
-			Helper.getPlayer().bodyYaw = rotation[0];
-			Helper.getPlayer().headYaw = rotation[0];
+			return new float[] { rotation[0], rotation[1] };
 		}
+		return new float[] { Helper.getPlayer().yaw, Helper.getPlayer().pitch };
 	}
 
 	private boolean isBlock(Item item) {
@@ -167,34 +163,5 @@ public class Scaffold extends Module {
 		}
 		return false;
 	}
-
-	private boolean calculatePosition() {
-		// Spizjeno from PlayerEntity sneak stoping
-		if (!Helper.getPlayer().abilities.flying) {
-			double d = Helper.getPlayer().getX();
-			double e = Helper.getPlayer().getZ();
-			while (d != 0.0D && e != 0.0D && Helper.minecraftClient.world.isSpaceEmpty(Helper.getPlayer(),
-					Helper.getPlayer().getBoundingBox().offset(d, (double) (-Helper.getPlayer().stepHeight), e))) {
-				if (d < 0.05D && d >= -0.05D) {
-					d = 0.0D;
-				} else if (d > 0.0D) {
-					d -= 0.05D;
-				} else {
-					d += 0.05D;
-				}
-
-				if (e < 0.05D && e >= -0.05D) {
-					e = 0.0D;
-				} else if (e > 0.0D) {
-					e -= 0.05D;
-				} else {
-					e += 0.05D;
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
 
 }

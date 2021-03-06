@@ -20,8 +20,8 @@ public class Panel {
 	private static final Identifier AVATAR = new Identifier("infinity", "avatar.png");
 	private ArrayList<CategoryButton> catButton = new ArrayList<>();
 	private ClickMenu clickMenu;
-	private double x;
-	private double y;
+	public double x;
+	public double y;
 	private double width;
 	private double height;
 
