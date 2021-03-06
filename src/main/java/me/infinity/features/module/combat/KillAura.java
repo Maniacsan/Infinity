@@ -30,28 +30,29 @@ import net.minecraft.util.math.Vec3d;
 public class KillAura extends Module {
 
 	private Settings rotation = new Settings(this, "Rotation", "Focus",
-			new ArrayList<>(Arrays.asList("Smash", "Focus")), true);
-	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")), true);
+			new ArrayList<>(Arrays.asList("Smash", "Focus")), () -> true);
+	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")),
+			() -> true);
 	// targets
-	private Settings players = new Settings(this, "Players", true, true);
-	private Settings invisibles = new Settings(this, "Invisibles", true, true);
-	private Settings mobs = new Settings(this, "Mobs", true, true);
-	private Settings animals = new Settings(this, "Animals", true, true);
-	
+	private Settings players = new Settings(this, "Players", true, () -> true);
+	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
+	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
+	private Settings animals = new Settings(this, "Animals", true, () -> true);
+
 	// raycasting target
-	private Settings rayCast = new Settings(this, "RayCast", false, true);
-	
+	private Settings rayCast = new Settings(this, "RayCast", false, () -> true);
+
 	// matrix packet rotation strafing check
-	private Settings badStrafe = new Settings(this, "Bad Strafe", false, true);
-	
-	private Settings noSwing = new Settings(this, "No Swing", false, true);
-	private Settings coolDown = new Settings(this, "CoolDown", true, true);
-	
-	private Settings maxSpeed = new Settings(this, "Max Speed", 80.0D, 0.0D, 180.0D, true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, true);
-	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, true);
-	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, true);
-	
+	private Settings badStrafe = new Settings(this, "Bad Strafe", false, () -> true);
+
+	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
+	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
+
+	private Settings maxSpeed = new Settings(this, "Max Speed", 80.0D, 0.0D, 180.0D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, () -> true);
+	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, () -> true);
+	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
+
 	// target
 	public static Entity target;
 
@@ -88,7 +89,7 @@ public class KillAura extends Module {
 	public void onPlayerTick() {
 		if (target == null)
 			return;
-		
+
 		if (badStrafe.isToggle()) {
 			MoveUtil.silentStrafe(0.08f);
 		}

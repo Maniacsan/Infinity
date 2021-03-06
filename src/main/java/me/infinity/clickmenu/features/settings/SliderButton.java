@@ -16,7 +16,8 @@ public class SliderButton extends SettingButton {
 		super(setting);
 		this.selected = setting.isValueInt() ? setting.getCurrentValueInt() / setting.getMaxValueInt()
 				: setting.isValueDouble() ? setting.getCurrentValueDouble() / setting.getMaxValueDouble()
-						: setting.isValueFloat() ? setting.getCurrentValueFloat() / setting.getMaxValueFloat() : 0;
+						: setting.isValueFloat() ? setting.getCurrentValueFloat() / setting.getMaxValueFloat()
+								: setting.getCurrentValueInt() / setting.getMaxValueInt();
 	}
 
 	@Override

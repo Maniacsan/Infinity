@@ -26,12 +26,12 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Placing block", key = -2, name = "Scaffold", visible = true)
 public class Scaffold extends Module {
 
-	private Settings eagle = new Settings(this, "Eagle", false, true);
-	public Settings safeWalk = new Settings(this, "SafeWalk", true, true);
-	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, true);
-	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, true);
+	private Settings eagle = new Settings(this, "Eagle", false, () -> true);
+	public Settings safeWalk = new Settings(this, "SafeWalk", true, () -> true);
+	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, () -> true);
+	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, () -> true);
 
-	private Settings speed = new Settings(this, "Speed", 80D, 0D, 180D, true);
+	private Settings speed = new Settings(this, "Speed", 80D, 0D, 180D, () -> true);
 
 	private TimeHelper timer = new TimeHelper();
 

@@ -2,6 +2,7 @@ package me.infinity.features;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -14,7 +15,7 @@ public class Settings {
 
 	private Module module;
 	private String name;
-	private boolean visible;
+	private Supplier<Boolean> visible;
 	private boolean toggle;
 	private double currentValueDouble, minValueDouble, maxValueDouble;
 	private int currentValueInt, minValueInt, maxValueInt;
@@ -34,7 +35,7 @@ public class Settings {
 	}
 
 	// boolean
-	public Settings(Module module, String name, boolean toggle, boolean visible) {
+	public Settings(Module module, String name, boolean toggle, Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.toggle = toggle;
@@ -44,7 +45,7 @@ public class Settings {
 
 	// int number
 	public Settings(Module module, String name, int currentValueInt, int minValueInt, int maxValueInt,
-			boolean visible) {
+			Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.currentValueInt = currentValueInt;
@@ -56,7 +57,7 @@ public class Settings {
 
 	// double number
 	public Settings(Module module, String name, double currentValueDouble, double minValueDouble, double maxValueDouble,
-			boolean visible) {
+			Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.currentValueDouble = currentValueDouble;
@@ -68,7 +69,7 @@ public class Settings {
 
 	// float number
 	public Settings(Module module, String name, float currentValueFloat, float minValueFloat, float maxValueFloat,
-			boolean visible) {
+			Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.currentValueFloat = currentValueFloat;
@@ -79,7 +80,8 @@ public class Settings {
 	}
 
 	// String mode
-	public Settings(Module module, String name, String currentMode, ArrayList<String> options, boolean visible) {
+	public Settings(Module module, String name, String currentMode, ArrayList<String> options,
+			Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.currentMode = currentMode;
@@ -89,7 +91,7 @@ public class Settings {
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor, boolean visible) {
+	public Settings(Module module, String name, Color currentColor, Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.color = currentColor;
@@ -101,7 +103,7 @@ public class Settings {
 
 	// Blocks
 	public Settings(Module module, String name, ArrayList<Block> blocks, ArrayList<Block> renderBlocks,
-			boolean visible) {
+			Supplier<Boolean> visible) {
 		this.module = module;
 		this.name = name;
 		this.blocks = blocks;
@@ -329,10 +331,10 @@ public class Settings {
 	}
 
 	public boolean isVisible() {
-		return visible;
+		return visible.get().booleanValue();
 	}
 
-	public void setVisible(boolean visible) {
+	public void setVisible(Supplier<Boolean> visible) {
 		this.visible = visible;
 	}
 

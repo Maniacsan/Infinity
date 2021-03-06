@@ -20,9 +20,11 @@ import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 public class Velocity extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet", new ArrayList<>(Arrays.asList("Packet", "Matrix")),
-			true);
-	private Settings vertical = new Settings(this, "Vertical", 0.0D, 0.0D, 100.0D, mode.getCurrentMode().equalsIgnoreCase("Packet"));
-	private Settings horizontal = new Settings(this, "Horizontal", 0.0D, 0.0D, 100.0D, mode.getCurrentMode().equalsIgnoreCase("Packet"));
+			() -> true);
+	private Settings vertical = new Settings(this, "Vertical", 0.0D, 0.0D, 100.0D,
+			() -> Boolean.valueOf(mode.getCurrentMode().equalsIgnoreCase("Packet")));
+	private Settings horizontal = new Settings(this, "Horizontal", 0.0D, 0.0D, 100.0D,
+			() -> Boolean.valueOf(mode.getCurrentMode().equalsIgnoreCase("Packet")));
 
 	@Override
 	public void onPlayerTick() {
@@ -33,11 +35,8 @@ public class Velocity extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.POST)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix")) {
-				double x = Helper.getPlayer().getX();
-				double y = Helper.getPlayer().getY();
-				double z = Helper.getPlayer().getZ();
 				if (Helper.getPlayer().hurtTime > 0) {
-					Helper.getPlayer().setPos(x, y, z);
+					Helper.getPlayer().setVelocity(0, 0, 0);
 				}
 			}
 		}

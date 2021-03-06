@@ -107,7 +107,7 @@ public class ModuleButton {
 		}
 		if (open) {
 			for (SettingButton setBut : settingButton) {
-				if (setBut.isVisible()) 
+				if (setBut.isVisible())
 					setBut.mouseClicked(mouseX, mouseY, button);
 			}
 		}

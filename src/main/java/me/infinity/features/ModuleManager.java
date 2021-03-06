@@ -22,7 +22,6 @@ public class ModuleManager {
 			new BowAim(),
 			new XRay(),
 			new Velocity(),
-			new Tracers(),
 			new Scaffold(),
 			new SafeWalk()
 			);

@@ -22,7 +22,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class Criticals extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet" })), true);
+			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet" })), () -> true);
 
 	private TimeHelper timer = new TimeHelper();
 
