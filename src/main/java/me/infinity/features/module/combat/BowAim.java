@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 public class BowAim extends Module {
 
 	private Settings players = new Settings(this, "Players", true, () -> true);
+	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
@@ -27,7 +28,7 @@ public class BowAim extends Module {
 	public void onPlayerTick() {
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()
 				&& Helper.getPlayer().getItemUseTime() >= 3) {
-			target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(), players.isToggle(), invisibles.isToggle(),
+			target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(), players.isToggle(), friends.isToggle(), invisibles.isToggle(),
 					mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;

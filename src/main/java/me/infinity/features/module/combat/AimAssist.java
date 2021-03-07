@@ -23,6 +23,7 @@ public class AimAssist extends Module {
 
 	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
+	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
@@ -40,8 +41,8 @@ public class AimAssist extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(), players.isToggle(),
-				invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
+				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 
 		if (target == null)
 			return;

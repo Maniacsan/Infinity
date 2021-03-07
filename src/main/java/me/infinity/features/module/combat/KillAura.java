@@ -35,6 +35,7 @@ public class KillAura extends Module {
 			() -> true);
 	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
+	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
@@ -110,7 +111,7 @@ public class KillAura extends Module {
 			prevYaw = Helper.getPlayer().yaw;
 			prevPitch = Helper.getPlayer().pitch;
 			target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-					players.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
 

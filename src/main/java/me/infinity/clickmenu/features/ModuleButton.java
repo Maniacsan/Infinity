@@ -26,6 +26,7 @@ public class ModuleButton {
 	public double calcHeight;
 	private int offset;
 	private int offsetY;
+	private int setOffset;
 	private int height;
 	public boolean open;
 
@@ -76,6 +77,7 @@ public class ModuleButton {
 				if (setBut.isVisible()) {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + setY + 6);
+					this.setOffset = (int) yOffset;
 					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
 							width + 30, height);
 					if (setBut instanceof BooleanButton) {
@@ -125,8 +127,11 @@ public class ModuleButton {
 	private float getCurrentHeight() {
 		float cHeight = 0;
 		for (SettingButton setBut : settingButton) {
-			if (setBut.isVisible()) {
-				cHeight += setBut.height;
+			if (open) {
+				double calc = settingButton.size();
+				if (setBut.isVisible()) {
+					cHeight += (float) (setBut.height);
+				}
 			}
 		}
 		return cHeight;
@@ -136,13 +141,13 @@ public class ModuleButton {
 		if (open && setHovered) {
 			if (amount < 0) {
 				if (offsetY > height) {
-					this.offset += 35;
+					this.offset += 20;
 					if (this.offset > getCurrentHeight()) {
 						this.offset = (int) getCurrentHeight();
 					}
 				}
 			} else if (amount > 0) {
-				this.offset -= 35;
+				this.offset -= 20;
 				if (this.offset < 0) {
 					this.offset = 0;
 				}

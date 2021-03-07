@@ -92,7 +92,7 @@ public class Config {
 												final JsonElement blockIds = jsonObject.get(setting.getName());
 												if (blockIds != null)
 													jsonArray = blockIds.getAsJsonArray();
-												System.out.println("BLOCK");
+												//System.out.println("BLOCK");
 												if (jsonArray != null) {
 													setting.getBlocks().clear();
 													for (JsonElement jsonElement : jsonArray) {

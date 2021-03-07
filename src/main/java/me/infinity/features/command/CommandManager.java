@@ -12,7 +12,8 @@ public class CommandManager {
 	private List<Command> commands = Arrays.asList(
 			new BindCommand(),
 			new HelpCommand(),
-			new MacroCommand()
+			new MacroCommand(),
+			new FriendCommand()
 			);
 
 	public List<Command> getCommands() {

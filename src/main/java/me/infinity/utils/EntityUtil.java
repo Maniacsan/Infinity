@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import me.infinity.InfMain;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -29,11 +30,11 @@ public class EntityUtil {
 
 	// Set target -> Entity entity -> to update method -> entity =
 	// EntityUtil.setTarget(values);
-	public static Entity setTarget(double range, double fov, boolean players, boolean invisibles, boolean mobs,
-			boolean animals) {
+	public static Entity setTarget(double range, double fov, boolean players, boolean friends, boolean invisibles,
+			boolean mobs, boolean animals) {
 		Entity entity = null;
 		float maxDist = (float) range;
-		for (Entity e : getTargets(fov, players, invisibles, mobs, animals)) {
+		for (Entity e : getTargets(fov, players, friends, invisibles, mobs, animals)) {
 			if (e != null) {
 				float currentDist = Helper.getPlayer().distanceTo(e);
 				if (currentDist <= maxDist) {
@@ -55,19 +56,22 @@ public class EntityUtil {
 		return entity;
 	}
 
-	public static List<Entity> getTargets(double fov, boolean players, boolean invisibles, boolean mobs,
-			boolean animals) {
+	public static List<Entity> getTargets(double fov, boolean players, boolean friends, boolean invisibles,
+			boolean mobs, boolean animals) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
-				.filter(entity -> isCombatTarget(entity, fov, players, invisibles, mobs, animals))
+				.filter(entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals))
 				.collect(Collectors.toList());
 	}
 
-	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean invisibles, boolean mobs,
-			boolean animals) {
+	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
+			boolean invisibles, boolean mobs, boolean animals) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
 		if (!RotationUtils.isInFOV(entity, fov))
+			return false;
+		
+		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
 			return false;
 
 		if (invisibles && entity.isInvisible())

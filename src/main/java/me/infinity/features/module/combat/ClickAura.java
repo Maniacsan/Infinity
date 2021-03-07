@@ -18,6 +18,7 @@ public class ClickAura extends Module {
 
 	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
+	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
@@ -41,7 +42,7 @@ public class ClickAura extends Module {
 	public void onClick(ClickEvent event) {
 
 		target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-				players.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+				friends.isToggle(), players.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 
 		if (target == null)
 			return;

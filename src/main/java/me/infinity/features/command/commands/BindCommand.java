@@ -14,22 +14,22 @@ public class BindCommand extends Command {
 		me.infinity.features.Module module = InfMain.getModuleManager().getModuleByName(args[1]);
 		if (args[0].equalsIgnoreCase("add")) {
 			module.setKey(InputUtil.fromTranslationKey("key.keyboard." + args[2].toLowerCase()).getCode());
-			set(Formatting.GRAY + "Module - " + Formatting.DARK_BLUE + module.getName() + Formatting.GRAY
-					+ " binded to " + Formatting.AQUA + args[2]);
+			set(Formatting.GRAY + "Module - " + Formatting.WHITE + module.getName() + Formatting.GRAY + " binded to "
+					+ Formatting.AQUA + args[2]);
 		} else if (args[0].equalsIgnoreCase("del")) {
 			module.setKey(-2);
 			set(Formatting.AQUA + module.getName() + Formatting.GRAY + " removed binds");
 		} else if (args[0].equalsIgnoreCase("clear")) {
-			InfMain.getModuleManager().getList().forEach(m -> {
+			for (me.infinity.features.Module m : InfMain.getModuleManager().getList())
 				m.setKey(-2);
-			});
+
 			set(Formatting.GRAY + "Binds cleared");
 		} else if (args[0].equalsIgnoreCase("list")) {
-			InfMain.getModuleManager().getList().forEach(m -> {
+			for (me.infinity.features.Module m : InfMain.getModuleManager().getList()) {
 				if (m.getKey() != -2) {
 					set(Formatting.GRAY + m.getName() + " - " + Formatting.WHITE + m.getKey());
 				}
-			});
+			}
 		}
 	}
 

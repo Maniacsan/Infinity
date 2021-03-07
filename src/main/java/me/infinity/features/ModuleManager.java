@@ -26,7 +26,8 @@ public class ModuleManager {
 			new HitBoxes(),
 			new AimAssist(),
 			new ClickAura(),
-			new Timer()
+			new Timer(),
+			new AutoTotem()
 			);
 
 	public List<Module> getList() {
