@@ -18,4 +18,8 @@ public class MathAssist {
 		return Math.random() * (max - min) + min;
 	}
 
+	public static double round(double wert, int stellen) {
+		return Math.round(wert * Math.pow(10.0D, stellen)) / Math.pow(10.0D, stellen);
+	}
+
 }

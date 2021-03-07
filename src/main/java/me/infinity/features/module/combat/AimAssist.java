@@ -26,31 +26,45 @@ public class AimAssist extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
-	
+
 	// on mooving
 	private Settings onMoving = new Settings(this, "On Moving", false, () -> true);
-	
+
 	private Settings range = new Settings(this, "Range", 3.5D, 0D, 6D, () -> true);
 
-	private Settings sens = new Settings(this, "Sensitivity", 45, 10, 200, () -> true);
-	
-	private Settings maxSpeed = new Settings(this, "Max Speed", 10D, 0D, 20D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 5D, 0D, 20D, () -> true);
+	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
+	private Settings sens = new Settings(this, "Sensitivity", 45f, 10f, 200f, () -> true);
+
+	private Settings maxSpeed = new Settings(this, "Max Speed %", 60D, 0D, 100D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed %", 20D, 0D, 100D, () -> true);
 
 	@Override
 	public void onPlayerTick() {
-		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), players.isToggle(),
+		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(), players.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 
 		if (target == null)
 			return;
 
-		double speed = MathAssist.random(minSpeed.getCurrentValueDouble(), maxSpeed.getCurrentValueDouble());
+		float[] look = look(target);
+
+		if (onMoving.isToggle() && !MoveUtil.isMoving())
+			return;
+
+		Helper.getPlayer().yaw = look[0];
+		Helper.getPlayer().pitch = look[1];
+
+	}
+
+	private float[] look(Entity target) {
+		double min = minSpeed.getCurrentValueDouble() / 5;
+		double max = maxSpeed.getCurrentValueDouble() / 5;
+		double speed = MathAssist.random(min, max);
 
 		double d = target.getX() - Helper.getPlayer().getX();
 		double e = target.getZ() - Helper.getPlayer().getZ();
 		double pitchPos = 0;
-		
+
 		if (look.getCurrentMode().equalsIgnoreCase("HEAD"))
 			pitchPos = 0;
 		else if (look.getCurrentMode().equalsIgnoreCase("BODY"))
@@ -74,17 +88,11 @@ public class AimAssist extends Module {
 		float pitch = Helper.getPlayer().pitch;
 		pitch = RotationUtils.limitAngleChange(pitch, j, (float) speed);
 		yaw = RotationUtils.limitAngleChange(yaw, i, (float) speed);
-		float m = 0.005f * sens.getCurrentValueInt();
+		float m = 0.005f * sens.getCurrentValueFloat();
 		float gcd = m * m * m * 1.2f;
-		
+
 		yaw -= yaw % gcd;
 		pitch -= pitch % gcd;
-		
-		if (onMoving.isToggle() && !MoveUtil.isMoving())
-			return;
-		
-		Helper.getPlayer().yaw = yaw;
-		Helper.getPlayer().pitch = pitch;
-
+		return new float[] { yaw, pitch };
 	}
 }

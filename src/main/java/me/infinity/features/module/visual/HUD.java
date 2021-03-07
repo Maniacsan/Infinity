@@ -18,7 +18,7 @@ public class HUD extends Module {
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-		Helper.getRenderUtil().draw("Infinity", 2, 2, -1);
+		FontUtils.drawString(matrices, "Infinity", 2, 2, -1);
 
 		List<String> arrayList = new ArrayList<>();
 

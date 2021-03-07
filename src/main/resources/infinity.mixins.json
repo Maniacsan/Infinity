@@ -3,11 +3,10 @@
   "compatibilityLevel": "JAVA_8",
    "package": "me.infinity.mixin",
   "client": [
-  "BoxMixin",
-  "EntityRenderDispatcherMixin",
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
   "ClientPlayNetworkHandlerMixin",
+  "ClientPlayerInteractionManagerMixin",
   "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
   "MinecraftClientMixin",

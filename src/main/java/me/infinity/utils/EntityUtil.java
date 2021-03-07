@@ -29,10 +29,11 @@ public class EntityUtil {
 
 	// Set target -> Entity entity -> to update method -> entity =
 	// EntityUtil.setTarget(values);
-	public static Entity setTarget(double range, boolean players, boolean invisibles, boolean mobs, boolean animals) {
+	public static Entity setTarget(double range, double fov, boolean players, boolean invisibles, boolean mobs,
+			boolean animals) {
 		Entity entity = null;
 		float maxDist = (float) range;
-		for (Entity e : getTargets(players, invisibles, mobs, animals)) {
+		for (Entity e : getTargets(fov, players, invisibles, mobs, animals)) {
 			if (e != null) {
 				float currentDist = Helper.getPlayer().distanceTo(e);
 				if (currentDist <= maxDist) {
@@ -54,9 +55,35 @@ public class EntityUtil {
 		return entity;
 	}
 
-	public static List<Entity> getTargets(boolean players, boolean invisibles, boolean mobs, boolean animals) {
+	public static List<Entity> getTargets(double fov, boolean players, boolean invisibles, boolean mobs,
+			boolean animals) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
-				.filter(entity -> isTarget(entity, players, invisibles, mobs, animals)).collect(Collectors.toList());
+				.filter(entity -> isCombatTarget(entity, fov, players, invisibles, mobs, animals))
+				.collect(Collectors.toList());
+	}
+
+	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean invisibles, boolean mobs,
+			boolean animals) {
+		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
+			return false;
+
+		if (!RotationUtils.isInFOV(entity, fov))
+			return false;
+
+		if (invisibles && entity.isInvisible())
+			return true;
+		if (players && entity instanceof PlayerEntity)
+			return true;
+		if (mobs && isMonster(entity))
+			return true;
+		if (animals && isAnimal(entity))
+			return true;
+
+		// entity dead check
+		if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
+			return false;
+
+		return false;
 	}
 
 	public static boolean isTarget(Entity entity, boolean players, boolean invisibles, boolean mobs, boolean animals) {

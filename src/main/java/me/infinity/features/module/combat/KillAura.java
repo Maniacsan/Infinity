@@ -48,6 +48,7 @@ public class KillAura extends Module {
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
 
+	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
 	private Settings maxSpeed = new Settings(this, "Max Speed", 135.0D, 0.0D, 180.0D, () -> true);
 	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, () -> true);
 	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, () -> true);
@@ -108,8 +109,8 @@ public class KillAura extends Module {
 		if (event.getType().equals(EventType.PRE)) {
 			prevYaw = Helper.getPlayer().yaw;
 			prevPitch = Helper.getPlayer().pitch;
-			target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), players.isToggle(), invisibles.isToggle(),
-					mobs.isToggle(), animals.isToggle());
+			target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
+					players.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
 

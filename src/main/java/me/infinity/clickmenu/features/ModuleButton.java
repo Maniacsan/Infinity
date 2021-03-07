@@ -126,10 +126,7 @@ public class ModuleButton {
 		float cHeight = 0;
 		for (SettingButton setBut : settingButton) {
 			if (setBut.isVisible()) {
-				if (setBut instanceof BlocksButton) {
-					cHeight += ((BlocksButton) setBut).y;
-				} else
-					cHeight += setBut.height;
+				cHeight += setBut.height;
 			}
 		}
 		return cHeight;

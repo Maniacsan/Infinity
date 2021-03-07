@@ -18,7 +18,7 @@ import net.minecraft.entity.MovementType;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
-public class EntityMixin {	
+public class EntityMixin {
 
 	@Inject(method = "move", at = @At("HEAD"))
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {
@@ -38,10 +38,9 @@ public class EntityMixin {
 
 	@Inject(method = "getTargetingMargin", at = @At("HEAD"), cancellable = true)
 	public void getTargetingMargin(CallbackInfoReturnable<Float> info) {
-		float box = ((HitBoxes) InfMain.getModuleManager().getModuleByClass(HitBoxes.class)).size
-				.getCurrentValueFloat();
-		if (box != 0 && ((HitBoxes) InfMain.getModuleManager().getModuleByClass(HitBoxes.class))
-				.isTarget((Entity) (Object) this)) {
+		float box = ((HitBoxes) InfMain.getModuleManager().getModuleByClass(HitBoxes.class))
+				.getSize((Entity) (Object) this);
+		if (box != 0) {
 			info.setReturnValue(box);
 		}
 	}

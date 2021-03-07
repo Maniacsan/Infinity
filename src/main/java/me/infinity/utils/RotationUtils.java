@@ -89,6 +89,16 @@ public class RotationUtils {
 		return new float[] { yaw, pitch };
 	}
 
+	public static float[] getLookNeeded(double x, double y, double z) {
+		double diffX = x + 0.5 - Helper.getPlayer().getX();
+		double diffY = (y + 0.5) / 2.0 - (Helper.getPlayer().getY() + Helper.getPlayer().getEyeY());
+		double diffZ = z + 0.5 - Helper.getPlayer().getZ();
+		double dist = MathHelper.sqrt(diffX * diffX + diffZ * diffZ);
+		float yaw = (float) (Math.atan2(diffZ, diffX) * 180.0 / Math.PI) - 90.0f;
+		float pitch = (float) (-(Math.atan2(diffY, dist) * 180.0 / Math.PI));
+		return new float[] { yaw, pitch };
+	}
+
 	private static float updateAngle(float oldAngle, float newAngle, float maxChangeInAngle) {
 		float f = MathHelper.wrapDegrees(newAngle - oldAngle);
 		if (f > maxChangeInAngle) {
@@ -100,6 +110,18 @@ public class RotationUtils {
 		}
 
 		return oldAngle + f;
+	}
+
+	public static boolean isInFOV(Entity entity, double angle) {
+		double angleDiff = getAngle360(Helper.getPlayer().yaw,
+				getLookNeeded(entity.getX(), entity.getY(), entity.getZ())[0]);
+		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
+	}
+
+	private static float getAngle360(float dir, float yaw) {
+		float f = Math.abs(yaw - dir) % 360.0f;
+		float dist = f > 180.0f ? 360.0f - f : f;
+		return dist;
 	}
 
 	public static float getAngleDifference(final float a, final float b) {

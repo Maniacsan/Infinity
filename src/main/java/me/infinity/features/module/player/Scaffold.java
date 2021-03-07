@@ -43,6 +43,9 @@ public class Scaffold extends Module {
 
 	@Override
 	public void onDisable() {
+		if (Helper.minecraftClient.options.keySneak.isPressed())
+			Helper.minecraftClient.options.keySneak.setPressed(false);
+		
 		pos = null;
 	}
 

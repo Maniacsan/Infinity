@@ -13,7 +13,7 @@ import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
 import me.infinity.features.module.movement.SafeWalk;
 import me.infinity.features.module.player.Scaffold;
-import me.infinity.utils.Helper;
+import me.infinity.utils.UpdateUtil;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -27,7 +27,7 @@ public class ClientPlayerEntityMixin extends AbstractClientPlayerEntity {
 
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo info) {
-		if (Helper.getUpdateUtil().canUpdate()) {
+		if (UpdateUtil.canUpdate()) {
 			InfMain.getHookManager().onPlayerTick();
 		}
 	}
