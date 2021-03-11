@@ -45,6 +45,7 @@ public class HookManager {
 
 	/**
 	 * Make macro binds
+	 * 
 	 * @param key
 	 */
 	public void onMacro(int key) {

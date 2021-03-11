@@ -8,9 +8,11 @@ import net.minecraft.client.util.Session;
 
 @Mixin(MinecraftClient.class)
 public interface IMinecraftClient {
-	
-    @Accessor("session")
-    void setSession(Session session);
 
+	@Accessor("itemUseCooldown")
+	void setItemCooldown(int itemUseCooldown);
+
+	@Accessor("session")
+	void setSession(Session session);
 
 }

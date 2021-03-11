@@ -88,4 +88,5 @@ public class InfMain {
 	public static Friend getFriend() {
 		return friend;
 	}
+
 }

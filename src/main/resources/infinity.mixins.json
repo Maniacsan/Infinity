@@ -9,6 +9,7 @@
   "ClientPlayerInteractionManagerMixin",
   "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
+  "IKeyBinding",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",
@@ -17,6 +18,7 @@
   "MultiplayerScreenMixin",
   "IPlayerMoveC2SPacket",
   "IPlayerPositionLookS2CPacket",
+  "MouseMixin",
   "RenderTickCounterMixin"
   ],
     "injectors": {

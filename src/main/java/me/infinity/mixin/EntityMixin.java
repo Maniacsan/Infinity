@@ -11,10 +11,12 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
 import me.infinity.event.MoveEvent;
+import me.infinity.event.RotationEvent;
 import me.infinity.features.module.combat.HitBoxes;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
@@ -43,6 +45,25 @@ public class EntityMixin {
 		if (box != 0) {
 			info.setReturnValue(box);
 		}
+	}
+
+	@Inject(method = "getRotationVector", at = @At("HEAD"), cancellable = true)
+	private Vec3d onGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> info) {
+		RotationEvent rotationEvent = new RotationEvent(yaw, pitch);
+		EventManager.call(rotationEvent);
+
+		if (rotationEvent.isCancelled()) {
+			pitch = rotationEvent.getPitch();
+			yaw = rotationEvent.getYaw();
+		}
+		float f = pitch * 0.017453292F;
+		float g = -yaw * 0.017453292F;
+		float h = MathHelper.cos(g);
+		float i = MathHelper.sin(g);
+		float j = MathHelper.cos(f);
+		float k = MathHelper.sin(f);
+		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
+
 	}
 
 }

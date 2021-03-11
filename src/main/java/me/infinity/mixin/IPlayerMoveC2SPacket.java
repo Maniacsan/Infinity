@@ -13,5 +13,17 @@ public interface IPlayerMoveC2SPacket {
 	
 	@Accessor("pitch")
     void setPitch(float yaw);
+	
+	@Accessor("x")
+    void setX(double x);
+
+	@Accessor("y")
+    void setY(double y);
+	
+	@Accessor("z")
+    void setZ(double z);
+	
+	@Accessor("onGround")
+    void setOnGround(boolean onGround);
 
 }

@@ -69,6 +69,7 @@ public class Config {
 						for (Module module : InfMain.getModuleManager().getList()) {
 							if (module.getName().equalsIgnoreCase(data.getName())) {
 								module.setEnabled(data.isEnabled());
+								module.setKey(data.getKey());
 								for (Settings setting : module.getSettings()) {
 									if (jsonObject.has(setting.getName())) {
 										if (module.getName().equalsIgnoreCase(setting.getModule().getName())) {

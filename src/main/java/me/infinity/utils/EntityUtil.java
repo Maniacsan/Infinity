@@ -70,7 +70,7 @@ public class EntityUtil {
 
 		if (!RotationUtils.isInFOV(entity, fov))
 			return false;
-		
+
 		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
 			return false;
 
@@ -120,8 +120,8 @@ public class EntityUtil {
 	}
 
 	// raycast entity
-	public static void updateTargetRaycast(Entity target, double reachDistance, float yaw, float pitch) {
-		float tickDelta = Helper.minecraftClient.getTickDelta();
+	public static Entity updateTargetRaycast(double reachDistance, float yaw, float pitch) {
+		float tickDelta = 1.0F;
 		Entity entity = Helper.minecraftClient.getCameraEntity();
 		if (entity != null) {
 			if (Helper.minecraftClient.world != null) {
@@ -129,15 +129,16 @@ public class EntityUtil {
 				double d = reachDistance;
 				Helper.minecraftClient.crosshairTarget = entity.raycast(d, tickDelta, false);
 				Vec3d vec3d = entity.getCameraPosVec(tickDelta);
-				boolean bl = false;
 				double e = d;
 
-				e *= e;
+				Entity target = null;
+
 				if (Helper.minecraftClient.crosshairTarget != null) {
 					e = Helper.minecraftClient.crosshairTarget.getPos().squaredDistanceTo(vec3d);
 				}
 
-				Vec3d vec3d2 = RotationUtils.getRotationVec(yaw, pitch);
+				e *= e;
+				Vec3d vec3d2 = entity.getRotationVec(1.0F);
 				Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
 				Box box = entity.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0D, 1.0D, 1.0D);
 				EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, (entityx) -> {
@@ -147,21 +148,18 @@ public class EntityUtil {
 					Entity entity2 = entityHitResult.getEntity();
 					Vec3d vec3d4 = entityHitResult.getPos();
 					double g = vec3d.squaredDistanceTo(vec3d4);
-					if (bl && g > 9.0D) {
-						Helper.minecraftClient.crosshairTarget = BlockHitResult.createMissed(vec3d4,
-								Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), new BlockPos(vec3d4));
-					} else if (g < e || Helper.minecraftClient.crosshairTarget == null) {
+					if (g < e || Helper.minecraftClient.crosshairTarget == null) {
 						Helper.minecraftClient.crosshairTarget = entityHitResult;
 						if (entity2 instanceof LivingEntity || entity2 instanceof ItemFrameEntity) {
 							target = entity2;
-							Helper.minecraftClient.targetedEntity = entity2;
+							return target;
 						}
 					}
 				}
-
 				Helper.minecraftClient.getProfiler().pop();
 			}
 		}
+		return null;
 	}
 
 	// raycast to block rotation
@@ -252,5 +250,10 @@ public class EntityUtil {
 		} else {
 			Helper.sendPacket(new HandSwingC2SPacket(Hand.MAIN_HAND));
 		}
+	}
+
+	public static BlockPos getPlayerPosFloor() {
+		return new BlockPos(Math.floor(Helper.getPlayer().getX()), Math.floor(Helper.getPlayer().getY()),
+				Math.floor(Helper.getPlayer().getZ()));
 	}
 }

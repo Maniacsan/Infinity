@@ -4,6 +4,7 @@ import com.darkmagician6.eventapi.EventTarget;
 
 import me.infinity.event.ClickEvent;
 import me.infinity.event.PacketEvent;
+import me.infinity.event.RotationEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -52,7 +53,9 @@ public class ClickAura extends Module {
 
 		float[] rotate = RotationUtils.lookAtEntity(target, 180, 180);
 
-		EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), rotate[0], rotate[1]);
+		// raycast
+		Helper.minecraftClient.targetedEntity = EntityUtil.updateTargetRaycast(range.getCurrentValueDouble(), rotate[0],
+				rotate[1]);
 
 		if (rotation.isToggle() && look.isToggle()) {
 			Helper.getPlayer().yaw = rotate[0];
@@ -71,6 +74,18 @@ public class ClickAura extends Module {
 
 		if (rotation.isToggle()) {
 			PacketUtil.setRotation(event, rotate[0], rotate[1]);
+		}
+	}
+
+	@EventTarget
+	public void onRotation(RotationEvent event) {
+		float[] rotate = RotationUtils.lookAtEntity(target, 180, 180);
+		if (!Helper.minecraftClient.options.keyAttack.isPressed())
+			return;
+
+		if (rotation.isToggle()) {
+			event.setYaw(rotate[0]);
+			event.setPitch(rotate[1]);
 		}
 	}
 

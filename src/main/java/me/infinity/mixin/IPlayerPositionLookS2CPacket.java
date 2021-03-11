@@ -13,5 +13,14 @@ public interface IPlayerPositionLookS2CPacket {
 	
 	@Accessor("pitch")
 	void setPitch(float pitch);
+	
+	@Accessor("x")
+	void setX(double x);
+	
+	@Accessor("y")
+	void setY(double y);
+
+	@Accessor("z")
+	void setZ(double z);
 
 }

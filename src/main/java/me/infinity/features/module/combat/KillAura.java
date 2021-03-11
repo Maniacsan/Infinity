@@ -11,6 +11,7 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
+import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
@@ -93,16 +94,8 @@ public class KillAura extends Module {
 			return;
 
 		if (badStrafe.isToggle()) {
-			MoveUtil.silentStrafe(0.08f);
+			MoveUtil.silentStrafe(0.09f);
 		}
-
-		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-				+ minSpeed.getCurrentValueDouble());
-		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-
-		// raycasting
-		if (rayCast.isToggle())
-			EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), lookEntity[0], lookEntity[1]);
 	}
 
 	@EventTarget
@@ -117,9 +110,18 @@ public class KillAura extends Module {
 
 			float[] focus = focus();
 
+			float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+					+ minSpeed.getCurrentValueDouble());
+
+			// smashed
+			float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				Helper.getPlayer().yaw = focus[0];
 				Helper.getPlayer().pitch = focus[1];
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				Helper.getPlayer().yaw = lookEntity[0];
+				Helper.getPlayer().pitch = lookEntity[1];
 			}
 
 			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
@@ -144,6 +146,8 @@ public class KillAura extends Module {
 
 		// smashed
 		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+
+		// focus
 		float[] focus = focus();
 
 		if (target != null) {
@@ -157,6 +161,34 @@ public class KillAura extends Module {
 			PacketUtil.cancelServerRotation(event);
 		}
 
+	}
+
+	@EventTarget
+	public void onRotation(RotationEvent event) {
+		if (target == null)
+			return;
+
+		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+				+ minSpeed.getCurrentValueDouble());
+
+		// smashed
+		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+
+		// focus
+		float[] focus = focus();
+
+		if (rayCast.isToggle()) {
+			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				if (lookEntity[1] < 90 || lookEntity[1] > -90) {
+					event.setYaw(lookEntity[0]);
+					event.setPitch(lookEntity[1]);
+				}
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				event.setYaw(focus[0]);
+				event.setPitch(focus[1]);
+			}
+		}
+		event.cancel();
 	}
 
 	public void attack() {

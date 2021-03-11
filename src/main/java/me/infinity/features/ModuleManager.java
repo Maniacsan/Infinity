@@ -27,7 +27,13 @@ public class ModuleManager {
 			new AimAssist(),
 			new ClickAura(),
 			new Timer(),
-			new AutoTotem()
+			new AutoTotem(),
+			new AutoClicker(),
+			new MiddleClickPearl(),
+			new AutoTool(),
+			new NoSlow(),
+			new FastEXP(),
+			new AutoShield()
 			);
 
 	public List<Module> getList() {
