@@ -36,7 +36,6 @@ public class Helper {
 	}
 	
 	/**
-	 * Убирает надпись с строки null , если String равен null
 	 * @param str
 	 * @return
 	 */

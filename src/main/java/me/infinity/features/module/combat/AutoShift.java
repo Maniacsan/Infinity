@@ -11,10 +11,8 @@ import me.infinity.event.ClickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.mixin.IKeyBinding;
 import me.infinity.utils.Helper;
 import me.infinity.utils.TimeHelper;
-import net.minecraft.client.options.KeyBinding;
 
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Sneaking on attack or hit", key = -2, name = "AutoShift", visible = true)
 public class AutoShift extends Module {
@@ -56,7 +54,11 @@ public class AutoShift extends Module {
 	}
 
 	public void shift() {
-		KeyBinding.onKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey());
+		Helper.minecraftClient.options.keySneak.setPressed(true);
+		if (timer.hasReached(90)) {
+			Helper.minecraftClient.options.keySneak.setPressed(false);
+			timer.reset();
+		}
 	}
 
 }

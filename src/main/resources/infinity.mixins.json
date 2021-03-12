@@ -9,7 +9,6 @@
   "ClientPlayerInteractionManagerMixin",
   "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
-  "IKeyBinding",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",

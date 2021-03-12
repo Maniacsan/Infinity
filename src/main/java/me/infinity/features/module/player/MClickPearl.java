@@ -10,8 +10,8 @@ import me.infinity.utils.InvUtil;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Throws a pearl when pressing middle click", key = -2, name = "MiddleClickPearl", visible = true)
-public class MiddleClickPearl extends Module {
+@ModuleInfo(category = Module.Category.PLAYER, desc = "Throws a pearl when pressing middle click", key = -2, name = "MClickPearl", visible = true)
+public class MClickPearl extends Module {
 
 	@EventTarget
 	public void onMiddleClick(ClickButtonEvent event) {

@@ -53,10 +53,6 @@ public class ClickAura extends Module {
 
 		float[] rotate = RotationUtils.lookAtEntity(target, 180, 180);
 
-		// raycast
-		Helper.minecraftClient.targetedEntity = EntityUtil.updateTargetRaycast(range.getCurrentValueDouble(), rotate[0],
-				rotate[1]);
-
 		if (rotation.isToggle() && look.isToggle()) {
 			Helper.getPlayer().yaw = rotate[0];
 			Helper.getPlayer().pitch = rotate[1];
@@ -87,6 +83,7 @@ public class ClickAura extends Module {
 			event.setYaw(rotate[0]);
 			event.setPitch(rotate[1]);
 		}
+		event.cancel();
 	}
 
 }

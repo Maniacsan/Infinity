@@ -10,6 +10,7 @@ import me.infinity.utils.Helper;
 import me.infinity.utils.InvUtil;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Items;
+import net.minecraft.screen.slot.SlotActionType;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically fills the hotbar with healing potions", key = -2, name = "Refill", visible = true)
 public class Refill extends Module {
@@ -41,37 +42,45 @@ public class Refill extends Module {
 
 		if (mode.getCurrentMode().equalsIgnoreCase("FreeSlots")) {
 			if (find != -2 && freeSlots != -2) {
-				switchPotion(find, freeSlots);
+					switchPotion(find, freeSlots);
 			}
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Select")) {
 
 			// 100000IQ Senior code
 			if (find != -2) {
-				if (slot1.isToggle()) {
+				if (slot1.isToggle() && Helper.getPlayer().inventory.getStack(0).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 0);
 
-				} else if (slot2.isToggle()) {
+				} else if (slot2.isToggle()
+						&& Helper.getPlayer().inventory.getStack(1).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 1);
 
-				} else if (slot3.isToggle()) {
+				} else if (slot3.isToggle()
+						&& Helper.getPlayer().inventory.getStack(2).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 2);
 
-				} else if (slot4.isToggle()) {
+				} else if (slot4.isToggle()
+						&& Helper.getPlayer().inventory.getStack(3).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 3);
 
-				} else if (slot5.isToggle()) {
+				} else if (slot5.isToggle()
+						&& Helper.getPlayer().inventory.getStack(4).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 4);
 
-				} else if (slot6.isToggle()) {
+				} else if (slot6.isToggle()
+						&& Helper.getPlayer().inventory.getStack(5).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 5);
 
-				} else if (slot7.isToggle()) {
+				} else if (slot7.isToggle()
+						&& Helper.getPlayer().inventory.getStack(6).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 6);
 
-				} else if (slot8.isToggle()) {
+				} else if (slot8.isToggle()
+						&& Helper.getPlayer().inventory.getStack(7).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 7);
 
-				} else if (slot9.isToggle()) {
+				} else if (slot9.isToggle()
+						&& Helper.getPlayer().inventory.getStack(8).getItem() != Items.SPLASH_POTION) {
 					switchPotion(find, 8);
 
 				}
@@ -81,8 +90,8 @@ public class Refill extends Module {
 
 	private void switchPotion(int from, int slot) {
 		if (Helper.getPlayer().inventory.getStack(slot).getItem() != Items.SPLASH_POTION) {
-			InvUtil.switchItem(from, 1);
-			InvUtil.switchItem(slot, 1);
+			Helper.minecraftClient.interactionManager.clickSlot(Helper.getPlayer().currentScreenHandler.syncId, from,
+					slot, SlotActionType.SWAP, Helper.getPlayer());
 		}
 	}
 

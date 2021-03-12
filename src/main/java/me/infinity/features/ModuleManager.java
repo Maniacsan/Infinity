@@ -29,11 +29,13 @@ public class ModuleManager {
 			new Timer(),
 			new AutoTotem(),
 			new AutoClicker(),
-			new MiddleClickPearl(),
+			new MClickPearl(),
 			new AutoTool(),
 			new NoSlow(),
 			new FastEXP(),
-			new AutoShield()
+			new AutoShield(),
+			new Refill(),
+			new AutoPotion()
 			);
 
 	public List<Module> getList() {

@@ -1,5 +1,6 @@
 package me.infinity.utils;
 
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
@@ -43,28 +44,52 @@ public class InvUtil {
 		return find;
 	}
 
-	// Find item only internal potion , no hotbar
+	// Find item only internal inv potion , no hotbar
 	public static int findPotionInternalInv(StatusEffect effect) {
-		int find = -2;
 		for (int i = 9; i <= 44; i++) {
 			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
 			if (stack.getItem() != Items.SPLASH_POTION)
-				return -2;
-				if (hasEffect(stack, effect))
-					find = i;
+				continue;
+			if (hasEffect(stack, effect))
+				return i;
 
 		}
-		return find;
+		return -2;
+	}
+
+	// Find item from hotbar potion
+	public static int findPotionHotbar(StatusEffect effect) {
+		for (int i = 0; i < 9; i++) {
+			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+			if (stack.getItem() != Items.SPLASH_POTION)
+				continue;
+			if (hasEffect(stack, effect))
+				return i;
+		}
+		return -2;
 	}
 
 	public static int checkFreeHotbatSlots() {
-		int slot = -2;
 		for (int i = 0; i <= 8; i++) {
-			if (Helper.getPlayer().inventory.getStack(i).getItem() == null) {
-				slot = i;
+			ItemStack stack = Helper.getPlayer().currentScreenHandler.getSlot(i).getStack();
+			if (!stack.isEmpty()) {
+				return i;
 			}
 		}
+		return -2;
+	}
+
+	public static int getHotbar() {
+		int slot = -2;
+		for (int i = 0; i <= 8; i++) {
+			if (Helper.getPlayer().inventory.getStack(i).getItem() != Items.SPLASH_POTION)
+			slot = i;
+		}
 		return slot;
+	}
+
+	public static boolean checkArmorEmpty(EquipmentSlot slot) {
+		return Helper.getPlayer().inventory.getArmorStack(slot.getEntitySlotId()).isEmpty();
 	}
 
 	public static boolean hasEffect(ItemStack stack, StatusEffect effect) {

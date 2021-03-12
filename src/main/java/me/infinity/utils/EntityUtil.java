@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.decoration.ItemFrameEntity;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.mob.AmbientEntity;
 import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
@@ -255,5 +256,11 @@ public class EntityUtil {
 	public static BlockPos getPlayerPosFloor() {
 		return new BlockPos(Math.floor(Helper.getPlayer().getX()), Math.floor(Helper.getPlayer().getY()),
 				Math.floor(Helper.getPlayer().getZ()));
+	}
+
+	public static boolean checkActivePotion(StatusEffect effect) {
+		if (Helper.getPlayer().getStatusEffect(effect) != null)
+			return true;
+		return false;
 	}
 }

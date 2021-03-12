@@ -116,10 +116,10 @@ public class AutoTool extends Module {
 						if (slotAxe != -2) {
 							preSlot = Helper.getPlayer().inventory.selectedSlot;
 							Helper.getPlayer().inventory.selectedSlot = slotAxe;
-						}
-					} else if (!((PlayerEntity) target).isBlocking()) {
-						if (preSlot != -2)
+							
+							if (preSlot != -2)
 							Helper.getPlayer().inventory.selectedSlot = preSlot;
+						}
 					}
 				}
 			}
