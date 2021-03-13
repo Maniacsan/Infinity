@@ -41,6 +41,13 @@ public class ClientConnectionMixin {
 				callback.cancel();
 			}
 		}
+
+		PacketEvent sendEvent = new PacketEvent(EventType.SEND, packet);
+		EventManager.call(sendEvent);
+
+		if (sendEvent.isCancelled()) {
+			callback.cancel();
+		}
 	}
 
 }

@@ -1,15 +1,7 @@
 package me.infinity.ui.account;
 
-import java.net.Proxy;
-
-import com.mojang.authlib.Agent;
-import com.mojang.authlib.exceptions.AuthenticationException;
-import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.authlib.yggdrasil.YggdrasilUserAuthentication;
-
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.ui.account.main.Account;
-import me.infinity.ui.account.main.AccountManager;
 import me.infinity.ui.account.main.AccountThread;
 import me.infinity.utils.Helper;
 import net.minecraft.client.gui.screen.Screen;
@@ -25,8 +17,6 @@ public class GuiDirect extends Screen {
 	private TextFieldWidget accountName;
 	private TextFieldWidget password;
 	private ButtonWidget buttonAdd;
-	private ButtonWidget buttonBack;
-	private AccountThread accountThread;
 
 	public GuiDirect(Screen prev) {
 		super(new LiteralText(""));
@@ -51,12 +41,12 @@ public class GuiDirect extends Screen {
 				20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!accountName.getText().isEmpty()) {
 						Account account = new Account(accountName.getText(), password.getText());
-						(accountThread = new AccountThread(account)).start();
+						(new AccountThread(account)).start();
 						Helper.minecraftClient.openScreen(prev);
 					}
 				}));
 
-		this.buttonBack = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 100,
+		this.addButton(new ButtonWidget(this.width / 2 - 100,
 				this.height / 4 + 96 + 28, 200, 20, new TranslatableText("Cancel"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 				}));

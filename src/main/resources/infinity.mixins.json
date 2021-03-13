@@ -6,13 +6,20 @@
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
   "ClientPlayNetworkHandlerMixin",
+  "ClientPlayerInteractionManagerMixin",
+  "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",
   "EntityMixin",
   "GameRendererMixin",
-  "MultiplayerScreenMixin"
+  "MultiplayerScreenMixin",
+  "IPlayerMoveC2SPacket",
+  "IPlayerPositionLookS2CPacket",
+  "IKeyBinding",
+  "MouseMixin",
+  "RenderTickCounterMixin"
   ],
     "injectors": {
     "defaultRequire": 1

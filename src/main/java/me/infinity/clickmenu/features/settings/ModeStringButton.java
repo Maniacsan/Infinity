@@ -10,7 +10,7 @@ import net.minecraft.client.util.math.MatrixStack;
 public class ModeStringButton extends SettingButton {
 
 	private boolean addHovered;
-	
+
 	public ModeStringButton(Settings setting) {
 		super(setting);
 	}
@@ -20,23 +20,32 @@ public class ModeStringButton extends SettingButton {
 			double height) {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		FontUtils.drawStringWithShadow(matrices, setting.getName() + " - " + setting.getCurrentMode(), x + 2, y + 5, Color.WHITE.getRGB());
-		
+		Render2D.drawRectWH(matrices, x + 1, y, width, height, 0xFF787878);
+		Render2D.drawRectWH(matrices, x + 1, y + 0.5, width, height - 1, 0xFF343434);
+		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 4.4, Color.WHITE.getRGB());
+		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(),
+				x + width - FontUtils.getStringWidth(setting.getCurrentMode()), y + 4.4, Color.WHITE.getRGB());
 	}
 
 	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (this.addHovered) {
 			if (button == 0) {
-			if (this.setting.isMode()) {
-				try {
-					this.setting.setCurrentMode(this.setting.getModes().get(this.setting.getCurrentModeIndex() + 1));
-				} catch (Exception e) {
-					this.setting.setCurrentMode(this.setting.getModes().get(0));
+				if (this.setting.isMode()) {
+					try {
+						this.setting
+								.setCurrentMode(this.setting.getModes().get(this.setting.getCurrentModeIndex() + 1));
+					} catch (Exception e) {
+						this.setting.setCurrentMode(this.setting.getModes().get(0));
+					}
 				}
 			}
-			}
 		}
+	}
+
+	@Override
+	public boolean isVisible() {
+		return setting.isVisible();
 	}
 
 }

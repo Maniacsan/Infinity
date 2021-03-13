@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import me.infinity.features.HookManager;
 import me.infinity.features.ModuleManager;
 import me.infinity.features.command.CommandManager;
+import me.infinity.features.component.friends.Friend;
 import me.infinity.features.component.macro.MacroManager;
 import me.infinity.file.config.ConfigManager;
 import me.infinity.ui.account.main.AccountManager;
@@ -26,18 +27,25 @@ public class InfMain {
 	private static HookManager hookManager;
 	private static AccountManager accountManager;
 	private static MacroManager macroManager;
+	private static Friend friend;
 
 	public void initialize() {
 		infDirection = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
+		//
 		configManager = new ConfigManager();
 		moduleManager = new ModuleManager();
 		hookManager = new HookManager();
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
 		macroManager = new MacroManager();
+		friend = new Friend();
+
+		// loads
+		friend.load();
 		configManager.loadConfig(false);
 		accountManager.load();
 		macroManager.load();
+
 		LOGGER.info("Injected bullshit");
 	}
 
@@ -76,4 +84,9 @@ public class InfMain {
 	public static MacroManager getMacroManager() {
 		return macroManager;
 	}
+
+	public static Friend getFriend() {
+		return friend;
+	}
+
 }

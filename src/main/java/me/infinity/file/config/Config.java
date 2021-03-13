@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -17,6 +18,7 @@ import me.infinity.InfMain;
 import me.infinity.features.Module;
 import me.infinity.features.Settings;
 import me.infinity.utils.FileUtil;
+import net.minecraft.block.Block;
 
 public class Config {
 
@@ -67,6 +69,7 @@ public class Config {
 						for (Module module : InfMain.getModuleManager().getList()) {
 							if (module.getName().equalsIgnoreCase(data.getName())) {
 								module.setEnabled(data.isEnabled());
+								module.setKey(data.getKey());
 								for (Settings setting : module.getSettings()) {
 									if (jsonObject.has(setting.getName())) {
 										if (module.getName().equalsIgnoreCase(setting.getModule().getName())) {
@@ -82,8 +85,21 @@ public class Config {
 												setting.setCurrentValueInt(
 														jsonObject.get(setting.getName()).getAsInt());
 											} else if (setting.isMode()) {
-												setting.setCurrentMode(
-														jsonObject.get(setting.getName()).getAsString());
+												setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
+											} else if (setting.isColor()) {
+												setting.setColor(jsonObject.get(setting.getName()).getAsInt());
+											} else if (setting.isBlock()) {
+												JsonArray jsonArray = null;
+												final JsonElement blockIds = jsonObject.get(setting.getName());
+												if (blockIds != null)
+													jsonArray = blockIds.getAsJsonArray();
+												//System.out.println("BLOCK");
+												if (jsonArray != null) {
+													setting.getBlocks().clear();
+													for (JsonElement jsonElement : jsonArray) {
+														setting.addBlockFromId(jsonElement.getAsInt());
+													}
+												}
 											}
 										}
 									}
@@ -108,6 +124,7 @@ public class Config {
 			JsonObject json = new JsonObject();
 			for (ConfigData data : data) {
 				JsonObject dataJson = new JsonObject();
+				JsonArray jsonArray = new JsonArray();
 				dataJson.addProperty("Enabled", Boolean.valueOf(data.isEnabled()));
 				dataJson.addProperty("Visible", Boolean.valueOf(data.isVisible()));
 				dataJson.addProperty("Key", Integer.valueOf(data.getKey()));
@@ -126,7 +143,13 @@ public class Config {
 									dataJson.addProperty(setting.getName(), setting.getCurrentValueInt());
 								} else if (setting.isMode()) {
 									dataJson.addProperty(setting.getName(), setting.getCurrentMode());
-
+								} else if (setting.isColor()) {
+									dataJson.addProperty(setting.getName(), setting.getColor().getRGB());
+								} else if (setting.isBlock()) {
+									for (Block blocks : setting.getBlocks()) {
+										jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
+									}
+									dataJson.add(setting.getName(), jsonArray);
 								}
 							}
 						}

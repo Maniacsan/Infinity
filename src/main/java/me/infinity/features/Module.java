@@ -9,13 +9,16 @@ import com.darkmagician6.eventapi.EventManager;
 import me.infinity.utils.Helper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.util.math.MatrixStack;
 
 @Environment(EnvType.CLIENT)
 public class Module {
 
 	private Category category;
+	private String sortedName;
 	private String desc;
 	private String name;
+	private String suffix;
 	// Use only GLFW.GLFW_KEY_YOURKEY or for KEY_NONE use code -2
 	private int key;
 	private boolean visible;
@@ -23,6 +26,7 @@ public class Module {
 
 	public Module() {
 		name = this.getClass().getAnnotation(ModuleInfo.class).name();
+		sortedName = name;
 		setKey(this.getClass().getAnnotation(ModuleInfo.class).key());
 		visible = this.getClass().getAnnotation(ModuleInfo.class).visible();
 		setCategory(this.getClass().getAnnotation(ModuleInfo.class).category());
@@ -37,7 +41,7 @@ public class Module {
 	public void onPlayerTick() {
 	}
 
-	public void onRender(int scaledWidth, int scaledHeight) {
+	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 	}
 
 	// Fast use
@@ -80,6 +84,10 @@ public class Module {
 		}
 
 		return settings;
+	}
+	
+	public String toCompare() {
+		return getSortedName() + " " + Helper.replaceNull(getSuffix());
 	}
 
 	public String getDesc() {
@@ -133,6 +141,22 @@ public class Module {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public String getSortedName() {
+		return sortedName;
+	}
+
+	public String getSuffix() {
+		return suffix;
+	}
+
+	/**
+	 * use only tick update methods
+	 * @param suffix
+	 */
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
 	}
 
 }
