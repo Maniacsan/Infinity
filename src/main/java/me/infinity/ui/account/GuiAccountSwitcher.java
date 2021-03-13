@@ -1,5 +1,6 @@
 package me.infinity.ui.account;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +25,13 @@ public class GuiAccountSwitcher extends Screen {
 
 	private Screen prev;
 	public ListGui listGui;
+	private ButtonWidget buttonAdd;
 	private ButtonWidget buttonDelete;
 	private ButtonWidget buttonLogin;
+	private ButtonWidget buttonBack;
+	private ButtonWidget buttonRefresh;
 	private ButtonWidget buttonEdit;
+	private ButtonWidget buttonDirect;
 	private AccountThread accountThread;
 
 	public GuiAccountSwitcher(Screen prev) {
@@ -38,7 +43,7 @@ public class GuiAccountSwitcher extends Screen {
 	@Override
 	public void init() {
 		listGui = new ListGui(client, this, getListAccount());
-		this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
+		buttonAdd = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
 				new TranslatableText("Add"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiAddAccount(this));
 					refresh();
@@ -71,16 +76,16 @@ public class GuiAccountSwitcher extends Screen {
 						Helper.minecraftClient.openScreen(new GuiEdit(this, selectAccount));
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
+		buttonDirect = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
 				new TranslatableText("Direct"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiDirect(this));
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
+		buttonRefresh = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
 				new TranslatableText("Refresh"), (buttonWidget) -> {
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
+		buttonBack = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
 				new TranslatableText("Back"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 				}));
@@ -105,8 +110,7 @@ public class GuiAccountSwitcher extends Screen {
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		FontUtils.drawHVCenteredString(matrixStack, "Account Manager", this.width / 2, 27, -1);
 		FontUtils.drawStringWithShadow(matrixStack,
-				"Logged in as : " + Formatting.GRAY + Helper.minecraftClient.getSession().getUsername(), 2, 5,
-				0xFFFFFFFF);
+				"Logged in as : " + Formatting.GRAY + Helper.minecraftClient.getSession().getUsername(), 2, 5, 0xFFFFFFFF);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}
 
@@ -214,8 +218,7 @@ public class GuiAccountSwitcher extends Screen {
 
 			RenderUtil.drawFace(matrixStack, alt.getUsername(), x + 1, y + 1, 25, 25, isSelectedItem(id));
 
-			String status = alt.isMojang() ? Formatting.GREEN + "Mojang"
-					: alt.isNickname() ? Formatting.GRAY + "Nickname" : Formatting.RED + "Failed";
+			String status = alt.isMojang() ? "�2Mojang" : alt.isNickname() ? "�7Nickname" : "�cFailed";
 
 			client.textRenderer.draw(matrixStack, name, x + 31, y + 3, -1);
 			client.textRenderer.draw(matrixStack, status, x + 31, y + 15, 10526880);

@@ -6,9 +6,6 @@ import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import me.infinity.InfMain;
-import me.infinity.features.module.visual.GuiMod;
-import me.infinity.utils.Helper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
@@ -43,56 +40,9 @@ public class Render2D {
 	public static void drawRectWH(MatrixStack matrices, double x, double y, double width, double height, int color) {
 		fill(matrices.peek().getModel(), x, y, x + width, y + height, color);
 	}
-
-	public static void drawUnfilledCircle(double x, double y, float radius, float lineWidth, int color) {
-		float alpha = (color >> 24 & 0xFF) / 255.0F;
-		float red = (color >> 16 & 0xFF) / 255.0F;
-		float green = (color >> 8 & 0xFF) / 255.0F;
-		float blue = (color & 0xFF) / 255.0F;
-		GL11.glColor4f(red, green, blue, alpha);
-		GL11.glLineWidth(lineWidth);
-		GL11.glEnable(2848);
-		GL11.glBegin(2);
-		for (int i = 0; i <= 360; i++) {
-			GL11.glVertex2d(x + Math.sin(i * 3.141526D / 180.0D) * radius,
-					y + Math.cos(i * 3.141526D / 180.0D) * radius);
-		}
-		GL11.glEnd();
-		GL11.glDisable(2848);
-	}
-
-	public static void fillGradient(MatrixStack matrices, double xStart, double yStart, double xEnd, double yEnd,
-			int colorStart, int colorEnd) {
-		RenderSystem.disableTexture();
-		RenderSystem.enableBlend();
-		RenderSystem.disableAlphaTest();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.shadeModel(7425);
-		Tessellator tessellator = Tessellator.getInstance();
-		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
-		fillGradient(matrices.peek().getModel(), bufferBuilder, xStart, yStart, xEnd, yEnd, 0, colorStart, colorEnd);
-		tessellator.draw();
-		RenderSystem.shadeModel(7424);
-		RenderSystem.disableBlend();
-		RenderSystem.enableAlphaTest();
-		RenderSystem.enableTexture();
-	}
-
-	protected static void fillGradient(Matrix4f matrix, BufferBuilder bufferBuilder, double xStart, double yStart,
-			double xEnd, double yEnd, int z, int colorStart, int colorEnd) {
-		float f = (float) (colorStart >> 24 & 255) / 255.0F;
-		float g = (float) (colorStart >> 16 & 255) / 255.0F;
-		float h = (float) (colorStart >> 8 & 255) / 255.0F;
-		float i = (float) (colorStart & 255) / 255.0F;
-		float j = (float) (colorEnd >> 24 & 255) / 255.0F;
-		float k = (float) (colorEnd >> 16 & 255) / 255.0F;
-		float l = (float) (colorEnd >> 8 & 255) / 255.0F;
-		float m = (float) (colorEnd & 255) / 255.0F;
-		bufferBuilder.vertex(matrix, (float) xEnd, (float) yStart, (float) z).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yStart, (float) z).color(0, 0, 0, 100).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yEnd, (float) z).color(g, h, i, f).next();
-		bufferBuilder.vertex(matrix, (float) xEnd, (float) yEnd, (float) z).color(k, l, m, j).next();
+	
+	public static void drawGradientRect(MatrixStack matrices, double x1, double y1, double x2, double y2, int startColor, int endColor) {
+		fillGradient(matrices.peek().getModel(), x1, y1, x1 + x2, y1 + y2, startColor, endColor);
 	}
 
 	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
@@ -113,48 +63,6 @@ public class Render2D {
 		}
 
 		drawRect(matrices, i, j + 1, i + 1, k, l);
-	}
-
-	public static void drawAngleRect(MatrixStack matrices, double x, double y, double width, double height, int color) {
-		drawFullCircle(x + 8, y + height / 2, height / 2, color);
-		drawFullCircle(x + width - 3, y + height / 2, height / 2, color);
-		drawRectWH(matrices, x + 8, y, width - 11, height, color);
-	}
-
-	public static void drawFullCircle(double cx, double cy, double r, int c) {
-		r *= 2.0;
-		cx *= 2;
-		cy *= 2;
-		float f = (float) (c >> 24 & 255) / 255.0f;
-		float f1 = (float) (c >> 16 & 255) / 255.0f;
-		float f2 = (float) (c >> 8 & 255) / 255.0f;
-		float f3 = (float) (c & 255) / 255.0f;
-		GL11.glDisable(2929);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glBlendFunc(770, 771);
-		GL11.glDepthMask(true);
-		GL11.glEnable(2848);
-		GL11.glHint(3154, 4354);
-		GL11.glHint(3155, 4354);
-		GL11.glScalef((float) 0.5f, (float) 0.5f, (float) 0.5f);
-		GL11.glColor4f((float) f1, (float) f2, (float) f3, (float) f);
-		GL11.glBegin((int) 6);
-		int i = 0;
-		while (i <= 360) {
-			double x = Math.sin((double) i * 3.141592653589793 / 180.0) * r;
-			double y = Math.cos((double) i * 3.141592653589793 / 180.0) * r;
-			GL11.glVertex2d((double) ((double) cx + x), (double) ((double) cy + y));
-			++i;
-		}
-		GL11.glEnd();
-		GL11.glScalef((float) 2.0f, (float) 2.0f, (float) 2.0f);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glEnable(2929);
-		GL11.glDisable(2848);
-		GL11.glHint(3154, 4352);
-		GL11.glHint(3155, 4352);
 	}
 
 	public static void fill(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int color) {
@@ -190,35 +98,46 @@ public class Render2D {
 		RenderSystem.disableBlend();
 	}
 
-	/**
-	 * Treugolnik povernutiy na pravo
-	 * 
-	 * @param x
-	 * @param y
-	 * @param size
-	 * @param color
-	 */
-	public static void drawRightTriangle(int x, int y, int size, int color) {
-		float f = (color >> 24 & 0xFF) / 255.0F;
-		float f1 = (color >> 16 & 0xFF) / 255.0F;
-		float f2 = (color >> 8 & 0xFF) / 255.0F;
-		float f3 = (color & 0xFF) / 255.0F;
-		GL11.glPushMatrix();
-		GL11.glColor4f(f1, f2, f3, 255.0F);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glEnable(2848);
-		GL11.glBlendFunc(770, 771);
-		GL11.glBegin(4);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d((x - size), (y - size));
-		GL11.glVertex2d((x - size), (y + size));
-		GL11.glEnd();
-		GL11.glDisable(2848);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glRotatef(-180.0F, 0.0F, 0.0F, 1.0F);
-		GL11.glPopMatrix();
+	public static void fillGradient(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int startColor, int endColor) {
+		double j;
+		if (x1 < x2) {
+			j = x1;
+			x1 = x2;
+			x2 = j;
+		}
+
+		if (y1 < y2) {
+			j = y1;
+			y1 = y2;
+			y2 = j;
+		}
+		float f = (float) (startColor >> 24 & 255) / 255.0F;
+		float g = (float) (startColor >> 16 & 255) / 255.0F;
+		float h = (float) (startColor >> 8 & 255) / 255.0F;
+		float k = (float) (startColor & 255) / 255.0F;
+		float f1 = (float) (endColor >> 24 & 255) / 255.0F;
+		float g1 = (float) (endColor >> 16 & 255) / 255.0F;
+		float h1 = (float) (endColor >> 8 & 255) / 255.0F;
+		float k1 = (float) (endColor & 255) / 255.0F;
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		RenderSystem.enableBlend();
+		RenderSystem.disableTexture();
+		RenderSystem.defaultBlendFunc();
+		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y2, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y1, 0.0F).color(g, h, k, f).next();
+		bufferBuilder.end();
+		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g1, h1, k1, f1).next();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
+		RenderSystem.enableTexture();
+		RenderSystem.disableBlend();
 	}
 
 	public static void setColor(Color color) {
@@ -250,64 +169,4 @@ public class Render2D {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
 
-	public static void drawTriangle(float rotate, double x, double y, double size, int k) {
-		float f = (k >> 24 & 0xFF) / 255.0F;
-		float f1 = (k >> 16 & 0xFF) / 255.0F;
-		float f2 = (k >> 8 & 0xFF) / 255.0F;
-		float f3 = (k & 0xFF) / 255.0F;
-		GL11.glPushMatrix();
-		GL11.glRotatef(rotate, 0.0F, 0.0F, 1.0F);
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glEnable(2848);
-		GL11.glBlendFunc(770, 771);
-		GL11.glBegin(4);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d((x - size), (y - size));
-		GL11.glVertex2d((x - size), (y + size));
-		GL11.glEnd();
-		GL11.glDisable(2848);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glRotatef(-rotate, 0.0F, 0.0F, 1.0F);
-		GL11.glPopMatrix();
-	}
-
-	// scroll
-	public static void startScissor(double x, double y, double width, double height) {
-		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
-				/ Helper.minecraftClient.getWindow().getScaledWidth();
-		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
-				/ Helper.minecraftClient.getWindow().getScaledHeight();
-
-		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-		GL11.glScissor((int) (x * scaleWidth),
-				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
-				(int) (width * scaleWidth), (int) (height * scaleHeight));
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-	}
-
-	// for clickmenu scale
-	public static void startMenuScissor(double x, double y, double width, double height) {
-		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
-		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
-				/ Helper.minecraftClient.getWindow().getScaledWidth();
-		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
-				/ Helper.minecraftClient.getWindow().getScaledHeight();
-
-		scaleWidth *= scale;
-		scaleHeight *= scale;
-
-		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-		GL11.glScissor((int) (x * scaleWidth),
-				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
-				(int) (width * scaleWidth), (int) (height * scaleHeight));
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-	}
-
-	public static void stopScissor() {
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		GL11.glPopAttrib();
-	}
 }

@@ -2,10 +2,9 @@ package me.infinity.features;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
+import me.infinity.InfMain;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 
 /**
  * @Enaium base
@@ -15,7 +14,6 @@ public class Settings {
 
 	private Module module;
 	private String name;
-	private Supplier<Boolean> visible;
 	private boolean toggle;
 	private double currentValueDouble, minValueDouble, maxValueDouble;
 	private int currentValueInt, minValueInt, maxValueInt;
@@ -35,81 +33,80 @@ public class Settings {
 	}
 
 	// boolean
-	public Settings(Module module, String name, boolean toggle, Supplier<Boolean> visible) {
+	public Settings(Module module, String name, boolean toggle) {
 		this.module = module;
 		this.name = name;
 		this.toggle = toggle;
-		this.visible = visible;
 		this.category = Category.BOOLEAN;
 	}
 
 	// int number
-	public Settings(Module module, String name, int currentValueInt, int minValueInt, int maxValueInt,
-			Supplier<Boolean> visible) {
+	public Settings(Module module, String name, int currentValueInt, int minValueInt, int maxValueInt) {
 		this.module = module;
 		this.name = name;
 		this.currentValueInt = currentValueInt;
 		this.minValueInt = minValueInt;
 		this.maxValueInt = maxValueInt;
-		this.visible = visible;
 		this.category = Category.VALUE_INT;
 	}
 
 	// double number
-	public Settings(Module module, String name, double currentValueDouble, double minValueDouble, double maxValueDouble,
-			Supplier<Boolean> visible) {
+	public Settings(Module module, String name, double currentValueDouble, double minValueDouble,
+			double maxValueDouble) {
 		this.module = module;
 		this.name = name;
 		this.currentValueDouble = currentValueDouble;
 		this.minValueDouble = minValueDouble;
 		this.maxValueDouble = maxValueDouble;
-		this.visible = visible;
 		this.category = Category.VALUE_DOUBLE;
 	}
 
 	// float number
-	public Settings(Module module, String name, float currentValueFloat, float minValueFloat, float maxValueFloat,
-			Supplier<Boolean> visible) {
+	public Settings(Module module, String name, float currentValueFloat, float minValueFloat, float maxValueFloat) {
 		this.module = module;
 		this.name = name;
 		this.currentValueFloat = currentValueFloat;
 		this.minValueFloat = minValueFloat;
 		this.maxValueFloat = maxValueFloat;
-		this.visible = visible;
 		this.category = Category.VALUE_FLOAT;
 	}
 
 	// String mode
-	public Settings(Module module, String name, String currentMode, ArrayList<String> options,
-			Supplier<Boolean> visible) {
+	public Settings(Module module, String name, String currentMode, ArrayList<String> options) {
 		this.module = module;
 		this.name = name;
 		this.currentMode = currentMode;
-		this.visible = visible;
 		this.modes = options;
 		this.category = Category.MODE;
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor, Supplier<Boolean> visible) {
+	public Settings(Module module, String name, Color currentColor, float hue, float saturation, float brightness) {
 		this.module = module;
 		this.name = name;
+		this.setHue(hue);
+		this.setSaturation(saturation);
+		this.setBrightness(brightness);
 		this.color = currentColor;
-		this.visible = visible;
 		Color hsb = Color.getHSBColor(hue, saturation, brightness);
 		currentColor = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
 		this.category = Category.COLOR;
 	}
 
 	// Blocks
-	public Settings(Module module, String name, ArrayList<Block> blocks, ArrayList<Block> renderBlocks,
-			Supplier<Boolean> visible) {
+	public Settings(Module module, ArrayList<Block> blocks, ArrayList<Block> renderBlocks) {
 		this.module = module;
-		this.name = name;
 		this.blocks = blocks;
 		this.renderBlocks = renderBlocks;
-		this.visible = visible;
 		this.category = Category.BLOCKS;
+	}
+
+	public ArrayList<Block> getRenderBlocks() {
+		return renderBlocks;
+	}
+
+	public void setRenderBlocks(ArrayList<Block> renderBlocks) {
+		this.renderBlocks = renderBlocks;
 	}
 
 	public Module getModule() {
@@ -228,23 +225,12 @@ public class Settings {
 		return color;
 	}
 
-	public void setColor(int color) {
-		this.color = new Color(color);
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 	public ArrayList<Block> getBlocks() {
 		return blocks;
-	}
-
-	public void addBlockFromId(int id) {
-		BlockState block = Block.getStateFromRawId(id);
-		if (!blocks.contains(block.getBlock())) {
-			blocks.add(block.getBlock());
-		}
-	}
-
-	public ArrayList<Block> getRenderBlocks() {
-		return renderBlocks;
 	}
 
 	public int getCurrentModeIndex() {
@@ -328,14 +314,6 @@ public class Settings {
 
 	public boolean isBlock() {
 		return this.category.equals(Category.BLOCKS);
-	}
-
-	public boolean isVisible() {
-		return visible.get().booleanValue();
-	}
-
-	public void setVisible(Supplier<Boolean> visible) {
-		this.visible = visible;
 	}
 
 	public String getCategory() {

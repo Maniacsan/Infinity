@@ -1,14 +1,14 @@
 package me.infinity.features;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import me.infinity.features.Module.Category;
 import me.infinity.features.module.combat.*;
 import me.infinity.features.module.movement.*;
-import me.infinity.features.module.player.*;
 import me.infinity.features.module.visual.*;
-import me.infinity.features.module.world.*;
 
 public class ModuleManager {
 
@@ -17,25 +17,10 @@ public class ModuleManager {
 			new HUD(),
 			new Sprint(),
 			new GuiMod(),
+			new TestValues(),
 			new Criticals(),
 			new BowAim(),
-			new XRay(),
-			new Velocity(),
-			new Scaffold(),
-			new SafeWalk(),
-			new HitBoxes(),
-			new AimAssist(),
-			new ClickAura(),
-			new Timer(),
-			new AutoTotem(),
-			new AutoClicker(),
-			new MClickPearl(),
-			new AutoTool(),
-			new NoSlow(),
-			new FastEXP(),
-			new AutoShield(),
-			new Refill(),
-			new AutoPotion()
+			new XRay()
 			);
 
 	public List<Module> getList() {
@@ -74,4 +59,16 @@ public class ModuleManager {
 		}
 		return null;
 	}
+
+    public ArrayList<Module> getModulesForCategory(Category c) {
+        ArrayList<Module> modules = new ArrayList<>();
+
+        for (Module m : list) {
+            if (m.getCategory().equals(c)) {
+                modules.add(m);
+            }
+        }
+
+        return modules;
+    }
 }

@@ -2,7 +2,6 @@ package me.infinity.features;
 
 import me.infinity.InfMain;
 import me.infinity.utils.Helper;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class HookManager {
 
@@ -35,17 +34,16 @@ public class HookManager {
 	 * @param scaledWidth
 	 * @param scaledHeight
 	 */
-	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
+	public void onRender(int scaledWidth, int scaledHeight) {
 		InfMain.getModuleManager().getList().forEach(m -> {
 			if (m.isEnabled()) {
-				m.onRender(matrices, tickDelta, scaledWidth, scaledHeight);
+				m.onRender(scaledWidth, scaledHeight);
 			}
 		});
 	}
 
 	/**
 	 * Make macro binds
-	 * 
 	 * @param key
 	 */
 	public void onMacro(int key) {

@@ -1,7 +1,5 @@
 package me.infinity.clickmenu;
 
-import org.lwjgl.opengl.GL11;
-
 import me.infinity.InfMain;
 import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.gui.screen.Screen;
@@ -9,32 +7,31 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 
 /**
+ * ClickMenu design from csgo cheats
  * 
  * @author spray
  *
  */
 public class ClickMenu extends Screen {
 
-	public Panel panel;
+	private Panel panel;
 
 	public ClickMenu() {
 		super(new LiteralText(""));
-	}
-	
-	public void init() {
-		panel = new Panel(this, 20, 20, 380, 250);
+		int x = 20;
+		int y = 20;
+		panel = new Panel(x, y, 380, 250);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		super.render(matrices, mouseX, mouseY, delta);
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		mouseX /= scale;
 		mouseY /= scale;
-		GL11.glPushMatrix();
-		GL11.glScalef(scale, scale, scale);
+		matrices.scale(scale, scale, scale);
 		panel.render(matrices, mouseX, mouseY, delta);
-		GL11.glPopMatrix();
+		matrices.scale(1F, 1F, 1F);
+		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -56,22 +53,11 @@ public class ClickMenu extends Screen {
 	}
 
 	@Override
-	public boolean mouseScrolled(double d, double e, double amount) {
-		panel.mouseScrolled(d, e, amount);
-		return super.mouseScrolled(e, e, amount);
-	}
-
-	@Override
 	public boolean charTyped(char chr, int keyCode) {
 		panel.charTyped(chr, keyCode);
 		return super.charTyped(chr, keyCode);
 	}
-	
-	@Override
-	public boolean isPauseScreen() {
-		return false;
-	}
-	
+
 	@Override
 	public void onClose() {
 		InfMain.getModuleManager().getModuleByClass(GuiMod.class).setEnabled(false);
