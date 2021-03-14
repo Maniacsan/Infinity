@@ -87,10 +87,15 @@ public class InvUtil {
 	public static void switchItem(int slot, int button) {
 		Helper.minecraftClient.interactionManager.clickSlot(button, slot, 1, SlotActionType.PICKUP, Helper.getPlayer());
 	}
-	
+
+	public static void quickItem(int slot) {
+		Helper.minecraftClient.interactionManager.clickSlot(Helper.getPlayer().currentScreenHandler.syncId, slot, 0,
+				SlotActionType.QUICK_MOVE, Helper.getPlayer());
+	}
+
 	public static void swapItem(int from, int slot) {
-		Helper.minecraftClient.interactionManager.clickSlot(Helper.getPlayer().currentScreenHandler.syncId, from,
-				slot, SlotActionType.SWAP, Helper.getPlayer());
+		Helper.minecraftClient.interactionManager.clickSlot(Helper.getPlayer().currentScreenHandler.syncId, from, slot,
+				SlotActionType.SWAP, Helper.getPlayer());
 	}
 
 }

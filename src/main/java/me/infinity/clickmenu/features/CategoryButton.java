@@ -8,6 +8,7 @@ import me.infinity.clickmenu.config.ConfigButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
+import me.infinity.utils.TimeHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CategoryButton {
@@ -23,6 +24,9 @@ public class CategoryButton {
 	private int offset;
 	private int offsetY;
 	private int height;
+
+	// desc timer
+	private TimeHelper descTime = new TimeHelper();
 
 	public CategoryButton(String name, Panel panel) {
 		this.name = name;
@@ -53,18 +57,21 @@ public class CategoryButton {
 			double xOffset = 2;
 			double yOffset = 2;
 			for (ModuleButton modButton : modButton) {
+
 				if (modButton.open) {
 					Render2D.drawRectWH(matrices, setX + 221, setY + 2, width + 97, setHeight - 4,
 							ColorUtils.lineColor);
 					Render2D.drawRectWH(matrices, setX + 222, setY + 3, width + 95, setHeight - 6,
 							ColorUtils.backNight);
 				}
+
 				if (modHovered && offsetY > this.height) {
 					double border = offsetY / 3;
 					Render2D.drawRectWH(matrices, setX + 213, setY + 5, 2.4, setHeight - 10, 0xFF505050);
 					Render2D.drawRectWH(matrices, setX + 213, setY + 5 + offset, 2.4, setHeight - 10 - border,
 							0xFFD2D2D2);
 				}
+
 			}
 			if (getName() == "CONFIGS") {
 				configButton.render(matrices, mouseX, mouseY, delta, xOffset, yOffset, width, height, yMod, setX, setY,
@@ -84,6 +91,7 @@ public class CategoryButton {
 				}
 				Render2D.stopScissor();
 			}
+
 		}
 	}
 

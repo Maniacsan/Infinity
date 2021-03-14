@@ -36,7 +36,10 @@ public class ModuleManager {
 			new AutoShield(),
 			new Refill(),
 			new AutoPotion(),
-			new BetterBow()
+			new BetterBow(),
+			new ChestSteal(),
+			new FreeCam(),
+			new AutoEat()
 			);
 
 	public List<Module> getList() {

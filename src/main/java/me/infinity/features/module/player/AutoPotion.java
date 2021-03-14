@@ -29,6 +29,12 @@ public class AutoPotion extends Module {
 
 		if (!EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
 			next = 0;
+		} else if (!EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
+			next = 1;
+		} else if (!EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
+			next = 2;
+		} else if (!EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
+			next = 3;
 		} else
 			next = 10;
 

@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import me.infinity.clickmenu.ClickMenu;
 import me.infinity.features.HookManager;
 import me.infinity.features.ModuleManager;
 import me.infinity.features.command.CommandManager;
@@ -29,6 +30,10 @@ public class InfMain {
 	private static MacroManager macroManager;
 	private static Friend friend;
 
+	// menu
+	private static ClickMenu menu;
+	private static boolean menuInit;
+
 	public void initialize() {
 		infDirection = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
 		//
@@ -39,6 +44,7 @@ public class InfMain {
 		commandManager = new CommandManager();
 		macroManager = new MacroManager();
 		friend = new Friend();
+		menu = new ClickMenu();
 
 		// loads
 		friend.load();
@@ -87,6 +93,15 @@ public class InfMain {
 
 	public static Friend getFriend() {
 		return friend;
+	}
+
+	public static ClickMenu getMenu() {
+		if (!menuInit) {
+			menuInit = true;
+			menu.init();
+		}
+		
+		return menu;
 	}
 
 }

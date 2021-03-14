@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 import org.lwjgl.glfw.GLFW;
 
-import me.infinity.clickmenu.ClickMenu;
+import me.infinity.InfMain;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -19,8 +19,7 @@ public class GuiMod extends Module {
 
 	@Override
 	public void onEnable() {
-		MinecraftClient.getInstance().openScreen(new ClickMenu());
-		super.onEnable();
+		MinecraftClient.getInstance().openScreen(InfMain.getMenu());
 	}
 	
 	public float getScale() {
