@@ -18,6 +18,10 @@ public class AutoPotion extends Module {
 	private Settings fire = new Settings(this, "Fire Resistance", false, () -> true);
 	private Settings jump = new Settings(this, "Jump Boost", false, () -> true);
 
+	private Settings delay = new Settings(this, "Delay", 1D, 0D, 20D, () -> true);
+
+	private int timer;
+
 	private int next;
 
 	@Override
@@ -27,35 +31,45 @@ public class AutoPotion extends Module {
 		int fireSlot = InvUtil.findPotionHotbar(StatusEffects.FIRE_RESISTANCE);
 		int jumpSlot = InvUtil.findPotionHotbar(StatusEffects.JUMP_BOOST);
 
-		if (!EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
-			next = 0;
-		} else if (!EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
+		if (speed.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
 			next = 1;
-		} else if (!EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
+		}
+		
+		if (fire.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
 			next = 2;
-		} else if (!EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
+		}
+		
+		if (jump.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
 			next = 3;
-		} else
-			next = 10;
-
+		}
+		
+		if (strength.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
+			next = 4;
+		}
+		
+		// ground check
+		if (!Helper.getPlayer().isOnGround())
+			return;
+		
+		
 		// Na normalnuyu nasledstvennost vremeni netu izuchat
 		// A tak 10000iq code
-
-		if (strength.isToggle() && strSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
-			if (next == 0) {
-				baff(strSlot);
-				next += 1;
-			}
-		} else {
-			next += 1;
+		
+		if (timer > 0) {
+			timer--;
+			return;
 		}
+
 		if (speed.isToggle() && speedSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
 			if (next == 1) {
 				baff(speedSlot);
 				next += 1;
 			}
-		} else {
-			next += 1;
+		}
+		
+		if (timer > 0) {
+			timer--;
+			return;
 		}
 
 		if (fire.isToggle() && fireSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
@@ -63,19 +77,31 @@ public class AutoPotion extends Module {
 				baff(fireSlot);
 				next += 1;
 			}
-		} else {
-			next += 1;
+		}
+		
+		if (timer > 0) {
+			timer--;
+			return;
 		}
 
 		if (jump.isToggle() && jumpSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
 			if (next == 3) {
 				baff(jumpSlot);
-				next = 10;
+				next += 1;
 			}
-		} else {
-			next = 10;
 		}
-
+		
+		if (timer > 0) {
+			timer--;
+			return;
+		}
+		
+		if (strength.isToggle() && strSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
+			if (next == 4) {
+				baff(strSlot);
+				next += 1;
+			}
+		}
 	}
 
 	private void baff(int slot) {
@@ -84,6 +110,9 @@ public class AutoPotion extends Module {
 		Helper.sendPacket(
 				new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, 90.0F, Helper.getPlayer().isOnGround()));
 		Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
+
+		// set timer
+		timer = (int) delay.getCurrentValueDouble();
 
 		// reset
 		Helper.getPlayer().inventory.selectedSlot = preSlot;
