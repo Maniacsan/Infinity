@@ -39,7 +39,9 @@ public class ModuleManager {
 			new BetterBow(),
 			new ChestSteal(),
 			new FreeCam(),
-			new AutoEat()
+			new AutoEat(),
+			new ChatCalculator(),
+			new ESP()
 			);
 
 	public List<Module> getList() {

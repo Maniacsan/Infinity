@@ -22,12 +22,12 @@ public class BooleanButton extends SettingButton {
 		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 5);
 
-		Render2D.drawRectWH(matrices, x + 2, y + 0.2, 10, 10, setting.isToggle() ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
-		Render2D.drawRectWH(matrices, x + 2.8, y + 1, 8, height - 9, ColorUtils.backNight);
+		Render2D.drawRectWH(matrices, x + 2, y + 0, 10, 10, setting.isToggle() ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
+		Render2D.drawRectWH(matrices, x + 3, y + 1, 8, height - 9, ColorUtils.backNight);
 		if (setting.isToggle()) {
 			Render2D.drawRectWH(matrices, x + 4, y + 2, 6, 6, ColorUtils.CHECK_TOGGLE);
 		}
-		FontUtils.drawStringWithShadow(matrices, this.setting.getName(), x + 18, y + 1.3, Color.WHITE.getRGB());
+		FontUtils.drawStringWithShadow(matrices, this.setting.getName(), x + 17, y + 1.5, Color.WHITE.getRGB());
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class BooleanButton extends SettingButton {
 		}
 		super.mouseClicked(mouseX, mouseY, button);
 	}
-	
+
 	@Override
 	public boolean isVisible() {
 		return setting.isVisible();

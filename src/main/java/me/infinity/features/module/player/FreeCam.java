@@ -43,6 +43,7 @@ public class FreeCam extends Module {
 
 	@Override
 	public void onDisable() {
+		if (spawnPlayer != null)
 		spawnPlayer.despawn();
 		spawnPlayer = null;
 

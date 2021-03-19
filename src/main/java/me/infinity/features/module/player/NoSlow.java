@@ -10,9 +10,8 @@ import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.utils.EntityUtil;
 import me.infinity.utils.Helper;
-import me.infinity.utils.PacketUtil;
+import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -41,6 +40,5 @@ public class NoSlow extends Module {
 				}
 			}
 		}
-		PacketUtil.cancelServerPosition(event);
 	}
 }

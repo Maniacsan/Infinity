@@ -55,6 +55,19 @@ public class PacketUtil {
 			}
 		}
 	}
+	
+	public static void setPosition(PacketEvent event, double x, double y, double z, boolean ground) {
+		if (event.getType().equals(EventType.SEND)) {
+			if (event.getPacket() instanceof PlayerMoveC2SPacket) {
+				PlayerMoveC2SPacket cp = (PlayerMoveC2SPacket) event.getPacket();
+				((IPlayerMoveC2SPacket) cp).setX(x);
+				((IPlayerMoveC2SPacket) cp).setY(y);
+				((IPlayerMoveC2SPacket) cp).setZ(z);
+				((IPlayerMoveC2SPacket) cp).setOnGround(ground);
+			}
+		}
+	}
+
 
 	public static void cancelServerPosition(PacketEvent event) {
 		if (event.getType().equals(EventType.RECIEVE)) {

@@ -13,18 +13,15 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.TimeHelper;
+import me.infinity.utils.PacketUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Critical hit", key = GLFW.GLFW_KEY_B, name = "Criticals", visible = true)
 public class Criticals extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
 			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet" })), () -> true);
-
-	private TimeHelper timer = new TimeHelper();
 
 	@Override
 	public void onPlayerTick() {
@@ -38,20 +35,16 @@ public class Criticals extends Module {
 				Packet<?> packet = event.getPacket();
 				if (packet instanceof PlayerInteractEntityC2SPacket && ((PlayerInteractEntityC2SPacket) packet)
 						.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-					if (event.getPacket() instanceof PlayerMoveC2SPacket.Both)
-						event.cancel();
-					Helper.sendPacket(new PlayerMoveC2SPacket.Both(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 0.05000000074505806D, Helper.getPlayer().getZ(),
-							Helper.getPlayer().yaw, Helper.getPlayer().pitch, false));
-					Helper.sendPacket(new PlayerMoveC2SPacket.Both(Helper.getPlayer().getX(), Helper.getPlayer().getY(),
-							Helper.getPlayer().getZ(), Helper.getPlayer().yaw, Helper.getPlayer().pitch, false));
+					PacketUtil.setPosition(event, Helper.getPlayer().getX(),
+							Helper.getPlayer().getY() + 0.05000000074505806D, Helper.getPlayer().getZ(), false);
+					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY(),
+							Helper.getPlayer().getZ(), false);
 					Helper.getPlayer().setPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + 0.01f,
 							Helper.getPlayer().getZ());
-					Helper.sendPacket(new PlayerMoveC2SPacket.Both(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 0.012511000037193298D, Helper.getPlayer().getZ(),
-							Helper.getPlayer().yaw, Helper.getPlayer().pitch, false));
-					Helper.sendPacket(new PlayerMoveC2SPacket.Both(Helper.getPlayer().getX(), Helper.getPlayer().getY(),
-							Helper.getPlayer().getZ(), Helper.getPlayer().yaw, Helper.getPlayer().pitch, false));
+					PacketUtil.setPosition(event, Helper.getPlayer().getX(),
+							Helper.getPlayer().getY() + 0.012511000037193298D, Helper.getPlayer().getZ(), false);
+					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY(),
+							Helper.getPlayer().getZ(), false);
 				}
 			}
 		}

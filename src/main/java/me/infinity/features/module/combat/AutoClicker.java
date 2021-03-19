@@ -4,9 +4,9 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.mixin.IMinecraftClient;
-import me.infinity.utils.EntityUtil;
 import me.infinity.utils.Helper;
 import me.infinity.utils.TimeHelper;
+import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.LivingEntity;
 
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Clicking on pressed LKM", key = -2, name = "AutoClicker", visible = true)

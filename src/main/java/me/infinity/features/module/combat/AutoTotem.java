@@ -20,17 +20,18 @@ public class AutoTotem extends Module {
 		if (!UpdateUtil.canUpdate())
 			return;
 
-		if (Helper.getPlayer().getHealth() < this.health.getCurrentValueDouble())
-			return;
-		
-		int totem = InvUtil.findItemFullInv(Items.TOTEM_OF_UNDYING);
+		// health check
+		if (Helper.getPlayer().getHealth() >= this.health.getCurrentValueDouble()) {
 
-		int slot = totem < 9 ? totem + 36 : totem;
-		if (Helper.getPlayer().getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING) {
-			if (totem != -2) {
-				InvUtil.switchItem(slot, 0);
-				InvUtil.switchItem(offHand, 0);
-				InvUtil.switchItem(slot, 1);
+			int totem = InvUtil.findItemFullInv(Items.TOTEM_OF_UNDYING);
+
+			int slot = totem < 9 ? totem + 36 : totem;
+			if (Helper.getPlayer().getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING) {
+				if (totem != -2) {
+					InvUtil.switchItem(slot, 0);
+					InvUtil.switchItem(offHand, 0);
+					InvUtil.switchItem(slot, 1);
+				}
 			}
 		}
 	}

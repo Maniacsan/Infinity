@@ -20,7 +20,8 @@
   "IKeyBinding",
   "GenericContainerScreenMixin",
   "MouseMixin",
-  "RenderTickCounterMixin"
+  "RenderTickCounterMixin",
+  "WorldRendererEvent"
   ],
     "injectors": {
     "defaultRequire": 1

@@ -1,17 +1,25 @@
 package me.infinity.event;
 
-import com.darkmagician6.eventapi.events.Event;
+import com.darkmagician6.eventapi.events.callables.EventCancellable;
+import com.darkmagician6.eventapi.types.EventType;
 
-public class RenderEvent implements Event {
+public class RenderEvent extends EventCancellable {
 
-	public float tickDelta;
-	public double offsetX, offsetY, offsetZ;
+	private EventType type;
 
-	public RenderEvent(float tickDelta, double offsetX, double offsetY, double offsetZ) {
+	private float tickDelta;
+
+	public RenderEvent(EventType type, float tickDelta) {
+		this.type = type;
 		this.tickDelta = tickDelta;
-		this.offsetX = offsetX;
-		this.offsetY = offsetY;
-		this.offsetZ = offsetZ;
+	}
+
+	public EventType getType() {
+		return type;
+	}
+
+	public float getTickDelta() {
+		return tickDelta;
 	}
 
 }

@@ -79,7 +79,7 @@ public class Panel {
 		Render2D.drawRectWH(matrices, x + 1, y + 3, 64, height - 6, ColorUtils.backNight);
 
 		String dirStr = "C:\\license\\infinity.jar";
-		FontUtils.drawString(matrices, dirStr, (int) x + 1, (int) y - 8, 0xFF8E8E8E);
+		FontUtils.drawString(matrices, dirStr, (int) x + 1, (int) y - 9, 0xFF8E8E8E);
 		// close button
 		Render2D.drawRectWH(matrices, x + width - 20, y - 11, 19, 10, closeHovered ? 0xFFF31919 : 0xFFBAB7B7);
 		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10,

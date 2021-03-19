@@ -41,19 +41,21 @@ public class Module {
 	public void onPlayerTick() {
 	}
 
+	// 2d render
 	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 	}
 
+	
 	// Fast use
 	public void enable() {
 		setEnabled(!isEnabled());
 	}
-	
+
 	public void enableHandle() {
 		EventManager.register(this);
 		onEnable();
 	}
-	
+
 	public void disableHandle() {
 		EventManager.unregister(this);
 		onDisable();
@@ -77,7 +79,7 @@ public class Module {
 				final Object o = field.get(this);
 
 				if (o instanceof Settings)
-                    settings.add((Settings) o);
+					settings.add((Settings) o);
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
@@ -85,7 +87,7 @@ public class Module {
 
 		return settings;
 	}
-	
+
 	public String toCompare() {
 		return getSortedName() + " " + Helper.replaceNull(getSuffix());
 	}
@@ -153,6 +155,7 @@ public class Module {
 
 	/**
 	 * use only tick update methods
+	 * 
 	 * @param suffix
 	 */
 	public void setSuffix(String suffix) {

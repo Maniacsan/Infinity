@@ -3,8 +3,8 @@ package me.infinity.features.module.combat;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.utils.EntityUtil;
 import me.infinity.utils.MathAssist;
+import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.Entity;
 
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Edit entity hitbox", key = -2, name = "HitBoxes", visible = true)
@@ -24,7 +24,7 @@ public class HitBoxes extends Module {
 	}
 
 	public boolean isTarget(Entity entity) {
-		if (EntityUtil.isTarget(entity, players.isToggle(), invisibles.isToggle(), mobs.isToggle(),
+		if (EntityUtil.isTarget(entity, players.isToggle(), false, invisibles.isToggle(), mobs.isToggle(),
 				animals.isToggle())) {
 			return true;
 		}

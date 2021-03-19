@@ -48,7 +48,7 @@ public class EntityMixin {
 	}
 
 	@Inject(method = "getRotationVector", at = @At("HEAD"), cancellable = true)
-	private Vec3d onGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> info) {
+	private void onGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> info) {
 		RotationEvent rotationEvent = new RotationEvent(yaw, pitch);
 		EventManager.call(rotationEvent);
 
@@ -56,14 +56,6 @@ public class EntityMixin {
 			pitch = rotationEvent.getPitch();
 			yaw = rotationEvent.getYaw();
 		}
-		float f = pitch * 0.017453292F;
-		float g = -yaw * 0.017453292F;
-		float h = MathHelper.cos(g);
-		float i = MathHelper.sin(g);
-		float j = MathHelper.cos(f);
-		float k = MathHelper.sin(f);
-		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
-
 	}
 
 }

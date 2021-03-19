@@ -11,7 +11,7 @@ import me.infinity.ui.account.main.AccountManager;
 import me.infinity.ui.account.main.AccountThread;
 import me.infinity.ui.util.ListWidget;
 import me.infinity.utils.Helper;
-import me.infinity.utils.RenderUtil;
+import me.infinity.utils.render.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

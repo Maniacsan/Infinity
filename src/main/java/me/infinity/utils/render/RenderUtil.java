@@ -1,20 +1,17 @@
-package me.infinity.utils;
+package me.infinity.utils.render;
 
 import java.awt.Color;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
+import me.infinity.utils.Helper;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.texture.PlayerSkinTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-/**
- * Only 2D please
- *
- */
 public class RenderUtil {
 
 

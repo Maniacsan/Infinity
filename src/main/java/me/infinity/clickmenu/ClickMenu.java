@@ -74,7 +74,6 @@ public class ClickMenu extends Screen {
 	
 	@Override
 	public void onClose() {
-		InfMain.getModuleManager().getModuleByClass(GuiMod.class).setEnabled(false);
 		super.onClose();
 	}
 

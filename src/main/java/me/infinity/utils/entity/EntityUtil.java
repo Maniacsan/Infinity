@@ -1,10 +1,12 @@
-package me.infinity.utils;
+package me.infinity.utils.entity;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import me.infinity.InfMain;
+import me.infinity.utils.Helper;
+import me.infinity.utils.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -21,7 +23,6 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -47,16 +48,6 @@ public class EntityUtil {
 		return entity;
 	}
 
-	public static Entity setRenderTarget(boolean players, boolean invisibles, boolean mobs, boolean animals) {
-		Entity entity = null;
-		for (Entity target : Helper.minecraftClient.world.getEntities()) {
-			if (isTarget(target, players, invisibles, mobs, animals)) {
-				entity = target;
-			}
-		}
-		return entity;
-	}
-
 	public static List<Entity> getTargets(double fov, boolean players, boolean friends, boolean invisibles,
 			boolean mobs, boolean animals) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
@@ -64,6 +55,33 @@ public class EntityUtil {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * for render
+	 * 
+	 * @param players
+	 * @param invisibles
+	 * @param mobs
+	 * @param animals
+	 * @return
+	 */
+	public static List<Entity> getRenderTargets(boolean players, boolean friends, boolean invisibles, boolean mobs,
+			boolean animals) {
+		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
+				.filter(entity -> isTarget(entity, friends, players, invisibles, mobs, animals))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * 
+	 * @param entity
+	 * @param fov
+	 * @param players
+	 * @param friends
+	 * @param invisibles
+	 * @param mobs
+	 * @param animals
+	 * @return
+	 */
 	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
 			boolean invisibles, boolean mobs, boolean animals) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
@@ -91,8 +109,21 @@ public class EntityUtil {
 		return false;
 	}
 
-	public static boolean isTarget(Entity entity, boolean players, boolean invisibles, boolean mobs, boolean animals) {
-		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
+	/**
+	 * @param entity
+	 * @param players
+	 * @param invisibles
+	 * @param mobs
+	 * @param animals
+	 * @return
+	 */
+	public static boolean isTarget(Entity entity, boolean players, boolean friends, boolean invisibles, boolean mobs,
+			boolean animals) {
+		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer()
+				|| entity == Helper.getPlayer().getVehicle())
+			return false;
+
+		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
 			return false;
 
 		if (invisibles && entity.isInvisible())
@@ -103,10 +134,6 @@ public class EntityUtil {
 			return true;
 		if (animals && isAnimal(entity))
 			return true;
-
-		// entity dead check
-		if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
-			return false;
 
 		return false;
 	}
@@ -163,49 +190,6 @@ public class EntityUtil {
 		return null;
 	}
 
-	// raycast to block rotation
-	public static void updateBlockRaycast(HitResult crosshairTarget, float yaw, float pitch) {
-		float tickDelta = Helper.minecraftClient.getTickDelta();
-		Entity entity = Helper.minecraftClient.getCameraEntity();
-		if (entity != null) {
-			if (Helper.minecraftClient.world != null) {
-				Helper.minecraftClient.getProfiler().push("pick");
-				double d = Helper.minecraftClient.interactionManager.getReachDistance();
-				Helper.minecraftClient.crosshairTarget = entity.raycast(d, tickDelta, false);
-				Vec3d vec3d = entity.getCameraPosVec(tickDelta);
-				boolean bl = false;
-				double e = d;
-
-				e *= e;
-				if (Helper.minecraftClient.crosshairTarget != null) {
-					e = Helper.minecraftClient.crosshairTarget.getPos().squaredDistanceTo(vec3d);
-				}
-
-				Vec3d vec3d2 = RotationUtils.getRotationVec(yaw, pitch);
-				Vec3d vec3d3 = vec3d.add(vec3d2.x * d, vec3d2.y * d, vec3d2.z * d);
-				Box box = entity.getBoundingBox().stretch(vec3d2.multiply(d)).expand(1.0D, 1.0D, 1.0D);
-				EntityHitResult entityHitResult = ProjectileUtil.raycast(entity, vec3d, vec3d3, box, (entityx) -> {
-					return !entityx.isSpectator() && entityx.collides();
-				}, e);
-				if (entityHitResult != null) {
-					Vec3d vec3d4 = entityHitResult.getPos();
-					double g = vec3d.squaredDistanceTo(vec3d4);
-					if (bl && g > 9.0D) {
-						Helper.minecraftClient.crosshairTarget = BlockHitResult.createMissed(vec3d4,
-								Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), new BlockPos(vec3d4));
-						crosshairTarget = BlockHitResult.createMissed(vec3d4,
-								Direction.getFacing(vec3d2.x, vec3d2.y, vec3d2.z), new BlockPos(vec3d4));
-					} else if (g < e || Helper.minecraftClient.crosshairTarget == null) {
-						Helper.minecraftClient.crosshairTarget = entityHitResult;
-						crosshairTarget = entityHitResult;
-					}
-				}
-
-				Helper.minecraftClient.getProfiler().pop();
-			}
-		}
-	}
-
 	public static boolean placeBlock(Hand hand, BlockPos pos) {
 		if (!Helper.minecraftClient.world.getBlockState(pos).getMaterial().isReplaceable())
 			return false;
@@ -243,6 +227,28 @@ public class EntityUtil {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Render color
+	 * 
+	 * @param entity
+	 * @param player
+	 * @param mobs
+	 * @param animals
+	 * @return
+	 */
+	public static int getEntitiesColor(Entity entity, int players, int friends, int mobs, int animals) {
+		int color = -1;
+		if (entity instanceof PlayerEntity)
+			color = players;
+		if (InfMain.getFriend().check(entity.getEntityName()))
+			color = friends;
+		if (isMonster(entity))
+			color = mobs;
+		if (isAnimal(entity))
+			color = animals;
+		return color;
 	}
 
 	public static void swing(boolean animation) {
