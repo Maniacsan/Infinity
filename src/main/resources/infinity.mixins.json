@@ -21,7 +21,8 @@
   "GenericContainerScreenMixin",
   "MouseMixin",
   "RenderTickCounterMixin",
-  "WorldRendererEvent"
+  "WorldRendererEvent",
+  "HandledScreenMixin"
   ],
     "injectors": {
     "defaultRequire": 1

@@ -35,10 +35,16 @@ public class ESP extends Module {
 	private Settings playerColor = new Settings(this, "Player Color", new Color(247, 251, 247),
 			() -> players.isToggle());
 	private Settings friendsColor = new Settings(this, "Friends Color", new Color(247, 251, 247),
-			() -> friends.isToggle());
+			() -> players.isToggle() && friends.isToggle());
 	private Settings mobsColor = new Settings(this, "Mobs Color", new Color(236, 173, 24), () -> mobs.isToggle());
 	private Settings animalsColor = new Settings(this, "Animals Color", new Color(108, 234, 42),
 			() -> animals.isToggle());
+	
+	
+	@Override
+	public void onPlayerTick() {
+		setSuffix(mode.getCurrentMode());
+	}
 	
 
 	@EventTarget

@@ -204,7 +204,7 @@ public class Render2D {
 		float f2 = (color >> 8 & 0xFF) / 255.0F;
 		float f3 = (color & 0xFF) / 255.0F;
 		GL11.glPushMatrix();
-		GL11.glColor4f(f1, f2, f3, 255.0F);
+		GL11.glColor4f(f1, f2, f3, f);
 		GL11.glEnable(3042);
 		GL11.glDisable(3553);
 		GL11.glEnable(2848);
@@ -250,28 +250,33 @@ public class Render2D {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
 
-	public static void drawTriangle(float rotate, double x, double y, double size, int k) {
-		float f = (k >> 24 & 0xFF) / 255.0F;
-		float f1 = (k >> 16 & 0xFF) / 255.0F;
-		float f2 = (k >> 8 & 0xFF) / 255.0F;
-		float f3 = (k & 0xFF) / 255.0F;
-		GL11.glPushMatrix();
-		GL11.glRotatef(rotate, 0.0F, 0.0F, 1.0F);
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glEnable(2848);
-		GL11.glBlendFunc(770, 771);
-		GL11.glBegin(4);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d((x - size), (y - size));
-		GL11.glVertex2d((x - size), (y + size));
-		GL11.glEnd();
-		GL11.glDisable(2848);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glRotatef(-rotate, 0.0F, 0.0F, 1.0F);
-		GL11.glPopMatrix();
+	public static void drawTriangle(int x, int y, int size, int rotation, int color) {
+        GL11.glTranslated(x, y, 0);
+        GL11.glRotatef(180 + rotation, 0F, 0F, 1.0F);
+
+        float alpha = (float) (color >> 24 & 255) / 255.0F;
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+
+        GL11.glColor4f(red, green, blue, alpha);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glDisable(GL11.GL_TEXTURE_2D);
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        GL11.glLineWidth(1);
+        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+
+        GL11.glVertex2d(0, (1.0F * size));
+        GL11.glVertex2d((1 * size), -(1.0F * size));
+        GL11.glVertex2d(-(1 * size), -(1.0F * size));
+
+        GL11.glEnd();
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glRotatef(-180 - rotation, 0F, 0F, 1.0F);
+        GL11.glTranslated(-x, -y, 0);
 	}
 
 	// scroll

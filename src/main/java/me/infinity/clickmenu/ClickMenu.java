@@ -29,8 +29,10 @@ public class ClickMenu extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		super.render(matrices, mouseX, mouseY, delta);
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+		
 		mouseX /= scale;
 		mouseY /= scale;
+		
 		GL11.glPushMatrix();
 		GL11.glScalef(scale, scale, scale);
 		panel.render(matrices, mouseX, mouseY, delta);
@@ -40,8 +42,10 @@ public class ClickMenu extends Screen {
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+		
 		mouseX /= scale;
 		mouseY /= scale;
+		
 		panel.mouseClicked(mouseX, mouseY, button);
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
@@ -49,8 +53,10 @@ public class ClickMenu extends Screen {
 	@Override
 	public boolean mouseReleased(double mouseX, double mouseY, int button) {
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+		
 		mouseX /= scale;
 		mouseY /= scale;
+		
 		panel.mouseReleased(mouseX, mouseY, button);
 		return super.mouseReleased(mouseX, mouseY, button);
 	}

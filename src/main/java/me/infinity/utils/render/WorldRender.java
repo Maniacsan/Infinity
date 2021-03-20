@@ -67,6 +67,27 @@ public class WorldRender {
 		gl11Cleanup();
 	}
 
+	public static void drawLine(double x1, double y1, double z1, double x2, double y2, double z2, float width,
+			int color) {
+		float r = (color >> 16 & 0xFF) / 255.0F;
+		float g = (color >> 8 & 0xFF) / 255.0F;
+		float b = (color & 0xFF) / 255.0F;
+
+		gl11Setup();
+		GL11.glLineWidth(width);
+
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder buffer = tessellator.getBuffer();
+		buffer.begin(3, VertexFormats.POSITION_COLOR);
+		buffer.vertex(x1, y1, z1).color(r, g, b, 0.0F).next();
+		buffer.vertex(x1, y1, z1).color(r, g, b, 1.0F).next();
+		buffer.vertex(x2, y2, z2).color(r, g, b, 1.0F).next();
+		tessellator.draw();
+
+		gl11Cleanup();
+
+	}
+
 	public static void offsetRender() {
 		Camera camera = BlockEntityRenderDispatcher.INSTANCE.camera;
 		Vec3d camPos = camera.getPos();

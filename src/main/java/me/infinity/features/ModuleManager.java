@@ -41,7 +41,8 @@ public class ModuleManager {
 			new FreeCam(),
 			new AutoEat(),
 			new ChatCalculator(),
-			new ESP()
+			new ESP(),
+			new Tracers()
 			);
 
 	public List<Module> getList() {
