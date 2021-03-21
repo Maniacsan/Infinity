@@ -20,7 +20,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
 
 @Mixin(WorldRenderer.class)
-public class WorldRendererEvent {
+public class WorldRendererMixin {
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void renderPre(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline,

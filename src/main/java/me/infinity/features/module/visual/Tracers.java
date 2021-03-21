@@ -32,7 +32,7 @@ public class Tracers extends Module {
 			() -> mode.getCurrentMode().equalsIgnoreCase("Lines"));
 
 	// arrows
-	private Settings radius = new Settings(this, "Radius", 3.0D, 0.5D, 10.0D,
+	private Settings radius = new Settings(this, "Radius", 1.6D, 0.5D, 8.0D,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
 	private Settings size = new Settings(this, "Size", 3.0D, 1.0D, 8.0D,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
@@ -46,7 +46,7 @@ public class Tracers extends Module {
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
 
 	// colors
-	private Settings playerColor = new Settings(this, "Player Color", new Color(247, 251, 247),
+	private Settings playerColor = new Settings(this, "Player Color", new Color(120, 97, 238),
 			() -> players.isToggle());
 	private Settings friendsColor = new Settings(this, "Friends Color", new Color(247, 251, 247),
 			() -> players.isToggle() && friends.isToggle());
@@ -70,7 +70,7 @@ public class Tracers extends Module {
 					return;
 
 				float[] toRot = RotationUtils.lookAtEntity(e, 360, 360);
-				float yaw = RotationUtils.getYaw(e) + Helper.getPlayer().yaw;
+				float yaw = RotationUtils.getYaw(e) + Helper.minecraftClient.cameraEntity.yaw;
 
 				// normalize 
 				yaw = (float) Math.toRadians(yaw);
@@ -80,7 +80,7 @@ public class Tracers extends Module {
 						animalsColor.getColor().getRGB());
 
 				Render2D.drawTriangle((width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
-						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().yaw), color);
+						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.minecraftClient.cameraEntity.yaw), color);
 			}
 		}
 	}

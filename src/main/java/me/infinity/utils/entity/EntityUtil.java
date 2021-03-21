@@ -67,7 +67,7 @@ public class EntityUtil {
 	public static List<Entity> getRenderTargets(boolean players, boolean friends, boolean invisibles, boolean mobs,
 			boolean animals) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
-				.filter(entity -> isTarget(entity, friends, players, invisibles, mobs, animals))
+				.filter(entity -> isTarget(entity, players, friends, invisibles, mobs, animals))
 				.collect(Collectors.toList());
 	}
 
@@ -119,8 +119,7 @@ public class EntityUtil {
 	 */
 	public static boolean isTarget(Entity entity, boolean players, boolean friends, boolean invisibles, boolean mobs,
 			boolean animals) {
-		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer()
-				|| entity == Helper.getPlayer().getVehicle())
+		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
 		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
@@ -148,7 +147,7 @@ public class EntityUtil {
 	}
 
 	// raycast entity
-	public static Entity updateTargetRaycast(double reachDistance, float yaw, float pitch) {
+	public static void updateTargetRaycast(Entity target, double reachDistance, float yaw, float pitch) {
 		float tickDelta = 1.0F;
 		Entity entity = Helper.minecraftClient.getCameraEntity();
 		if (entity != null) {
@@ -158,8 +157,6 @@ public class EntityUtil {
 				Helper.minecraftClient.crosshairTarget = entity.raycast(d, tickDelta, false);
 				Vec3d vec3d = entity.getCameraPosVec(tickDelta);
 				double e = d;
-
-				Entity target = null;
 
 				if (Helper.minecraftClient.crosshairTarget != null) {
 					e = Helper.minecraftClient.crosshairTarget.getPos().squaredDistanceTo(vec3d);
@@ -180,14 +177,12 @@ public class EntityUtil {
 						Helper.minecraftClient.crosshairTarget = entityHitResult;
 						if (entity2 instanceof LivingEntity || entity2 instanceof ItemFrameEntity) {
 							target = entity2;
-							return target;
 						}
 					}
 				}
 				Helper.minecraftClient.getProfiler().pop();
 			}
 		}
-		return null;
 	}
 
 	public static boolean placeBlock(Hand hand, BlockPos pos) {

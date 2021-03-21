@@ -42,7 +42,13 @@ public class ModuleManager {
 			new AutoEat(),
 			new ChatCalculator(),
 			new ESP(),
-			new Tracers()
+			new Tracers(),
+			new ItemESP(),
+			new AutoLeave(),
+			new InvWalk(),
+			new Reach(),
+			new TriggerBot(),
+			new AutoArmor()
 			);
 
 	public List<Module> getList() {

@@ -45,6 +45,8 @@ public class Criticals extends Module {
 							Helper.getPlayer().getY() + 0.012511000037193298D, Helper.getPlayer().getZ(), false);
 					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY(),
 							Helper.getPlayer().getZ(), false);
+					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY() - 2,
+							Helper.getPlayer().getZ(), true);
 				}
 			}
 		}

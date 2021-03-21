@@ -16,7 +16,6 @@ import me.infinity.features.module.combat.HitBoxes;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)

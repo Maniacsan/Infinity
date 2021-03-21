@@ -43,7 +43,7 @@ public class ClickAura extends Module {
 	public void onClick(ClickEvent event) {
 
 		target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-				friends.isToggle(), players.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 
 		if (target == null)
 			return;

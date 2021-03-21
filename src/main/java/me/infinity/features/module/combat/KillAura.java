@@ -65,6 +65,12 @@ public class KillAura extends Module {
 	private float prevYaw;
 	private float prevPitch;
 
+	// rotations
+	private float[] focus;
+	private float[] smash;
+
+	private float speed;
+
 	// rotation timers
 	private double x1 = random.nextDouble();
 	private double y1 = random.nextDouble();
@@ -86,6 +92,18 @@ public class KillAura extends Module {
 			y1 = Math.random();
 		if (random.nextGaussian() > 0.8D)
 			z1 = Math.random();
+
+		if (target == null)
+			return;
+
+		// set speed with minecraft tick
+		speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+				+ minSpeed.getCurrentValueDouble());
+
+		// set rotation
+		focus = focus();
+
+		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 	}
 
 	@Override
@@ -93,8 +111,20 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
+		if (rayCast.isToggle()) {
+			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), focus[0], focus[1]);
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), smash[0], smash[1]);
+			}
+		}
+
 		if (badStrafe.isToggle()) {
-			MoveUtil.silentStrafe(0.09f);
+			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				MoveUtil.silentStrafe(focus[0]);
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				MoveUtil.silentStrafe(smash[0]);
+			}
 		}
 	}
 
@@ -108,20 +138,12 @@ public class KillAura extends Module {
 			if (target == null)
 				return;
 
-			float[] focus = focus();
-
-			float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-					+ minSpeed.getCurrentValueDouble());
-
-			// smashed
-			float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				Helper.getPlayer().yaw = focus[0];
 				Helper.getPlayer().pitch = focus[1];
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				Helper.getPlayer().yaw = lookEntity[0];
-				Helper.getPlayer().pitch = lookEntity[1];
+				Helper.getPlayer().yaw = smash[0];
+				Helper.getPlayer().pitch = smash[1];
 			}
 
 			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
@@ -141,22 +163,11 @@ public class KillAura extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 
-		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-				+ minSpeed.getCurrentValueDouble());
-
-		// smashed
-		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-
-		// focus
-		float[] focus = focus();
-
 		if (target != null) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				if (lookEntity[1] < 90 || lookEntity[1] > -90) {
-					PacketUtil.setRotation(event, lookEntity[0], lookEntity[1]);
+				if (smash[1] < 90 || smash[1] > -90) {
 				}
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				PacketUtil.setRotation(event, focus[0], focus[1]);
 			}
 			PacketUtil.cancelServerRotation(event);
 		}
@@ -168,20 +179,11 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
-		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-				+ minSpeed.getCurrentValueDouble());
-
-		// smashed
-		float[] lookEntity = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-
-		// focus
-		float[] focus = focus();
-
 		if (rayCast.isToggle()) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				if (lookEntity[1] < 90 || lookEntity[1] > -90) {
-					event.setYaw(lookEntity[0]);
-					event.setPitch(lookEntity[1]);
+				if (smash[1] < 90 || smash[1] > -90) {
+					event.setYaw(smash[0]);
+					event.setPitch(smash[1]);
 				}
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				event.setYaw(focus[0]);
@@ -207,8 +209,10 @@ public class KillAura extends Module {
 		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005F);
 		float m = 0.005f * sens;
 		float gcd = m * m * m * 1.2f;
+		
 		toCenter[0] -= toCenter[0] % gcd;
 		toCenter[1] -= toCenter[1] % gcd;
+		
 		return new float[] { toCenter[0], toCenter[1] };
 	}
 

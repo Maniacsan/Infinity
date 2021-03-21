@@ -17,15 +17,17 @@ import net.minecraft.util.math.BlockPos;
 public class BetterBow extends Module {
 
 	private Settings counter = new Settings(this, "Count Helper", true, () -> true);
+	private Settings autoShoot = new Settings(this, "Auto Shoot", false, () -> true);
+
 	private Settings delay = new Settings(this, "Delay", 2.5, 0.1, 25.0, () -> true);
 
 	@Override
 	public void onPlayerTick() {
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()) {
-			
+
 			if (Helper.getPlayer().getItemUseTime() >= delay.getCurrentValueDouble()) {
 
-				if (Helper.minecraftClient.options.keyAttack.isPressed()) {
+				if (autoShoot.isToggle() || Helper.minecraftClient.options.keyAttack.isPressed()) {
 					Helper.sendPacket(new PlayerActionC2SPacket(Action.RELEASE_USE_ITEM, BlockPos.ORIGIN,
 							Helper.getPlayer().getHorizontalFacing()));
 					Helper.sendPacket(new PlayerInteractItemC2SPacket(Helper.getPlayer().getActiveHand()));
@@ -38,10 +40,11 @@ public class BetterBow extends Module {
 	@Override
 	public void onRender(MatrixStack matrices, float tickDelta, int width, int height) {
 		String count = "Counting... " + Formatting.BLUE + Helper.getPlayer().getItemUseTime();
-		
+
 		if (Helper.getPlayer().getItemUseTime() >= delay.getCurrentValueDouble())
-			count = "Delay Ready " + Formatting.GRAY + "press " + Formatting.BLUE + "LKM" + Formatting.GRAY
-					+ " for use";
+			if (!autoShoot.isToggle())
+				count = "Delay Ready " + Formatting.GRAY + "press " + Formatting.BLUE + "LKM" + Formatting.GRAY
+						+ " for use";
 
 		if (counter.isToggle()) {
 

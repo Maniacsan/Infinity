@@ -52,10 +52,8 @@ public class ChatCalculator extends Module {
 	@Override
 	public void onPlayerTick() {
 
-		// Client side
-		if (sendClient) {
+		if (sendClient) { // Client side
 
-			// chtobi ne proizoshel vzriv pc
 			sendServer = false;
 
 			if (time > 0) {
@@ -73,6 +71,26 @@ public class ChatCalculator extends Module {
 
 			}
 			sendClient = false;
+			
+		} else if (sendServer) { //Server side
+
+			sendClient = false;
+
+			if (time > 0) {
+				time--;
+				return;
+			}
+
+			if (serverResult != null) {
+
+				if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+					Helper.getPlayer().sendChatMessage(serverResult);
+				} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+					Helper.infoMessage(serverResult);
+				}
+
+			}
+			sendServer = false;
 		}
 	}
 
@@ -80,24 +98,24 @@ public class ChatCalculator extends Module {
 	public void onServerMessages(ServerChatEvent event) {
 		if (serverSide.isToggle()) {
 
-			String message = event.getMessage();
-			
+			String message = event.getMessage().replace(" ", "");
+
 			String split = message.split(":")[0];
 
-			String chatMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "") : message.replace(split + ":", "");
+			String chatMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
+					: message.replace(split + ":", "");
 
 			Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
 
-			double result = TermSolver.solvePostfix(postfix.get());
+			if (postfix.isPresent()) {
 
-			serverResult = String.valueOf((int) result);
+				double result = TermSolver.solvePostfix(postfix.get());
 
-			time = (int) delay.getCurrentValueDouble();
+				serverResult = String.valueOf((int) result);
 
-			if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-				Helper.getPlayer().networkHandler.sendPacket(new ChatMessageC2SPacket(String.valueOf((int) result)));
-			} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-				Helper.infoMessage(String.valueOf((int) result));
+				time = (int) delay.getCurrentValueDouble();
+
+				sendServer = true;
 			}
 
 		}

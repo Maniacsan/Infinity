@@ -44,7 +44,6 @@ public class WorldRender {
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 
-		// Outline
 		buffer.begin(3, VertexFormats.POSITION_COLOR);
 		buffer.vertex(box.minX, box.minY, box.minZ).color(r, g, b, a).next();
 		buffer.vertex(box.minX, box.minY, box.maxZ).color(r, g, b, a).next();
