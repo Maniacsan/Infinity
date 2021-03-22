@@ -23,7 +23,8 @@
   "RenderTickCounterMixin",
   "WorldRendererMixin",
   "HandledScreenMixin",
-  "EntityRendererMixin"
+  "EntityRendererMixin",
+  "ILivingEntity"
   ],
     "injectors": {
     "defaultRequire": 1

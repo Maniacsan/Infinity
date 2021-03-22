@@ -25,6 +25,7 @@ public class PacketUtil {
 				if (!Float.isNaN(yaw) || !Float.isNaN(pitch)) {
 					((IPlayerMoveC2SPacket) cp).setYaw(yaw);
 					((IPlayerMoveC2SPacket) cp).setPitch(pitch);
+					((IPlayerMoveC2SPacket) cp).setLook(true);
 				}
 			}
 		}
@@ -52,6 +53,7 @@ public class PacketUtil {
 				((IPlayerMoveC2SPacket) cp).setX(x);
 				((IPlayerMoveC2SPacket) cp).setY(y);
 				((IPlayerMoveC2SPacket) cp).setZ(z);
+				((IPlayerMoveC2SPacket) cp).setPos(true);
 			}
 		}
 	}
@@ -64,21 +66,11 @@ public class PacketUtil {
 				((IPlayerMoveC2SPacket) cp).setY(y);
 				((IPlayerMoveC2SPacket) cp).setZ(z);
 				((IPlayerMoveC2SPacket) cp).setOnGround(ground);
+				((IPlayerMoveC2SPacket) cp).setPos(true);
 			}
 		}
 	}
 
-
-	public static void cancelServerPosition(PacketEvent event) {
-		if (event.getType().equals(EventType.RECIEVE)) {
-			if (event.getPacket() instanceof PlayerPositionLookS2CPacket) {
-				PlayerPositionLookS2CPacket serverLook = (PlayerPositionLookS2CPacket) event.getPacket();
-				((IPlayerPositionLookS2CPacket) serverLook).setX(Helper.getPlayer().getX());
-				((IPlayerPositionLookS2CPacket) serverLook).setY(Helper.getPlayer().getY());
-				((IPlayerPositionLookS2CPacket) serverLook).setZ(Helper.getPlayer().getZ());
-			}
-		}
-	}
 
 	public static void cancelMotionPackets(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {

@@ -29,7 +29,6 @@ public class InfMain {
 	private static MacroManager macroManager;
 	private static Friend friend;
 
-
 	public void initialize() {
 		infDirection = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
 		//

@@ -9,11 +9,16 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class WorldRender {
+
+	public static void drawFill(BlockPos pos, int color) {
+		drawFill(new Box(pos), color);
+	}
 
 	public static void drawFill(Box box, int color) {
 		float a = (color >> 24 & 0xFF) / 255.0F;

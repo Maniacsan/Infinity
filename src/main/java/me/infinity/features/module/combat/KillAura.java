@@ -19,9 +19,10 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.PacketUtil;
-import me.infinity.utils.RotationUtils;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.entity.PlayerSend;
+import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -126,6 +127,7 @@ public class KillAura extends Module {
 				MoveUtil.silentStrafe(smash[0]);
 			}
 		}
+
 	}
 
 	@EventTarget
@@ -137,26 +139,26 @@ public class KillAura extends Module {
 					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
-
+			
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				Helper.getPlayer().yaw = focus[0];
-				Helper.getPlayer().pitch = focus[1];
+				PlayerSend.setRotation(focus[0], focus[1]);
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				Helper.getPlayer().yaw = smash[0];
-				Helper.getPlayer().pitch = smash[1];
+				PlayerSend.setRotation(smash[0], smash[1]);
 			}
+		
 
 			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
 				attack();
 			}
 		} else if (event.getType().equals(EventType.POST)) {
+			if (target == null)
+				return;
+			
 			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
 				attack();
 			}
-
-			// spoofing rotation camera
-			Helper.getPlayer().yaw = prevYaw;
-			Helper.getPlayer().pitch = prevPitch;
+			
+			
 		}
 	}
 
@@ -166,9 +168,11 @@ public class KillAura extends Module {
 		if (target != null) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				if (smash[1] < 90 || smash[1] > -90) {
+					PacketUtil.setRotation(event, smash[0], smash[1]);
 				}
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-			}
+				PacketUtil.setRotation(event, focus[0], focus[1]);	
+				}
 			PacketUtil.cancelServerRotation(event);
 		}
 
@@ -196,22 +200,33 @@ public class KillAura extends Module {
 	public void attack() {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
+			double x = Helper.getPlayer().getX();
+			double y = Helper.getPlayer().getY();
+			double z = Helper.getPlayer().getZ();
 			Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
+			PlayerSend.setPosition(x, y + 0.0625, z, true);
+			PlayerSend.setPosition(x, y, z, false);
+			PlayerSend.setPosition(x, y + 1.1E-5, z, false);
+			PlayerSend.setPosition(x, y, z, false);
 			EntityUtil.swing(!noSwing.isToggle());
 			timer.reset();
 		}
 	}
 
 	public float[] focus() {
-		float speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-				+ minSpeed.getCurrentValueDouble());
 		float[] toCenter = RotationUtils.lookAtEntity(target, speed, speed);
-		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005F);
-		float m = 0.005f * sens;
-		float gcd = m * m * m * 1.2f;
+		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity);
+		float f = (float) (sens * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
 		
-		toCenter[0] -= toCenter[0] % gcd;
-		toCenter[1] -= toCenter[1] % gcd;
+		float diffYaw = toCenter[0] - prevYaw;
+		float diffPitch = toCenter[1] - prevPitch;
+		
+		diffYaw -= diffYaw % gcd;
+		toCenter[0] = prevYaw + diffYaw;
+		
+		diffPitch -= diffPitch % gcd;
+		toCenter[1] = prevPitch + diffPitch;
 		
 		return new float[] { toCenter[0], toCenter[1] };
 	}

@@ -1,5 +1,6 @@
-package me.infinity.utils;
+package me.infinity.utils.rotation;
 
+import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.MathHelper;
@@ -190,6 +191,12 @@ public class RotationUtils {
 		float j = MathHelper.cos(f);
 		float k = MathHelper.sin(f);
 		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
+	}
+
+	public static Vec3d getEyesPos() {
+		return new Vec3d(Helper.getPlayer().getX(),
+				Helper.getPlayer().getY() + Helper.getPlayer().getEyeHeight(Helper.getPlayer().getPose()),
+				Helper.getPlayer().getZ());
 	}
 
 }

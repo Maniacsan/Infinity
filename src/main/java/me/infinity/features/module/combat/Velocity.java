@@ -3,8 +3,6 @@ package me.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.apache.commons.lang3.RandomUtils;
-
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
@@ -14,7 +12,6 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.mixin.IEntityVelocityUpdateS2CPacket;
 import me.infinity.utils.Helper;
-import me.infinity.utils.PacketUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 

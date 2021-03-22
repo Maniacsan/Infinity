@@ -8,12 +8,14 @@ import org.lwjgl.glfw.GLFW;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.mixin.ILivingEntity;
 import me.infinity.utils.Helper;
-import me.infinity.utils.PacketUtil;
+import me.infinity.utils.entity.PlayerSend;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 
@@ -22,10 +24,27 @@ public class Criticals extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
 			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet" })), () -> true);
+	
+	private boolean attack;
+	private double attackTick;
 
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
+	}
+
+	@EventTarget
+	public void onMotion(MotionEvent event) {
+		if (event.getType().equals(EventType.POST)) {
+			if (this.mode.getCurrentMode().equals("Packet")) {
+				double x = Helper.getPlayer().getX();
+				double y = Helper.getPlayer().getY();
+				double z = Helper.getPlayer().getZ();
+				
+				PlayerSend.setPosition(x, y + 1.1E-5, z, false);
+				PlayerSend.setPosition(x, y, z, false);
+			}
+		}
 	}
 
 	@EventTarget
@@ -35,18 +54,7 @@ public class Criticals extends Module {
 				Packet<?> packet = event.getPacket();
 				if (packet instanceof PlayerInteractEntityC2SPacket && ((PlayerInteractEntityC2SPacket) packet)
 						.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-					PacketUtil.setPosition(event, Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 0.05000000074505806D, Helper.getPlayer().getZ(), false);
-					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY(),
-							Helper.getPlayer().getZ(), false);
-					Helper.getPlayer().setPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + 0.01f,
-							Helper.getPlayer().getZ());
-					PacketUtil.setPosition(event, Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 0.012511000037193298D, Helper.getPlayer().getZ(), false);
-					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY(),
-							Helper.getPlayer().getZ(), false);
-					PacketUtil.setPosition(event, Helper.getPlayer().getX(), Helper.getPlayer().getY() - 2,
-							Helper.getPlayer().getZ(), true);
+
 				}
 			}
 		}

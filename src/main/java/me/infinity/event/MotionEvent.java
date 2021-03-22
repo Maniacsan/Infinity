@@ -11,7 +11,7 @@ import com.darkmagician6.eventapi.types.EventType;
  */
 public class MotionEvent extends EventCancellable {
 	
-	EventType type;
+	private EventType type;
 	
 	public MotionEvent(EventType type) {
 		this.type = type;

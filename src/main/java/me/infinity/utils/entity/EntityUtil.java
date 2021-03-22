@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import me.infinity.InfMain;
 import me.infinity.utils.Helper;
-import me.infinity.utils.RotationUtils;
+import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -26,6 +26,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class EntityUtil {
@@ -263,5 +264,12 @@ public class EntityUtil {
 		if (Helper.getPlayer().getStatusEffect(effect) != null)
 			return true;
 		return false;
+	}
+
+	public static float distanceToBlock(BlockPos pos) {
+		float f = (float) (Helper.getPlayer().getX() - pos.getX());
+		float g = (float) (Helper.getPlayer().getY() - pos.getY());
+		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
+		return MathHelper.sqrt(f * f + g * g + h * h);
 	}
 }
