@@ -31,6 +31,15 @@ public class MoveUtil {
 		moveYaw = (float) Math.toRadians(moveYaw);
 		return moveYaw;
 	}
+	
+	public static void strafe(double speed) {
+		if (!isMoving())
+			return;
+		float yaw = getYaw();
+		double x = -Math.sin(yaw) * speed;
+		double y = Math.cos(yaw) * speed;
+		Helper.getPlayer().setVelocity(x, 0, y);
+	}
 
 	/**
 	 * Silent strafe (matrix "BadStrafe" killaura check bypass)
@@ -115,7 +124,7 @@ public class MoveUtil {
 	}
 
 	public static float getBaseSpeed() {
-		float g = 0.007F;
+		float g = 0.005F;
 		float h = EnchantmentHelper.getDepthStrider(Helper.getPlayer());
 		if (h > 3.0F)
 			h = 3.0F;

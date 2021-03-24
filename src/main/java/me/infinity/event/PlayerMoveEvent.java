@@ -14,5 +14,22 @@ public class PlayerMoveEvent extends EventCancellable {
 		this.type = type;
 		this.vec3d = vec3d;
 	}
+	
+	public MovementType getType() {
+		return type;
+	}
+
+	public void setType(MovementType type) {
+		this.type = type;
+	}
+
+	public Vec3d getVec3d() {
+		return vec3d;
+	}
+
+	public void setVec3d(Vec3d vec3d) {
+		this.vec3d = vec3d;
+	}
+
 
 }

@@ -35,13 +35,15 @@ public class TriggerBot extends Module {
 		if (EntityUtil.isTarget(Helper.minecraftClient.targetedEntity, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle())) {
 			if (Helper.minecraftClient.targetedEntity != null) {
-				
+
 				if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 						: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-					((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
-					
-					Helper.getPlayer().resetLastAttackedTicks();
-					timer.reset();
+					if (Criticals.fall()) {
+						((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
+
+						Helper.getPlayer().resetLastAttackedTicks();
+						timer.reset();
+					}
 				}
 			}
 

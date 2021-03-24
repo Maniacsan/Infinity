@@ -48,7 +48,8 @@ public class ModuleManager {
 			new InvWalk(),
 			new Reach(),
 			new TriggerBot(),
-			new AutoArmor()
+			new AutoArmor(),
+			new TargetStrafe()
 			);
 
 	public List<Module> getList() {

@@ -1,23 +1,37 @@
 package me.infinity.features.module.visual;
 
-import com.darkmagician6.eventapi.EventTarget;
-import com.mojang.blaze3d.systems.RenderSystem;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
-import me.infinity.clickmenu.util.FontUtils;
-import me.infinity.clickmenu.util.Render2D;
+import org.lwjgl.opengl.GL11;
+
+import com.darkmagician6.eventapi.EventTarget;
+
 import me.infinity.event.EntityTagEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.render.RenderUtil;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.Vec3d;
 
 @ModuleInfo(category = Module.Category.VISUAL, desc = "Makes name tags convenient", key = -2, name = "NameTags", visible = true)
 public class NameTags extends Module {
+
+	private Settings armor = new Settings(this, "Armor", true, () -> true);
 
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", true, () -> players.isToggle());
@@ -34,34 +48,77 @@ public class NameTags extends Module {
 		event.cancel();
 	}
 
-	// EntityRenderer.class, method = renderLabelIfPresent
 	public void renderTag(MatrixStack matrices) {
 		for (Entity entity : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
 				mobs.isToggle(), animals.isToggle())) {
-			float calcScale = (float) Math.max(
+			float cScale = (float) Math.max(
 					Math.min(Helper.getPlayer().distanceTo(entity) / (100 / scale.getCurrentValueDouble()), 2.4 / 50),
 					1 / 80d);
-			String tag = entity.getDisplayName().getString() + " " + getHealthColor((LivingEntity) entity)
-					+ ((LivingEntity) entity).getHealth();
+			List<String> lines = new ArrayList<>();
 
-			float f = entity.getHeight() + 0.5F;
+			Vec3d rPos = EntityUtil.getRenderPos(entity);
+			lines.add(entity.getName().getString() + " " + getHealthColor((LivingEntity) entity)
+					+ ((LivingEntity) entity).getHealth());
 
-			int i = "spray123".equals(entity.getDisplayName().getString()) ? -10 : 0;
+			double c = 0;
+			double lscale = cScale * 0.4;
+			double up = ((0.3 + lines.size() * 0.25) * cScale) + lscale / 2;
 
-			matrices.push();
-			matrices.translate(0.0D, (double) f, 0.0D);
-			matrices.multiply(Helper.minecraftClient.getEntityRenderDispatcher().getRotation());
-			matrices.scale(-calcScale, -calcScale, calcScale);
-			RenderSystem.enableAlphaTest();
-			RenderSystem.disableDepthTest();
+			if (entity instanceof PlayerEntity) {
+				if (this.armor.isToggle()) {
+					drawItem(rPos.x, rPos.y + up, rPos.z, -2.5, 0, lscale,
+							((PlayerEntity) entity).getEquippedStack(EquipmentSlot.MAINHAND));
+					drawItem(rPos.x, rPos.y + up, rPos.z, 2.5, 0, lscale,
+							((PlayerEntity) entity).getEquippedStack(EquipmentSlot.OFFHAND));
 
-			float h = (float) (-FontUtils.getStringWidth(tag) / 2);
-			Render2D.drawRect(matrices, -h + 3, i - 2, h - 3, 10, 0x90000000);
+					for (ItemStack i : entity.getArmorItems()) {
+						drawItem(rPos.x, rPos.y + up, rPos.z, c + 1.5, 0, lscale, i);
+						c--;
+					}
+				}
+			}
 
-			FontUtils.drawString(matrices, tag, h, i, 0xFFD1D1D1);
+			if (!lines.isEmpty()) {
+				float offset = 0.25f + lines.size() * 0.25f;
 
-			matrices.pop();
+				for (String s : lines) {
+					RenderUtil.drawText(s, rPos.x, rPos.y + (offset * cScale), rPos.z, cScale);
+					offset -= 0.25f;
+				}
+			}
 		}
+	}
+
+	private void drawItem(double x, double y, double z, double offX, double offY, double scale, ItemStack item) {
+		MatrixStack matrix = RenderUtil.drawGuiItem(x, y, z, offX, offY, scale, item);
+
+		matrix.scale(-0.05F, -0.05F, 1f);
+
+		GL11.glDepthFunc(GL11.GL_ALWAYS);
+		if (!item.isEmpty()) {
+			int w = Helper.minecraftClient.textRenderer.getWidth("x" + item.getCount()) / 2;
+			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, "x" + item.getCount(), 7 - w, 3, 0xffffff);
+		}
+
+		matrix.scale(0.85F, 0.85F, 1F);
+
+		int c = 0;
+		for (Entry<Enchantment, Integer> m : EnchantmentHelper.get(item).entrySet()) {
+			String text = I18n.translate(m.getKey().getName(2).getString());
+
+			if (text.isEmpty())
+				continue;
+
+			String subText = text.substring(0, Math.min(text.length(), 2)) + m.getValue();
+
+			int w1 = Helper.minecraftClient.textRenderer.getWidth(subText) / 2;
+			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, subText, -2 - w1, c * 10 - 19,
+					m.getKey() == Enchantments.VANISHING_CURSE || m.getKey() == Enchantments.BINDING_CURSE ? 0xff5050
+							: 0xffb0e0);
+			c--;
+		}
+
+		GL11.glDepthFunc(GL11.GL_LEQUAL);
 	}
 
 	private Formatting getHealthColor(LivingEntity e) {

@@ -41,7 +41,7 @@ public class PlayerSend {
 		setOnGround(onGround);
 	}
 
-	public static float getYaw() {
+	public float getYaw() {
 		return yaw;
 	}
 
@@ -49,7 +49,7 @@ public class PlayerSend {
 		PlayerSend.yaw = yaw;
 	}
 
-	public static float getPitch() {
+	public float getPitch() {
 		return pitch;
 	}
 
@@ -57,7 +57,7 @@ public class PlayerSend {
 		PlayerSend.pitch = pitch;
 	}
 
-	public static double getX() {
+	public double getX() {
 		return x;
 	}
 
@@ -65,7 +65,7 @@ public class PlayerSend {
 		PlayerSend.x = x;
 	}
 
-	public static double getY() {
+	public double getY() {
 		return y;
 	}
 
@@ -73,7 +73,7 @@ public class PlayerSend {
 		PlayerSend.y = y;
 	}
 
-	public static double getZ() {
+	public double getZ() {
 		return z;
 	}
 
@@ -81,7 +81,7 @@ public class PlayerSend {
 		PlayerSend.z = z;
 	}
 
-	public static boolean isOnGround() {
+	public boolean isOnGround() {
 		return onGround;
 	}
 

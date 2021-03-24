@@ -10,6 +10,7 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
+import me.infinity.event.MoveEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
@@ -120,14 +121,6 @@ public class KillAura extends Module {
 			}
 		}
 
-		if (badStrafe.isToggle()) {
-			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				MoveUtil.silentStrafe(focus[0]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				MoveUtil.silentStrafe(smash[0]);
-			}
-		}
-
 	}
 
 	@EventTarget
@@ -135,30 +128,24 @@ public class KillAura extends Module {
 		if (event.getType().equals(EventType.PRE)) {
 			prevYaw = Helper.getPlayer().yaw;
 			prevPitch = Helper.getPlayer().pitch;
-			target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
+			target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
 					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
-			
-			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				PlayerSend.setRotation(focus[0], focus[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				PlayerSend.setRotation(smash[0], smash[1]);
-			}
-		
 
-			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
+			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {		
+				rotation();
 				attack();
 			}
 		} else if (event.getType().equals(EventType.POST)) {
 			if (target == null)
 				return;
-			
+
 			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
+				rotation();
 				attack();
 			}
-			
-			
+
 		}
 	}
 
@@ -168,12 +155,15 @@ public class KillAura extends Module {
 		if (target != null) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				if (smash[1] < 90 || smash[1] > -90) {
-					PacketUtil.setRotation(event, smash[0], smash[1]);
 				}
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				PacketUtil.setRotation(event, focus[0], focus[1]);	
-				}
+			}
+			
+			PacketUtil.fixSensitive(event);
+			
 			PacketUtil.cancelServerRotation(event);
+			
+			
 		}
 
 	}
@@ -196,20 +186,34 @@ public class KillAura extends Module {
 		}
 		event.cancel();
 	}
+	
+	@EventTarget
+	public void onMove(MoveEvent event) {
+		if (badStrafe.isToggle()) {
+			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				MoveUtil.silentStrafe(focus[0]);
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				MoveUtil.silentStrafe(smash[0]);
+			}
+		}
+	}
 
 	public void attack() {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-			double x = Helper.getPlayer().getX();
-			double y = Helper.getPlayer().getY();
-			double z = Helper.getPlayer().getZ();
+			if (Criticals.fall()) {
 			Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
-			PlayerSend.setPosition(x, y + 0.0625, z, true);
-			PlayerSend.setPosition(x, y, z, false);
-			PlayerSend.setPosition(x, y + 1.1E-5, z, false);
-			PlayerSend.setPosition(x, y, z, false);
 			EntityUtil.swing(!noSwing.isToggle());
 			timer.reset();
+			}
+		}
+	}
+	
+	public void rotation() {
+		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+			PlayerSend.setRotation(focus[0], focus[1]);
+		} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+			PlayerSend.setRotation(smash[0], smash[1]);
 		}
 	}
 
@@ -218,16 +222,16 @@ public class KillAura extends Module {
 		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity);
 		float f = (float) (sens * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
-		
+
 		float diffYaw = toCenter[0] - prevYaw;
 		float diffPitch = toCenter[1] - prevPitch;
-		
+
 		diffYaw -= diffYaw % gcd;
 		toCenter[0] = prevYaw + diffYaw;
-		
+
 		diffPitch -= diffPitch % gcd;
 		toCenter[1] = prevPitch + diffPitch;
-		
+
 		return new float[] { toCenter[0], toCenter[1] };
 	}
 

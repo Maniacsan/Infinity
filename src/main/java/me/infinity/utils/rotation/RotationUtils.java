@@ -3,6 +3,7 @@ package me.infinity.utils.rotation;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -118,6 +119,14 @@ public class RotationUtils {
 				getLookNeeded(entity.getX(), entity.getY(), entity.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
 	}
+	
+	
+	public static boolean isInFOVPos(BlockPos pos, double angle) {
+		double angleDiff = getAngle360(Helper.getPlayer().yaw,
+				getLookNeeded(pos.getX(), pos.getY(), pos.getZ())[0]);
+		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
+	}
+
 
 	private static float getAngle360(float dir, float yaw) {
 		float f = Math.abs(yaw - dir) % 360.0f;

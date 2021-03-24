@@ -2,10 +2,7 @@ package me.infinity.features.module.world;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.darkmagician6.eventapi.EventTarget;
 
@@ -23,7 +20,6 @@ import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.options.KeyBinding;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -39,9 +35,8 @@ public class AutoFarm extends Module {
 	private Settings esp = new Settings(this, "ESP", true, () -> true);
 	private Settings color = new Settings(this, "ESP Color", new Color(17, 223, 161), () -> esp.isToggle());
 
-	private BlockPos renderPos;;
-
-	private final HashMap<BlockPos, Item> plants = new HashMap<>();
+	private BlockPos renderPos;
+	private BlockPos placePos;
 
 	private int time;
 
@@ -59,25 +54,28 @@ public class AutoFarm extends Module {
 
 		int beansSlot = InvUtil.findItemOnHotbar(Items.COCOA_BEANS);
 
-		Vec3d eyesVec = RotationUtils.getEyesPos().subtract(0.5, 0.5, 0.5);
-		BlockPos eyesBlock = new BlockPos(RotationUtils.getEyesPos());
-		double rangeSq = Math.pow(range.getCurrentValueDouble(), 2);
-		int blockRange = (int) Math.ceil(range.getCurrentValueDouble());
-
-		List<BlockPos> blocks = getBlockStream(eyesBlock, blockRange)
-				.filter(pos -> eyesVec.squaredDistanceTo(Vec3d.of(pos)) <= rangeSq).collect(Collectors.toList());
-
-		HashMap<Block, Item> seeds = new HashMap<>();
-		seeds.put(Blocks.COCOA, Items.COCOA_BEANS);
-
-		blocks.parallelStream().filter(pos -> seeds.containsKey(BlockUtil.getBlock(pos)));
-
 		for (BlockPos pos : getSearchPos(Blocks.JUNGLE_LOG, range.getCurrentValueDouble())) {
 
 			if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
 
 				if (pos == null)
 					return;
+
+				if (EntityUtil.distanceToBlock(pos) > Helper.minecraftClient.interactionManager.getReachDistance()) {
+					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(),
+							true);
+				} else if (EntityUtil.distanceToBlock(pos) <= Helper.minecraftClient.interactionManager
+						.getReachDistance()) {
+					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(),
+							false);
+				}
+				if (EntityUtil.distanceToBlock(pos) < 0.6) {
+					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(),
+							true);
+				} else if (EntityUtil.distanceToBlock(pos) >= 0.6) {
+					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(),
+							false);
+				}
 
 				Vec3d posVec = new Vec3d(pos.getX(), pos.getY() - 1, pos.getZ());
 				float[] rotation = RotationUtils.lookAtVecPos(posVec, 145, 145);
@@ -116,21 +114,6 @@ public class AutoFarm extends Module {
 		}
 	}
 
-	private void registerPlants(List<BlockPos> blocks) {
-		HashMap<Block, Item> seeds = new HashMap<>();
-		seeds.put(Blocks.COCOA, Items.COCOA_BEANS);
-
-		plants.putAll(blocks.parallelStream().filter(pos -> seeds.containsKey(BlockUtil.getBlock(pos)))
-				.collect(Collectors.toMap(pos -> pos, pos -> seeds.get(BlockUtil.getBlock(pos)))));
-	}
-
-	private Stream<BlockPos> getBlockStream(BlockPos center, int range) {
-		BlockPos min = center.add(-range, -range, -range);
-		BlockPos max = center.add(range, range, range);
-
-		return BlockUtil.getAllInBox(min, max).stream();
-	}
-
 	private List<BlockPos> getSearchPos(Block selectBlock, double range) {
 		List<BlockPos> bPos = new ArrayList<>();
 		for (int y = (int) 0; y < range; y++) {
@@ -140,8 +123,12 @@ public class AutoFarm extends Module {
 					int posY = (int) ((Helper.getPlayer()).getY() + y);
 					int posZ = (int) ((Helper.getPlayer()).getZ() - z);
 					BlockPos pos = new BlockPos(posX, posY, posZ);
-					if (BlockUtil.getBlock(pos.offset(Helper.getPlayer().getHorizontalFacing())) == selectBlock)
-						bPos.add(pos);
+					if (BlockUtil.getBlock(pos.east()) == selectBlock || BlockUtil.getBlock(pos.north()) == selectBlock
+							|| BlockUtil.getBlock(pos.south()) == selectBlock
+							|| BlockUtil.getBlock(pos.west()) == selectBlock) {
+						if (RotationUtils.isInFOVPos(pos, 360))
+							bPos.add(pos);
+					}
 
 				}
 			}

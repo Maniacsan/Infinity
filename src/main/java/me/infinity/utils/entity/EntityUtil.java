@@ -272,4 +272,13 @@ public class EntityUtil {
 		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
 		return MathHelper.sqrt(f * f + g * g + h * h);
 	}
+
+	public static Vec3d getRenderPos(Entity e) {
+		return Helper.minecraftClient.currentScreen != null && Helper.minecraftClient.currentScreen.isPauseScreen()
+				? e.getPos().add(0, e.getHeight(), 0)
+				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.minecraftClient.getTickDelta(),
+						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.minecraftClient.getTickDelta())
+								+ e.getHeight(),
+						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.minecraftClient.getTickDelta());
+	}
 }
