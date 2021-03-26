@@ -9,6 +9,7 @@
   "ClientPlayerInteractionManagerMixin",
   "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
+  "ILivingEntity",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",

@@ -19,7 +19,6 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
-import me.infinity.utils.PacketUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.entity.PlayerSend;
@@ -47,7 +46,8 @@ public class KillAura extends Module {
 	private Settings rayCast = new Settings(this, "RayCast", false, () -> true);
 
 	// matrix packet rotation strafing check
-	private Settings badStrafe = new Settings(this, "Bad Strafe", false, () -> true);
+	private Settings badStrafe = new Settings(this, "Matrix Strafe Check", false, () -> true);
+	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 3.5, 0.0, 30.0, () -> badStrafe.isToggle());
 
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
@@ -63,9 +63,6 @@ public class KillAura extends Module {
 
 	//
 	private static Random random = new Random();
-
-	private float prevYaw;
-	private float prevPitch;
 
 	// rotations
 	private float[] focus;
@@ -126,15 +123,26 @@ public class KillAura extends Module {
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			prevYaw = Helper.getPlayer().yaw;
-			prevPitch = Helper.getPlayer().pitch;
 			target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
 					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
 			if (target == null)
 				return;
 
-			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {		
-				rotation();
+			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				PlayerSend.setRotation(focus[0], focus[1]);
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				PlayerSend.setRotation(smash[0], smash[1]);
+			}
+			
+			if (badStrafe.isToggle()) {
+				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+					MoveUtil.getHorizontalVelocity(this.strafeSpeed.getCurrentValueDouble(), focus[0]);
+				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+					MoveUtil.getHorizontalVelocity(this.strafeSpeed.getCurrentValueDouble(), smash[0]);
+				}
+			}
+
+			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
 				attack();
 			}
 		} else if (event.getType().equals(EventType.POST)) {
@@ -142,7 +150,6 @@ public class KillAura extends Module {
 				return;
 
 			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
-				rotation();
 				attack();
 			}
 
@@ -158,12 +165,7 @@ public class KillAura extends Module {
 				}
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 			}
-			
-			PacketUtil.fixSensitive(event);
-			
-			PacketUtil.cancelServerRotation(event);
-			
-			
+
 		}
 
 	}
@@ -186,34 +188,15 @@ public class KillAura extends Module {
 		}
 		event.cancel();
 	}
-	
-	@EventTarget
-	public void onMove(MoveEvent event) {
-		if (badStrafe.isToggle()) {
-			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				MoveUtil.silentStrafe(focus[0]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				MoveUtil.silentStrafe(smash[0]);
-			}
-		}
-	}
 
 	public void attack() {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall()) {
-			Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
-			EntityUtil.swing(!noSwing.isToggle());
-			timer.reset();
+				Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
+				EntityUtil.swing(!noSwing.isToggle());
+				timer.reset();
 			}
-		}
-	}
-	
-	public void rotation() {
-		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-			PlayerSend.setRotation(focus[0], focus[1]);
-		} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-			PlayerSend.setRotation(smash[0], smash[1]);
 		}
 	}
 
@@ -223,14 +206,8 @@ public class KillAura extends Module {
 		float f = (float) (sens * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 
-		float diffYaw = toCenter[0] - prevYaw;
-		float diffPitch = toCenter[1] - prevPitch;
-
-		diffYaw -= diffYaw % gcd;
-		toCenter[0] = prevYaw + diffYaw;
-
-		diffPitch -= diffPitch % gcd;
-		toCenter[1] = prevPitch + diffPitch;
+		toCenter[0] -= toCenter[0] % gcd;
+		toCenter[1] -= toCenter[1] % gcd;
 
 		return new float[] { toCenter[0], toCenter[1] };
 	}

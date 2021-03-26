@@ -12,20 +12,24 @@ public class InventoryLogo {
 
 	private int width;
 	private int height;
+	private int x;
+	private int y;
 
-	public InventoryLogo(int width, int height) {
+	public InventoryLogo(int width, int height, int x, int y) {
 		this.width = width;
 		this.height = height;
+		this.x = x;
+		this.y = y;
 	}
 
 	public void onRender(MatrixStack matrices) {
 		// name
 		Helper.minecraftClient.getTextureManager().bindTexture(NAME);
-		DrawableHelper.drawTexture(matrices, this.width / 2 - 36, this.height / 2 - 121, 0, 0, 90, 23, 90, 23);
+		DrawableHelper.drawTexture(matrices, this.x + 51, this.y - 28, 0, 0, 90, 23, 90, 23);
 
 		// logo
 		Helper.minecraftClient.getTextureManager().bindTexture(LOGO);
-		DrawableHelper.drawTexture(matrices, this.width / 2 - 75, this.height / 2 - 130, 0, 0, 38, 40, 38, 40);
+		DrawableHelper.drawTexture(matrices, this.x + 13, this.y - 37, 0, 0, 38, 40, 38, 40);
 	}
 
 }

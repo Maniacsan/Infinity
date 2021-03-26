@@ -29,7 +29,11 @@ public class ChatCalculator extends Module {
 	private Settings clientMode = new Settings(this, "Client", "Message",
 			new ArrayList<>(Arrays.asList("Message", "Info")), () -> clientSide.isToggle());
 
-	private Settings delay = new Settings(this, "Delay", 1D, 0D, 20D,
+	private Settings globalChat = new Settings(this, "Global Chat", true,
+			() -> clientMode.getCurrentMode().equalsIgnoreCase("Message")
+					|| serverMode.getCurrentMode().equalsIgnoreCase("Message"));
+
+	private Settings delay = new Settings(this, "Delay", 1D, 0D, 50D,
 			() -> clientSide.isToggle() || serverSide.isToggle());
 
 	private int time;
@@ -64,7 +68,7 @@ public class ChatCalculator extends Module {
 			if (clientResult != null) {
 
 				if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
-					Helper.getPlayer().sendChatMessage("!" + clientResult);
+					Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + clientResult : "!" + clientResult);
 				} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
 					Helper.infoMessage(clientResult);
 				}
@@ -83,7 +87,8 @@ public class ChatCalculator extends Module {
 						if (serverResult != null) {
 
 							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-								Helper.getPlayer().sendChatMessage("!" + serverResult);
+								Helper.getPlayer()
+										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
 							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
 								Helper.infoMessage(serverResult);
 							}
@@ -119,24 +124,24 @@ public class ChatCalculator extends Module {
 
 				time = (int) delay.getCurrentValueDouble() + 3;
 
-				if (serverResult == null)
-					return;
+				if (serverResult != null) {
 
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-								Helper.getPlayer().sendChatMessage(serverResult);
-							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-								Helper.infoMessage(serverResult);
+					(new Thread() {
+						@Override
+						public void run() {
+							try {
+								Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
+								if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+									Helper.getPlayer().sendChatMessage(serverResult);
+								} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+									Helper.infoMessage(serverResult);
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
 							}
-						} catch (Exception e) {
-							e.printStackTrace();
 						}
-					}
-				}).start();
+					}).start();
+				}
 			}
 
 		}
@@ -159,7 +164,7 @@ public class ChatCalculator extends Module {
 
 					clientResult = String.valueOf((int) result);
 
-					time = 45;
+					time = (int) delay.getCurrentValueDouble();
 
 					sendClient = true;
 				}

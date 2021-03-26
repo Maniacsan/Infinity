@@ -6,8 +6,6 @@ import me.infinity.features.Settings;
 import me.infinity.mixin.IMinecraftClient;
 import me.infinity.utils.Helper;
 import me.infinity.utils.TimeHelper;
-import me.infinity.utils.entity.EntityUtil;
-import net.minecraft.entity.LivingEntity;
 
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Clicking on pressed LKM", key = -2, name = "AutoClicker", visible = true)
 public class AutoClicker extends Module {
@@ -24,14 +22,7 @@ public class AutoClicker extends Module {
 			if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 					: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 
-				if (Helper.minecraftClient.targetedEntity instanceof LivingEntity) {
-					Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(),
-							Helper.minecraftClient.targetedEntity);
-				}
-
 				((IMinecraftClient) Helper.minecraftClient).mouseClick();
-
-				EntityUtil.swing(true);
 
 				Helper.getPlayer().resetLastAttackedTicks();
 				timer.reset();

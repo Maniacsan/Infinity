@@ -15,7 +15,7 @@ import net.minecraft.client.MinecraftClient;
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
-	@Inject(at = @At("TAIL"), method = "tick")
+	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo info) {
 		if (UpdateUtil.canUpdate()) {
 			TickEvent tickEvent = new TickEvent();

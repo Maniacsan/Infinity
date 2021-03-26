@@ -1,5 +1,7 @@
 package me.infinity.mixin;
 
+import java.io.IOException;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,6 +16,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import me.infinity.InfMain;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.command.Command;
+import me.infinity.features.module.player.PacketKick;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
@@ -48,6 +51,13 @@ public class ClientConnectionMixin {
 		if (sendEvent.isCancelled()) {
 			callback.cancel();
 		}
+	}
+
+	@Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
+	private void exceptionCaught(ChannelHandlerContext context, Throwable throwable, CallbackInfo ci) {
+		if (throwable instanceof IOException
+				&& InfMain.getModuleManager().getModuleByClass(PacketKick.class).isEnabled())
+			ci.cancel();
 	}
 
 }

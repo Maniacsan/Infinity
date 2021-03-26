@@ -36,7 +36,6 @@ public class AutoFarm extends Module {
 	private Settings color = new Settings(this, "ESP Color", new Color(17, 223, 161), () -> esp.isToggle());
 
 	private BlockPos renderPos;
-	private BlockPos placePos;
 
 	private int time;
 
@@ -61,21 +60,7 @@ public class AutoFarm extends Module {
 				if (pos == null)
 					return;
 
-				if (EntityUtil.distanceToBlock(pos) > Helper.minecraftClient.interactionManager.getReachDistance()) {
-					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(),
-							true);
-				} else if (EntityUtil.distanceToBlock(pos) <= Helper.minecraftClient.interactionManager
-						.getReachDistance()) {
-					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(),
-							false);
-				}
-				if (EntityUtil.distanceToBlock(pos) < 0.6) {
-					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(),
-							true);
-				} else if (EntityUtil.distanceToBlock(pos) >= 0.6) {
-					KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(),
-							false);
-				}
+				move(pos);
 
 				Vec3d posVec = new Vec3d(pos.getX(), pos.getY() - 1, pos.getZ());
 				float[] rotation = RotationUtils.lookAtVecPos(posVec, 145, 145);
@@ -114,19 +99,26 @@ public class AutoFarm extends Module {
 		}
 	}
 
+	private void move(BlockPos pos) {
+		if (EntityUtil.distanceToBlock(pos) > Helper.minecraftClient.interactionManager.getReachDistance()) {
+			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(), true);
+		} else if (EntityUtil.distanceToBlock(pos) <= Helper.minecraftClient.interactionManager.getReachDistance()) {
+			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyForward).getBoundKey(), false);
+		}
+		if (EntityUtil.distanceToBlock(pos) < 0.6) {
+			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(), true);
+		} else if (EntityUtil.distanceToBlock(pos) >= 0.6) {
+			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyBack).getBoundKey(), false);
+		}
+	}
+
 	private List<BlockPos> getSearchPos(Block selectBlock, double range) {
 		List<BlockPos> bPos = new ArrayList<>();
 		for (int y = (int) 0; y < range; y++) {
 			for (int x = (int) range; x >= -range; x--) {
 				for (int z = (int) range; z >= -range; z--) {
-					int posX = (int) ((Helper.getPlayer()).getX() - x);
-					int posY = (int) ((Helper.getPlayer()).getY() + y);
-					int posZ = (int) ((Helper.getPlayer()).getZ() - z);
-					BlockPos pos = new BlockPos(posX, posY, posZ);
-					if (BlockUtil.getBlock(pos.east()) == selectBlock || BlockUtil.getBlock(pos.north()) == selectBlock
-							|| BlockUtil.getBlock(pos.south()) == selectBlock
-							|| BlockUtil.getBlock(pos.west()) == selectBlock) {
-						if (RotationUtils.isInFOVPos(pos, 360))
+					BlockPos pos = new BlockPos(x, y, z);
+					if (BlockUtil.getBlock(pos) == Blocks.JUNGLE_LOG) {
 							bPos.add(pos);
 					}
 

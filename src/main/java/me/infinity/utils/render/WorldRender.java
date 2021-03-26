@@ -20,6 +20,10 @@ public class WorldRender {
 		drawFill(new Box(pos), color);
 	}
 
+	public static void drawBox(BlockPos pos, int width, int color) {
+		drawBox(new Box(pos), width, color);
+	}
+
 	public static void drawFill(Box box, int color) {
 		float a = (color >> 24 & 0xFF) / 255.0F;
 		float r = (color >> 16 & 0xFF) / 255.0F;

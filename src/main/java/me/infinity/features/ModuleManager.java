@@ -49,7 +49,12 @@ public class ModuleManager {
 			new Reach(),
 			new TriggerBot(),
 			new AutoArmor(),
-			new TargetStrafe()
+			new TargetStrafe(),
+			new StorageESP(),
+			new FullBright(),
+			new Jesus(),
+			new Speed(),
+			new PacketKick()
 			);
 
 	public List<Module> getList() {
