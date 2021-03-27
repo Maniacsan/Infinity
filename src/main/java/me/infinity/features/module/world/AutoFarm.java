@@ -11,9 +11,9 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.mixin.IKeyBinding;
-import me.infinity.utils.BlockUtil;
 import me.infinity.utils.Helper;
 import me.infinity.utils.InvUtil;
+import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.render.WorldRender;
 import me.infinity.utils.rotation.RotationUtils;
@@ -79,7 +79,7 @@ public class AutoFarm extends Module {
 
 				if (EntityUtil.distanceToBlock(pos) <= Helper.minecraftClient.interactionManager.getReachDistance()) {
 					if (Helper.getPlayer().getMainHandStack().getItem() == Items.COCOA_BEANS) {
-						if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos)) {
+						if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos, false)) {
 							time = (int) delay.getCurrentValueDouble();
 							renderPos = null;
 						}
@@ -118,8 +118,9 @@ public class AutoFarm extends Module {
 			for (int x = (int) range; x >= -range; x--) {
 				for (int z = (int) range; z >= -range; z--) {
 					BlockPos pos = new BlockPos(x, y, z);
-					if (BlockUtil.getBlock(pos) == Blocks.JUNGLE_LOG) {
-							bPos.add(pos);
+					Vec3d vecPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
+					if (BlockUtil.getBlock(new BlockPos(vecPos)) == Blocks.JUNGLE_LOG) {
+						bPos.add(pos);
 					}
 
 				}
@@ -127,5 +128,4 @@ public class AutoFarm extends Module {
 		}
 		return bPos;
 	}
-
 }

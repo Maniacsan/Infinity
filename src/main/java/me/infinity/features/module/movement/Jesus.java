@@ -10,10 +10,10 @@ import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.utils.BlockUtil;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
+import me.infinity.utils.block.BlockUtil;
 import net.minecraft.util.math.BlockPos;
 
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Lets you walk on water", key = -2, name = "Jesus", visible = true)
@@ -67,23 +67,19 @@ public class Jesus extends Module {
 				}
 			}
 		} else if (mode.getCurrentMode().equalsIgnoreCase("NGrief")) {
-			if (BlockUtil.isFluid(new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + offsetY,
-					Helper.getPlayer().getZ()))) {
-				Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().x, 0,
-						Helper.getPlayer().getVelocity().z);
-				if (Helper.minecraftClient.options.keyForward.isPressed()) {
-					MoveUtil.hClip(0.5f, 0);
-				} 
-				if (Helper.minecraftClient.options.keyLeft.isPressed()) {
-					MoveUtil.hClip(0, -0.5f);
-				}
-				if (Helper.minecraftClient.options.keyRight.isPressed()) {
-					MoveUtil.hClip(0, 0.5f);
-				}
-				
-				if (Helper.minecraftClient.options.keyBack.isPressed()) {
-					MoveUtil.hClip(-0.5f, 0);
-				}
+			if (Helper.getPlayer().age % 5 == 0) {
+				Helper.getPlayer().setPos(Helper.getPlayer().getPos().x, Helper.getPlayer().getPos().y + 3.0,
+						Helper.getPlayer().getPos().z);
+			}
+			if (Helper.minecraftClient.options.keyLeft.isPressed()) {
+				MoveUtil.hClip(0, -0.5f);
+			}
+			if (Helper.minecraftClient.options.keyRight.isPressed()) {
+				MoveUtil.hClip(0, 0.5f);
+			}
+
+			if (Helper.minecraftClient.options.keyBack.isPressed()) {
+				MoveUtil.hClip(-0.5f, 0);
 			}
 		}
 	}

@@ -10,7 +10,7 @@ import me.infinity.event.RenderEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.utils.BlockUtil;
+import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.render.WorldRender;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.Box;

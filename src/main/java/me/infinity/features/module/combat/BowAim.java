@@ -3,16 +3,12 @@ package me.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import com.darkmagician6.eventapi.EventTarget;
-import com.darkmagician6.eventapi.types.EventType;
-
-import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.PacketUtil;
 import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.entity.PlayerSend;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BowItem;
@@ -47,22 +43,12 @@ public class BowAim extends Module {
 			if (mode.getCurrentMode().equalsIgnoreCase("Looking")) {
 				Helper.getPlayer().yaw = look[0];
 				Helper.getPlayer().pitch = look[1];
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
+				PlayerSend.setRotation(look[0], look[1]);
 			}
 		}
 	}
 
-	@EventTarget
-	public void onPacket(PacketEvent event) {
-		if (event.getType().equals(EventType.SEND)) {
-			float[] look = rotation(target);
-
-			if (mode.getCurrentMode().equalsIgnoreCase("Packet"))
-				PacketUtil.setRotation(event, look[0], look[1]);
-
-		} else if (event.getType().equals(EventType.RECIEVE)) {
-			PacketUtil.cancelServerRotation(event);
-		}
-	}
 
 	private float[] rotation(Entity target) {
 		double xPos = target.getX();

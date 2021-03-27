@@ -24,7 +24,12 @@
   "RenderTickCounterMixin",
   "WorldRendererMixin",
   "HandledScreenMixin",
-  "EntityRendererMixin"
+  "EntityRendererMixin",
+  "AbstractBlockMixin",
+  "BlockMixin",
+  "BlockModelRendererMixin",
+  "ChunkOcclusionDataBuilderMixin",
+  "FluidRendererMixin"
   ],
     "injectors": {
     "defaultRequire": 1

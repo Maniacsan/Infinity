@@ -32,19 +32,17 @@ public class Speed extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
-				if (yTick >= 4 && Helper.getPlayer().isOnGround())
-					yTick = 0;
+				if (MoveUtil.isMoving()) {
+					if (yTick >= 2 && Helper.getPlayer().isOnGround())
+						yTick = 0;
 
-				if (Helper.getPlayer().isOnGround()) {
-					MoveUtil.setYVelocity(yTick <= 1 ? 0.42F : 0.4F);
+					if (Helper.getPlayer().isOnGround()) {
+						MoveUtil.setYVelocity(0.22F);
 
-					float f = Helper.getPlayer().yaw * 0.017453292F;
-					MoveUtil.setHVelocity(Helper.getPlayer().getVelocity().getX() - Math.sin(f) * 0.2F,
-							Helper.getPlayer().getVelocity().getZ() + Math.cos(f) * 0.2F);
-
-					yTick++;
-				} else if (yTick <= 1)
-					MoveUtil.setYVelocity(-5D);
+						yTick++;
+					} else if (yTick <= 1)
+						MoveUtil.setYVelocity(-5D);
+				}
 			}
 		}
 	}
@@ -54,8 +52,8 @@ public class Speed extends Module {
 		if (mode.getCurrentMode().equalsIgnoreCase("OnGround")) {
 			if (Helper.getPlayer().isOnGround()) {
 				MoveUtil.getHorizontalVelocity(5.35, Helper.getPlayer().yaw);
-
 			}
+			
 			if (!Helper.getPlayer().isOnGround()) {
 				int reduce = 1;
 				if (reduce == 1) {
@@ -68,8 +66,7 @@ public class Speed extends Module {
 
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
 			if (MoveUtil.isMoving()) {
-				if (Helper.getPlayer().age % 2 == 0)
-					MoveUtil.strafe(0.3);
+				MoveUtil.getHorizontalVelocity(5.35, Helper.getPlayer().yaw);
 
 			}
 		}

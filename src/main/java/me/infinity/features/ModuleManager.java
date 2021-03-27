@@ -54,7 +54,8 @@ public class ModuleManager {
 			new FullBright(),
 			new Jesus(),
 			new Speed(),
-			new PacketKick()
+			new PacketKick(),
+			new FastBreak()
 			);
 
 	public List<Module> getList() {

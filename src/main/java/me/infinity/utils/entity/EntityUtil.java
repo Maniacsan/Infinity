@@ -6,7 +6,9 @@ import java.util.stream.StreamSupport;
 
 import me.infinity.InfMain;
 import me.infinity.utils.Helper;
+import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.rotation.RotationUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -94,8 +96,9 @@ public class EntityUtil {
 		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
 			return false;
 
-		if (invisibles && entity.isInvisible())
-			return true;
+		if (!invisibles && entity.isInvisible())
+			return false;
+
 		if (players && entity instanceof PlayerEntity)
 			return true;
 		if (mobs && isMonster(entity))
@@ -186,8 +189,29 @@ public class EntityUtil {
 		}
 	}
 
-	public static boolean placeBlock(Hand hand, BlockPos pos) {
-		if (!Helper.minecraftClient.world.getBlockState(pos).getMaterial().isReplaceable())
+	public static Direction getPlaceSide(BlockPos blockPos) {
+		for (Direction side : Direction.values()) {
+			BlockPos neighbor = blockPos.offset(side);
+			Direction side2 = side.getOpposite();
+
+			BlockState state = Helper.getWorld().getBlockState(neighbor);
+
+			// Check if neighbour isn't empty
+			if (state.isAir() || BlockUtil.isClickable(state.getBlock()))
+				continue;
+
+			// Check if neighbour is a fluid
+			if (!state.getFluidState().isEmpty())
+				continue;
+
+			return side2;
+		}
+
+		return null;
+	}
+
+	public static boolean placeBlock(Hand hand, BlockPos pos, boolean airPlace) {
+		if (!Helper.getWorld().getBlockState(pos).getMaterial().isReplaceable())
 			return false;
 
 		Vec3d hitVec = null;
@@ -197,8 +221,7 @@ public class EntityUtil {
 			neighbor = pos.offset(side);
 			side2 = side.getOpposite();
 
-			// check place block position on air
-			if (Helper.minecraftClient.world.getBlockState(neighbor).isAir()) {
+			if (Helper.getWorld().getBlockState(neighbor).isAir()) {
 				neighbor = null;
 				side2 = null;
 				continue;
@@ -209,12 +232,14 @@ public class EntityUtil {
 			break;
 		}
 
+		if (airPlace && hitVec == null)
+			hitVec = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
+		else if (!airPlace && hitVec == null)
+			return false;
 		if (neighbor == null)
 			neighbor = pos;
 		if (side2 == null)
 			side2 = Direction.UP;
-		if (hitVec == null)
-			return false;
 
 		if (hitVec != null) {
 			Helper.minecraftClient.interactionManager.interactBlock(Helper.getPlayer(), Helper.minecraftClient.world,
@@ -281,4 +306,12 @@ public class EntityUtil {
 								+ e.getHeight(),
 						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.minecraftClient.getTickDelta());
 	}
+
+	public static boolean isOnGround(double height) {
+		if (!Helper.minecraftClient.world.isSpaceEmpty(Helper.getPlayer(),
+				Helper.getPlayer().getBoundingBox().offset(0.0D, -height, 0.0D)))
+			return true;
+		return false;
+	}
+
 }

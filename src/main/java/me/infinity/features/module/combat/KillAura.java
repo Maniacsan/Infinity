@@ -46,7 +46,7 @@ public class KillAura extends Module {
 	private Settings rayCast = new Settings(this, "RayCast", false, () -> true);
 
 	// matrix packet rotation strafing check
-	private Settings badStrafe = new Settings(this, "Matrix Strafe Check", false, () -> true);
+	private Settings badStrafe = new Settings(this, "Matrix Strafe", false, () -> true);
 	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 3.5, 0.0, 30.0, () -> badStrafe.isToggle());
 
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);

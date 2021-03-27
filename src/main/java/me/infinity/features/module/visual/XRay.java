@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.utils.Helper;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 
@@ -23,7 +24,22 @@ public class XRay extends Module {
 			)), () -> true);
 
 	@Override
+	public void onEnable() {
+		Helper.minecraftClient.worldRenderer.reload();
+	}
+
+	@Override
 	public void onDisable() {
+		Helper.minecraftClient.worldRenderer.reload();
+	}
+
+	@Override
+	public void onPlayerTick() {
+		Helper.minecraftClient.options.gamma = 68.5;
+	}
+
+	public boolean isValid(Block block1) {
+		return !isEnabled() || block.getBlocks().contains(block1);
 	}
 
 }
