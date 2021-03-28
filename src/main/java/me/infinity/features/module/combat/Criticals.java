@@ -18,7 +18,6 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.entity.PlayerSend;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -64,11 +63,11 @@ public class Criticals extends Module {
 				if (attackCount > 0) {
 					double ypos = Helper.getPlayer().getY();
 					if (EntityUtil.isOnGround(0.01D)) {
-						PlayerSend.setOnGround(false);
+						event.setOnGround(false);
 						if (this.stage == 0) {
 							this.y = ypos + 1.0E-8D;
 
-							PlayerSend.setOnGround(true);
+							event.setOnGround(true);
 
 						} else if (this.stage == 1) {
 							this.y -= 5.0E-15D;
@@ -79,9 +78,9 @@ public class Criticals extends Module {
 						if (this.y <= Helper.getPlayer().getY()) {
 							this.stage = 0;
 							this.y = Helper.getPlayer().getY();
-							PlayerSend.setOnGround(true);
+							event.setOnGround(true);
 						}
-						PlayerSend.setY(this.y);
+						event.setY(this.y);
 
 						this.stage++;
 					} else {
@@ -104,9 +103,6 @@ public class Criticals extends Module {
 						if (Helper.getPlayer().isOnGround())
 							return;
 						
-						if (event.getPacket() instanceof PlayerMoveC2SPacket)
-							event.cancel();
-
 						Helper.minecraftClient.getNetworkHandler()
 								.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
 										Helper.getPlayer().getY() + 0.1, Helper.getPlayer().getZ(), false));

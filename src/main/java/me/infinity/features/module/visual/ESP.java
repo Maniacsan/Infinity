@@ -30,7 +30,7 @@ public class ESP extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
-	
+
 	// colors
 	private Settings playerColor = new Settings(this, "Player Color", new Color(247, 251, 247),
 			() -> players.isToggle());
@@ -39,13 +39,11 @@ public class ESP extends Module {
 	private Settings mobsColor = new Settings(this, "Mobs Color", new Color(236, 173, 24), () -> mobs.isToggle());
 	private Settings animalsColor = new Settings(this, "Animals Color", new Color(108, 234, 42),
 			() -> animals.isToggle());
-	
-	
+
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
 	}
-	
 
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
@@ -55,13 +53,12 @@ public class ESP extends Module {
 			int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),
 					friendsColor.getColor().getRGB(), mobsColor.getColor().getRGB(), animalsColor.getColor().getRGB());
 
-			
 			if (mode.getCurrentMode().equalsIgnoreCase("Fill")) {
 				WorldRender.drawFill(e.getBoundingBox(), color);
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Box")) {
 				WorldRender.drawBox(e.getBoundingBox(), width.getCurrentValueFloat(), color);
-				
+
 			}
 		}
 

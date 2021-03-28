@@ -10,8 +10,8 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.InvUtil;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.entity.PlayerSend;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically throws certain potions", key = -2, name = "AutoPotion", visible = true)
@@ -66,7 +66,7 @@ public class AutoPotion extends Module {
 
 			if (speed.isToggle() && speedSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
 				if (next == 1) {
-					baff(speedSlot);
+					baff(event, speedSlot);
 					next += 1;
 				}
 			}
@@ -78,7 +78,7 @@ public class AutoPotion extends Module {
 
 			if (fire.isToggle() && fireSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
 				if (next == 2) {
-					baff(fireSlot);
+					baff(event, fireSlot);
 					next += 1;
 				}
 			}
@@ -90,7 +90,7 @@ public class AutoPotion extends Module {
 
 			if (jump.isToggle() && jumpSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
 				if (next == 3) {
-					baff(jumpSlot);
+					baff(event, jumpSlot);
 					next += 1;
 				}
 			}
@@ -102,17 +102,19 @@ public class AutoPotion extends Module {
 
 			if (strength.isToggle() && strSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
 				if (next == 4) {
-					baff(strSlot);
+					event.setPitch(90);
+					baff(event, strSlot);
 					next += 1;
 				}
 			}
 		}
 	}
 
-	private void baff(int slot) {
+	private void baff(MotionEvent event, int slot) {
 		int preSlot = Helper.getPlayer().inventory.selectedSlot;
+		Helper.sendPacket(
+				new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, 90, Helper.getPlayer().isOnGround()));
 		Helper.getPlayer().inventory.selectedSlot = slot;
-		PlayerSend.setPitch(90F);
 		Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
 
 		// set timer
@@ -120,7 +122,8 @@ public class AutoPotion extends Module {
 
 		// reset
 		Helper.getPlayer().inventory.selectedSlot = preSlot;
-		PlayerSend.setPitch(Helper.getPlayer().pitch);
+		Helper.sendPacket(new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, Helper.getPlayer().pitch,
+				Helper.getPlayer().isOnGround()));
 	}
 
 }

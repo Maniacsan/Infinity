@@ -68,7 +68,7 @@ public class ChatCalculator extends Module {
 			if (clientResult != null) {
 
 				if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
-					Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + clientResult : "!" + clientResult);
+					Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
 				} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
 					Helper.infoMessage(clientResult);
 				}

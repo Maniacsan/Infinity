@@ -3,12 +3,15 @@ package me.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.darkmagician6.eventapi.EventTarget;
+import com.darkmagician6.eventapi.types.EventType;
+
+import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.entity.PlayerSend;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BowItem;
@@ -30,25 +33,27 @@ public class BowAim extends Module {
 
 	public static Entity target;
 
-	@Override
-	public void onPlayerTick() {
-		if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()
-				&& Helper.getPlayer().getItemUseTime() >= 3) {
-			target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(), players.isToggle(),
-					friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
-			if (target == null)
-				return;
-			float[] look = rotation(target);
+	@EventTarget
+	public void onMotionTick(MotionEvent event) {
+		if (event.getType().equals(EventType.PRE)) {
+			if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()
+					&& Helper.getPlayer().getItemUseTime() >= 3) {
+				target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(),
+						players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(),
+						animals.isToggle());
+				if (target == null)
+					return;
+				float[] look = rotation(target);
 
-			if (mode.getCurrentMode().equalsIgnoreCase("Looking")) {
-				Helper.getPlayer().yaw = look[0];
-				Helper.getPlayer().pitch = look[1];
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
-				PlayerSend.setRotation(look[0], look[1]);
+				if (mode.getCurrentMode().equalsIgnoreCase("Looking")) {
+					Helper.getPlayer().yaw = look[0];
+					Helper.getPlayer().pitch = look[1];
+				} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
+					event.setRotation(look[0], look[1]);
+				}
 			}
 		}
 	}
-
 
 	private float[] rotation(Entity target) {
 		double xPos = target.getX();

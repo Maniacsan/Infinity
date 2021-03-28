@@ -10,7 +10,6 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
-import me.infinity.event.MoveEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
@@ -21,7 +20,6 @@ import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.entity.PlayerSend;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Box;
@@ -129,9 +127,9 @@ public class KillAura extends Module {
 				return;
 
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				PlayerSend.setRotation(focus[0], focus[1]);
+				event.setRotation(focus[0], focus[1]);
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				PlayerSend.setRotation(smash[0], smash[1]);
+				event.setRotation(smash[0], smash[1]);
 			}
 			
 			if (badStrafe.isToggle()) {

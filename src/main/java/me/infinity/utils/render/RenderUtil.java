@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import me.infinity.utils.Helper;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -152,6 +154,19 @@ public class RenderUtil {
 		matrix.translate(x - camera.getPos().x, y - camera.getPos().y, z - camera.getPos().z);
 
 		return matrix;
+	}
+
+	public static void drawItem(ItemStack itemStack, int x, int y, boolean overlay) {
+		RenderSystem.disableLighting();
+		RenderSystem.disableDepthTest();
+		DiffuseLighting.enable();
+		Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(itemStack, x, y);
+		if (overlay)
+			Helper.minecraftClient.getItemRenderer().renderGuiItemOverlay(Helper.minecraftClient.textRenderer,
+					itemStack, x, y, null);
+		DiffuseLighting.disable();
+		DiffuseLighting.disable();
+		RenderSystem.enableDepthTest();
 	}
 
 }

@@ -7,14 +7,16 @@ import java.util.Map.Entry;
 import org.lwjgl.opengl.GL11;
 
 import com.darkmagician6.eventapi.EventTarget;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import me.infinity.event.EntityTagEvent;
+import me.infinity.event.RenderEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.render.RenderUtil;
+import me.infinity.utils.render.WorldRender;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.Enchantment;
@@ -23,7 +25,6 @@ import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
@@ -40,40 +41,50 @@ public class NameTags extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
 
-	private Settings scale = new Settings(this, "Scale", 0.35D, 0.2D, 0.6D, () -> true);
+	private Settings scale = new Settings(this, "Scale", 2D, 0.2D, 5D, () -> true);
 
 	@EventTarget
 	public void onTagRender(EntityTagEvent event) {
-		renderTag(event.getMatrices());
-		event.cancel();
+		if (EntityUtil.isTarget(event.getEntity(), players.isToggle(), friends.isToggle(), invisibles.isToggle(),
+				mobs.isToggle(), animals.isToggle()))
+			event.cancel();
 	}
 
-	public void renderTag(MatrixStack matrices) {
+	@EventTarget
+	public void onWorldRender(RenderEvent event) {
 		for (Entity entity : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
 				mobs.isToggle(), animals.isToggle())) {
-			float cScale = (float) Math.max(
-					Math.min(Helper.getPlayer().distanceTo(entity) / (100 / scale.getCurrentValueDouble()), 2.4 / 50),
-					1 / 80d);
 			List<String> lines = new ArrayList<>();
+			double scale = 0;
 
-			Vec3d rPos = EntityUtil.getRenderPos(entity);
-			lines.add(entity.getName().getString() + " " + getHealthColor((LivingEntity) entity)
-					+ ((LivingEntity) entity).getHealth());
+			Vec3d rPos = getRenderPos(entity);
 
-			double c = 0;
-			double lscale = cScale * 0.4;
-			double up = ((0.3 + lines.size() * 0.25) * cScale) + lscale / 2;
+			if (entity instanceof LivingEntity) {
+				if (entity == Helper.minecraftClient.player || entity.hasPassenger(Helper.minecraftClient.player)
+						|| Helper.minecraftClient.player.hasPassenger(entity))
+					return;
 
-			if (entity instanceof PlayerEntity) {
-				if (this.armor.isToggle()) {
-					drawItem(rPos.x, rPos.y + up, rPos.z, -2.5, 0, lscale,
-							((PlayerEntity) entity).getEquippedStack(EquipmentSlot.MAINHAND));
-					drawItem(rPos.x, rPos.y + up, rPos.z, 2.5, 0, lscale,
-							((PlayerEntity) entity).getEquippedStack(EquipmentSlot.OFFHAND));
+				LivingEntity e = (LivingEntity) entity;
 
-					for (ItemStack i : entity.getArmorItems()) {
-						drawItem(rPos.x, rPos.y + up, rPos.z, c + 1.5, 0, lscale, i);
-						c--;
+				String health = getHealthText(e);
+
+				scale = Math.max(this.scale.getCurrentValueDouble()
+						* (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20), 1);
+
+					lines.add(entity.getDisplayName().getString() + " " + health);
+
+				/* Drawing Items */
+				double c = 0;
+				double lscale = scale * 0.4;
+				double up = ((0.3 + lines.size() * 0.25) * scale) + lscale / 2;
+
+				if (armor.isToggle()) {
+					drawItem(rPos.x, rPos.y + up, rPos.z, 2.5, 0, lscale, e.getEquippedStack(EquipmentSlot.MAINHAND));
+					drawItem(rPos.x, rPos.y + up, rPos.z, -2.5, 0, lscale, e.getEquippedStack(EquipmentSlot.OFFHAND));
+
+					for (ItemStack i : e.getArmorItems()) {
+						drawItem(rPos.x, rPos.y + up, rPos.z, c - 1.5, 0, lscale, i);
+						c++;
 					}
 				}
 			}
@@ -82,7 +93,8 @@ public class NameTags extends Module {
 				float offset = 0.25f + lines.size() * 0.25f;
 
 				for (String s : lines) {
-					RenderUtil.drawText(s, rPos.x, rPos.y + (offset * cScale), rPos.z, cScale);
+					WorldRender.drawText(s, rPos.x, rPos.y + (offset * scale), rPos.z, scale);
+
 					offset -= 0.25f;
 				}
 			}
@@ -90,17 +102,16 @@ public class NameTags extends Module {
 	}
 
 	private void drawItem(double x, double y, double z, double offX, double offY, double scale, ItemStack item) {
-		MatrixStack matrix = RenderUtil.drawGuiItem(x, y, z, offX, offY, scale, item);
+		MatrixStack matrix = WorldRender.draw3DItem(x, y, z, offX, offY, scale, item);
 
-		matrix.scale(-0.05F, -0.05F, 1f);
+		matrix.scale(-0.05F, -0.05F, 0.05f);
 
-		GL11.glDepthFunc(GL11.GL_ALWAYS);
-		if (!item.isEmpty()) {
-			int w = Helper.minecraftClient.textRenderer.getWidth("x" + item.getCount()) / 2;
-			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, "x" + item.getCount(), 7 - w, 3, 0xffffff);
-		}
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.enableDepthTest();
+		RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
-		matrix.scale(0.85F, 0.85F, 1F);
+		matrix.scale(0.65F, 0.65F, 1F);
 
 		int c = 0;
 		for (Entry<Enchantment, Integer> m : EnchantmentHelper.get(item).entrySet()) {
@@ -112,13 +123,32 @@ public class NameTags extends Module {
 			String subText = text.substring(0, Math.min(text.length(), 2)) + m.getValue();
 
 			int w1 = Helper.minecraftClient.textRenderer.getWidth(subText) / 2;
-			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, subText, -2 - w1, c * 10 - 19,
-					m.getKey() == Enchantments.VANISHING_CURSE || m.getKey() == Enchantments.BINDING_CURSE ? 0xff5050
-							: 0xffb0e0);
+			Helper.minecraftClient.textRenderer.draw(subText, -2 - w1, c,
+					m.getKey() == Enchantments.VANISHING_CURSE || m.getKey() == Enchantments.BINDING_CURSE ? -1 : -1,
+					true, matrix.peek().getModel(),
+					Helper.minecraftClient.getBufferBuilders().getEntityVertexConsumers(), true, 0, 0xf000f0);
+
 			c--;
 		}
 
-		GL11.glDepthFunc(GL11.GL_LEQUAL);
+		RenderSystem.depthFunc(GL11.GL_LEQUAL);
+		RenderSystem.disableDepthTest();
+
+		RenderSystem.disableBlend();
+	}
+
+	private Vec3d getRenderPos(Entity e) {
+		return Helper.minecraftClient.currentScreen != null && Helper.minecraftClient.currentScreen.isPauseScreen()
+				? e.getPos().add(0, e.getHeight(), 0)
+				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.minecraftClient.getTickDelta(),
+						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.minecraftClient.getTickDelta())
+								+ e.getHeight(),
+						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.minecraftClient.getTickDelta());
+	}
+
+	private String getHealthText(LivingEntity e) {
+		return getHealthColor(e) + String.valueOf((int) (e.getHealth() + e.getAbsorptionAmount()));
+
 	}
 
 	private Formatting getHealthColor(LivingEntity e) {

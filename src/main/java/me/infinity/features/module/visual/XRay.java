@@ -19,7 +19,12 @@ public class XRay extends Module {
 	public Settings block = new Settings(this, "Blocks", blocks,
 			new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE, Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE,
 					Blocks.IRON_ORE, Blocks.LAPIS_ORE, Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE,
-					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE
+					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE, Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK,
+					Blocks.NETHER_GOLD_ORE, Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB,
+					Blocks.NETHER_BRICK_STAIRS, Blocks.NETHER_BRICK_WALL, Blocks.NETHER_PORTAL, Blocks.NETHERITE_BLOCK,
+					Blocks.BEACON, Blocks.BEDROCK, Blocks.BIRCH_PLANKS, Blocks.ACACIA_PLANKS, Blocks.CRIMSON_PLANKS,
+					Blocks.CHORUS_PLANT, Blocks.DARK_OAK_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.OAK_PLANKS,
+					Blocks.SPRUCE_PLANKS, Blocks.WARPED_PLANKS, Blocks.SAND
 
 			)), () -> true);
 

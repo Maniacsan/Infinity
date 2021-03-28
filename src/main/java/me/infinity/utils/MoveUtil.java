@@ -95,4 +95,9 @@ public class MoveUtil {
 		Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().getX(), y,
 				Helper.getPlayer().getVelocity().getZ());
 	}
+
+	public static void setY(double y) {
+		Helper.getPlayer().setPos(Helper.getPlayer().getPos().getX(), Helper.getPlayer().getPos().getY() + y,
+				Helper.getPlayer().getPos().getZ());
+	}
 }

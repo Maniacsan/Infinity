@@ -4,6 +4,7 @@ import com.darkmagician6.eventapi.EventTarget;
 
 import me.infinity.event.PacketEvent;
 import me.infinity.event.PlayerMoveEvent;
+import me.infinity.event.PushOutBlockEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -44,7 +45,7 @@ public class FreeCam extends Module {
 	@Override
 	public void onDisable() {
 		if (spawnPlayer != null)
-		spawnPlayer.despawn();
+			spawnPlayer.despawn();
 		spawnPlayer = null;
 
 		Helper.getPlayer().abilities.flying = prevFly;
@@ -59,6 +60,12 @@ public class FreeCam extends Module {
 		Helper.getPlayer().setOnGround(false);
 		Helper.getPlayer().abilities.setFlySpeed((float) (speed.getCurrentValueDouble() / 5));
 		Helper.getPlayer().abilities.flying = true;
+	}
+
+	@EventTarget
+	public void onPushBlock(PushOutBlockEvent event) {
+		// noclip to block fix
+		event.cancel();
 	}
 
 	@EventTarget

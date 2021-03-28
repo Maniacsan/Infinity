@@ -16,11 +16,11 @@ import com.mojang.authlib.GameProfile;
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PlayerMoveEvent;
+import me.infinity.event.PushOutBlockEvent;
 import me.infinity.features.module.movement.SafeWalk;
 import me.infinity.features.module.player.NoSlow;
 import me.infinity.features.module.player.Scaffold;
 import me.infinity.utils.UpdateUtil;
-import me.infinity.utils.entity.PlayerSend;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -92,10 +92,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	@Overwrite
 	public void sendMovementPackets() {
 		try {
-			PlayerSend sender = new PlayerSend(this.yaw, this.pitch, this.getX(), this.getY(), this.getZ(),
-					this.onGround);
 
-			MotionEvent motionEvent = new MotionEvent(EventType.PRE);
+			MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.yaw, this.pitch, this.getX(), this.getY(),
+					this.getZ(), this.onGround);
 			EventManager.call(motionEvent);
 
 			boolean bl = this.isSprinting();
@@ -114,14 +113,14 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				this.lastSneaking = bl2;
 			}
 
-			float yaw = sender.getYaw();
-			float pitch = sender.getPitch();
+			float yaw = motionEvent.getYaw();
+			float pitch = motionEvent.getPitch();
 
-			double x = sender.getX();
-			double y = sender.getY();
-			double z = sender.getZ();
+			double x = motionEvent.getX();
+			double y = motionEvent.getY();
+			double z = motionEvent.getZ();
 
-			boolean onGround = sender.isOnGround();
+			boolean onGround = motionEvent.isOnGround();
 
 			if (this.isCamera()) {
 				double d = x - this.lastX;
@@ -162,7 +161,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				this.lastOnGround = onGround;
 				this.autoJumpEnabled = this.client.options.autoJump;
 			}
-			MotionEvent motionPostEvent = new MotionEvent(EventType.POST);
+			MotionEvent motionPostEvent = new MotionEvent(EventType.POST, this.yaw, this.pitch, this.getX(),
+					this.getY(), this.getZ(), this.onGround);
 			EventManager.call(motionPostEvent);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -208,6 +208,15 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				|| (InfMain.getModuleManager().getModuleByClass(Scaffold.class).isEnabled()
 						&& ((Scaffold) InfMain.getModuleManager().getModuleByClass(Scaffold.class)).safeWalk
 								.isToggle());
+	}
+
+	@Inject(method = "pushOutOfBlocks", at = @At("HEAD"), cancellable = true)
+	private void pushOutOfBlocks(double x, double d, CallbackInfo ci) {
+		PushOutBlockEvent pushEvent = new PushOutBlockEvent();
+		EventManager.call(pushEvent);
+		if (pushEvent.isCancelled()) {
+			ci.cancel();
+		}
 	}
 
 }

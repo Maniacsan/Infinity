@@ -15,7 +15,6 @@ import me.infinity.utils.Helper;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.entity.PlayerSend;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -85,7 +84,7 @@ public class Scaffold extends Module {
 				Vec3d vec = new Vec3d(lookPos.getX(), lookPos.getY(), lookPos.getZ());
 				float[] alwaysL = RotationUtils.lookAtVecPos(vec, (float) speed.getCurrentValueDouble(),
 						(float) speed.getCurrentValueDouble());
-				PlayerSend.setRotation(alwaysL[0], alwaysL[1]);
+				event.setRotation(alwaysL[0], alwaysL[1]);
 				Helper.getPlayer().bodyYaw = alwaysL[0];
 				Helper.getPlayer().headYaw = alwaysL[0];
 			}
@@ -103,7 +102,7 @@ public class Scaffold extends Module {
 				pData = data;
 				
 				float[] look = rotation(pos);
-				PlayerSend.setRotation(look[0], look[1]);
+				event.setRotation(look[0], look[1]);
 				Helper.getPlayer().bodyYaw = look[0];
 				Helper.getPlayer().headYaw = look[0];
 				
@@ -217,7 +216,7 @@ public class Scaffold extends Module {
 	private class PlaceData {
 
 		private BlockPos pos;
-		public Direction side;
+		private Direction side;
 
 		public PlaceData(BlockPos pos, Direction side) {
 			this.pos = pos;

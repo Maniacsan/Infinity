@@ -66,28 +66,23 @@ public class Jesus extends Module {
 					}
 				}
 			}
-		} else if (mode.getCurrentMode().equalsIgnoreCase("NGrief")) {
-			if (Helper.getPlayer().age % 5 == 0) {
-				Helper.getPlayer().setPos(Helper.getPlayer().getPos().x, Helper.getPlayer().getPos().y + 3.0,
-						Helper.getPlayer().getPos().z);
-			}
-			if (Helper.minecraftClient.options.keyLeft.isPressed()) {
-				MoveUtil.hClip(0, -0.5f);
-			}
-			if (Helper.minecraftClient.options.keyRight.isPressed()) {
-				MoveUtil.hClip(0, 0.5f);
-			}
 
-			if (Helper.minecraftClient.options.keyBack.isPressed()) {
-				MoveUtil.hClip(-0.5f, 0);
-			}
 		}
 	}
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
+			if (mode.getCurrentMode().equalsIgnoreCase("NGrief")) {
+				if (water && !Helper.getPlayer().isTouchingWater()) {
+					MoveUtil.setYVelocity(0.2);
+				} else if (Helper.getPlayer().isTouchingWater()) {
+					MoveUtil.setYVelocity(0.34);
+					MoveUtil.setHVelocity(0, 0);
+				}
+				water = Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava();
+				
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
 					if (Helper.getPlayer().age % 2 == 0) {
@@ -100,8 +95,8 @@ public class Jesus extends Module {
 				}
 			}
 		} else if (event.getType().equals(EventType.POST)) {
+		
 			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
-				water = Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava();
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava()) {
 					if (Helper.minecraftClient.options.keyRight.isPressed()
 							|| Helper.minecraftClient.options.keyLeft.isPressed()

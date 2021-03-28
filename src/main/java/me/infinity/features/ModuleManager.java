@@ -55,7 +55,12 @@ public class ModuleManager {
 			new Jesus(),
 			new Speed(),
 			new PacketKick(),
-			new FastBreak()
+			new FastBreak(),
+			new ArmorHUD(),
+			new NameTags(),
+			new NoClip(),
+			new FakeLags(),
+			new AntiAim()
 			);
 
 	public List<Module> getList() {
