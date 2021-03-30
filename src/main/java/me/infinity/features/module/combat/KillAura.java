@@ -9,13 +9,14 @@ import org.lwjgl.glfw.GLFW;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
-import me.infinity.event.PacketEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.features.module.player.FakeLags;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.TimeHelper;
@@ -131,7 +132,7 @@ public class KillAura extends Module {
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				event.setRotation(smash[0], smash[1]);
 			}
-			
+
 			if (badStrafe.isToggle()) {
 				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 					MoveUtil.getHorizontalVelocity(this.strafeSpeed.getCurrentValueDouble(), focus[0]);
@@ -152,20 +153,6 @@ public class KillAura extends Module {
 			}
 
 		}
-	}
-
-	@EventTarget
-	public void onPacket(PacketEvent event) {
-
-		if (target != null) {
-			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				if (smash[1] < 90 || smash[1] > -90) {
-				}
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-			}
-
-		}
-
 	}
 
 	@EventTarget
@@ -191,6 +178,11 @@ public class KillAura extends Module {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall()) {
+
+				// fakeLags reset
+				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())
+					((FakeLags) InfMain.getModuleManager().getModuleByClass(FakeLags.class)).sendPackets();
+
 				Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
 				EntityUtil.swing(!noSwing.isToggle());
 				timer.reset();

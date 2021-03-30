@@ -59,16 +59,16 @@ public class CategoryButton {
 			for (ModuleButton modButton : modButton) {
 
 				if (modButton.open) {
-					Render2D.drawRectWH(matrices, setX + 221, setY + 2, width + 97, setHeight - 4,
+					Render2D.drawRectWH(matrices, setX + 241, setY + 2, width + 97, setHeight - 4,
 							ColorUtils.lineColor);
-					Render2D.drawRectWH(matrices, setX + 222, setY + 3, width + 95, setHeight - 6,
+					Render2D.drawRectWH(matrices, setX + 242, setY + 3, width + 95, setHeight - 6,
 							ColorUtils.backNight);
 				}
 
 				if (modHovered && offsetY > this.height) {
 					double border = offsetY / 3;
-					Render2D.drawRectWH(matrices, setX + 213, setY + 5, 2.4, setHeight - 10, 0xFF505050);
-					Render2D.drawRectWH(matrices, setX + 213, setY + 5 + offset, 2.4, setHeight - 10 - border,
+					Render2D.drawRectWH(matrices, setX + 233, setY + 5, 2.4, setHeight - 10, 0xFF505050);
+					Render2D.drawRectWH(matrices, setX + 233, setY + 5 + offset, 2.4, setHeight - 10 - border,
 							0xFFD2D2D2);
 				}
 
@@ -77,13 +77,13 @@ public class CategoryButton {
 				configButton.render(matrices, mouseX, mouseY, delta, xOffset, yOffset, width, height, yMod, setX, setY,
 						setWidth, setHeight);
 			} else {
-				Render2D.startMenuScissor(setX + 65, yMod + 5, width + 93, setHeight - 8);
+				Render2D.startMenuScissor(setX + 65, yMod + 5, width + 113, setHeight - 8);
 				for (ModuleButton modButton : modButton) {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + height);
 					modButton.render(matrices, mouseX, mouseY, delta, xOffset + x + 64, yOffset + yMod + 5 - offset,
-							width + 10, height - 3, setX, setY, setWidth, setHeight);
-					xOffset += 72;
+							width + 22, height - 3, setX, setY, setWidth, setHeight);
+					xOffset += 84;
 					if (xOffset > 120) {
 						xOffset = 2;
 						yOffset += 19;

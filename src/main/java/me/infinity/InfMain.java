@@ -28,6 +28,9 @@ public class InfMain {
 	private static AccountManager accountManager;
 	private static MacroManager macroManager;
 	private static Friend friend;
+	
+	// timer
+	public static float TIMER = 1.0f;
 
 	public void initialize() {
 		infDirection = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
@@ -86,5 +89,9 @@ public class InfMain {
 
 	public static Friend getFriend() {
 		return friend;
+	}
+	
+	public static void resetTimer() {
+		TIMER = 1.0f;
 	}
 }

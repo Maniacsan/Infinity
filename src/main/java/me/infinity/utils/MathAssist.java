@@ -11,7 +11,7 @@ public class MathAssist {
 	}
 
 	public static double clamp(double num, double min, double max) {
-		return (num < min) ? min : ((num > max) ? max : num);
+		return num < min ? min : Math.min(num, max);
 	}
 
 	public static double random(double min, double max) {

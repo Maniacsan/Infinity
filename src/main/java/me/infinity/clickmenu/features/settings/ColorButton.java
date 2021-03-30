@@ -10,24 +10,23 @@ import net.minecraft.client.util.math.MatrixStack;
 public class ColorButton extends SettingButton {
 
 	private boolean extended;
-	private float pos, hue, saturation, brightness;
+	private float hue, saturation, brightness;
 	private boolean pressedhue;
 	private boolean pressedSB;
 	private boolean extendedHovered;
 	private boolean hovered;
 	private boolean hueHovered;
 	private boolean noExtHover;
-	private float posX, posY;
+	private double posX, posY;
 
 	public ColorButton(Settings setting) {
 		super(setting);
 		float[] hsb = new float[3];
-		final Color clr = setting.getColor();
+		Color clr = setting.getColor();
 		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
 		this.hue = hsb[0];
 		this.saturation = hsb[1];
 		this.brightness = hsb[2];
-		pos = 0;
 	}
 
 	@Override
@@ -83,10 +82,9 @@ public class ColorButton extends SettingButton {
 					}
 				}
 				if (0.001 * Math.floor((i / hueHeight) * 1000.0) == 0.001 * Math.floor(hue * 1000.0))
-					pos = i;
+					Render2D.drawRectWH(matrices, x + 71.5, y + i, 8.5, 2, 0xffffffff);
 			}
 			Render2D.drawUnfilledCircle(x + posX, y + posY, 3f, 1f, -1);
-			Render2D.drawRectWH(matrices, x + 71.5, y + pos, 8.5, 2, 0xffffffff);
 		}
 
 	}

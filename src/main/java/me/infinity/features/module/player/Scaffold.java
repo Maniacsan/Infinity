@@ -7,11 +7,13 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
-import me.infinity.event.PacketEvent;
+import me.infinity.event.RotationEvent;
+import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.MoveUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.entity.EntityUtil;
@@ -22,6 +24,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
+import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -29,12 +32,18 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Placing block", key = -2, name = "Scaffold", visible = true)
 public class Scaffold extends Module {
 
+	private Settings mode = new Settings(this, "Mode", "Normal", new ArrayList<>(Arrays.asList("Normal", "Safe")),
+			() -> true);
+
+	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Normal"));
+	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Normal"));
+
 	private Settings blockTake = new Settings(this, "Block Take", "Switch",
 			new ArrayList<>(Arrays.asList("Pick", "Switch")), () -> true);
 	private Settings eagle = new Settings(this, "Eagle", false, () -> true);
 	public Settings safeWalk = new Settings(this, "SafeWalk", true, () -> true);
-	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, () -> true);
-	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, () -> true);
 
 	private Settings speed = new Settings(this, "Rotation Speed", 140D, 0D, 180D, () -> true);
 
@@ -44,8 +53,15 @@ public class Scaffold extends Module {
 
 	private PlaceData pData;
 
+	private float[] look;
+
 	// target pos
 	public static BlockPos pos;
+
+	@Override
+	public void onEnable() {
+		timer.reset();
+	}
 
 	@Override
 	public void onDisable() {
@@ -69,6 +85,18 @@ public class Scaffold extends Module {
 				Helper.minecraftClient.options.keySneak.setPressed(true);
 			}
 		}
+
+		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
+			MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.05);
+		}
+	}
+
+	@EventTarget
+	public void onTick(TickEvent event) {
+		if (pos == null)
+			return;
+
+		look = rotation(pos);
 	}
 
 	@EventTarget
@@ -89,7 +117,6 @@ public class Scaffold extends Module {
 				Helper.getPlayer().headYaw = alwaysL[0];
 			}
 
-			
 			if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
 
 				if (pos == null) {
@@ -98,14 +125,13 @@ public class Scaffold extends Module {
 				}
 
 				// rotation
-				
+
 				pData = data;
-				
-				float[] look = rotation(pos);
+
 				event.setRotation(look[0], look[1]);
 				Helper.getPlayer().bodyYaw = look[0];
 				Helper.getPlayer().headYaw = look[0];
-				
+
 				// slot calculate
 				int blockSlot = -2;
 				for (int i = 0; i < 9; i++) {
@@ -122,6 +148,9 @@ public class Scaffold extends Module {
 							Math.random() * (maxDelay.getCurrentValueDouble() - minDelay.getCurrentValueDouble())
 									+ minDelay.getCurrentValueDouble())) {
 
+						if (!safe())
+							return;
+
 						int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
 						Helper.getPlayer().inventory.selectedSlot = blockSlot;
 
@@ -134,15 +163,22 @@ public class Scaffold extends Module {
 					}
 				}
 			}
-
 		} else if (event.getType().equals(EventType.POST)) {
 
 		}
 	}
 
 	@EventTarget
-	public void onPacket(PacketEvent event) {
+	public void onRotation(RotationEvent event) {
+		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
 
+			if (pos == null)
+				return;
+
+			event.setYaw(look[0]);
+			event.setPitch(look[1]);
+			event.cancel();
+		}
 	}
 
 	public float[] rotation(BlockPos pos) {
@@ -204,6 +240,17 @@ public class Scaffold extends Module {
 		return null;
 	}
 
+	private boolean safe() {
+		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
+			if (Helper.minecraftClient.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	private boolean isBlock(Item item) {
 		if (item instanceof BlockItem) {
 			BlockItem itemBlock = (BlockItem) item;
@@ -213,10 +260,10 @@ public class Scaffold extends Module {
 		return false;
 	}
 
-	private class PlaceData {
+	public class PlaceData {
 
-		private BlockPos pos;
-		private Direction side;
+		public BlockPos pos;
+		public Direction side;
 
 		public PlaceData(BlockPos pos, Direction side) {
 			this.pos = pos;

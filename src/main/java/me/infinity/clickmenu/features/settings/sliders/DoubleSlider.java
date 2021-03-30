@@ -1,23 +1,21 @@
-package me.infinity.clickmenu.features.settings;
+package me.infinity.clickmenu.features.settings.sliders;
 
+import me.infinity.clickmenu.features.settings.SettingButton;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 
-public class SliderButton extends SettingButton {
+public class DoubleSlider extends SettingButton {
 
 	private double selected;
 	public boolean dragging;
 	private boolean hovered;
 
-	public SliderButton(Settings setting) {
+	public DoubleSlider(Settings setting) {
 		super(setting);
-		this.selected = setting.isValueInt() ? setting.getCurrentValueInt() / setting.getMaxValueInt()
-				: setting.isValueDouble() ? setting.getCurrentValueDouble() / setting.getMaxValueDouble()
-						: setting.isValueFloat() ? setting.getCurrentValueFloat() / setting.getMaxValueFloat()
-								: setting.getCurrentValueInt() / setting.getMaxValueInt();
+		this.selected = setting.getCurrentValueDouble() / setting.getMaxValueDouble();
 	}
 
 	@Override
@@ -29,35 +27,19 @@ public class SliderButton extends SettingButton {
 				+ sname.substring(1, sname.length());
 		final String displayval = new StringBuilder()
 				.append(Math.round(setting.getCurrentValueDouble() * 100.0) / 100.0).toString();
-		final String floatVal = new StringBuilder().append(Math.round(setting.getCurrentValueFloat() * 100.0) / 100.0)
-				.toString();
-		final String intVal = new StringBuilder().append(Math.round(setting.getCurrentValueInt())).toString();
 
 		FontUtils.drawStringWithShadow(matrices, setstrg, (float) (x + 2), (float) (y), -1);
-		FontUtils.drawHVCenteredString(matrices,
-				setting.isValueDouble() ? displayval
-						: setting.isValueFloat() ? floatVal : setting.isValueInt() ? intVal : intVal,
-				(float) (x + width + 17), (float) (y + 14.0), -1);
+		FontUtils.drawHVCenteredString(matrices, displayval, (float) (x + width + 17), (float) (y + 14.0), -1);
 		Render2D.drawRectWH(matrices, x + 2, y + 12, width, 2, -2130706433);
 		Render2D.drawRectWH(matrices, x + 2, y + 12, width * this.selected, 2, 0xFF79E649);
 		Render2D.drawFullCircle(x + 1 + width * selected, y + 13, 3, 0xFFCCD6C8);
 		if (this.dragging) {
-			final double diff = setting.isValueDouble() ? setting.getMaxValueDouble() - setting.getMinValueDouble()
-					: setting.isValueFloat() ? setting.getMaxValueFloat() - setting.getMinValueFloat()
-							: setting.isValueInt() ? setting.getMaxValueInt() - setting.getMinValueInt()
-									: setting.getMaxValueInt() - setting.getMinValueInt();
-
+			final double diff = setting.getMaxValueDouble() - setting.getMinValueDouble();
 			final double percentBar = MathHelper.clamp((mouseX - x) / width, 0.0, 1.0);
-			final double val = setting.isValueInt() ? setting.getMinValueInt() + percentBar * diff
-					: setting.getMinValueDouble() + percentBar * diff;
+			final double val = setting.getMinValueDouble() + percentBar * diff;
 
-			if (setting.isValueDouble()) {
 				setting.setCurrentValueDouble(val);
-			} else if (setting.isValueFloat()) {
-				setting.setCurrentValueFloat((float) val);
-			} else if (setting.isValueInt()) {
-				setting.setCurrentValueInt((int) val);
-			}
+
 			this.selected = percentBar;
 		}
 	}

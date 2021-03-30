@@ -22,7 +22,7 @@ public class ClickMenu extends Screen {
 	}
 	
 	public void init() {
-		panel = new Panel(this, 20, 20, 380, 250);
+		panel = new Panel(this, 20, 20, 400, 250);
 	}
 
 	@Override

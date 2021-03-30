@@ -27,7 +27,7 @@ public class ConfigListButton {
 			Render2D.drawRectWH(matrices, setX, setY, setWidth, setHeight, 0x90000000);
 			Render2D.drawRectWH(matrices, setX, setY, 2, setHeight, ColorUtils.CHECK_TOGGLE);
 		}
-		FontUtils.drawHVCenteredString(matrices, config.getName(), setX + 80, setY + 6, -1);
+		FontUtils.drawHVCenteredString(matrices, config.getName(), setX + 90, setY + 6, -1);
 	}
 	
 	public void mouseClicked(double mouseX, double mouseY, int button) {

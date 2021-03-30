@@ -84,6 +84,12 @@ public class InvUtil {
 		return false;
 	}
 
+	public static int indexSlot(int invIndex) {
+		if (invIndex < 9 && invIndex != -1)
+			return 44 - (8 - invIndex);
+		return invIndex;
+	}
+
 	public static void switchItem(int slot, int button) {
 		Helper.minecraftClient.interactionManager.clickSlot(button, slot, 1, SlotActionType.PICKUP, Helper.getPlayer());
 	}

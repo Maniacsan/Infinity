@@ -10,6 +10,7 @@ import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.features.module.combat.KillAura;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 
@@ -33,11 +34,16 @@ public class AntiAim extends Module {
 	private float yaw;
 	private float pitch;
 
+	@Override
+	public void onPlayerTick() {
+		setSuffix(mode.getCurrentMode());
+	}
+
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Custom")) {
-				
+
 				// yaw
 				if (yawMode.getCurrentMode().equalsIgnoreCase("Spin")) {
 					yaw += spinSpeed.getCurrentValueDouble();
@@ -70,7 +76,10 @@ public class AntiAim extends Module {
 				yaw -= yaw % gcd;
 				pitch -= pitch % gcd;
 
-				if (!Float.isNaN(yaw) || Float.isNaN(pitch)) {
+				if (KillAura.target != null)
+					return;
+
+				if (!Float.isNaN(yaw) || !Float.isNaN(pitch)) {
 					event.setYaw(yaw);
 					Helper.getPlayer().bodyYaw = yaw;
 					Helper.getPlayer().headYaw = yaw;

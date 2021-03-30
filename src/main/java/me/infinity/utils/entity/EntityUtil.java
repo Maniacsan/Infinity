@@ -6,6 +6,7 @@ import java.util.stream.StreamSupport;
 
 import me.infinity.InfMain;
 import me.infinity.utils.Helper;
+import me.infinity.utils.UpdateUtil;
 import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.block.BlockState;
@@ -296,6 +297,12 @@ public class EntityUtil {
 		float g = (float) (Helper.getPlayer().getY() - pos.getY());
 		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
 		return MathHelper.sqrt(f * f + g * g + h * h);
+	}
+	
+	public static void setStepHeight(float height) {
+		if (!UpdateUtil.canUpdate())
+			return;
+		Helper.getPlayer().stepHeight = height;
 	}
 
 	public static Vec3d getRenderPos(Entity e) {

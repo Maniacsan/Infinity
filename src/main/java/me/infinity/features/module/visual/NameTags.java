@@ -21,7 +21,6 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -71,7 +70,7 @@ public class NameTags extends Module {
 				scale = Math.max(this.scale.getCurrentValueDouble()
 						* (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20), 1);
 
-					lines.add(entity.getDisplayName().getString() + " " + health);
+				lines.add(entity.getDisplayName().getString() + " " + health);
 
 				/* Drawing Items */
 				double c = 0;
@@ -111,7 +110,7 @@ public class NameTags extends Module {
 		RenderSystem.enableDepthTest();
 		RenderSystem.depthFunc(GL11.GL_ALWAYS);
 
-		matrix.scale(0.65F, 0.65F, 1F);
+		matrix.scale(0.75F, 0.75F, 1F);
 
 		int c = 0;
 		for (Entry<Enchantment, Integer> m : EnchantmentHelper.get(item).entrySet()) {
@@ -120,14 +119,11 @@ public class NameTags extends Module {
 			if (text.isEmpty())
 				continue;
 
-			String subText = text.substring(0, Math.min(text.length(), 2)) + m.getValue();
+			String subText = text.substring(0, 2) + m.getValue();
 
 			int w1 = Helper.minecraftClient.textRenderer.getWidth(subText) / 2;
-			Helper.minecraftClient.textRenderer.draw(subText, -2 - w1, c,
-					m.getKey() == Enchantments.VANISHING_CURSE || m.getKey() == Enchantments.BINDING_CURSE ? -1 : -1,
-					true, matrix.peek().getModel(),
-					Helper.minecraftClient.getBufferBuilders().getEntityVertexConsumers(), true, 0, 0xf000f0);
-
+			// hz vashe kak 0 - w1 rabotaet ,no bez nego krivo
+			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, subText, 0 - w1, c * 12 - 24, 0xFFFFFFFF);
 			c--;
 		}
 

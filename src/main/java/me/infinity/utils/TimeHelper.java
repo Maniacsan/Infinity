@@ -16,16 +16,6 @@ public class TimeHelper {
 		return System.nanoTime() / 1000000L;
 	}
 
-	public static void runInThread(Runnable r) {
-		(new Thread(() -> {
-			try {
-				r.run();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		})).start();
-	}
-
 	public static void sleep(int ms) {
 		try {
 			Thread.sleep(ms);

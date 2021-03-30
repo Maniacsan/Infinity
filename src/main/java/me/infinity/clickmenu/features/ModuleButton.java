@@ -9,7 +9,9 @@ import me.infinity.clickmenu.features.settings.BooleanButton;
 import me.infinity.clickmenu.features.settings.ColorButton;
 import me.infinity.clickmenu.features.settings.ModeStringButton;
 import me.infinity.clickmenu.features.settings.SettingButton;
-import me.infinity.clickmenu.features.settings.SliderButton;
+import me.infinity.clickmenu.features.settings.sliders.DoubleSlider;
+import me.infinity.clickmenu.features.settings.sliders.FloatSlider;
+import me.infinity.clickmenu.features.settings.sliders.IntSlider;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
@@ -42,8 +44,12 @@ public class ModuleButton {
 					this.settingButton.add(new BooleanButton(setting));
 				} else if (setting.isMode()) {
 					this.settingButton.add(new ModeStringButton(setting));
-				} else if (setting.isValueDouble() || setting.isValueFloat() || setting.isValueInt()) {
-					this.settingButton.add(new SliderButton(setting));
+				} else if (setting.isValueDouble()) {
+					this.settingButton.add(new DoubleSlider(setting));
+				} else if (setting.isValueFloat()) {
+					this.settingButton.add(new FloatSlider(setting));
+				} else if (setting.isValueInt()) {
+					this.settingButton.add(new IntSlider(setting));
 				} else if (setting.isBlock()) {
 					this.settingButton.add(new BlocksButton(setting));
 				} else if (setting.isColor()) {
@@ -59,26 +65,29 @@ public class ModuleButton {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		this.setHovered = Render2D.isHovered(mouseX, mouseY, setX + 224, setY + 6, setWidth, setHeight - 8);
 		Render2D.drawRectWH(matrices, x, y, width, height, 0xFF706D6D);
-		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1,
-				module.isEnabled() ? 0xFF2A2C2A : hovered ? ColorUtils.blend(Color.GRAY, Color.WHITE, 0.5).getRGB() : 0xFF343434);
+		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, module.isEnabled() ? 0xFF2A2C2A
+				: hovered ? ColorUtils.blend(Color.GRAY, Color.WHITE, 0.5).getRGB() : 0xFF343434);
 		FontUtils.drawStringWithShadow(matrices, name, x + 5, y + 5, module.isEnabled() ? 0xFF1AB41E : -1);
 		if (!this.module.getSettings().isEmpty()) {
-			Render2D.drawRightTriangle((int) x + 68, (int) ((int) y + height / 2 + 2), 4, open ? -1 : 0xFF7A7979);
+			Render2D.drawRightTriangle((int) x + 80, (int) ((int) y + height / 2 + 2), 4, open ? -1 : 0xFF7A7979);
 		}
+
 		Render2D.startMenuScissor(setX + 224, setY + 6, setWidth, setHeight - 8);
 		if (open) {
 			double yOffset = 2;
 			double xOffset = 0;
+			
 			if (setHovered && offsetY > this.height) {
-				Render2D.drawRectWH(matrices, setX + 372, setY + 5, 2.4, setHeight - 10, 0xFF505050);
-				Render2D.drawRectWH(matrices, setX + 372, setY + 5 + offset, 2.4, setHeight - 10 - getCurrentHeight(),
-						0xFFD2D2D2);
+			Render2D.drawRectWH(matrices, setX + 392, setY + 5, 2.4, setHeight - 10, 0xFF505050);
+			Render2D.drawRectWH(matrices, setX + 392, setY + 5 + offset, 2.4,
+					setHeight - 10 - getCurrentHeight(), 0xFFD2D2D2);
 			}
+			
 			for (SettingButton setBut : settingButton) {
 				if (setBut.isVisible()) {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + setY + 6);
-					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 224, yOffset + setY + 6 - offset,
+					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 244, yOffset + setY + 6 - offset,
 							width + 30, height);
 					if (setBut instanceof BooleanButton) {
 						yOffset += 15;
@@ -91,6 +100,7 @@ public class ModuleButton {
 					}
 				}
 			}
+
 		}
 		Render2D.stopScissor();
 	}
@@ -152,6 +162,7 @@ public class ModuleButton {
 				}
 			}
 		}
+
 	}
 
 }

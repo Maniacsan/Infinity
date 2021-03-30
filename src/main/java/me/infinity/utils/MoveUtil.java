@@ -32,13 +32,44 @@ public class MoveUtil {
 		return moveYaw;
 	}
 
-	public static void strafe(double speed) {
+	public static double calcMoveYaw() {
+		float moveForward = getRoundedForward();
+		float moveString = getRoundedStrafing();
+		float yawIn = Helper.getPlayer().yaw;
+		float strafe = 90 * moveString;
+		strafe *= (moveForward != 0.0F) ? (moveForward * 0.5F) : 1.0F;
+		float yaw = yawIn - strafe;
+		yaw -= ((moveForward < 0.0F) ? 180 : 0);
+		return Math.toRadians(yaw);
+	}
+
+	public static double getSpeed() {
+		return Math.hypot(Helper.getPlayer().getVelocity().x, Helper.getPlayer().getVelocity().z);
+	}
+
+	public static void strafe(double yawL, double speed) {
 		if (!isMoving())
 			return;
-		float yaw = getYaw();
+		float yaw = (float) yawL;
 		double x = -Math.sin(yaw) * speed;
 		double z = Math.cos(yaw) * speed;
-		Helper.getPlayer().setVelocity(x, Helper.getPlayer().getVelocity().getY(), z);
+		setHVelocity(x, z);
+	}
+
+	public static void strafe(double speed) {
+		strafe(getYaw(), speed);
+	}
+
+	public static float getRoundedForward() {
+		return getRoundedMovementInput(Helper.getPlayer().input.movementForward);
+	}
+
+	public static float getRoundedStrafing() {
+		return getRoundedMovementInput(Helper.getPlayer().input.movementSideways);
+	}
+
+	private static final float getRoundedMovementInput(float input) {
+		return (input > 0.0F) ? 1.0F : ((input < 0.0F) ? -1.0F : 0.0F);
 	}
 
 	public static void getHorizontalVelocity(double bps, float targetYaw) {

@@ -96,8 +96,6 @@ public class Settings {
 		this.name = name;
 		this.color = currentColor;
 		this.visible = visible;
-		Color hsb = Color.getHSBColor(hue, saturation, brightness);
-		currentColor = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
 		this.category = Category.COLOR;
 	}
 

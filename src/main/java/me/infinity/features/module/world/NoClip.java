@@ -29,7 +29,6 @@ public class NoClip extends Module {
 			if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 				MoveUtil.setYVelocity(0);
 			}
-
 		}
 	}
 	

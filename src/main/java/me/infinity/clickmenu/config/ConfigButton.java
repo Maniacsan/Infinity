@@ -54,10 +54,10 @@ public class ConfigButton {
 		this.saveHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 41, 62, 12);
 		this.loadHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 23, 56, 12);
 		this.refreshHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 5, 56, 12);
-		Render2D.drawRectWH(matrices, setX + 150, setY + 1, 161, 17, 0xFF989595);
-		Render2D.drawRectWH(matrices, setX + 151, setY + 2, 159, 15, 0xFF1C1B1B);
+		Render2D.drawRectWH(matrices, setX + 150, setY + 1, 180, 17, 0xFF989595);
+		Render2D.drawRectWH(matrices, setX + 151, setY + 2, 178, 15, 0xFF080808);
 		FontUtils.drawStringWithShadow(matrices, content, setX + 154, setY + 6, -1);
-		if (focused && FontUtils.getStringWidth(content) < 150) {
+		if (focused && FontUtils.getStringWidth(content) < 170) {
 			Render2D.drawRectWH(matrices, setX + 153 + FontUtils.getStringWidth(content) + 2, setY + 13, 3, 1, -1);
 		}
 
@@ -77,14 +77,14 @@ public class ConfigButton {
 		FontUtils.drawHVCenteredString(matrices, "save", setX + 108, setY + 48, -1);
 
 		// refresh button
-		Render2D.drawRectWH(matrices, setX + 316, setY + 5, 56, 14, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 317, setY + 6, 54, 12, refreshHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "refresh", setX + 345, setY + 12, -1);
+		Render2D.drawRectWH(matrices, setX + 336, setY + 5, 56, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 337, setY + 6, 54, 12, refreshHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "refresh", setX + 365, setY + 12, -1);
 
 		// load button
-		Render2D.drawRectWH(matrices, setX + 316, setY + 23, 56, 14, 0xFF8E8E8E);
-		Render2D.drawRectWH(matrices, setX + 317, setY + 24, 54, 12, loadHovered ? 0x903B3B3B : 0xFF131313);
-		FontUtils.drawHVCenteredString(matrices, "load", setX + 344, setY + 30, -1);
+		Render2D.drawRectWH(matrices, setX + 336, setY + 23, 56, 14, 0xFF8E8E8E);
+		Render2D.drawRectWH(matrices, setX + 337, setY + 24, 54, 12, loadHovered ? 0x903B3B3B : 0xFF131313);
+		FontUtils.drawHVCenteredString(matrices, "load", setX + 364, setY + 30, -1);
 
 		if (InfMain.getConfigManager().getConfigList().size() > 15 && configFull) {
 			FontUtils.drawHVCenteredString(matrices, "Configs", setX + 108, setY + 65, 0xFFE24343);
@@ -171,7 +171,7 @@ public class ConfigButton {
 			String specialChars = "/*!@#$%^&*()\";:'{}_[]|\\?/<>,.";
 			if ((Character.isLetterOrDigit(chr) || Character.isSpaceChar(chr)
 					|| specialChars.contains(Character.toString(chr)))
-					&& FontUtils.getStringWidth(this.content) < this.width + 90.0D) {
+					&& FontUtils.getStringWidth(this.content) < this.width + 110.0D) {
 				this.content += Character.toString(chr);
 			}
 		}

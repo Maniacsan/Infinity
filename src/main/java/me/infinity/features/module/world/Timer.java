@@ -1,5 +1,6 @@
 package me.infinity.features.module.world;
 
+import me.infinity.InfMain;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -8,9 +9,15 @@ import me.infinity.features.Settings;
 public class Timer extends Module {
 
 	private Settings value = new Settings(this, "Value", 1.1f, 0.3f, 10.0f, () -> true);
-
-	public float getSpeed() {
-		return isEnabled() ? value.getCurrentValueFloat() : 1f;
+	
+	@Override
+	public void onDisable() {
+		InfMain.resetTimer();
+	}
+	
+	@Override
+	public void onPlayerTick() {
+		InfMain.TIMER = value.getCurrentValueFloat();
 	}
 
 }

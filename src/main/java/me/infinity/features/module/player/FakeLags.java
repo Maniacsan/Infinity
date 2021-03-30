@@ -20,14 +20,20 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Creates fake lags in movements", key = -2, name = "FakeLags", visible = true)
 public class FakeLags extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Pulse", new ArrayList<>(Arrays.asList("Pulse", "Always")),
-			() -> true);
+	private Settings mode = new Settings(this, "Mode", "Pulse",
+			new ArrayList<>(Arrays.asList("Pulse", "Always", "Legit")), () -> true);
 
 	private Settings pulseDelay = new Settings(this, "Pulse Delay", 0.2, 0.0, 30.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Pulse"));
 
 	private Settings delay = new Settings(this, "Delay", 0.2, 0.0, 30.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Always"));
+
+	private Settings legitDelay = new Settings(this, "Delay", 0.2, 0.0, 30.0,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Legit"));
+
+	// legit
+	private double legitTicks;
 
 	// pulse
 	private List<Packet<?>> packetList;
@@ -41,17 +47,7 @@ public class FakeLags extends Module {
 
 	@Override
 	public void onDisable() {
-		ticks = 0;
-		pulseTicks = 0;
-
-		if (packetList != null) {
-			try {
-				for (Packet<?> unsentPacket : this.packetList)
-					Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
-			} catch (Exception exception) {
-			}
-			this.packetList.clear();
-		}
+		sendPackets();
 	}
 
 	@Override
@@ -62,8 +58,18 @@ public class FakeLags extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
-			if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
+			if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
 				if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate())
+					return;
+
+				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+					packetList.add(event.getPacket());
+					event.cancel();
+					legitTicks++;
+				}
+
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
+				if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate() || pulseTicks > 0)
 					return;
 
 				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
@@ -100,6 +106,19 @@ public class FakeLags extends Module {
 				packetList.clear();
 				pulseTicks = 0;
 			}
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
+			if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate() || Helper.minecraftClient.isInSingleplayer())
+				return;
+
+			if (legitTicks >= legitDelay.getCurrentValueDouble()) {
+				try {
+					for (Packet<?> unsentPacket : this.packetList)
+						Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
+				} catch (Exception exception) {
+				}
+				packetList.clear();
+				legitTicks = 0;
+			}
 		}
 
 		if (sendPackets) {
@@ -118,6 +137,21 @@ public class FakeLags extends Module {
 				sendTimer--;
 			}
 		}
+	}
+
+	public void sendPackets() {
+		ticks = 0;
+		pulseTicks = 0;
+		legitTicks = 0;
+
+		if (packetList != null) {
+			try {
+				for (Packet<?> unsentPacket : this.packetList)
+					Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
+			} catch (Exception exception) {
+			}
+			this.packetList.clear();
+		}	
 	}
 
 	private void bothDelay(PacketEvent event) {

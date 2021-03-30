@@ -17,6 +17,8 @@ public class GuiMod extends Module {
 	public Settings scale = new Settings(this, "Scale", "60%",
 			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })), () -> true);
 
+	public Settings descriptions = new Settings(this, "Description", true, () -> true);
+
 	public static ClickMenu menu = new ClickMenu();
 
 	@Override

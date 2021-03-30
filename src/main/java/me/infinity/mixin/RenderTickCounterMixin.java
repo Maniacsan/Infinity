@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import me.infinity.InfMain;
-import me.infinity.features.module.world.Timer;
 import net.minecraft.client.render.RenderTickCounter;
 
 @Mixin(RenderTickCounter.class)
@@ -21,8 +20,7 @@ public class RenderTickCounterMixin {
 			@At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;prevTimeMillis:J", opcode = Opcodes.PUTFIELD, ordinal = 0) }, method = {
 					"beginRenderTick(J)I" })
 	public void onBeginRenderTick(long long_1, CallbackInfoReturnable<Integer> cir) {
-		Timer timer = ((Timer) InfMain.getModuleManager().getModuleByClass(Timer.class));
-		lastFrameDuration *= timer.getSpeed();
+		lastFrameDuration *= InfMain.TIMER;
 	}
 
 }

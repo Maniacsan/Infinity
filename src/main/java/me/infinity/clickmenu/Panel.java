@@ -93,17 +93,34 @@ public class Panel {
 				if (catButton.getName() == "CONFIGS") {
 					Render2D.drawRectWH(matrices, x + 68, y + 2, 79, height - 4, ColorUtils.lineColor);
 					Render2D.drawRectWH(matrices, x + 69, y + 3, 77, height - 6, ColorUtils.backNight);
-					Render2D.drawRectWH(matrices, x + 150, y + 20, 160, height - 22, ColorUtils.lineColor);
-					Render2D.drawRectWH(matrices, x + 151, y + 21, 158, height - 24, 0xFF1B1B1B);
-					Render2D.drawRectWH(matrices, x + 312, y + 2, 66, height - 4, ColorUtils.lineColor);
-					Render2D.drawRectWH(matrices, x + 313, y + 3, 64, height - 6, ColorUtils.backNight);
+					Render2D.drawRectWH(matrices, x + 150, y + 20, 180, height - 22, ColorUtils.lineColor);
+					Render2D.drawRectWH(matrices, x + 151, y + 21, 178, height - 24, 0xFF1B1B1B);
+					Render2D.drawRectWH(matrices, x + 332, y + 2, 66, height - 4, ColorUtils.lineColor);
+					Render2D.drawRectWH(matrices, x + 333, y + 3, 64, height - 6, ColorUtils.backNight);
 				} else {
-					Render2D.drawRectWH(matrices, x + 68, y + 2, 151, height - 4, ColorUtils.lineColor);
-					Render2D.drawRectWH(matrices, x + 69, y + 3, 149, height - 6, 0xFF1D1C1C);
+					Render2D.drawRectWH(matrices, x + 68, y + 2, 171, height - 4, ColorUtils.lineColor);
+					Render2D.drawRectWH(matrices, x + 69, y + 3, 169, height - 6, 0xFF1D1C1C);
+
 				}
 			}
 			catButton.render(matrices, mouseX, mouseY, delta, x + 4, yOff + y + 40, 60, 20, y, x, y, width, height);
 			yOff += 23;
+
+			if (catButton.displayModulePanel && catButton.getName() != "CONFIGS") {
+
+				if (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).descriptions.isToggle()) {
+					// description
+					catButton.getModButton().forEach(modButton -> {
+						if (modButton.hovered) {
+							Render2D.drawRectWH(matrices, mouseX + 1, mouseY + 13,
+									FontUtils.getStringWidth(modButton.module.getDesc() + 1), 12, 0xFF282828);
+
+							FontUtils.drawStringWithShadow(matrices, modButton.module.getDesc(), mouseX + 5,
+									mouseY + 15, 0xFFFFFFFF);
+						}
+					});
+				}
+			}
 		}
 
 	}

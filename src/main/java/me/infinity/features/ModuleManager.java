@@ -60,7 +60,9 @@ public class ModuleManager {
 			new NameTags(),
 			new NoClip(),
 			new FakeLags(),
-			new AntiAim()
+			new AntiAim(),
+			new PingSpoof(),
+			new Step()
 			);
 
 	public List<Module> getList() {

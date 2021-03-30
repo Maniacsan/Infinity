@@ -169,4 +169,11 @@ public class RenderUtil {
 		RenderSystem.enableDepthTest();
 	}
 
+	public static void drawTexture(MatrixStack matrices, Identifier ident, double x, double y, double width,
+			double height) {
+		Helper.minecraftClient.getTextureManager().bindTexture(ident);
+		DrawableHelper.drawTexture(matrices, (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width,
+				(int) height);
+	}
+
 }

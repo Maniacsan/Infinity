@@ -1,6 +1,7 @@
 package me.infinity.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,6 +17,7 @@ import me.infinity.features.module.combat.HitBoxes;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
@@ -46,8 +48,8 @@ public class EntityMixin {
 		}
 	}
 
-	@Inject(method = "getRotationVector", at = @At("HEAD"), cancellable = true)
-	private void onGetRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> info) {
+	@Overwrite
+	public final Vec3d getRotationVector(float pitch, float yaw) {
 		RotationEvent rotationEvent = new RotationEvent(yaw, pitch);
 		EventManager.call(rotationEvent);
 
@@ -55,6 +57,14 @@ public class EntityMixin {
 			pitch = rotationEvent.getPitch();
 			yaw = rotationEvent.getYaw();
 		}
+		
+		float f = pitch * 0.017453292F;
+		float g = -yaw * 0.017453292F;
+		float h = MathHelper.cos(g);
+		float i = MathHelper.sin(g);
+		float j = MathHelper.cos(f);
+		float k = MathHelper.sin(f);
+		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
 	}
 
 }
