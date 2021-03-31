@@ -19,10 +19,6 @@ import net.minecraft.text.Text;
 public abstract class GenericContainerScreenMixin extends HandledScreen<GenericContainerScreenHandler>
 		implements ScreenHandlerProvider<GenericContainerScreenHandler> {
 
-	public GenericContainerScreenMixin(GenericContainerScreenHandler handler, PlayerInventory inventory, Text title) {
-		super(handler, inventory, title);
-	}
-
 	private ChestSteal stealer = ((ChestSteal) InfMain.getModuleManager().getModuleByClass(ChestSteal.class));
 
 	@Shadow
@@ -31,9 +27,14 @@ public abstract class GenericContainerScreenMixin extends HandledScreen<GenericC
 
 	private int mode;
 
+	public GenericContainerScreenMixin(GenericContainerScreenHandler handler, PlayerInventory inventory, Text title) {
+		super(handler, inventory, title);
+	}
+
 	@Override
-	public void init() {
+	protected void init() {
 		super.init();
+
 		if (stealer.isEnabled()) {
 			steal();
 		}

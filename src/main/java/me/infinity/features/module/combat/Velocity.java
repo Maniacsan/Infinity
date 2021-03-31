@@ -50,13 +50,11 @@ public class Velocity extends Module {
 					sVel = null;
 				}
 			}	
-	
-		} else if (event.getType().equals(EventType.POST)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
-				if (Helper.getPlayer().hurtTime != 0) {
-					MoveUtil.getHorizontalVelocity(0.14, (float) MoveUtil.calcMoveYaw());
+				if (Helper.getPlayer().isOnGround()) 
+					event.setY(-0.1);	
 				}
-			}
+
 		}
 	}
 
@@ -77,8 +75,12 @@ public class Velocity extends Module {
 								.setVelocityZ(vp.getVelocityZ() * (int) vertical.getCurrentValueDouble() / 100);
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
 						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(vp.getVelocityX() * 0);
-						((IEntityVelocityUpdateS2CPacket) vp).setVelocityY(Math.abs(vp.getVelocityY()));
 						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(vp.getVelocityZ() * 0);
+						
+						if (Helper.getPlayer().isOnGround()) {
+							((IEntityVelocityUpdateS2CPacket) vp).setVelocityY(vp.getVelocityY() * 0);
+						}
+						
 					}
 				}
 			}

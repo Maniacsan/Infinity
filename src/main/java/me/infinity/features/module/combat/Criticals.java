@@ -106,11 +106,11 @@ public class Criticals extends Module {
 						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel")) {
 
-				double boostY = MathAssist.random(0.06, 0.1);
+				double boostY = MathAssist.random(0.07, 0.1);
 				if (!Helper.getPlayer().isOnGround())
 					return;
 
-				MoveUtil.setYVelocity(MathAssist.random(0.06, 0.1));
+				MoveUtil.setYVelocity(MathAssist.random(0.08, 0.1));
 
 				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
 						Helper.getPlayer().getY() + boostY, Helper.getPlayer().getZ(), false));

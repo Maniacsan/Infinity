@@ -20,7 +20,7 @@ import me.infinity.utils.entity.EntityUtil;
 public class Step extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Matrix 6.0.6",
-			new ArrayList<>(Arrays.asList("Intave", "Matrix 6.0.6")), () -> true);
+			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.0.6")), () -> true);
 
 	private boolean hasStep;
 
@@ -31,6 +31,7 @@ public class Step extends Module {
 	@Override
 	public void onDisable() {
 		InfMain.resetTimer();
+		Helper.getPlayer().stepHeight = 0.5f;
 	}
 
 	@EventTarget
@@ -78,6 +79,8 @@ public class Step extends Module {
 					InfMain.TIMER = 0.05F;
 				InfMain.resetTimer();
 			}
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
+			Helper.getPlayer().stepHeight = 1.5f;
 		}
 	}
 
