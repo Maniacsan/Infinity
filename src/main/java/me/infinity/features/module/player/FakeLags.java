@@ -140,10 +140,6 @@ public class FakeLags extends Module {
 	}
 
 	public void sendPackets() {
-		ticks = 0;
-		pulseTicks = 0;
-		legitTicks = 0;
-
 		if (packetList != null) {
 			try {
 				for (Packet<?> unsentPacket : this.packetList)
@@ -152,6 +148,10 @@ public class FakeLags extends Module {
 			}
 			this.packetList.clear();
 		}	
+		ticks = 0;
+		pulseTicks = 0;
+		legitTicks = 0;
+
 	}
 
 	private void bothDelay(PacketEvent event) {

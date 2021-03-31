@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import com.darkmagician6.eventapi.EventTarget;
+import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
+import me.infinity.event.MotionEvent;
 import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
@@ -23,6 +25,10 @@ public class Step extends Module {
 	private boolean hasStep;
 
 	@Override
+	public void onEnable() {
+	}
+
+	@Override
 	public void onDisable() {
 		InfMain.resetTimer();
 	}
@@ -36,15 +42,10 @@ public class Step extends Module {
 			EntityUtil.setStepHeight(0.52f);
 
 			if (hasStep) {
-				MoveUtil.getHorizontalVelocity(0.9, Helper.getPlayer().yaw);
-				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 16f;
+				MoveUtil.getHorizontalVelocity(MoveUtil.getSpeed(), (float) MoveUtil.calcMoveYaw());
+				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 21f;
 				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - 0.01);
-				MoveUtil.getHorizontalVelocity(0.002, Helper.getPlayer().yaw);
-
-				if (Helper.getPlayer().fallDistance <= 0.05) {
-					MoveUtil.getHorizontalVelocity(0.5, Helper.getPlayer().yaw);
-					MoveUtil.strafe(0.05);
-				}
+				MoveUtil.getHorizontalVelocity(0.002, (float) MoveUtil.calcMoveYaw());
 			}
 
 			if (Helper.getPlayer().isOnGround()) {
@@ -56,8 +57,9 @@ public class Step extends Module {
 				float y = (float) Math.max(1.1, 1.2);
 				hasStep = true;
 				InfMain.TIMER = y;
-				Helper.getPlayer().jump();
-				MoveUtil.getHorizontalVelocity(5.5, Helper.getPlayer().yaw);
+				MoveUtil.setYVelocity(0.45);
+				MoveUtil.getHorizontalVelocity(5.5, (float) MoveUtil.calcMoveYaw());
+				Helper.getPlayer().tickMovement();
 
 			}
 
@@ -66,22 +68,23 @@ public class Step extends Module {
 
 	@Override
 	public void onPlayerTick() {
+		double rheight = Helper.getPlayer().getBoundingBox().minY - Helper.getPlayer().getY();
+		boolean canStep = (rheight >= 0.625D);
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
-			if (hasStep) {
-				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 20f;
-			}
-
-			if (Helper.getPlayer().isOnGround()) {
+			Helper.getPlayer().stepHeight = 1.5f;
+			if (Helper.getPlayer().horizontalCollision && Helper.getPlayer().isOnGround() && canStep) {
+				InfMain.TIMER = 0.2f - ((rheight >= 1.0D) ? (Math.abs(1.0F - (float) rheight) * 0.2f * 0.55F) : 0.0F);
+				if (InfMain.TIMER <= 0.05F)
+					InfMain.TIMER = 0.05F;
 				InfMain.resetTimer();
-				hasStep = false;
 			}
+		}
+	}
 
-			if (Helper.getPlayer().horizontalCollision && Helper.getPlayer().isOnGround()) {
-				hasStep = true;
-				InfMain.TIMER = 3f;
-				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.47);
+	@EventTarget
+	public void onMotionTick(MotionEvent event) {
+		if (event.getType().equals(EventType.PRE)) {
 
-			}
 		}
 	}
 

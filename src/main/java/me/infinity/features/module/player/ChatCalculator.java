@@ -75,32 +75,7 @@ public class ChatCalculator extends Module {
 
 			}
 			sendClient = false;
-
-		} else if (sendServer) // Server side
-			(new Thread() {
-				@Override
-				public void run() {
-					try {
-						Thread.sleep(time);
-						sendClient = false;
-
-						if (serverResult != null) {
-
-							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-								Helper.getPlayer()
-										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
-							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-								Helper.infoMessage(serverResult);
-							}
-
-						}
-						sendServer = false;
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}).start();
+		}
 	}
 
 	@EventTarget
@@ -122,7 +97,7 @@ public class ChatCalculator extends Module {
 
 				serverResult = String.valueOf((int) result);
 
-				time = (int) delay.getCurrentValueDouble() + 3;
+				time = (int) delay.getCurrentValueDouble();
 
 				if (serverResult != null) {
 

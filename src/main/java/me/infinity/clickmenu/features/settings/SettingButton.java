@@ -27,6 +27,6 @@ public class SettingButton {
 	}
 
 	public boolean isVisible() {
-		return true;
+		return false;
 	}
 }

@@ -10,6 +10,7 @@ import me.infinity.event.RenderEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.features.module.combat.KillAura;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.render.WorldRender;
 import net.minecraft.entity.Entity;
@@ -52,6 +53,10 @@ public class ESP extends Module {
 
 			int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),
 					friendsColor.getColor().getRGB(), mobsColor.getColor().getRGB(), animalsColor.getColor().getRGB());
+
+			if (e == KillAura.target) {
+				color = Color.RED.getRGB();
+			}
 
 			if (mode.getCurrentMode().equalsIgnoreCase("Fill")) {
 				WorldRender.drawFill(e.getBoundingBox(), color);

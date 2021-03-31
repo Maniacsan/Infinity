@@ -112,7 +112,7 @@ public class Panel {
 					// description
 					catButton.getModButton().forEach(modButton -> {
 						if (modButton.hovered) {
-							Render2D.drawRectWH(matrices, mouseX + 1, mouseY + 13,
+							Render2D.drawRectWH(matrices, mouseX + 3, mouseY + 13,
 									FontUtils.getStringWidth(modButton.module.getDesc() + 1), 12, 0xFF282828);
 
 							FontUtils.drawStringWithShadow(matrices, modButton.module.getDesc(), mouseX + 5,

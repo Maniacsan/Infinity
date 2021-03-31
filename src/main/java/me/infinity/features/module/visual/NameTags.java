@@ -23,6 +23,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
@@ -33,12 +34,15 @@ public class NameTags extends Module {
 
 	private Settings armor = new Settings(this, "Armor", true, () -> true);
 
+	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", true, () -> players.isToggle());
 
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
+	private Settings invisibles = new Settings(this, "Invisibles", false, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
+
+	private Settings items = new Settings(this, "Items", true, () -> true);
 
 	private Settings scale = new Settings(this, "Scale", 2D, 0.2D, 5D, () -> true);
 
@@ -51,42 +55,48 @@ public class NameTags extends Module {
 
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
-		for (Entity entity : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
-				mobs.isToggle(), animals.isToggle())) {
+		for (Entity entity : Helper.getWorld().getEntities()) {
 			List<String> lines = new ArrayList<>();
 			double scale = 0;
 
-			Vec3d rPos = getRenderPos(entity);
+			Vec3d rPos = EntityUtil.getRenderPos(entity);
+			
+			scale = Math.max(this.scale.getCurrentValueDouble()
+					* (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20), 1);
 
-			if (entity instanceof LivingEntity) {
-				if (entity == Helper.minecraftClient.player || entity.hasPassenger(Helper.minecraftClient.player)
-						|| Helper.minecraftClient.player.hasPassenger(entity))
-					return;
+			if (items.isToggle() && entity instanceof ItemEntity) {
+				ItemEntity e = (ItemEntity) entity;
 
-				LivingEntity e = (LivingEntity) entity;
+					lines.add(e.getDisplayName().getString());
 
-				String health = getHealthText(e);
+			} else if (entity instanceof LivingEntity) {
+				if (EntityUtil.isTarget(entity, players.isToggle(), friends.isToggle(), invisibles.isToggle(),
+						mobs.isToggle(), animals.isToggle())) {
 
-				scale = Math.max(this.scale.getCurrentValueDouble()
-						* (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20), 1);
+					LivingEntity e = (LivingEntity) entity;
 
-				lines.add(entity.getDisplayName().getString() + " " + health);
+					String health = getHealthText(e);
 
-				/* Drawing Items */
-				double c = 0;
-				double lscale = scale * 0.4;
-				double up = ((0.3 + lines.size() * 0.25) * scale) + lscale / 2;
+					lines.add(entity.getDisplayName().getString() + " " + health);
 
-				if (armor.isToggle()) {
-					drawItem(rPos.x, rPos.y + up, rPos.z, 2.5, 0, lscale, e.getEquippedStack(EquipmentSlot.MAINHAND));
-					drawItem(rPos.x, rPos.y + up, rPos.z, -2.5, 0, lscale, e.getEquippedStack(EquipmentSlot.OFFHAND));
+					/* Drawing Items */
+					double c = 0;
+					double lscale = scale * 0.4;
+					double up = ((0.3 + lines.size() * 0.25) * scale) + lscale / 2;
 
-					for (ItemStack i : e.getArmorItems()) {
-						drawItem(rPos.x, rPos.y + up, rPos.z, c - 1.5, 0, lscale, i);
-						c++;
+					if (armor.isToggle()) {
+						drawItem(rPos.x, rPos.y + up, rPos.z, 2.5, 0, lscale,
+								e.getEquippedStack(EquipmentSlot.MAINHAND));
+						drawItem(rPos.x, rPos.y + up, rPos.z, -2.5, 0, lscale,
+								e.getEquippedStack(EquipmentSlot.OFFHAND));
+
+						for (ItemStack i : e.getArmorItems()) {
+							drawItem(rPos.x, rPos.y + up, rPos.z, c - 1.5, 0, lscale, i);
+							c++;
+						}
 					}
 				}
-			}
+			}	
 
 			if (!lines.isEmpty()) {
 				float offset = 0.25f + lines.size() * 0.25f;
@@ -132,16 +142,8 @@ public class NameTags extends Module {
 
 		RenderSystem.disableBlend();
 	}
-
-	private Vec3d getRenderPos(Entity e) {
-		return Helper.minecraftClient.currentScreen != null && Helper.minecraftClient.currentScreen.isPauseScreen()
-				? e.getPos().add(0, e.getHeight(), 0)
-				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.minecraftClient.getTickDelta(),
-						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.minecraftClient.getTickDelta())
-								+ e.getHeight(),
-						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.minecraftClient.getTickDelta());
-	}
-
+	
+		
 	private String getHealthText(LivingEntity e) {
 		return getHealthColor(e) + String.valueOf((int) (e.getHealth() + e.getAbsorptionAmount()));
 
@@ -151,10 +153,10 @@ public class NameTags extends Module {
 		if (e.getHealth() + e.getAbsorptionAmount() >= e.getMaxHealth())
 			return Formatting.GREEN;
 		if (e.getHealth() + e.getAbsorptionAmount() <= e.getMaxHealth() * 0.7)
-			return Formatting.WHITE;
+			return Formatting.YELLOW;
 		if (e.getHealth() + e.getAbsorptionAmount() <= e.getMaxHealth() * 0.4)
 			return Formatting.GOLD;
-		if (e.getHealth() + e.getAbsorptionAmount() <= e.getMaxHealth() * 0.1)
+		if (e.getHealth() + e.getAbsorptionAmount() <= e.getMaxHealth() * 0.2)
 			return Formatting.RED;
 		return Formatting.WHITE;
 	}

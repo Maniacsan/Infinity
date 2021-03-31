@@ -9,6 +9,7 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
+import me.infinity.event.AttackEvent;
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.event.TickEvent;
@@ -16,6 +17,7 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
@@ -26,7 +28,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class Criticals extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof" })), () -> true);
+			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel" })), () -> true);
 
 	private Settings falling = new Settings(this, "Falling", false,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
@@ -92,27 +94,36 @@ public class Criticals extends Module {
 	}
 
 	@EventTarget
+	public void onAttack(AttackEvent event) {
+		if (event.getType().equals(EventType.PRE)) {
+			if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
+				if (!Helper.getPlayer().isOnGround())
+					return;
+
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY() + 0.0645, Helper.getPlayer().getZ(), false));
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel")) {
+
+				double boostY = MathAssist.random(0.06, 0.1);
+				if (!Helper.getPlayer().isOnGround())
+					return;
+
+				MoveUtil.setYVelocity(MathAssist.random(0.06, 0.1));
+
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY() + boostY, Helper.getPlayer().getZ(), false));
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+			}
+		}
+	}
+
+	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
-
-			if (this.mode.getCurrentMode().equals("Packet")) {
-				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
-					PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
-					if (packet.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-						
-						if (Helper.getPlayer().isOnGround())
-							return;
-						
-						Helper.minecraftClient.getNetworkHandler()
-								.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-										Helper.getPlayer().getY() + 0.1, Helper.getPlayer().getZ(), false));
-						Helper.minecraftClient.getNetworkHandler()
-								.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-										Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
-					}
-				}
-				// zaderjka dlya udara
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Spoof")
+			if (mode.getCurrentMode().equalsIgnoreCase("Spoof")
 					|| this.mode.getCurrentMode().equalsIgnoreCase("Jump") && !falling.isToggle()
 					|| mode.getCurrentMode().equalsIgnoreCase("Test")) {
 				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket

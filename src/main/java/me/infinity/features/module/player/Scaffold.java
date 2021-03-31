@@ -36,9 +36,9 @@ public class Scaffold extends Module {
 			() -> true);
 
 	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Normal"));
+			() -> true);
 	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Normal"));
+			() -> true);
 
 	private Settings blockTake = new Settings(this, "Block Take", "Switch",
 			new ArrayList<>(Arrays.asList("Pick", "Switch")), () -> true);

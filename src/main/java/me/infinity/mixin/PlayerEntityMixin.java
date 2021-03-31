@@ -18,8 +18,7 @@ public class PlayerEntityMixin {
 		FastBreak fastBreak = ((FastBreak) InfMain.getModuleManager().getModuleByClass(FastBreak.class));
 		if (!fastBreak.isEnabled())
 			return;
-		cir.setReturnValue(Float.valueOf((float) (((Float) cir.getReturnValue()).floatValue()
-				* ((Double) fastBreak.speed.getCurrentValueDouble()))));
+		cir.setReturnValue((float) (cir.getReturnValue() * fastBreak.speed.getCurrentValueDouble()));
 	}
 
 }

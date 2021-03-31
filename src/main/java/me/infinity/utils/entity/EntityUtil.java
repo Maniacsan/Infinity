@@ -7,9 +7,7 @@ import java.util.stream.StreamSupport;
 import me.infinity.InfMain;
 import me.infinity.utils.Helper;
 import me.infinity.utils.UpdateUtil;
-import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.rotation.RotationUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -188,27 +186,6 @@ public class EntityUtil {
 				Helper.minecraftClient.getProfiler().pop();
 			}
 		}
-	}
-
-	public static Direction getPlaceSide(BlockPos blockPos) {
-		for (Direction side : Direction.values()) {
-			BlockPos neighbor = blockPos.offset(side);
-			Direction side2 = side.getOpposite();
-
-			BlockState state = Helper.getWorld().getBlockState(neighbor);
-
-			// Check if neighbour isn't empty
-			if (state.isAir() || BlockUtil.isClickable(state.getBlock()))
-				continue;
-
-			// Check if neighbour is a fluid
-			if (!state.getFluidState().isEmpty())
-				continue;
-
-			return side2;
-		}
-
-		return null;
 	}
 
 	public static boolean placeBlock(Hand hand, BlockPos pos, boolean airPlace) {

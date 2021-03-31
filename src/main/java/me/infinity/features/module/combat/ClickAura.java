@@ -76,6 +76,9 @@ public class ClickAura extends Module {
 	@EventTarget
 	public void onRotation(RotationEvent event) {
 		float[] rotate = RotationUtils.lookAtEntity(target, 180, 180);
+		if (target == null)
+			return;
+		
 		if (!Helper.minecraftClient.options.keyAttack.isPressed())
 			return;
 

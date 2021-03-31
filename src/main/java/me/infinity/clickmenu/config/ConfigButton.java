@@ -10,14 +10,15 @@ import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.file.config.Config;
 import me.infinity.utils.Helper;
-import me.infinity.utils.TimeHelper;
+import me.infinity.utils.render.RenderUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 public class ConfigButton {
 
 	public ArrayList<ConfigListButton> configList = new ArrayList<>();
-	private TimeHelper timer = new TimeHelper();
+	private final Identifier INFO = new Identifier("infinity", "info.png");
 	protected String content = "";
 	protected boolean focused;
 	private boolean addHovered;
@@ -26,6 +27,7 @@ public class ConfigButton {
 	private boolean textHovered;
 	private boolean refreshHovered;
 	private boolean loadHovered;
+	private boolean infoHovered;
 	private boolean configFull;
 	public boolean add;
 	public boolean load;
@@ -48,17 +50,35 @@ public class ConfigButton {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double yMod, double setX, double setY, double setWidth, double setHeight) {
 		this.width = width;
+
+		//
 		this.textHovered = Render2D.isHovered(mouseX, mouseY, setX + 151, setY + 6, 159, 15);
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 5, 62, 12);
 		this.deleteHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 23, 62, 12);
 		this.saveHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 41, 62, 12);
 		this.loadHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 23, 56, 12);
 		this.refreshHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 5, 56, 12);
+		this.infoHovered = Render2D.isHovered(mouseX, mouseY, setX + 381, setY + 231, 15, 15);
+
 		Render2D.drawRectWH(matrices, setX + 150, setY + 1, 180, 17, 0xFF989595);
 		Render2D.drawRectWH(matrices, setX + 151, setY + 2, 178, 15, 0xFF080808);
 		FontUtils.drawStringWithShadow(matrices, content, setX + 154, setY + 6, -1);
+		
 		if (focused && FontUtils.getStringWidth(content) < 170) {
 			Render2D.drawRectWH(matrices, setX + 153 + FontUtils.getStringWidth(content) + 2, setY + 13, 3, 1, -1);
+		}
+
+		RenderUtil.drawTexture(matrices, INFO, setX + 381, setY + 231, 15, 15);
+
+		if (infoHovered) {
+			String save = "Configs save settings, included modules and binds.";
+			Render2D.drawRectWH(matrices, mouseX - 6 - FontUtils.getStringWidth(save) / 2, mouseY - 44, FontUtils.getStringWidth(save) + 2, 36, 0x90000000);
+			FontUtils.drawHCenteredString(matrices, "This is the section for configs,", mouseX - 5, mouseY - 40, -1);
+			FontUtils.drawHCenteredString(matrices, save, mouseX - 5,
+					mouseY - 30, -1);
+			FontUtils.drawHCenteredString(matrices,
+					"Configs are limited in creation", mouseX - 5,
+					mouseY - 20, -1);
 		}
 
 		// add button
@@ -93,7 +113,7 @@ public class ConfigButton {
 
 		double yOffset = 2;
 		for (ConfigListButton configList : configList) {
-			configList.render(matrices, mouseX, mouseY, setX + 151, yOffset + setY + 20, 158, 13);
+			configList.render(matrices, mouseX, mouseY, setX + 151, yOffset + setY + 20, 178, 13);
 			yOffset += 14;
 		}
 
