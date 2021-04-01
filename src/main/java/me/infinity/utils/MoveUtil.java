@@ -112,10 +112,10 @@ public class MoveUtil {
 
 	}
 
-	public static void hClip(float x, float z) {
-		float yaw = (float) Math.toRadians(Helper.getPlayer().yaw);
-		Helper.getPlayer().setPos(Helper.getPlayer().getPos().x - (Math.cos(yaw) * x), Helper.getPlayer().getPos().y,
-				Helper.getPlayer().getPos().z + (Math.cos(yaw) * z));
+	public static void hClip(float off) {
+		double yaw = Math.toRadians(Helper.getPlayer().yaw);
+		Helper.getPlayer().updatePosition(Helper.getPlayer().getPos().x + (-Math.sin(yaw) * off), Helper.getPlayer().getPos().y,
+				Helper.getPlayer().getPos().z + (Math.cos(yaw) * off));
 	}
 
 	public static void setHVelocity(double x, double z) {

@@ -70,7 +70,7 @@ public class Tracers extends Module {
 					return;
 
 				float[] toRot = RotationUtils.lookAtEntity(e, 360, 360);
-				float yaw = RotationUtils.getYaw(e) + Helper.minecraftClient.cameraEntity.yaw;
+				float yaw = RotationUtils.getYaw(e) + Helper.getPlayer().yaw;
 
 				// normalize 
 				yaw = (float) Math.toRadians(yaw);
@@ -80,7 +80,7 @@ public class Tracers extends Module {
 						animalsColor.getColor().getRGB());
 
 				Render2D.drawTriangle((width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
-						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.minecraftClient.cameraEntity.yaw), color);
+						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().yaw), color);
 			}
 		}
 	}

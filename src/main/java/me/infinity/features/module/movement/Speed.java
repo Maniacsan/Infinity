@@ -6,6 +6,7 @@ import java.util.Arrays;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
@@ -18,7 +19,7 @@ import me.infinity.utils.TimeHelper;
 public class Speed extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Strafe",
-			new ArrayList<>(Arrays.asList("Strafe")), () -> true);
+			new ArrayList<>(Arrays.asList("Strafe", "Sentiel Ground")), () -> true);
 
 	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 0.23, 0.05, 1.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Strafe"));
@@ -51,13 +52,16 @@ public class Speed extends Module {
 					return;
 
 				if (MoveUtil.isMoving()) {
-					if (timer.hasReached(175)) {
-						MoveUtil.strafe(2.0D);
+					if (timer.hasReached(380)) {
+						InfMain.TIMER = 0.45f;
+						MoveUtil.hClip(3);
 						timer.reset();
 					} else {
-						MoveUtil.strafe(0);
+						InfMain.resetTimer();
 					}
-				}
+					
+				} else
+					InfMain.resetTimer();
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel Strafe")) {
 				if (MoveUtil.isMoving()) {

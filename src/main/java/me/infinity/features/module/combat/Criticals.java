@@ -19,7 +19,6 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
-import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -64,10 +63,10 @@ public class Criticals extends Module {
 			if (this.mode.getCurrentMode().equalsIgnoreCase("Spoof")) {
 				if (attackCount > 0) {
 					double ypos = Helper.getPlayer().getY();
-					if (EntityUtil.isOnGround(0.01D)) {
+					if (Helper.getPlayer().isOnGround()) {
 						event.setOnGround(false);
 						if (this.stage == 0) {
-							this.y = ypos + 1.0E-8D;
+							this.y = ypos + 0.1;
 
 							event.setOnGround(true);
 
@@ -176,9 +175,6 @@ public class Criticals extends Module {
 
 			if (this.mode.getCurrentMode().equalsIgnoreCase("Jump") && !falling.isToggle())
 				Helper.getPlayer().jump();
-			else if (this.mode.getCurrentMode().equalsIgnoreCase("Spoof")
-					&& !InfMain.getModuleManager().getModuleByClass(KillAura.class).isEnabled())
-				MoveUtil.setYVelocity(0.1);
 
 			event.cancel();
 		}

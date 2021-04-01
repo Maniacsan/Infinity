@@ -87,7 +87,6 @@ public class Step extends Module {
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-
 		}
 	}
 

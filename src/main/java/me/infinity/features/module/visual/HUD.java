@@ -12,6 +12,8 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
+import net.minecraft.client.gui.screen.ChatScreen;
+import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
 
@@ -58,7 +60,8 @@ public class HUD extends Module {
 			String coords = Formatting.BLUE + "x" + Formatting.WHITE + ": " + x + Formatting.BLUE + " y"
 					+ Formatting.WHITE + ": " + y + Formatting.BLUE + " z" + Formatting.WHITE + ": " + z;
 			double rWidth = width - FontUtils.getStringWidth(coords);
-			FontUtils.drawStringWithShadow(matrices, coords, rWidth - 2, height - 11, 0xFFFFFFFF);
+			double y2 = Helper.minecraftClient.currentScreen instanceof ChatScreen ? 23 : 11;
+			FontUtils.drawStringWithShadow(matrices, coords, rWidth - 2, height - y2, 0xFFFFFFFF);
 		}
 
 		if (netherCoords.isToggle()) {
@@ -74,7 +77,7 @@ public class HUD extends Module {
 					+ Formatting.WHITE + ": " + y + Formatting.RED + " z" + Formatting.WHITE + ": " + z;
 			double rWidth = width - FontUtils.getStringWidth(nCoords);
 
-			double y1 = coordinates.isToggle() ? 22 : 11;
+			double y1 = Helper.minecraftClient.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23 : Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? 34 : coordinates.isToggle() ? 22 : 11;
 
 			FontUtils.drawStringWithShadow(matrices, nCoords, rWidth - 2, height - y1, 0xFFFFFFFF);
 		}
