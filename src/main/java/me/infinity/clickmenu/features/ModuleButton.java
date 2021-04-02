@@ -80,7 +80,7 @@ public class ModuleButton {
 			if (setHovered && offsetY > this.height) {
 			Render2D.drawRectWH(matrices, setX + 392, setY + 5, 2.4, setHeight - 10, 0xFF505050);
 			Render2D.drawRectWH(matrices, setX + 392, setY + 5 + offset, 2.4,
-					setHeight - 10 - getCurrentHeight(), 0xFFD2D2D2);
+					setHeight - 10 - getHeightDifference(), 0xFFD2D2D2);
 			}
 			
 			for (SettingButton setBut : settingButton) {
@@ -134,35 +134,34 @@ public class ModuleButton {
 		}
 	}
 
-	private float getCurrentHeight() {
-		float cHeight = 0;
-		for (SettingButton setBut : settingButton) {
-			if (open) {
-				if (setBut.isVisible()) {
-					cHeight += (float) (setBut.height);
-				}
-			}
-		}
-		return cHeight;
+	public int getElementsHeight() {
+		int elementsHeight = 0;
+		for (SettingButton settingButton : settingButton)
+			if (open && settingButton.isVisible()) 
+				elementsHeight += (settingButton.height  + 1);
+		return elementsHeight;
+	}
+	
+	public int getHeightDifference() {
+		return (this.getElementsHeight() - this.height);
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
+		int difference = this.getHeightDifference();
+		int scrollOffset = (this.getElementsHeight() / settingButton.size());
 		if (open && setHovered) {
 			if (amount < 0) {
 				if (offsetY > height) {
-					this.offset += 20;
-					if (this.offset > getCurrentHeight()) {
-						this.offset = (int) getCurrentHeight();
-					}
+					this.offset += scrollOffset;
+					if (this.offset > difference)
+						this.offset = difference;
 				}
 			} else if (amount > 0) {
-				this.offset -= 20;
-				if (this.offset < 0) {
+				this.offset -= scrollOffset;
+				if (this.offset < 0)
 					this.offset = 0;
-				}
 			}
 		}
-
 	}
 
 }

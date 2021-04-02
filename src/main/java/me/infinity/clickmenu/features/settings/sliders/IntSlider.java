@@ -21,6 +21,7 @@ public class IntSlider extends SettingButton {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
+		this.height = height;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x + 2, y, width, height);
 		final String sname = setting.getName();
 		final String setstrg = String.valueOf(String.valueOf(sname.substring(0, 1).toUpperCase()))
