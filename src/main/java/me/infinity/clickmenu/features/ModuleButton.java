@@ -147,9 +147,9 @@ public class ModuleButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		int difference = this.getHeightDifference();
-		int scrollOffset = (this.getElementsHeight() / settingButton.size());
 		if (open && setHovered) {
+			int difference = this.getHeightDifference();
+			int scrollOffset = (this.getElementsHeight() / settingButton.size());
 			if (amount < 0) {
 				if (offsetY > height) {
 					this.offset += scrollOffset;
