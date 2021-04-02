@@ -13,7 +13,10 @@ public class CommandManager {
 			new BindCommand(),
 			new HelpCommand(),
 			new MacroCommand(),
-			new FriendCommand()
+			new FriendCommand(),
+			new ToggleCommand(),
+			new HClipCommand(),
+			new VClipCommand()
 			);
 
 	public List<Command> getCommands() {

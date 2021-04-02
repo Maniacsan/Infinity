@@ -171,9 +171,10 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"))
 	private boolean tickUseItem(ClientPlayerEntity player) {
-		if (InfMain.getModuleManager().getModuleByClass(NoSlow.class).isEnabled()
-				&& ((NoSlow) InfMain.getModuleManager().getModuleByClass(NoSlow.class)).mode.getCurrentMode()
-						.equalsIgnoreCase("Vanilla")) {
+		NoSlow noSlow = ((NoSlow) InfMain.getModuleManager().getModuleByClass(NoSlow.class));
+
+		if (noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("Vanilla")
+				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("NCP")) {
 			return false;
 		}
 
@@ -182,9 +183,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo info) {
-		if (UpdateUtil.canUpdate()) {
-			InfMain.getHookManager().onPlayerTick();
-		}
+		InfMain.getHookManager().onPlayerTick();
+
 	}
 
 	@Inject(method = "move", at = @At("HEAD"), cancellable = true)

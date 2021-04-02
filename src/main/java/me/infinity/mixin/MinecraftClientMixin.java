@@ -1,6 +1,7 @@
 package me.infinity.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -9,18 +10,19 @@ import com.darkmagician6.eventapi.EventManager;
 
 import me.infinity.event.ClickEvent;
 import me.infinity.event.TickEvent;
-import me.infinity.utils.UpdateUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.util.profiler.Profiler;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 
+	@Shadow
+	public abstract Profiler getProfiler();
+
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void tick(CallbackInfo info) {
-		if (UpdateUtil.canUpdate()) {
-			TickEvent tickEvent = new TickEvent();
-			EventManager.call(tickEvent);
-		}
+		TickEvent tickEvent = new TickEvent();
+		EventManager.call(tickEvent);
 	}
 
 	@Inject(at = {

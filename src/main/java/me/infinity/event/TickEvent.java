@@ -1,11 +1,13 @@
 package me.infinity.event;
 
-import com.darkmagician6.eventapi.events.Event;
+import com.darkmagician6.eventapi.events.callables.EventCancellable;
 
 /**
  * event for MinecraftClient method = tick()
+ * 
  * @author spray
  *
  */
-public class TickEvent implements Event {
+public class TickEvent extends EventCancellable {
+
 }

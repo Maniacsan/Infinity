@@ -8,7 +8,6 @@ import me.infinity.clickmenu.config.ConfigButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
-import me.infinity.utils.TimeHelper;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CategoryButton {
@@ -25,17 +24,21 @@ public class CategoryButton {
 	private int offsetY;
 	private int height;
 
-	// desc timer
-	private TimeHelper descTime = new TimeHelper();
-
 	public CategoryButton(String name, Panel panel) {
 		this.name = name;
 		this.panel = panel;
 		for (me.infinity.features.Module module : InfMain.getModuleManager().getList()) {
-			if (module.getCategory().name() == name) {
+			if (module.getCategory().name() == name && name != "ENABLED") {
 				modButton.add(new ModuleButton(module, module.getName(), this));
 			} else if (name == "CONFIGS") {
 				configButton = new ConfigButton(panel);
+			}
+		}
+
+		// enabled
+		for (me.infinity.features.Module module : InfMain.getModuleManager().getEnableModules()) {
+			if (name == "ENABLED") {
+				modButton.add(new ModuleButton(module, module.getName(), this));
 			}
 		}
 	}
@@ -95,12 +98,17 @@ public class CategoryButton {
 		}
 	}
 
-	private float getCurrentHeight() {
-		float cHeight = 0;
-		for (ModuleButton modButton : modButton) {
-			cHeight += modButton.calcHeight;
+	public int getElementsHeight() {
+		int elementsHeight = 0;
+		for (ModuleButton moduleButton : modButton) {
+			if (displayModulePanel)
+				elementsHeight += (moduleButton.moduleHeight + 1);
 		}
-		return cHeight;
+		return elementsHeight;
+	}
+
+	public int getHeightDifference() {
+		return (this.getElementsHeight() - this.height);
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -123,23 +131,19 @@ public class CategoryButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		if (displayModulePanel) {
-			modButton.forEach(modButton -> modButton.mouseScrolled(d, e, amount));
-			if (modHovered) {
-				if (amount < 0) {
-					if (offsetY > height) {
-						this.offset += 35;
-						double border = getCurrentHeight();
-						if (this.offset > border) {
-							this.offset = (int) getCurrentHeight();
-						}
-					}
-				} else if (amount > 0) {
-					this.offset -= 35;
-					if (this.offset < 0) {
-						this.offset = 0;
-					}
+		if (displayModulePanel && modHovered) {
+			int difference = this.getHeightDifference();
+			int scrollOffset = (this.getElementsHeight() / (modButton.size() / 2));
+			if (amount < 0) {
+				if (offsetY > height) {
+					this.offset += scrollOffset;
+					if (this.offset > difference)
+						this.offset = difference;
 				}
+			} else if (amount > 0) {
+				this.offset -= scrollOffset;
+				if (this.offset < 0)
+					this.offset = 0;
 			}
 		}
 	}

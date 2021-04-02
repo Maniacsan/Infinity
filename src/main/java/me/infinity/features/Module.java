@@ -34,7 +34,7 @@ public class Module {
 	}
 
 	public enum Category {
-		COMBAT, MOVEMENT, WORLD, PLAYER, VISUAL
+		COMBAT, MOVEMENT, WORLD, PLAYER, VISUAL, HIDDEN, ENABLED;
 	}
 
 	// HookManager methods
@@ -45,7 +45,6 @@ public class Module {
 	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 	}
 
-	
 	// Fast use
 	public void enable() {
 		setEnabled(!isEnabled());

@@ -1,18 +1,68 @@
 package me.infinity.features;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import me.infinity.features.module.combat.*;
-import me.infinity.features.module.movement.*;
-import me.infinity.features.module.player.*;
-import me.infinity.features.module.visual.*;
-import me.infinity.features.module.world.*;
+import me.infinity.features.Module.Category;
+import me.infinity.features.module.combat.AimAssist;
+import me.infinity.features.module.combat.AutoArmor;
+import me.infinity.features.module.combat.AutoClicker;
+import me.infinity.features.module.combat.AutoShield;
+import me.infinity.features.module.combat.AutoTotem;
+import me.infinity.features.module.combat.BetterBow;
+import me.infinity.features.module.combat.BowAim;
+import me.infinity.features.module.combat.ClickAura;
+import me.infinity.features.module.combat.Criticals;
+import me.infinity.features.module.combat.HitBoxes;
+import me.infinity.features.module.combat.KillAura;
+import me.infinity.features.module.combat.Reach;
+import me.infinity.features.module.combat.TriggerBot;
+import me.infinity.features.module.combat.Velocity;
+import me.infinity.features.module.hidden.DiscordRPCMod;
+import me.infinity.features.module.movement.InvWalk;
+import me.infinity.features.module.movement.Jesus;
+import me.infinity.features.module.movement.SafeWalk;
+import me.infinity.features.module.movement.Speed;
+import me.infinity.features.module.movement.Sprint;
+import me.infinity.features.module.movement.Step;
+import me.infinity.features.module.movement.TargetStrafe;
+import me.infinity.features.module.player.AntiAim;
+import me.infinity.features.module.player.AutoEat;
+import me.infinity.features.module.player.AutoLeave;
+import me.infinity.features.module.player.AutoPotion;
+import me.infinity.features.module.player.AutoTool;
+import me.infinity.features.module.player.ChatCalculator;
+import me.infinity.features.module.player.ChestSteal;
+import me.infinity.features.module.player.FakeLags;
+import me.infinity.features.module.player.FastBreak;
+import me.infinity.features.module.player.FastEXP;
+import me.infinity.features.module.player.FreeCam;
+import me.infinity.features.module.player.MClickPearl;
+import me.infinity.features.module.player.NoSlow;
+import me.infinity.features.module.player.PacketKick;
+import me.infinity.features.module.player.PingSpoof;
+import me.infinity.features.module.player.Refill;
+import me.infinity.features.module.player.Scaffold;
+import me.infinity.features.module.visual.ArmorHUD;
+import me.infinity.features.module.visual.ESP;
+import me.infinity.features.module.visual.FullBright;
+import me.infinity.features.module.visual.GuiMod;
+import me.infinity.features.module.visual.HUD;
+import me.infinity.features.module.visual.ItemESP;
+import me.infinity.features.module.visual.NameTags;
+import me.infinity.features.module.visual.StorageESP;
+import me.infinity.features.module.visual.Tracers;
+import me.infinity.features.module.visual.XRay;
+import me.infinity.features.module.world.MClickFriend;
+import me.infinity.features.module.world.NoClip;
+import me.infinity.features.module.world.Timer;
 
 public class ModuleManager {
 
 	private static List<Module> list = Arrays.asList(
+			new DiscordRPCMod(),
 			new KillAura(),
 			new HUD(),
 			new Sprint(),
@@ -62,7 +112,8 @@ public class ModuleManager {
 			new FakeLags(),
 			new AntiAim(),
 			new PingSpoof(),
-			new Step()
+			new Step(),
+			new MClickFriend()
 			);
 
 	public List<Module> getList() {
@@ -100,5 +151,15 @@ public class ModuleManager {
 			}
 		}
 		return null;
+	}
+	
+	public List<Module> getEnableModules() {
+		List<Module> eList = new ArrayList<>();
+		for (Module m : getList()) {
+			if (m.isEnabled() && m.getCategory() != Category.HIDDEN) {
+				eList.add(m);
+			}
+		}
+		return eList;
 	}
 }

@@ -1,13 +1,13 @@
 Infinity Modification (Fabric)
 
-//~ for Eclipse:
+//~ using for Eclipse:
 
 Write to PowerSheel
 ./gradlew genSources 
 ./gradlew Eclipse
 
 
-//~ for Intellij:
+//~ using for Intellij:
 
 Open Project with file build.gradle
 

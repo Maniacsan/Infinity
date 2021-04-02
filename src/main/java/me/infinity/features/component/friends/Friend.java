@@ -19,6 +19,16 @@ public class Friend {
 		return false;
 	}
 
+	public void addOrDelate(String name) {
+		if (friendList.contains(name)) {
+			remove(name);
+		} else {
+			friendList.add(name);
+			Helper.infoMessage(Formatting.WHITE + name + Formatting.GRAY + " added to friend list");
+		}
+		save();
+	}
+
 	public void add(String name) {
 		if (friendList.contains(name)) {
 			error(name);

@@ -31,6 +31,7 @@ public class ModuleButton {
 	private int offset;
 	private int offsetY;
 	private int height;
+	public double moduleHeight;
 	public boolean open;
 
 	public ModuleButton(Module module, String name, CategoryButton catBut) {
@@ -61,6 +62,7 @@ public class ModuleButton {
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height, double setX, double setY, double setWidth, double setHeight) {
+		moduleHeight = height / 2;
 		this.calcHeight = height / 4;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		this.setHovered = Render2D.isHovered(mouseX, mouseY, setX + 224, setY + 6, setWidth, setHeight - 8);

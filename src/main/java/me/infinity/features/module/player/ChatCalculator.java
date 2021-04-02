@@ -9,6 +9,7 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.PacketEvent;
 import me.infinity.event.ServerChatEvent;
+import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -53,28 +54,59 @@ public class ChatCalculator extends Module {
 		sendServer = false;
 	}
 
-	@Override
-	public void onPlayerTick() {
-
-		if (sendClient) { // Client side
+	@EventTarget
+	public void onTick(TickEvent event) {
+		if (sendClient) { /* client side */
 
 			sendServer = false;
 
-			if (time > 0) {
-				time--;
-				return;
-			}
-
 			if (clientResult != null) {
 
-				if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
-					Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
-				} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
-					Helper.infoMessage(clientResult);
-				}
-
+				(new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
+							if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
+								Helper.getPlayer()
+										.sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
+								clientResult = null;
+							} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
+								Helper.infoMessage(clientResult);
+								clientResult = null;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
 			}
+
 			sendClient = false;
+		} else if (sendServer) { /* server side */
+
+			if (serverResult != null) {
+
+				(new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
+							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+								Helper.getPlayer()
+										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
+								serverResult = null;
+							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+								Helper.infoMessage(serverResult);
+								serverResult = null;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			}
+			sendServer = false;
 		}
 	}
 
@@ -99,24 +131,7 @@ public class ChatCalculator extends Module {
 
 				time = (int) delay.getCurrentValueDouble();
 
-				if (serverResult != null) {
-
-					(new Thread() {
-						@Override
-						public void run() {
-							try {
-								Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-								if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-									Helper.getPlayer().sendChatMessage(serverResult);
-								} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-									Helper.infoMessage(serverResult);
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}).start();
-				}
+				sendServer = true;
 			}
 
 		}

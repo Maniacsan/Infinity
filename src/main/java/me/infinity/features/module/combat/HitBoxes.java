@@ -1,8 +1,12 @@
 package me.infinity.features.module.combat;
 
+import com.darkmagician6.eventapi.EventTarget;
+
+import me.infinity.event.RotationEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
+import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.Entity;
@@ -16,11 +20,25 @@ public class HitBoxes extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 
-	public Settings size = new Settings(this, "Size", 0.5F, 0.0F, 3.0F, () -> true);
+	public Settings size = new Settings(this, "Size", 0.5F, 0.0F, 5.0F, () -> true);
 
 	@Override
 	public void onPlayerTick() {
 		setSuffix(String.valueOf(MathAssist.round(size.getCurrentValueFloat(), 1)));
+	}
+
+	@EventTarget
+	public void onRotation(RotationEvent event) {
+		// spoofing to entity rotation
+
+		if (Helper.minecraftClient.targetedEntity == null && !EntityUtil.isTarget(Helper.minecraftClient.targetedEntity,
+				players.isToggle(), false, invisibles.isToggle(), mobs.isToggle(), animals.isToggle()))
+			return;
+
+		event.setYaw(Helper.getPlayer().yaw);
+		event.setPitch(Helper.getPlayer().pitch);
+		event.cancel();
+
 	}
 
 	public boolean isTarget(Entity entity) {

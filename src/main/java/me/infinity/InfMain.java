@@ -10,6 +10,8 @@ import me.infinity.features.ModuleManager;
 import me.infinity.features.command.CommandManager;
 import me.infinity.features.component.friends.Friend;
 import me.infinity.features.component.macro.MacroManager;
+import me.infinity.features.module.hidden.DiscordRPCMod;
+import me.infinity.features.module.visual.HUD;
 import me.infinity.file.config.ConfigManager;
 import me.infinity.ui.account.main.AccountManager;
 import me.infinity.utils.Helper;
@@ -29,7 +31,7 @@ public class InfMain {
 	private static MacroManager macroManager;
 	private static Friend friend;
 	
-	// timer
+	/* Minecraft timer */
 	public static float TIMER = 1.0f;
 
 	public void initialize() {
@@ -42,12 +44,17 @@ public class InfMain {
 		commandManager = new CommandManager();
 		macroManager = new MacroManager();
 		friend = new Friend();
+		
 		// loads
 		friend.load();
 		configManager.loadConfig(false);
 		accountManager.load();
 		macroManager.load();
-
+		
+		// start modules
+		moduleManager.getModuleByClass(HUD.class).enable();
+		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
+		
 		LOGGER.info("Injected bullshit");
 	}
 

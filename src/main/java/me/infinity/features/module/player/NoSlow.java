@@ -6,6 +6,7 @@ import java.util.Arrays;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
@@ -20,11 +21,30 @@ import net.minecraft.util.math.Direction;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Do not slow down when using / eating", key = -2, name = "NoSlow", visible = true)
 public class NoSlow extends Module {
 
-	public Settings mode = new Settings(this, "Mode", "Vanilla", new ArrayList<>(Arrays.asList("Vanilla")), () -> true);
+	public Settings mode = new Settings(this, "Mode", "Vanilla",
+			new ArrayList<>(Arrays.asList("Vanilla", "NCP", "Matrix 6.1.0")), () -> true);
 
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
+	}
+
+	@EventTarget
+	public void onMotionTick(MotionEvent event) {
+		if (event.getType().equals(EventType.PRE)) {
+
+			if (mode.getCurrentMode().equalsIgnoreCase("NCP")) {
+				if (Helper.getPlayer().isUsingItem() && !Helper.getPlayer().hasVehicle()) {
+					if (!Helper.getPlayer().isOnGround())
+						return;
+					double d = Math.abs(Helper.getPlayer().getVelocity().y);
+					if (d < 0.1D) {
+						double e = 0.4D + d * 0.72D;
+						Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().multiply(e, 1.0D, e));
+					}
+				}
+			}
+		}
 	}
 
 	@EventTarget

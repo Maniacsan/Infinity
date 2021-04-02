@@ -40,7 +40,8 @@ public class Panel {
 		this.width = width;
 		this.height = height;
 		for (Category category : Category.values()) {
-			catButton.add(new CategoryButton(category.name(), this));
+			if (category != Category.HIDDEN)
+				catButton.add(new CategoryButton(category.name(), this));
 		}
 		catButton.add(new CategoryButton("CONFIGS", this));
 	}

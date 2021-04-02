@@ -2,6 +2,7 @@ plugins {
 	id 'fabric-loom' version '0.5-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
@@ -29,12 +30,12 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-	// For XRay compatibility
-	modImplementation "com.github.jellysquid3:sodium-fabric:1.16.x~stable-SNAPSHOT"
 	
-	dependency 'com.g00fy2:versioncompare:1.3.7'
-	dependency "org.joml:joml:1.10.0"
+	// Discord RPC
+    modImplementation 'com.github.Vatuu:discord-rpc:1.6.2'
+    include 'com.github.Vatuu:discord-rpc:1.6.2'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 shadowJar {
@@ -88,5 +89,15 @@ publishing {
                 builtBy remapSourcesJar
             }
         }
+    }
+}
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }

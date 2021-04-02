@@ -46,6 +46,7 @@ public class Velocity extends Module {
 				if (sVel != null) {
 					MoveUtil.hClip(0.15f);
 					event.setX(event.getX() + sVel.getVelocityX() / 7000);
+					event.setY(event.getY() + sVel.getVelocityY() / 7000);
 					event.setZ(event.getZ() + sVel.getVelocityZ() / 7000);
 					MoveUtil.hClip(-0.15f);
 					sVel = null;

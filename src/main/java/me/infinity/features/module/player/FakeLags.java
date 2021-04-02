@@ -147,7 +147,7 @@ public class FakeLags extends Module {
 			} catch (Exception exception) {
 			}
 			this.packetList.clear();
-		}	
+		}
 		ticks = 0;
 		pulseTicks = 0;
 		legitTicks = 0;
