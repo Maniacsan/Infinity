@@ -14,6 +14,7 @@ import com.google.gson.JsonSyntaxException;
 
 import me.infinity.InfMain;
 import me.infinity.ui.account.main.AddThread;
+import me.infinity.utils.AES;
 import me.infinity.utils.FileUtil;
 
 public class AccountsFile {
@@ -47,7 +48,10 @@ public class AccountsFile {
 							if (jsonArray.get(1).isJsonNull()) {
 								password = "";
 							} else {
-								password = jsonArray.get(1).getAsString();
+								String decryptedPassword = AES.decrypt(jsonArray.get(1).getAsString(), AES.getKey());
+								if(decryptedPassword == null)
+									password = "";
+								password = decryptedPassword;
 							}
 						}
 					}
@@ -68,7 +72,13 @@ public class AccountsFile {
 		InfMain.getAccountManager().getRegistry().forEach(account -> {
 			JsonArray array = new JsonArray();
 			array.add(account.getMask());
-			array.add(account.getPassword() == null ? "" : account.getPassword());
+			String password = "";
+			if(account.getPassword() != null) {
+				String encryptedPassword = AES.encrypt(account.getPassword(), AES.getKey());
+				if(encryptedPassword != null)
+					password = encryptedPassword;
+			}
+			array.add(password);
 			json.add(account.getUsername(), array);
 		});
 		FileUtil.saveJsonObjectToFile(json, accountFile);
