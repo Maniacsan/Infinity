@@ -131,20 +131,23 @@ public class CategoryButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		if (displayModulePanel && modHovered) {
-			int difference = this.getHeightDifference();
-			int scrollOffset = (this.getElementsHeight() / (modButton.size() / 2));
-			if (amount < 0) {
-				if (offsetY > height) {
-					this.offset += scrollOffset;
-					if (this.offset > difference)
-						this.offset = difference;
+		if(displayModulePanel){
+			if (modHovered) {
+				int difference = this.getHeightDifference();
+				int scrollOffset = (this.getElementsHeight() / (modButton.size() / 2));
+				if (amount < 0) {
+					if (offsetY > height) {
+						this.offset += scrollOffset;
+						if (this.offset > difference)
+							this.offset = difference;
+					}
+				} else if (amount > 0) {
+					this.offset -= scrollOffset;
+					if (this.offset < 0)
+						this.offset = 0;
 				}
-			} else if (amount > 0) {
-				this.offset -= scrollOffset;
-				if (this.offset < 0)
-					this.offset = 0;
 			}
+			modButton.forEach(modButton -> modButton.mouseScrolled(d, e, amount));
 		}
 	}
 

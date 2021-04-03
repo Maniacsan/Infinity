@@ -4,14 +4,13 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.infinity.clickmenu.features.settings.BlocksButton;
-import me.infinity.clickmenu.features.settings.BooleanButton;
-import me.infinity.clickmenu.features.settings.ColorButton;
-import me.infinity.clickmenu.features.settings.ModeStringButton;
-import me.infinity.clickmenu.features.settings.SettingButton;
-import me.infinity.clickmenu.features.settings.sliders.DoubleSlider;
-import me.infinity.clickmenu.features.settings.sliders.FloatSlider;
-import me.infinity.clickmenu.features.settings.sliders.IntSlider;
+import me.infinity.clickmenu.features.elements.BlocksElement;
+import me.infinity.clickmenu.features.elements.BooleanElement;
+import me.infinity.clickmenu.features.elements.ColorElement;
+import me.infinity.clickmenu.features.elements.ModeStringElement;
+import me.infinity.clickmenu.features.elements.sliders.DoubleSlider;
+import me.infinity.clickmenu.features.elements.sliders.FloatSlider;
+import me.infinity.clickmenu.features.elements.sliders.IntSlider;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
@@ -21,7 +20,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public class ModuleButton {
 
-	public ArrayList<SettingButton> settingButton = new ArrayList<>();
+	public ArrayList<SettingElement> elements = new ArrayList<>();
 	private CategoryButton catBut;
 	public Module module;
 	private String name;
@@ -42,19 +41,19 @@ public class ModuleButton {
 		if (settings != null) {
 			for (Settings setting : settings) {
 				if (setting.isBoolean()) {
-					this.settingButton.add(new BooleanButton(setting));
+					this.elements.add(new BooleanElement(setting));
 				} else if (setting.isMode()) {
-					this.settingButton.add(new ModeStringButton(setting));
+					this.elements.add(new ModeStringElement(setting));
 				} else if (setting.isValueDouble()) {
-					this.settingButton.add(new DoubleSlider(setting));
+					this.elements.add(new DoubleSlider(setting));
 				} else if (setting.isValueFloat()) {
-					this.settingButton.add(new FloatSlider(setting));
+					this.elements.add(new FloatSlider(setting));
 				} else if (setting.isValueInt()) {
-					this.settingButton.add(new IntSlider(setting));
+					this.elements.add(new IntSlider(setting));
 				} else if (setting.isBlock()) {
-					this.settingButton.add(new BlocksButton(setting));
+					this.elements.add(new BlocksElement(setting));
 				} else if (setting.isColor()) {
-					this.settingButton.add(new ColorButton(setting));
+					this.elements.add(new ColorElement(setting));
 				}
 			}
 		}
@@ -85,17 +84,17 @@ public class ModuleButton {
 					setHeight - 10 - getHeightDifference(), 0xFFD2D2D2);
 			}
 			
-			for (SettingButton setBut : settingButton) {
-				if (setBut.isVisible()) {
+			for (SettingElement element : elements) {
+				if (element.isVisible()) {
 					this.height = (int) setHeight;
 					this.offsetY = (int) (yOffset + setY + 6);
-					setBut.render(matrices, mouseX, mouseY, delta, xOffset + setX + 244, yOffset + setY + 6 - offset,
+					element.render(matrices, mouseX, mouseY, delta, xOffset + setX + 244, yOffset + setY + 6 - offset,
 							width + 30, height);
-					if (setBut instanceof BooleanButton) {
+					if (element instanceof BooleanElement) {
 						yOffset += 15;
-					} else if (setBut instanceof BlocksButton) {
+					} else if (element instanceof BlocksElement) {
 						yOffset += 45;
-					} else if (setBut instanceof ModeStringButton) {
+					} else if (element instanceof ModeStringElement) {
 						yOffset += 21;
 					} else {
 						yOffset += 19;
@@ -120,27 +119,27 @@ public class ModuleButton {
 			}
 		}
 		if (open) {
-			for (SettingButton setBut : settingButton) {
-				if (setBut.isVisible())
-					setBut.mouseClicked(mouseX, mouseY, button);
+			for (SettingElement element : elements) {
+				if (element.isVisible())
+					element.mouseClicked(mouseX, mouseY, button);
 			}
 		}
 	}
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		if (open) {
-			for (SettingButton setBut : settingButton) {
-				if (setBut.isVisible())
-					setBut.mouseReleased(mouseX, mouseY, button);
+			for (SettingElement element : elements) {
+				if (element.isVisible())
+					element.mouseReleased(mouseX, mouseY, button);
 			}
 		}
 	}
 
 	public int getElementsHeight() {
 		int elementsHeight = 0;
-		for (SettingButton settingButton : settingButton)
-			if (open && settingButton.isVisible()) 
-				elementsHeight += (settingButton.height  + 1);
+		for (SettingElement element : elements)
+			if (open && element.isVisible()) 
+				elementsHeight += (element.height  + 1);
 		return elementsHeight;
 	}
 	
@@ -151,7 +150,7 @@ public class ModuleButton {
 	public void mouseScrolled(double d, double e, double amount) {
 		if (open && setHovered) {
 			int difference = this.getHeightDifference();
-			int scrollOffset = (this.getElementsHeight() / settingButton.size());
+			int scrollOffset = (this.getElementsHeight() / elements.size());
 			if (amount < 0) {
 				if (offsetY > height) {
 					this.offset += scrollOffset;

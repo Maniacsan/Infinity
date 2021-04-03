@@ -1,13 +1,14 @@
-package me.infinity.clickmenu.features.settings;
+package me.infinity.clickmenu.features.elements;
 
 import java.awt.Color;
 
+import me.infinity.clickmenu.features.SettingElement;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class ColorButton extends SettingButton {
+public class ColorElement extends SettingElement {
 
 	private boolean extended;
 	private float hue, saturation, brightness;
@@ -19,7 +20,7 @@ public class ColorButton extends SettingButton {
 	private boolean noExtHover;
 	private double posX, posY;
 
-	public ColorButton(Settings setting) {
+	public ColorElement(Settings setting) {
 		super(setting);
 		float[] hsb = new float[3];
 		Color clr = setting.getColor();
@@ -32,6 +33,7 @@ public class ColorButton extends SettingButton {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x1, double y1, double width,
 			double height) {
+		this.height = height;
 		double hueHeight = 60;
 		double sbWidth = 70;
 		double x = x1 + 91;
@@ -117,10 +119,16 @@ public class ColorButton extends SettingButton {
 		pressedhue = false;
 		pressedSB = false;
 	}
-	
+
 	@Override
-	public boolean isVisible() {
-		return setting.isVisible();
+	public void mouseScrolled(double d, double e, double amount) {
+		// TODO Auto-generated method stub
+		
 	}
 
+	@Override
+	public boolean isVisible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

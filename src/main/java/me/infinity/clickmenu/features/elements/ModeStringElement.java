@@ -1,24 +1,25 @@
-package me.infinity.clickmenu.features.settings;
+package me.infinity.clickmenu.features.elements;
 
 import java.awt.Color;
 
+import me.infinity.clickmenu.features.SettingElement;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class ModeStringButton extends SettingButton {
+public class ModeStringElement extends SettingElement {
 
 	private boolean addHovered;
 
-	public ModeStringButton(Settings setting) {
+	public ModeStringElement(Settings setting) {
 		super(setting);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
-		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
+		this.height = height;
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		Render2D.drawRectWH(matrices, x + 1, y, width, height, 0xFF787878);
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width, height - 2, 0xFF343434);
@@ -48,4 +49,15 @@ public class ModeStringButton extends SettingButton {
 		return setting.isVisible();
 	}
 
+	@Override
+	public void mouseReleased(double mouseX, double mouseY, int button) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseScrolled(double d, double e, double amount) {
+		// TODO Auto-generated method stub
+		
+	}
 }

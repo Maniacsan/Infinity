@@ -1,7 +1,8 @@
-package me.infinity.clickmenu.features.settings;
+package me.infinity.clickmenu.features.elements;
 
 import java.awt.Color;
 
+import me.infinity.clickmenu.features.SettingElement;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
@@ -9,17 +10,18 @@ import me.infinity.utils.Helper;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class BlocksButton extends SettingButton {
+public class BlocksElement extends SettingElement {
 
 	public double x, y;
 
-	public BlocksButton(Settings setting) {
+	public BlocksElement(Settings setting) {
 		super(setting);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
+		this.height = height;
 		this.x = x;
 		int xOffset = 3;
 		int yOffset = 0;
@@ -60,12 +62,23 @@ public class BlocksButton extends SettingButton {
 				yOffset += 21;
 			}
 		}
-		super.mouseClicked(mouseX, mouseY, button);
 	}
 	
 	@Override
 	public boolean isVisible() {
-		return setting.isVisible();
+		return this.setting.isVisible();
+	}
+
+	@Override
+	public void mouseReleased(double mouseX, double mouseY, int button) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseScrolled(double d, double e, double amount) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

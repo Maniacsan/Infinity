@@ -1,25 +1,26 @@
-package me.infinity.clickmenu.features.settings;
+package me.infinity.clickmenu.features.elements;
 
 import java.awt.Color;
 
+import me.infinity.clickmenu.features.SettingElement;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class BooleanButton extends SettingButton {
+public class BooleanElement extends SettingElement {
 
 	private boolean hovered;
 
-	public BooleanButton(Settings setting) {
+	public BooleanElement(Settings setting) {
 		super(setting);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
 			double height) {
-		super.render(matrices, mouseX, mouseY, delta, x, y, width, height);
+		this.height = height;
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 5);
 
 		Render2D.drawRectWH(matrices, x + 2, y + 0, 10, 10, setting.isToggle() ? ColorUtils.CHECK_TOGGLE : 0xFFFFFFFF);
@@ -35,12 +36,22 @@ public class BooleanButton extends SettingButton {
 		if (this.hovered && button == 0) {
 			this.setting.setToggle(!this.setting.isToggle());
 		}
-		super.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
 	public boolean isVisible() {
-		return setting.isVisible();
+		return this.setting.isVisible();
 	}
 
+	@Override
+	public void mouseReleased(double mouseX, double mouseY, int button) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseScrolled(double d, double e, double amount) {
+		// TODO Auto-generated method stub
+		
+	}
 }
