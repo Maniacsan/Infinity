@@ -22,8 +22,6 @@ public class AutoShift extends Module {
 	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")),
 			() -> onlyAttack.isToggle());
 
-	private double delay;
-
 	@Override
 	public void onDisable() {
 
@@ -56,15 +54,26 @@ public class AutoShift extends Module {
 
 	public void shift() {
 		if (!Helper.getPlayer().isOnGround()) {
-			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), true);
-			delay = 0.1;
-			KeyBinding.onKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey());
+
+			(new Thread() {
+				@Override
+				public void run() {
+					try {
+						
+						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
+								true);
+						Thread.sleep(100);
+						
+						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
+								false);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+			}).start();
 		}
-		if (delay > 0) {
-			delay--;
-			return;
-		}
-		KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), false);
 
 	}
 

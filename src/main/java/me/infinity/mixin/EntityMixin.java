@@ -1,9 +1,11 @@
 package me.infinity.mixin;
 
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -14,6 +16,7 @@ import me.infinity.InfMain;
 import me.infinity.event.MoveEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.features.module.combat.HitBoxes;
+import me.infinity.features.module.movement.AntiWaterPush;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MovementType;
@@ -48,6 +51,15 @@ public class EntityMixin {
 		}
 	}
 
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V", opcode = Opcodes.INVOKEVIRTUAL, ordinal = 0), method = {
+			"updateMovementInFluid(Lnet/minecraft/tag/Tag;D)Z" })
+	private void setVelocityFromFluid(Entity entity, Vec3d velocity) {
+		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+			return;
+
+		entity.setVelocity(velocity);
+	}
+
 	@Overwrite
 	public final Vec3d getRotationVector(float pitch, float yaw) {
 		RotationEvent rotationEvent = new RotationEvent(yaw, pitch);
@@ -57,7 +69,7 @@ public class EntityMixin {
 			pitch = rotationEvent.getPitch();
 			yaw = rotationEvent.getYaw();
 		}
-		
+
 		float f = pitch * 0.017453292F;
 		float g = -yaw * 0.017453292F;
 		float h = MathHelper.cos(g);

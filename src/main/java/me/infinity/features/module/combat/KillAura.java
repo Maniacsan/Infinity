@@ -132,12 +132,15 @@ public class KillAura extends Module {
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				event.setRotation(smash[0], smash[1]);
 			}
+			
+			float[] rot = RotationUtils.lookAtEntity(target, 13, 13);
 
+			rot[0] = (float) Math.toRadians(rot[0]);
 			if (badStrafe.isToggle()) {
 				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-					MoveUtil.getHorizontalVelocity(this.strafeSpeed.getCurrentValueDouble(), focus[0]);
+					MoveUtil.strafe(MoveUtil.getYaw(focus[0]), this.strafeSpeed.getCurrentValueDouble());
 				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-					MoveUtil.getHorizontalVelocity(this.strafeSpeed.getCurrentValueDouble(), smash[0]);
+					MoveUtil.strafe(smash[0], this.strafeSpeed.getCurrentValueDouble());
 				}
 			}
 
@@ -151,7 +154,6 @@ public class KillAura extends Module {
 			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
 				attack();
 			}
-
 		}
 	}
 

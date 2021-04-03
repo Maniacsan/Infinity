@@ -13,7 +13,6 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.render.block.entity.LightmapCoordinatesRetriever;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
 

@@ -10,6 +10,7 @@
   "IEntityVelocityUpdateS2CPacket",
   "IMinecraftClient",
   "ILivingEntity",
+  "ICrossbowItem",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",
@@ -27,6 +28,7 @@
   "EntityRendererMixin",
   "AbstractBlockMixin",
   "BlockMixin",
+  "PlayerEntityMixin",
   "BlockModelRendererMixin",
   "ChunkOcclusionDataBuilderMixin",
   "FluidRendererMixin"

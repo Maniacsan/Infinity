@@ -38,6 +38,36 @@ public class RotationUtils {
 	}
 
 	/**
+	 * This rotation with predict for aim from long distance
+	 * 
+	 * @param target
+	 * @param maxYawChange
+	 * @param maxPitchChange
+	 * @return
+	 */
+	public static float[] bowAimRotation(Entity target, float maxYawChange, float maxPitchChange) {
+		double xPos = target.getX();
+		double zPos = target.getZ();
+		double yPos;
+		if (target instanceof LivingEntity) {
+			LivingEntity livingEntity = (LivingEntity) target;
+			yPos = livingEntity.getEyeY() - Helper.getPlayer().getEyeY() - 0.5 + Helper.getPlayer().getY();
+		} else {
+			yPos = (target.getBoundingBox().minY + target.getBoundingBox().maxY) / 2.0D - Helper.getPlayer().getY()
+					+ Helper.getPlayer().getEyeY() - 0.5;
+		}
+
+		double sideMultiplier = Helper.getPlayer().distanceTo(target)
+				/ ((Helper.getPlayer().distanceTo(target) / 2) / 1) * 5;
+		double upMultiplier = (Helper.getPlayer().squaredDistanceTo(target) / 320) * 1.1;
+		Vec3d vecPos = new Vec3d((xPos - 0.5) + (xPos - target.lastRenderX) * sideMultiplier, yPos + upMultiplier,
+				(zPos - 0.5) + (zPos - target.lastRenderZ) * sideMultiplier);
+		float[] lookVec = lookAtVecPos(vecPos, maxYawChange, maxPitchChange);
+		return new float[] { lookVec[0], lookVec[1] };
+	}
+	
+
+	/**
 	 * Look to target -> float[] look = RotationUtils.lookAtEntity(values):
 	 * 
 	 * @param targetEntity
@@ -119,14 +149,11 @@ public class RotationUtils {
 				getLookNeeded(entity.getX(), entity.getY(), entity.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
 	}
-	
-	
+
 	public static boolean isInFOVPos(BlockPos pos, double angle) {
-		double angleDiff = getAngle360(Helper.getPlayer().yaw,
-				getLookNeeded(pos.getX(), pos.getY(), pos.getZ())[0]);
+		double angleDiff = getAngle360(Helper.getPlayer().yaw, getLookNeeded(pos.getX(), pos.getY(), pos.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
 	}
-
 
 	private static float getAngle360(float dir, float yaw) {
 		float f = Math.abs(yaw - dir) % 360.0f;

@@ -14,9 +14,9 @@ public class MoveUtil {
 	public static boolean isMoving() {
 		return (Helper.getPlayer().forwardSpeed != 0 || Helper.getPlayer().sidewaysSpeed != 0);
 	}
-
-	public static float getYaw() {
-		float moveYaw = (Helper.getPlayer()).yaw;
+	
+	public static float getYaw(float yaw) {
+		float moveYaw = yaw;
 		float forward = 1.0F;
 		if ((Helper.getPlayer()).forwardSpeed < 0.0F) {
 			moveYaw += 180.0F;
@@ -30,6 +30,10 @@ public class MoveUtil {
 			moveYaw += 90.0F * forward;
 		moveYaw = (float) Math.toRadians(moveYaw);
 		return moveYaw;
+	}
+
+	public static float getYaw() {
+		return getYaw(Helper.getPlayer().yaw);
 	}
 
 	public static double calcMoveYaw() {
@@ -130,10 +134,5 @@ public class MoveUtil {
 	public static void setYVelocity(double y) {
 		Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().getX(), y,
 				Helper.getPlayer().getVelocity().getZ());
-	}
-
-	public static void setY(double y) {
-		Helper.getPlayer().setPos(Helper.getPlayer().getPos().getX(), Helper.getPlayer().getPos().getY() + y,
-				Helper.getPlayer().getPos().getZ());
 	}
 }

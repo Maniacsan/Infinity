@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import me.infinity.ui.account.GuiAccountSwitcher;
+import me.infinity.ui.tools.ToolsMain;
 import me.infinity.utils.Helper;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.multiplayer.MultiplayerScreen;
@@ -24,6 +25,12 @@ public class MultiplayerScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
+		ButtonWidget tools = new ButtonWidget(5, 10,  80, 20, new TranslatableText("Tools"), (buttonWidget) -> {
+			Helper.minecraftClient.openScreen(new ToolsMain(this));
+		});
+		
+		addButton(tools);
+		
 		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 0,
 				new Identifier("infinity", "alt.png"), 20, 20,
 				buttonWidget -> Helper.minecraftClient.openScreen(new GuiAccountSwitcher(this)),

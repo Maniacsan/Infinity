@@ -7,6 +7,7 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
+import me.infinity.event.PlayerInWaterEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -87,11 +88,16 @@ public class AntiAim extends Module {
 				}
 
 			}
-		} else if (event.getType().equals(EventType.POST)) {
-			if (mode.getCurrentMode().equalsIgnoreCase("Swimming")) {
-				Helper.getPlayer().setSwimming(false);
-
+		}
+	}
+	
+	@EventTarget
+	public void onSwim(PlayerInWaterEvent event) {
+		if (mode.getCurrentMode().equalsIgnoreCase("Swimming")) {
+			if (!Helper.getPlayer().isSprinting() && Helper.getPlayer().forwardSpeed != 0) {
+				Helper.getPlayer().setSprinting(true);
 			}
+			event.setInWater(true);
 		}
 	}
 

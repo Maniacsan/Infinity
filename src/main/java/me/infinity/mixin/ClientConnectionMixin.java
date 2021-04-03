@@ -5,21 +5,27 @@ import java.io.IOException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.types.EventType;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import me.infinity.InfMain;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.command.Command;
+import me.infinity.features.component.AntiFabricSpoof;
 import me.infinity.features.module.player.PacketKick;
+import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
@@ -45,12 +51,44 @@ public class ClientConnectionMixin {
 			}
 		}
 
+		// antifabric spoof
+		if (AntiFabricSpoof.isEnabled()) {
+			if (!(packet instanceof CustomPayloadC2SPacketAccessor))
+				return;
+
+			CustomPayloadC2SPacketAccessor plPacket = (CustomPayloadC2SPacketAccessor) packet;
+
+			if (plPacket.getChannel().getNamespace().equals("minecraft")
+					&& plPacket.getChannel().getPath().equals("register"))
+				callback.cancel();
+
+			if (plPacket.getChannel().getNamespace().equals("fabric"))
+				callback.cancel();
+		}
+
 		PacketEvent sendEvent = new PacketEvent(EventType.SEND, packet);
 		EventManager.call(sendEvent);
 
 		if (sendEvent.isCancelled()) {
 			callback.cancel();
 		}
+	}
+
+	@ModifyVariable(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"))
+	public Packet<?> onSendPacket(Packet<?> packet) {
+		if (AntiFabricSpoof.isEnabled()) {
+			if ((packet instanceof CustomPayloadC2SPacketAccessor)) {
+
+				CustomPayloadC2SPacketAccessor plPacket = (CustomPayloadC2SPacketAccessor) packet;
+
+				if (plPacket.getChannel().getNamespace().equals("minecraft")
+						&& plPacket.getChannel().getPath().equals("brand"))
+					packet = new CustomPayloadC2SPacket(CustomPayloadC2SPacket.BRAND,
+							new PacketByteBuf(Unpooled.buffer()).writeString("vanilla"));
+			}
+		}
+		
+		return packet;
 	}
 
 	@Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)

@@ -15,12 +15,13 @@ import com.mojang.authlib.GameProfile;
 
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
+import me.infinity.event.PlayerInWaterEvent;
 import me.infinity.event.PlayerMoveEvent;
 import me.infinity.event.PushOutBlockEvent;
 import me.infinity.features.module.movement.SafeWalk;
 import me.infinity.features.module.player.NoSlow;
 import me.infinity.features.module.player.Scaffold;
-import me.infinity.utils.UpdateUtil;
+import me.infinity.utils.Helper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -96,6 +97,10 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 			MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.yaw, this.pitch, this.getX(), this.getY(),
 					this.getZ(), this.onGround);
 			EventManager.call(motionEvent);
+
+			if (motionEvent.isCancelled()) {
+				return;
+			}
 
 			boolean bl = this.isSprinting();
 			if (bl != this.lastSprinting) {
@@ -174,7 +179,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		NoSlow noSlow = ((NoSlow) InfMain.getModuleManager().getModuleByClass(NoSlow.class));
 
 		if (noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("Vanilla")
-				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("NCP")) {
+				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("NCP")
+				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("Matrix")
+						&& !Helper.getPlayer().isOnGround()) {
 			return false;
 		}
 
@@ -217,6 +224,15 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		if (pushEvent.isCancelled()) {
 			ci.cancel();
 		}
+	}
+
+	@Override
+	public boolean isTouchingWater() {
+		boolean inWater = super.isTouchingWater();
+		PlayerInWaterEvent inWaterEvent = new PlayerInWaterEvent(inWater);
+		EventManager.call(inWaterEvent);
+
+		return inWaterEvent.isInWater();
 	}
 
 }

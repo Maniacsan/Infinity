@@ -34,10 +34,8 @@ public class ChatCalculator extends Module {
 			() -> clientMode.getCurrentMode().equalsIgnoreCase("Message")
 					|| serverMode.getCurrentMode().equalsIgnoreCase("Message"));
 
-	private Settings delay = new Settings(this, "Delay", 1D, 0D, 50D,
+	private Settings delay = new Settings(this, "Delay", 1D, 0D, 5D,
 			() -> clientSide.isToggle() || serverSide.isToggle());
-
-	private int time;
 
 	private boolean sendClient;
 	private boolean sendServer;
@@ -47,7 +45,6 @@ public class ChatCalculator extends Module {
 
 	@Override
 	public void onDisable() {
-		time = 0;
 		clientResult = null;
 		serverResult = null;
 		sendClient = false;
@@ -128,9 +125,6 @@ public class ChatCalculator extends Module {
 				double result = TermSolver.solvePostfix(postfix.get());
 
 				serverResult = String.valueOf((int) result);
-
-				time = (int) delay.getCurrentValueDouble();
-
 				sendServer = true;
 			}
 
@@ -153,8 +147,6 @@ public class ChatCalculator extends Module {
 					double result = TermSolver.solvePostfix(postfix.get());
 
 					clientResult = String.valueOf((int) result);
-
-					time = (int) delay.getCurrentValueDouble();
 
 					sendClient = true;
 				}

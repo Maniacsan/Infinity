@@ -15,13 +15,20 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
+import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Let you walk up Blocks very fast", key = -2, name = "Step", visible = true)
 public class Step extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Matrix 6.0.6",
-			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.0.6")), () -> true);
+	private Settings mode = new Settings(this, "Mode", "Matrix 6.1.0",
+			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.1.0")), () -> true);
 
+	private Settings height = new Settings(this, "Height", 1.5, 0.5, 10.0,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
+
+	private double previousX, previousY, previousZ;
+	private double offsetX, offsetY, offsetZ;
+	private byte cancelStage;
 	private boolean hasStep;
 
 	@Override
@@ -40,13 +47,11 @@ public class Step extends Module {
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Intave")) {
 
-			EntityUtil.setStepHeight(0.52f);
+			EntityUtil.setStepHeight(1.02f);
 
 			if (hasStep) {
 				MoveUtil.getHorizontalVelocity(MoveUtil.getSpeed(), (float) MoveUtil.calcMoveYaw());
 				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 21f;
-				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - 0.01);
-				MoveUtil.getHorizontalVelocity(0.002, (float) MoveUtil.calcMoveYaw());
 			}
 
 			if (Helper.getPlayer().isOnGround()) {
@@ -55,38 +60,80 @@ public class Step extends Module {
 			}
 
 			if (Helper.getPlayer().horizontalCollision && Helper.getPlayer().isOnGround()) {
-				float y = (float) Math.max(1.1, 1.2);
+				float y = (float) Math.max(0.5, 0.4);
 				hasStep = true;
 				InfMain.TIMER = y;
 				MoveUtil.setYVelocity(0.45);
-				MoveUtil.getHorizontalVelocity(5.5, (float) MoveUtil.calcMoveYaw());
-				Helper.getPlayer().tickMovement();
-
+				Helper.getPlayer().tick();
+				Helper.getPlayer().tick();
 			}
-
 		}
 	}
 
 	@Override
 	public void onPlayerTick() {
-		double rheight = Helper.getPlayer().getBoundingBox().minY - Helper.getPlayer().getY();
-		boolean canStep = (rheight >= 0.625D);
-		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
-			Helper.getPlayer().stepHeight = 1.5f;
-			if (Helper.getPlayer().horizontalCollision && Helper.getPlayer().isOnGround() && canStep) {
-				InfMain.TIMER = 0.2f - ((rheight >= 1.0D) ? (Math.abs(1.0F - (float) rheight) * 0.2f * 0.55F) : 0.0F);
-				if (InfMain.TIMER <= 0.05F)
-					InfMain.TIMER = 0.05F;
-				InfMain.resetTimer();
-			}
+		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
+			EntityUtil.setStepHeight(1.5f);
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
-			Helper.getPlayer().stepHeight = 1.5f;
+			EntityUtil.setStepHeight((float) height.getCurrentValueDouble());
 		}
 	}
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
+			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
+				offsetX = 0;
+				offsetY = 0;
+				offsetZ = 0;
+
+				if (cancelStage == -1) {
+					cancelStage = 0;
+					return;
+				}
+
+				double yDist = Helper.getPlayer().getY() - previousY;
+				double hDistSq = (Helper.getPlayer().getX() - previousX) * (Helper.getPlayer().getX() - previousX)
+						+ (Helper.getPlayer().getZ() - previousZ) * (Helper.getPlayer().getZ() - previousZ);
+
+				if (yDist > 0.5 && yDist < 1.05 && hDistSq < 1 && cancelStage == 0) {
+					Helper.sendPacket(
+							new PlayerMoveC2SPacket.PositionOnly(previousX, previousY + 0.42, previousZ, false));
+					offsetX = previousX - Helper.getPlayer().getX();
+					offsetY = 0.755 - yDist;
+					offsetZ = previousZ - Helper.getPlayer().getZ();
+
+					Helper.getPlayer().stepHeight = 1.05F;
+					cancelStage = 1;
+				}
+
+				switch (cancelStage) {
+				case 1:
+					cancelStage = 2;
+					break;
+				case 2:
+					event.cancel();
+					cancelStage = -1;
+					break;
+				}
+
+				previousX = Helper.getPlayer().getX();
+				previousY = Helper.getPlayer().getY();
+				previousZ = Helper.getPlayer().getZ();
+
+				if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
+					MoveUtil.setHVelocity(Helper.getPlayer().getVelocity().getX() + offsetX,
+							Helper.getPlayer().getVelocity().getZ() + offsetZ);
+					Helper.getPlayer().setBoundingBox(Helper.getPlayer().getBoundingBox().offset(0, 0, 0));
+				}
+				
+			} else {
+				if (offsetX != 0 || offsetY != 0 || offsetZ != 0) {
+					MoveUtil.setHVelocity(Helper.getPlayer().getVelocity().getX() - offsetX,
+							Helper.getPlayer().getVelocity().getZ() - offsetZ);
+					Helper.getPlayer().setBoundingBox(Helper.getPlayer().getBoundingBox().offset(0, -offsetY, 0));
+				}
+			}
 		}
 	}
 
