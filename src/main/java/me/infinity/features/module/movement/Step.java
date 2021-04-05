@@ -73,7 +73,7 @@ public class Step extends Module {
 	@Override
 	public void onPlayerTick() {
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
-			EntityUtil.setStepHeight(1.5f);
+			EntityUtil.setStepHeight(1.4f);
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 			EntityUtil.setStepHeight((float) height.getCurrentValueDouble());
 		}

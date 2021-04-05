@@ -46,7 +46,6 @@ public class KillAura extends Module {
 
 	// matrix packet rotation strafing check
 	private Settings badStrafe = new Settings(this, "Matrix Strafe", false, () -> true);
-	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 3.5, 0.0, 30.0, () -> badStrafe.isToggle());
 
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
@@ -132,15 +131,15 @@ public class KillAura extends Module {
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				event.setRotation(smash[0], smash[1]);
 			}
-			
+
 			float[] rot = RotationUtils.lookAtEntity(target, 13, 13);
 
 			rot[0] = (float) Math.toRadians(rot[0]);
 			if (badStrafe.isToggle()) {
 				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-					MoveUtil.strafe(MoveUtil.getYaw(focus[0]), this.strafeSpeed.getCurrentValueDouble());
+					MoveUtil.strafe(MoveUtil.calcMoveYaw(focus[0]), MoveUtil.getSpeed());
 				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-					MoveUtil.strafe(smash[0], this.strafeSpeed.getCurrentValueDouble());
+					MoveUtil.strafe(MoveUtil.calcMoveYaw(smash[0]), MoveUtil.getSpeed());
 				}
 			}
 

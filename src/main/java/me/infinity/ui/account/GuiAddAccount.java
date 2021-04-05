@@ -12,12 +12,12 @@ import net.minecraft.text.TranslatableText;
 
 public class GuiAddAccount extends Screen {
 
-	private GuiAccountSwitcher prev;
+	private GuiAccountManager prev;
 	private TextFieldWidget accountName;
 	private TextFieldWidget password;
 	private ButtonWidget buttonAdd;
 
-	public GuiAddAccount(GuiAccountSwitcher prev) {
+	public GuiAddAccount(GuiAccountManager prev) {
 		super(new LiteralText(""));
 		this.prev = prev;
 	}
@@ -42,8 +42,8 @@ public class GuiAddAccount extends Screen {
 						AddThread addThread = new AddThread(this.accountName.getText(), this.password.getText());
 						addThread.start();
 					}
-					prev.refresh();
-					Helper.minecraftClient.openScreen(prev);
+					// prev.prev 
+					Helper.minecraftClient.openScreen(new GuiAccountManager(prev.prev));
 				}));
 
 		this.addButton(new ButtonWidget(this.width / 2 - 100,

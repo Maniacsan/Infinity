@@ -37,9 +37,13 @@ public class MoveUtil {
 	}
 
 	public static double calcMoveYaw() {
+		return calcMoveYaw(Helper.getPlayer().yaw);
+	}
+	
+	public static double calcMoveYaw(float targetYaw) {
 		float moveForward = getRoundedForward();
 		float moveString = getRoundedStrafing();
-		float yawIn = Helper.getPlayer().yaw;
+		float yawIn = targetYaw;
 		float strafe = 90 * moveString;
 		strafe *= (moveForward != 0.0F) ? (moveForward * 0.5F) : 1.0F;
 		float yaw = yawIn - strafe;

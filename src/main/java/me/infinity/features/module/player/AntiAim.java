@@ -18,7 +18,7 @@ import me.infinity.utils.MathAssist;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Moves differently to make it harder for the enemy to hit", key = -2, name = "AntiAim", visible = true)
 public class AntiAim extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Custom", new ArrayList<>(Arrays.asList("Custom", "Swimming")),
+	public Settings mode = new Settings(this, "Mode", "Custom", new ArrayList<>(Arrays.asList("Custom", "Swimming")),
 			() -> true);
 
 	private Settings yawMode = new Settings(this, "Yaw Mode", "Spin", new ArrayList<>(Arrays.asList("Spin", "Random")),
@@ -38,6 +38,10 @@ public class AntiAim extends Module {
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
+		
+		if (mode.getCurrentMode().equalsIgnoreCase("Swimming")) {
+			Helper.getPlayer().setSwimming(true);
+		}
 	}
 
 	@EventTarget
@@ -94,9 +98,6 @@ public class AntiAim extends Module {
 	@EventTarget
 	public void onSwim(PlayerInWaterEvent event) {
 		if (mode.getCurrentMode().equalsIgnoreCase("Swimming")) {
-			if (!Helper.getPlayer().isSprinting() && Helper.getPlayer().forwardSpeed != 0) {
-				Helper.getPlayer().setSprinting(true);
-			}
 			event.setInWater(true);
 		}
 	}

@@ -14,13 +14,13 @@ import net.minecraft.text.TranslatableText;
 
 public class GuiEdit extends Screen {
 
-	private GuiAccountSwitcher prev;
+	private GuiAccountManager prev;
 	private ButtonWidget buttonSave;
 	private TextFieldWidget accountName;
 	private TextFieldWidget password;
 	private Account account;
 
-	public GuiEdit(GuiAccountSwitcher prev, Account account) {
+	public GuiEdit(GuiAccountManager prev, Account account) {
 		super(new LiteralText(""));
 		this.prev = prev;
 		this.account = account;
@@ -49,8 +49,8 @@ public class GuiEdit extends Screen {
 						AddThread addThread = new AddThread(this.accountName.getText(), this.password.getText());
 						addThread.start();
 					}
-					Helper.minecraftClient.openScreen(prev);
 					prev.refresh();
+					Helper.minecraftClient.openScreen(new GuiAccountManager(prev.prev));
 				}));
 
 		this.addButton(new ButtonWidget(this.width / 2 - 100,

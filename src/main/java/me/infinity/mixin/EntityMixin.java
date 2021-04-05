@@ -3,6 +3,7 @@ package me.infinity.mixin;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,7 +25,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 @Mixin(Entity.class)
-public class EntityMixin {
+public abstract class EntityMixin {
+
+	@Shadow
+	public abstract void setSwimming(boolean swimming);
 
 	@Inject(method = "move", at = @At("HEAD"))
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {

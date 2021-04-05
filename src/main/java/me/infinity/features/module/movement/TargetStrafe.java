@@ -7,7 +7,9 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Whirls in a circle of entity", key = -2, name = "TargetStrafe", visible = true)
@@ -67,6 +69,10 @@ public class TargetStrafe extends Module {
 		double strafeYaw = Math.atan2(target.getZ() - Helper.getPlayer().getZ(),
 				target.getX() - Helper.getPlayer().getX());
 		double yaw = strafeYaw - (0.5 * Math.PI);
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+
+		yaw -= yaw % gcd;
 
 		// set radius
 		double circle = distance - radius.getCurrentValueDouble() < -speed ? -speed

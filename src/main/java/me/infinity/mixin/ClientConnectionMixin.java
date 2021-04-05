@@ -18,9 +18,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import me.infinity.InfMain;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.command.Command;
-import me.infinity.features.component.AntiFabricSpoof;
+import me.infinity.features.module.hidden.AntiFabric;
 import me.infinity.features.module.player.PacketKick;
-import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -32,10 +31,10 @@ public class ClientConnectionMixin {
 
 	@Inject(at = @At("HEAD"), method = "channelRead0")
 	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo call) {
-		PacketEvent packetEvent = new PacketEvent(EventType.RECIEVE, packet);
-		EventManager.call(packetEvent);
+		PacketEvent event = new PacketEvent(EventType.RECIEVE, packet);
+		EventManager.call(event);
 
-		if (packetEvent.isCancelled()) {
+		if (event.isCancelled()) {
 			call.cancel();
 		}
 	}
@@ -50,13 +49,12 @@ public class ClientConnectionMixin {
 				callback.cancel();
 			}
 		}
-
 		// antifabric spoof
-		if (AntiFabricSpoof.isEnabled()) {
-			if (!(packet instanceof CustomPayloadC2SPacketAccessor))
+		if (InfMain.getModuleManager().getModuleByClass(AntiFabric.class).isEnabled()) {
+			if (!(packet instanceof ICustomPayloadC2SPacket))
 				return;
 
-			CustomPayloadC2SPacketAccessor plPacket = (CustomPayloadC2SPacketAccessor) packet;
+			ICustomPayloadC2SPacket plPacket = (ICustomPayloadC2SPacket) packet;
 
 			if (plPacket.getChannel().getNamespace().equals("minecraft")
 					&& plPacket.getChannel().getPath().equals("register"))
@@ -76,10 +74,10 @@ public class ClientConnectionMixin {
 
 	@ModifyVariable(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"))
 	public Packet<?> onSendPacket(Packet<?> packet) {
-		if (AntiFabricSpoof.isEnabled()) {
-			if ((packet instanceof CustomPayloadC2SPacketAccessor)) {
+		if (InfMain.getModuleManager().getModuleByClass(AntiFabric.class).isEnabled()) {
+			if ((packet instanceof ICustomPayloadC2SPacket)) {
 
-				CustomPayloadC2SPacketAccessor plPacket = (CustomPayloadC2SPacketAccessor) packet;
+				ICustomPayloadC2SPacket plPacket = (ICustomPayloadC2SPacket) packet;
 
 				if (plPacket.getChannel().getNamespace().equals("minecraft")
 						&& plPacket.getChannel().getPath().equals("brand"))
@@ -87,7 +85,7 @@ public class ClientConnectionMixin {
 							new PacketByteBuf(Unpooled.buffer()).writeString("vanilla"));
 			}
 		}
-		
+
 		return packet;
 	}
 

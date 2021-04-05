@@ -11,6 +11,7 @@
   "IMinecraftClient",
   "ILivingEntity",
   "ICrossbowItem",
+  "ICustomPayloadC2SPacket",
   "MinecraftClientMixin",
   "KeyboardMixin",
   "InGameHudMixin",
@@ -30,8 +31,7 @@
   "BlockMixin",
   "PlayerEntityMixin",
   "BlockModelRendererMixin",
-  "ChunkOcclusionDataBuilderMixin",
-  "FluidRendererMixin"
+  "ChunkOcclusionDataBuilderMixin"
   ],
     "injectors": {
     "defaultRequire": 1

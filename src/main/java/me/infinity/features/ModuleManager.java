@@ -16,7 +16,10 @@ import me.infinity.features.module.world.*;
 public class ModuleManager {
 
 	private static List<Module> list = Arrays.asList(
+			// hidden
 			new DiscordRPCMod(),
+			new AntiFabric(),
+			
 			new KillAura(),
 			new HUD(),
 			new Sprint(),

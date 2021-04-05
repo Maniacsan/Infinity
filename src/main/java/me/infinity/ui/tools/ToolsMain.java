@@ -1,7 +1,8 @@
 package me.infinity.ui.tools;
 
+import me.infinity.InfMain;
 import me.infinity.clickmenu.util.FontUtils;
-import me.infinity.features.component.AntiFabricSpoof;
+import me.infinity.features.module.hidden.AntiFabric;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -22,11 +23,11 @@ public class ToolsMain extends Screen {
 
 	@Override
 	public void init() {
+		AntiFabric antiFabric = ((AntiFabric) InfMain.getModuleManager().getModuleByClass(AntiFabric.class));
 		addButton(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 90, 160, 20,
-				new LiteralText("AntiFabric Spoof: " + onOrOff(AntiFabricSpoof.isEnabled())), (buttonWidget) -> {
-					AntiFabricSpoof.setEnabled(!AntiFabricSpoof.isEnabled());
-					fSpoofWidget
-							.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(AntiFabricSpoof.isEnabled())));
+				new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())), (buttonWidget) -> {
+					antiFabric.enable();
+					fSpoofWidget.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())));
 				}));
 
 		addButton(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,

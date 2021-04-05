@@ -20,16 +20,16 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
-public class GuiAccountSwitcher extends Screen {
+public class GuiAccountManager extends Screen {
 
-	private Screen prev;
+	public Screen prev;
 	public ListGui listGui;
 	private ButtonWidget buttonDelete;
 	private ButtonWidget buttonLogin;
 	private ButtonWidget buttonEdit;
 	private AccountThread accountThread;
 
-	public GuiAccountSwitcher(Screen prev) {
+	public GuiAccountManager(Screen prev) {
 		super(new LiteralText(""));
 		this.prev = prev;
 		refresh();
@@ -41,7 +41,6 @@ public class GuiAccountSwitcher extends Screen {
 		this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
 				new TranslatableText("Add"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiAddAccount(this));
-					refresh();
 				}));
 		buttonDelete = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 50, this.height - 52, 100, 20,
 				new TranslatableText("Delete"), (buttonWidget) -> {
@@ -151,7 +150,7 @@ public class GuiAccountSwitcher extends Screen {
 		private final List<Account> list;
 		private int selected = -1;
 
-		public ListGui(MinecraftClient minecraft, GuiAccountSwitcher prevScreen, List<Account> list) {
+		public ListGui(MinecraftClient minecraft, GuiAccountManager prevScreen, List<Account> list) {
 			super(minecraft, prevScreen.width, prevScreen.height, 36, prevScreen.height - 56, 30);
 
 			this.list = list;
