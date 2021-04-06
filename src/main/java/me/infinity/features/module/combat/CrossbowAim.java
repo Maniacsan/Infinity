@@ -23,7 +23,7 @@ import net.minecraft.util.Formatting;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Aimbot for Crossbow to target", key = -2, name = "CrossbowAim", visible = true)
 public class CrossbowAim extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Packet", new ArrayList<>(Arrays.asList("Packet", "Looking")),
+	private Settings mode = new Settings(this, "Mode", "Packet", new ArrayList<>(Arrays.asList("Packet", "Client")),
 			() -> true);
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
@@ -69,7 +69,7 @@ public class CrossbowAim extends Module {
 				float[] look = RotationUtils.bowAimRotation(target, speed.getCurrentValueFloat(),
 						speed.getCurrentValueFloat());
 
-				if (mode.getCurrentMode().equalsIgnoreCase("Looking")) {
+				if (mode.getCurrentMode().equalsIgnoreCase("Client")) {
 					Helper.getPlayer().yaw = look[0];
 					Helper.getPlayer().pitch = look[1];
 				} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {

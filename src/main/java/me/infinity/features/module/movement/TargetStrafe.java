@@ -7,9 +7,7 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Whirls in a circle of entity", key = -2, name = "TargetStrafe", visible = true)

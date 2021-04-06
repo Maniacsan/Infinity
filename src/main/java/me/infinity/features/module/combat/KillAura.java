@@ -137,7 +137,7 @@ public class KillAura extends Module {
 			rot[0] = (float) Math.toRadians(rot[0]);
 			if (badStrafe.isToggle()) {
 				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(focus[0]), MoveUtil.getSpeed());
+					MoveUtil.strafe(MoveUtil.getYaw(focus[0]), MoveUtil.getSpeed() * 0.8);
 				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 					MoveUtil.strafe(MoveUtil.calcMoveYaw(smash[0]), MoveUtil.getSpeed());
 				}

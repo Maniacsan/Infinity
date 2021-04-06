@@ -87,7 +87,7 @@ public class Scaffold extends Module {
 		}
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
-			MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.05);
+			MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.08);
 		}
 	}
 
@@ -150,6 +150,10 @@ public class Scaffold extends Module {
 
 						if (!safe())
 							return;
+						
+						if (Helper.minecraftClient.options.keyJump.isPressed() && Helper.getPlayer().fallDistance == 0) {
+							return;
+						}
 
 						int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
 						Helper.getPlayer().inventory.selectedSlot = blockSlot;

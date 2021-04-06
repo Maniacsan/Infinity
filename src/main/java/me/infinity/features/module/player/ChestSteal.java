@@ -10,9 +10,12 @@ public class ChestSteal extends Module {
 
 	public Settings maxDelay = new Settings(this, "Max Delay", 40.0D, 0D, 190D, () -> true);
 	public Settings minDelay = new Settings(this, "Min Delay", 10.0D, 0D, 190D, () -> true);
+	
+	public double delay;
 
-	public double getDelay() {
-		return MathAssist.random(minDelay.getCurrentValueDouble(), maxDelay.getCurrentValueDouble());
+	@Override
+	public void onPlayerTick() {
+		delay = MathAssist.random(minDelay.getCurrentValueDouble(), maxDelay.getCurrentValueDouble());
 	}
 
 }

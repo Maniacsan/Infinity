@@ -23,6 +23,8 @@ public class ToolsMain extends Screen {
 
 	@Override
 	public void init() {
+		// height / 2 - lastY - 15;
+
 		AntiFabric antiFabric = ((AntiFabric) InfMain.getModuleManager().getModuleByClass(AntiFabric.class));
 		addButton(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 90, 160, 20,
 				new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())), (buttonWidget) -> {

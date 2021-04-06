@@ -31,7 +31,8 @@
   "BlockMixin",
   "PlayerEntityMixin",
   "BlockModelRendererMixin",
-  "ChunkOcclusionDataBuilderMixin"
+  "ChunkOcclusionDataBuilderMixin",
+  "ScreenMixin"
   ],
     "injectors": {
     "defaultRequire": 1

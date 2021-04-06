@@ -16,7 +16,8 @@ public class CommandManager {
 			new FriendCommand(),
 			new ToggleCommand(),
 			new HClipCommand(),
-			new VClipCommand()
+			new VClipCommand(),
+			new IPCommand()
 			);
 
 	public List<Command> getCommands() {

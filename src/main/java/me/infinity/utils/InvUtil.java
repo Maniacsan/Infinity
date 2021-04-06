@@ -1,11 +1,17 @@
 package me.infinity.utils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -102,6 +108,23 @@ public class InvUtil {
 	public static void swapItem(int from, int slot) {
 		Helper.minecraftClient.interactionManager.clickSlot(Helper.getPlayer().currentScreenHandler.syncId, from, slot,
 				SlotActionType.SWAP, Helper.getPlayer());
+	}
+
+	public static List<ItemStack> getContainerItems(ItemStack item) {
+		List<ItemStack> items = new ArrayList<>(Collections.nCopies(27, new ItemStack(Items.AIR)));
+		CompoundTag nbt = item.getTag();
+
+		if (nbt != null && nbt.contains("BlockEntityTag")) {
+			CompoundTag nbt2 = nbt.getCompound("BlockEntityTag");
+			if (nbt2.contains("Items")) {
+				ListTag nbt3 = (ListTag) nbt2.get("Items");
+				for (int i = 0; i < nbt3.size(); i++) {
+					items.set(nbt3.getCompound(i).getByte("Slot"), ItemStack.fromTag(nbt3.getCompound(i)));
+				}
+			}
+		}
+
+		return items;
 	}
 
 }

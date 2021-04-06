@@ -36,10 +36,12 @@ public class Speed extends Module {
 		setSuffix(mode.getCurrentMode());
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Strafe")) {
-			if (MoveUtil.isMoving() && Helper.getPlayer().isOnGround())
+			if (MoveUtil.isMoving() && Helper.getPlayer().isOnGround()) {
+				if (Helper.getPlayer().isSprinting())
+					Helper.getPlayer().setSprinting(false);
 				Helper.getPlayer().jump();
+			}
 		}
-		
 	}
 
 	@EventTarget
@@ -67,7 +69,7 @@ public class Speed extends Module {
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("onGround")) {
 				if (MoveUtil.isMoving()) {
-		
+
 					if (Helper.getPlayer().forwardSpeed != 0) {
 						Helper.getPlayer().setSprinting(true);
 					}
@@ -78,7 +80,7 @@ public class Speed extends Module {
 					MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed());
 
 					if (Helper.getPlayer().age % 3 == 0) {
-			
+
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.7);
 
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.3);

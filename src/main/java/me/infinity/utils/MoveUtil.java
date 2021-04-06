@@ -48,6 +48,11 @@ public class MoveUtil {
 		strafe *= (moveForward != 0.0F) ? (moveForward * 0.5F) : 1.0F;
 		float yaw = yawIn - strafe;
 		yaw -= ((moveForward < 0.0F) ? 180 : 0);
+		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity);
+		float f = (float) (sens * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+		
+		yaw -= yaw % gcd;
 		return Math.toRadians(yaw);
 	}
 
@@ -127,7 +132,7 @@ public class MoveUtil {
 	}
 	
 	public static void vClip(double y) {
-		Helper.getPlayer().updatePosition(Helper.getPlayer().getPos().x, Helper.getPlayer().getPos().getY() + y,
+		Helper.getPlayer().updatePosition(Helper.getPlayer().getPos().x, Helper.getPlayer().getPos().y + y,
 				Helper.getPlayer().getPos().z);
 	}
 

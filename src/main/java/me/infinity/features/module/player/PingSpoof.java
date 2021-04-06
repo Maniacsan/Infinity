@@ -35,7 +35,6 @@ public class PingSpoof extends Module {
 						try {
 							Thread.sleep((long) delay.getCurrentValueInt());
 
-							event.cancel();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

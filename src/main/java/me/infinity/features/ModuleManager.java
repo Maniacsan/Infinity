@@ -73,7 +73,9 @@ public class ModuleManager {
 			new MClickFriend(),
 			new AntiWaterPush(),
 			new AutoShift(),
-			new CrossbowAim()
+			new CrossbowAim(),
+			new Fly(),
+			new ShulkerView()
 			);
 
 	public List<Module> getList() {

@@ -56,10 +56,10 @@ public class Criticals extends Module {
 		setSuffix(mode.getCurrentMode());
 	}
 
-	@EventTarget
+	@EventTarget()
 	public void onMotion(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-
+			double yOff = MathAssist.random(0.08, 0.12);
 			if (this.mode.getCurrentMode().equalsIgnoreCase("Spoof")) {
 				if (attackCount > 0) {
 					double ypos = Helper.getPlayer().getY();
@@ -82,6 +82,7 @@ public class Criticals extends Module {
 							event.setOnGround(true);
 						}
 						event.setY(this.y);
+						MoveUtil.setYVelocity(yOff);
 
 						this.stage++;
 					} else {

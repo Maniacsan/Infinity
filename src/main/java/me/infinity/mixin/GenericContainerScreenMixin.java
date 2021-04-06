@@ -73,7 +73,7 @@ public abstract class GenericContainerScreenMixin extends HandledScreen<GenericC
 
 	private void waitForDelay() {
 		try {
-			Thread.sleep((long) stealer.maxDelay.getCurrentValueDouble());
+			Thread.sleep((long) stealer.delay);
 
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);

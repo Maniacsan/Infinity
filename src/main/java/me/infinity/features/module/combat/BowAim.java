@@ -19,7 +19,7 @@ import net.minecraft.item.BowItem;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Aimbot for bow to target", key = -2, name = "BowAim", visible = true)
 public class BowAim extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Packet", new ArrayList<>(Arrays.asList("Packet", "Looking")),
+	private Settings mode = new Settings(this, "Mode", "Packet", new ArrayList<>(Arrays.asList("Packet", "Client")),
 			() -> true);
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
@@ -45,7 +45,7 @@ public class BowAim extends Module {
 				float[] look = RotationUtils.bowAimRotation(target, speed.getCurrentValueFloat(),
 						speed.getCurrentValueFloat());
 
-				if (mode.getCurrentMode().equalsIgnoreCase("Looking")) {
+				if (mode.getCurrentMode().equalsIgnoreCase("Client")) {
 					Helper.getPlayer().yaw = look[0];
 					Helper.getPlayer().pitch = look[1];
 				} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
