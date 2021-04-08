@@ -54,7 +54,7 @@ public class InvUtil {
 	public static int findPotionInternalInv(StatusEffect effect) {
 		for (int i = 9; i <= 44; i++) {
 			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
-			if (stack.getItem() != Items.SPLASH_POTION)
+			if (stack.getItem() == Items.SPLASH_POTION)
 				continue;
 			if (hasEffect(stack, effect))
 				return i;

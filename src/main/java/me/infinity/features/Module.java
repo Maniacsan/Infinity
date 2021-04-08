@@ -2,6 +2,7 @@ package me.infinity.features;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -23,6 +24,7 @@ public class Module {
 	private int key;
 	private boolean visible;
 	private boolean enabled;
+	private List<Settings> settings;
 
 	public Module() {
 		name = this.getClass().getAnnotation(ModuleInfo.class).name();
@@ -31,6 +33,7 @@ public class Module {
 		visible = this.getClass().getAnnotation(ModuleInfo.class).visible();
 		setCategory(this.getClass().getAnnotation(ModuleInfo.class).category());
 		desc = this.getClass().getAnnotation(ModuleInfo.class).desc();
+		this.settings = new ArrayList<>();
 	}
 
 	public enum Category {
@@ -67,26 +70,36 @@ public class Module {
 	}
 
 	// CCBluex base (defolt sravnenie setting s modulem ne rabotaet)
-
-	public List<Settings> getSettings() {
-		final List<Settings> settings = new ArrayList<>();
-
+	
+	public void updateSettings() {
 		for (final Field field : getClass().getDeclaredFields()) {
 			try {
 				field.setAccessible(true);
-
 				final Object o = field.get(this);
-
-				if (o instanceof Settings)
-					settings.add((Settings) o);
+				if (o instanceof Settings) {
+					Settings sett = (Settings) o;
+					this.addSettings(sett);
+				}
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}
 		}
-
-		return settings;
 	}
 
+	public List<Settings> getSettings() {
+		this.updateSettings();
+		return this.settings;
+	}
+	
+	public void addSettings(Settings settings) {
+		if(!this.settings.contains(settings))
+			this.settings.add(settings);
+	}
+
+	public void addSettings(Collection c) {
+		this.settings.addAll(c);
+	}
+	
 	public String toCompare() {
 		return getSortedName() + " " + Helper.replaceNull(getSuffix());
 	}
