@@ -2,7 +2,6 @@ package me.infinity.file.config;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,29 +23,27 @@ public class Config {
 
 	public String name;
 	private File configFile;
-	private ArrayList<ConfigData> data;
 
 	public Config(File configFile, Module module, boolean refresh) {
 		this.name = "";
 		this.configFile = configFile;
-		this.data = new ArrayList<>();
 		loadConfig(refresh);
 	}
 
 	public Config(String name) {
 		this.name = name;
 		this.configFile = new File(ConfigManager.dir + File.separator + name + ".json");
-		this.data = new ArrayList<>();
-		save();
 	}
 
 	public void save() {
-		InfMain.getModuleManager().getList().forEach(data -> this.data.add(new ConfigData(data)));
-		saveConfig();
+		saveConfig(false);
+	}
+
+	public void add() {
+		saveConfig(true);
 	}
 
 	public void load() {
-		// System.out.println("Enabled check = true");
 		try {
 			String text = FileUtils.readFileToString(configFile);
 
@@ -60,102 +57,98 @@ public class Config {
 
 			for (Map.Entry<String, JsonElement> entry : configurationObject.entrySet()) {
 				if (entry.getValue() instanceof JsonObject) {
+
 					JsonObject jsonObject = (JsonObject) entry.getValue();
-					data.add(new ConfigData(entry.getKey(),
-							jsonObject.has("Enabled") && jsonObject.get("Enabled").getAsBoolean(),
-							jsonObject.get("Visible").getAsBoolean(),
-							jsonObject.has("Key") ? jsonObject.get("Key").getAsInt() : -2));
-					data.forEach(data -> {
-						for (Module module : InfMain.getModuleManager().getList()) {
-							if (module.getName().equalsIgnoreCase(data.getName())) {
-								module.setEnabled(data.isEnabled());
-								module.setKey(data.getKey());
-								for (Settings setting : module.getSettings()) {
-									if (jsonObject.has(setting.getName())) {
-										if (module.getName().equalsIgnoreCase(setting.getModule().getName())) {
-											if (setting.isBoolean()) {
-												setting.setToggle(jsonObject.get(setting.getName()).getAsBoolean());
-											} else if (setting.isValueDouble()) {
-												setting.setCurrentValueDouble(
-														jsonObject.get(setting.getName()).getAsDouble());
-											} else if (setting.isValueFloat()) {
-												setting.setCurrentValueFloat(
-														jsonObject.get(setting.getName()).getAsFloat());
-											} else if (setting.isValueInt()) {
-												setting.setCurrentValueInt(
-														jsonObject.get(setting.getName()).getAsInt());
-											} else if (setting.isMode()) {
-												setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
-											} else if (setting.isColor()) {
-												setting.setColor(jsonObject.get(setting.getName()).getAsInt());
-											} else if (setting.isBlock()) {
-												JsonArray jsonArray = null;
-												final JsonElement blockIds = jsonObject.get(setting.getName());
-												if (blockIds != null)
-													jsonArray = blockIds.getAsJsonArray();
-												//System.out.println("BLOCK");
-												if (jsonArray != null) {
-													setting.getBlocks().clear();
-													for (JsonElement jsonElement : jsonArray) {
-														setting.addBlockFromId(jsonElement.getAsInt());
-													}
-												}
+					for (Module module : InfMain.getModuleManager().getList()) {
+						if (module.getName().equalsIgnoreCase(entry.getKey())) {
+							if (Boolean.valueOf(jsonObject.get("Enabled").getAsBoolean())) {
+								module.setEnabled(true);
+							}
+							
+							module.setVisible(jsonObject.get("Visible").getAsBoolean());
+							module.setKey(jsonObject.get("Key").getAsInt());
+
+							for (Settings setting : module.getSettings()) {
+								if (setting.getModule().getName().equalsIgnoreCase(module.getName())) {
+
+									if (setting.isMode()) {
+										setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
+									} else if (setting.isBoolean()) {
+										setting.setToggle(jsonObject.get(setting.getName()).getAsBoolean());
+									} else if (setting.isValueDouble()) {
+										setting.setCurrentValueDouble(jsonObject.get(setting.getName()).getAsDouble());
+									} else if (setting.isValueFloat()) {
+										setting.setCurrentValueFloat(jsonObject.get(setting.getName()).getAsFloat());
+									} else if (setting.isValueInt()) {
+										setting.setCurrentValueInt(jsonObject.get(setting.getName()).getAsInt());
+									} else if (setting.isColor()) {
+										setting.setColor(jsonObject.get(setting.getName()).getAsInt());
+									} else if (setting.isBlock()) {
+										JsonArray jsonArray = null;
+										final JsonElement blockIds = jsonObject.get(setting.getName());
+										if (blockIds != null)
+											jsonArray = blockIds.getAsJsonArray();
+										if (jsonArray != null) {
+											for (JsonElement jsonElement : jsonArray) {
+												if (jsonElement != null)
+													setting.addBlockFromId(jsonElement.getAsInt());
 											}
 										}
 									}
 								}
 							}
 						}
-					});
+					}
 				}
 			}
 
 		} catch (IOException | JsonSyntaxException e) {
+			System.out.println(e);
 		}
 	}
 
-	/**
-	 * Json one love - three hundred time laterrr this workkkk
-	 */
-	public void saveConfig() {
+	public void saveConfig(boolean def) {
 		try {
 			if (!configFile.exists())
 				configFile.createNewFile();
 			JsonObject json = new JsonObject();
-			for (ConfigData data : data) {
+			for (Module m : InfMain.getModuleManager().getList()) {
 				JsonObject dataJson = new JsonObject();
 				JsonArray jsonArray = new JsonArray();
-				dataJson.addProperty("Enabled", Boolean.valueOf(data.isEnabled()));
-				dataJson.addProperty("Visible", Boolean.valueOf(data.isVisible()));
-				dataJson.addProperty("Key", Integer.valueOf(data.getKey()));
-				for (me.infinity.features.Module module : InfMain.getModuleManager().getList()) {
-					List<Settings> settings = module.getSettings();
-					if (settings != null) {
-						for (Settings setting : settings) {
-							if (data.getName().equalsIgnoreCase(setting.getModule().getName())) {
-								if (setting.isBoolean())
-									dataJson.addProperty(setting.getName(), setting.isToggle());
-								else if (setting.isValueDouble()) {
-									dataJson.addProperty(setting.getName(), setting.getCurrentValueDouble());
-								} else if (setting.isValueFloat()) {
-									dataJson.addProperty(setting.getName(), setting.getCurrentValueFloat());
-								} else if (setting.isValueInt()) {
-									dataJson.addProperty(setting.getName(), setting.getCurrentValueInt());
-								} else if (setting.isMode()) {
-									dataJson.addProperty(setting.getName(), setting.getCurrentMode());
-								} else if (setting.isColor()) {
-									dataJson.addProperty(setting.getName(), setting.getColor().getRGB());
-								} else if (setting.isBlock()) {
-									for (Block blocks : setting.getBlocks()) {
-										jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
-									}
-									dataJson.add(setting.getName(), jsonArray);
-								}
+				dataJson.addProperty("Enabled", Boolean.valueOf(def ? m.isDefaultEnabled() : m.isEnabled()));
+				dataJson.addProperty("Visible", Boolean.valueOf(def ? m.isDefaultVisible() : m.isVisible()));
+				dataJson.addProperty("Key", Integer.valueOf(def ? m.getDefaultKey() : m.getKey()));
+				List<Settings> settings = m.getSettings();
+
+				if (settings != null) {
+					for (Settings setting : settings) {
+						if (setting.isBoolean())
+							dataJson.addProperty(setting.getName(),
+									def ? setting.isDefaultToogle() : setting.isToggle());
+						else if (setting.isValueDouble()) {
+							dataJson.addProperty(setting.getName(),
+									def ? setting.getDefaultDouble() : setting.getCurrentValueDouble());
+						} else if (setting.isValueFloat()) {
+							dataJson.addProperty(setting.getName(),
+									def ? setting.getDefaultFloat() : setting.getCurrentValueFloat());
+						} else if (setting.isValueInt()) {
+							dataJson.addProperty(setting.getName(),
+									def ? setting.getDefaultInt() : setting.getCurrentValueInt());
+						} else if (setting.isMode()) {
+							dataJson.addProperty(setting.getName(),
+									def ? setting.getDefaultMode() : setting.getCurrentMode());
+						} else if (setting.isColor()) {
+							dataJson.addProperty(setting.getName(),
+									def ? setting.getDefaultColor().getRGB() : setting.getColor().getRGB());
+						} else if (setting.isBlock()) {
+							for (Block blocks : setting.getBlocks()) {
+								jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
 							}
+							dataJson.add(setting.getName(), jsonArray);
 						}
 					}
 				}
-				json.add(data.getName(), dataJson);
+				json.add(m.getName(), dataJson);
 			}
 			FileUtil.saveJsonObjectToFile(json, configFile);
 		} catch (IOException e) {
@@ -167,7 +160,6 @@ public class Config {
 		if (!configFile.getName().endsWith(".json"))
 			return;
 		name = configFile.getName().replace(".json", "");
-
 	}
 
 	public String getName() {

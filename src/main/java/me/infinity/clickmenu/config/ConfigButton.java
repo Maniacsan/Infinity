@@ -42,8 +42,8 @@ public class ConfigButton {
 
 	public void refresh() {
 		configList.clear();
-		InfMain.getConfigManager().getConfigList()
-				.forEach(config -> configList.add(new ConfigListButton(config, this)));
+		for (Config config : InfMain.getConfigManager().getConfigList())
+			configList.add(new ConfigListButton(config, this));
 		configFull = false;
 	}
 
@@ -63,7 +63,7 @@ public class ConfigButton {
 		Render2D.drawRectWH(matrices, setX + 150, setY + 1, 180, 17, 0xFF989595);
 		Render2D.drawRectWH(matrices, setX + 151, setY + 2, 178, 15, 0xFF080808);
 		FontUtils.drawStringWithShadow(matrices, content, setX + 154, setY + 6, -1);
-		
+
 		if (focused && FontUtils.getStringWidth(content) < 170) {
 			Render2D.drawRectWH(matrices, setX + 153 + FontUtils.getStringWidth(content) + 2, setY + 13, 3, 1, -1);
 		}
@@ -72,13 +72,11 @@ public class ConfigButton {
 
 		if (infoHovered) {
 			String save = "Configs save settings, included modules and binds.";
-			Render2D.drawRectWH(matrices, mouseX - 6 - FontUtils.getStringWidth(save) / 2, mouseY - 44, FontUtils.getStringWidth(save) + 2, 36, 0x90000000);
+			Render2D.drawRectWH(matrices, mouseX - 6 - FontUtils.getStringWidth(save) / 2, mouseY - 44,
+					FontUtils.getStringWidth(save) + 2, 36, 0x90000000);
 			FontUtils.drawHCenteredString(matrices, "This is the section for configs,", mouseX - 5, mouseY - 40, -1);
-			FontUtils.drawHCenteredString(matrices, save, mouseX - 5,
-					mouseY - 30, -1);
-			FontUtils.drawHCenteredString(matrices,
-					"Configs are limited in creation", mouseX - 5,
-					mouseY - 20, -1);
+			FontUtils.drawHCenteredString(matrices, save, mouseX - 5, mouseY - 30, -1);
+			FontUtils.drawHCenteredString(matrices, "Configs are limited in creation", mouseX - 5, mouseY - 20, -1);
 		}
 
 		// add button
@@ -127,12 +125,12 @@ public class ConfigButton {
 					if (InfMain.getConfigManager().fromName((content)) == null) {
 						InfMain.getConfigManager().loadConfig(false);
 						Config config = new Config(content);
-						config.save();
+						config.add();
 						InfMain.getConfigManager().add(config);
 						content = "";
 						refresh();
 						Helper.infoMessage(Formatting.GRAY + "New config" + Formatting.WHITE + content + Formatting.AQUA
-								+ "added");
+								+ " added");
 					}
 				}
 			} else {
@@ -161,6 +159,7 @@ public class ConfigButton {
 			for (ConfigListButton listButton : configList) {
 				if (listButton.select) {
 					listButton.config.load();
+
 					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "loaded");
 				}
 			}

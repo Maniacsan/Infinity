@@ -1,9 +1,7 @@
 package me.infinity.features.component.macro;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import me.infinity.file.MacrosFile;
 import me.infinity.utils.Helper;

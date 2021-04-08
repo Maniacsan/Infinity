@@ -21,9 +21,9 @@ public class Module {
 	private String name;
 	private String suffix;
 	// Use only GLFW.GLFW_KEY_YOURKEY or for KEY_NONE use code -2
-	private int key;
-	private boolean visible;
-	private boolean enabled;
+	private int key, defaultKey;
+	private boolean visible, defaultVisible;
+	private boolean enabled, defaultEnabled;
 	private List<Settings> settings;
 
 	public Module() {
@@ -96,7 +96,7 @@ public class Module {
 			this.settings.add(settings);
 	}
 
-	public void addSettings(Collection c) {
+	public void addSettings(Collection<Settings> c) {
 		this.settings.addAll(c);
 	}
 	
@@ -172,6 +172,18 @@ public class Module {
 	 */
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
+	}
+
+	public int getDefaultKey() {
+		return defaultKey;
+	}
+
+	public boolean isDefaultVisible() {
+		return defaultVisible;
+	}
+
+	public boolean isDefaultEnabled() {
+		return defaultEnabled;
 	}
 
 }

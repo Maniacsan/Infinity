@@ -1,5 +1,6 @@
 package me.infinity.utils.block;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,6 +91,16 @@ public class BlockUtil {
 
 	public static boolean canBeClicked(BlockPos pos) {
 		return getState(pos).getOutlineShape(Helper.minecraftClient.world, pos) != VoxelShapes.empty();
+	}
+
+	public static List<BlockPos> getAllInBox(int x1, int y1, int z1, int x2, int y2, int z2) {
+		List<BlockPos> list = new ArrayList<>();
+
+		for (int x = Math.min(x1, x2); x <= Math.max(x1, x2); x++)
+			for (int y = Math.min(y1, y2); y <= Math.max(y1, y2); y++)
+				for (int z = Math.min(z1, z2); z <= Math.max(z1, z2); z++)
+					list.add(new BlockPos(x, y, z));
+		return list;
 	}
 
 }

@@ -8,6 +8,7 @@ import me.infinity.clickmenu.config.ConfigButton;
 import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
+import me.infinity.features.module.visual.GuiMod;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class CategoryButton {
@@ -35,10 +36,16 @@ public class CategoryButton {
 			}
 		}
 
-		// enabled
-		for (me.infinity.features.Module module : InfMain.getModuleManager().getEnableModules()) {
-			if (name == "ENABLED") {
-				modButton.add(new ModuleButton(module, module.getName(), this));
+		enabledRefresh();
+	}
+
+	public void enabledRefresh() {
+		InfMain.getModuleManager().getEnableModules().clear();
+		if (name == "ENABLED") {
+			modButton.clear();
+			for (me.infinity.features.Module module : InfMain.getModuleManager().getEnableModules()) {
+				ModuleButton enabledButton = new ModuleButton(module, module.getName(), this);
+				modButton.add(enabledButton);
 			}
 		}
 	}
@@ -52,8 +59,10 @@ public class CategoryButton {
 			Render2D.drawRectWH(matrices, x, y, width + 6, height, ColorUtils.backNight);
 		}
 		Render2D.drawRectWH(matrices, x, y, 0.5, height, 0xFF989494);
-		Render2D.drawRectWH(matrices, x + 0.5, y, width, height,
-				displayModulePanel ? ColorUtils.backNight : hovered ? ColorUtils.SELECT : 0x50000000);
+		Render2D.drawRectWH(matrices, x + 0.5, y, width, height, displayModulePanel ? ColorUtils.backNight
+				: hovered
+						? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB()
+						: 0x50000000);
 		FontUtils.drawHVCenteredString(matrices, getName(), x + 30, y + 11,
 				displayModulePanel ? ColorUtils.openColor : -1);
 		if (displayModulePanel) {
@@ -115,6 +124,11 @@ public class CategoryButton {
 		if (this.hovered) {
 			if (button == 0) {
 				this.displayModulePanel = !this.displayModulePanel;
+
+				if (getName() == "ENABLED") {
+					enabledRefresh();
+				}
+
 				for (CategoryButton b : panel.getCatButton()) {
 					if (!b.getName().equalsIgnoreCase(getName()))
 						b.displayModulePanel = false;
@@ -131,7 +145,7 @@ public class CategoryButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		if(displayModulePanel){
+		if (displayModulePanel) {
 			if (modHovered) {
 				int difference = this.getHeightDifference();
 				int scrollOffset = (this.getElementsHeight() / (modButton.size() / 2));

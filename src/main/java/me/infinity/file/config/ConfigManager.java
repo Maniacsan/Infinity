@@ -10,7 +10,11 @@ public class ConfigManager {
 
 	public static File dir = new File(InfMain.getInfDirection() + File.separator + "configs");
 
-	public ArrayList<Config> configList = new ArrayList<>();
+	public ArrayList<Config> configList;
+
+	public ConfigManager() {
+		configList = new ArrayList<>();
+	}
 
 	public void add(Config config) {
 		Config possibleConfiguration = fromName(config.getName());
@@ -23,7 +27,7 @@ public class ConfigManager {
 
 	public void delete(Config config) {
 		if (this.configList.contains(config))
-			this.configList.get(this.configList.indexOf(config)).delete();
+			config.delete();
 		this.configList.remove(config);
 	}
 

@@ -1,11 +1,12 @@
 package me.infinity.features.module.visual;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.lwjgl.glfw.GLFW;
 
-import me.infinity.clickmenu.ClickMenu;
+import me.infinity.InfMain;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -19,11 +20,11 @@ public class GuiMod extends Module {
 
 	public Settings descriptions = new Settings(this, "Description", true, () -> true);
 
-	public static ClickMenu menu = new ClickMenu();
+	public Settings color = new Settings(this, "Color", new Color(123, 233, 123), () -> true);
 
 	@Override
 	public void onEnable() {
-		MinecraftClient.getInstance().openScreen(menu);
+		MinecraftClient.getInstance().openScreen(InfMain.menu);
 		setEnabled(false);
 	}
 

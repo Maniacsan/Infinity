@@ -18,16 +18,17 @@ public class ClickMenu extends Screen {
 	public Panel panel;
 
 	public ClickMenu() {
-		super(new LiteralText(""));
-	}
-	
-	public void init() {
+		super(new LiteralText("ClickMenu"));
 		panel = new Panel(this, 20, 20, 400, 250);
 	}
-
+	
+	@Override
+	public void init() {
+		super.init();
+	}
+	
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		super.render(matrices, mouseX, mouseY, delta);
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		
 		mouseX /= scale;
@@ -37,6 +38,8 @@ public class ClickMenu extends Screen {
 		GL11.glScalef(scale, scale, scale);
 		panel.render(matrices, mouseX, mouseY, delta);
 		GL11.glPopMatrix();
+		
+		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -75,12 +78,7 @@ public class ClickMenu extends Screen {
 	
 	@Override
 	public boolean isPauseScreen() {
-		return false;
-	}
-	
-	@Override
-	public void onClose() {
-		super.onClose();
+		return true;
 	}
 
 	@Override

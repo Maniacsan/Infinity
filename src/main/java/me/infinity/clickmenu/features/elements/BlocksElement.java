@@ -2,10 +2,11 @@ package me.infinity.clickmenu.features.elements;
 
 import java.awt.Color;
 
+import me.infinity.InfMain;
 import me.infinity.clickmenu.features.SettingElement;
-import me.infinity.clickmenu.util.ColorUtils;
 import me.infinity.clickmenu.util.Render2D;
 import me.infinity.features.Settings;
+import me.infinity.features.module.visual.GuiMod;
 import me.infinity.utils.Helper;
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,7 +30,8 @@ public class BlocksElement extends SettingElement {
 			boolean hover = Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19);
 			boolean isAdded = setting.getBlocks().contains(blocks);
 			this.y = y;
-			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y - 2, 21, 19, isAdded ? ColorUtils.CHECK_TOGGLE : hover ? Color.GRAY.getRGB(): 0x70000000);
+			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y - 2, 21, 19, isAdded
+					? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB() : hover ? Color.GRAY.getRGB(): 0x70000000);
 			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
 					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y));
 			xOffset += 23;

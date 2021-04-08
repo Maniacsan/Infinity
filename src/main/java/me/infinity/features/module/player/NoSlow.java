@@ -47,7 +47,6 @@ public class NoSlow extends Module {
 						double e = 0.4D + d * 0.72D;
 						Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().multiply(e, 1.0D, e));
 					}
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed());
 				}
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
 				if (Helper.getPlayer().isUsingItem() && !Helper.getPlayer().hasVehicle()) {
@@ -66,8 +65,10 @@ public class NoSlow extends Module {
 							double e = 0.4D + d * 1.5D;
 							Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().multiply(e, 1.0D, e));
 						}
-
+						
+						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 0.99);
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.145);
+						
 					}
 				}
 			}

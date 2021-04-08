@@ -5,6 +5,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import me.infinity.clickmenu.ClickMenu;
 import me.infinity.features.HookManager;
 import me.infinity.features.ModuleManager;
 import me.infinity.features.command.CommandManager;
@@ -31,6 +32,8 @@ public class InfMain {
 	private static MacroManager macroManager;
 	private static Friend friend;
 	
+	public static ClickMenu menu;
+	
 	/* Minecraft timer */
 	public static float TIMER = 1.0f;
 
@@ -54,6 +57,8 @@ public class InfMain {
 		// start modules
 		moduleManager.getModuleByClass(HUD.class).enable();
 		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
+		
+		menu = new ClickMenu();
 		
 		LOGGER.info("Injected bullshit");
 	}

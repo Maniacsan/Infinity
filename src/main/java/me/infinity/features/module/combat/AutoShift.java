@@ -1,8 +1,5 @@
 package me.infinity.features.module.combat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
@@ -19,8 +16,6 @@ import net.minecraft.client.options.KeyBinding;
 public class AutoShift extends Module {
 
 	public Settings onlyAttack = new Settings(this, "Only on Attack", false, () -> true);
-	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")),
-			() -> onlyAttack.isToggle());
 
 	@Override
 	public void onDisable() {
@@ -39,15 +34,7 @@ public class AutoShift extends Module {
 	public void onAttack(AttackEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (onlyAttack.isToggle()) {
-				if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
-					shift();
-				}
-			}
-		} else if (event.getType().equals(EventType.POST)) {
-			if (onlyAttack.isToggle()) {
-				if (method.getCurrentMode().equalsIgnoreCase("POST")) {
-					shift();
-				}
+				shift();
 			}
 		}
 	}
@@ -59,11 +46,11 @@ public class AutoShift extends Module {
 				@Override
 				public void run() {
 					try {
-						
+
 						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
 								true);
 						Thread.sleep(100);
-						
+
 						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
 								false);
 

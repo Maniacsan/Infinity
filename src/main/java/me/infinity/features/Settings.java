@@ -16,19 +16,20 @@ public class Settings {
 	private Module module;
 	private String name;
 	private Supplier<Boolean> visible;
-	private boolean toggle;
-	private double currentValueDouble, minValueDouble, maxValueDouble;
-	private int currentValueInt, minValueInt, maxValueInt;
-	private float currentValueFloat, minValueFloat, maxValueFloat;
-	private ArrayList<Block> blocks;
+	private boolean toggle, defaultToogle;
+	private double currentValueDouble, minValueDouble, maxValueDouble, defaultDouble;
+	private int currentValueInt, minValueInt, maxValueInt, defaultInt;
+	private float currentValueFloat, minValueFloat, maxValueFloat, defaultFloat;
+	private ArrayList<Block> blocks, defaultBlocks;
 	private ArrayList<Block> renderBlocks;
 	private ArrayList<String> modes;
-	private String currentMode;
-	private Color color;
+	private String currentMode, defaultMode;
+	private Color color, defaultColor;
 	private float hue;
 	private float saturation;
 	private float brightness;
 	private Category category;
+
 
 	public enum Category {
 		BOOLEAN, VALUE_INT, VALUE_DOUBLE, VALUE_FLOAT, MODE, COLOR, BLOCKS;
@@ -39,6 +40,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.toggle = toggle;
+		this.defaultToogle = toggle;
 		this.visible = visible;
 		this.category = Category.BOOLEAN;
 	}
@@ -49,6 +51,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.currentValueInt = currentValueInt;
+		this.defaultInt = currentValueInt;
 		this.minValueInt = minValueInt;
 		this.maxValueInt = maxValueInt;
 		this.visible = visible;
@@ -61,6 +64,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.currentValueDouble = currentValueDouble;
+		this.defaultDouble = currentValueDouble;
 		this.minValueDouble = minValueDouble;
 		this.maxValueDouble = maxValueDouble;
 		this.visible = visible;
@@ -73,6 +77,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.currentValueFloat = currentValueFloat;
+		this.defaultFloat = currentValueFloat;
 		this.minValueFloat = minValueFloat;
 		this.maxValueFloat = maxValueFloat;
 		this.visible = visible;
@@ -85,6 +90,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.currentMode = currentMode;
+		this.defaultMode = currentMode;
 		this.visible = visible;
 		this.modes = options;
 		this.category = Category.MODE;
@@ -95,6 +101,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.color = currentColor;
+		this.defaultColor = currentColor;
 		this.visible = visible;
 		this.category = Category.COLOR;
 	}
@@ -105,6 +112,7 @@ public class Settings {
 		this.module = module;
 		this.name = name;
 		this.blocks = blocks;
+		this.defaultBlocks = blocks;
 		this.renderBlocks = renderBlocks;
 		this.visible = visible;
 		this.category = Category.BLOCKS;
@@ -257,6 +265,10 @@ public class Settings {
 	}
 
 	public float getSaturation() {
+		float[] hsb = new float[3];
+		Color clr = getColor();
+		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
+		saturation = hsb[1];
 		return saturation;
 	}
 
@@ -270,6 +282,10 @@ public class Settings {
 	}
 
 	public float getHue() {
+		float[] hsb = new float[3];
+		Color clr = getColor();
+		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
+		hue = hsb[0];
 		return hue;
 	}
 
@@ -283,6 +299,10 @@ public class Settings {
 	}
 
 	public float getBrightness() {
+		float[] hsb = new float[3];
+		Color clr = getColor();
+		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
+		brightness = hsb[2];
 		return brightness;
 	}
 
@@ -334,6 +354,34 @@ public class Settings {
 
 	public void setVisible(Supplier<Boolean> visible) {
 		this.visible = visible;
+	}
+
+	public boolean isDefaultToogle() {
+		return defaultToogle;
+	}
+
+	public double getDefaultDouble() {
+		return defaultDouble;
+	}
+
+	public int getDefaultInt() {
+		return defaultInt;
+	}
+
+	public float getDefaultFloat() {
+		return defaultFloat;
+	}
+
+	public ArrayList<Block> getDefaultBlocks() {
+		return defaultBlocks;
+	}
+
+	public String getDefaultMode() {
+		return defaultMode;
+	}
+
+	public Color getDefaultColor() {
+		return defaultColor;
 	}
 
 	public String getCategory() {
