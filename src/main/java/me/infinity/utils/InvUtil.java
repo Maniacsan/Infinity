@@ -16,38 +16,28 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.screen.slot.SlotActionType;
 
 public class InvUtil {
+	
+	public static int findItem(Item item, int index, int slots) {
+		int find = -2;
+		for (int i = index; i <= slots; i++)
+			if (Helper.getPlayer().inventory.getStack(i).getItem() == item)
+				find = i;
+		return find;
+	}
 
 	// Find item on full inventory
 	public static int findItemFullInv(Item item) {
-		int find = -2;
-		for (int i = 0; i <= 44; i++) {
-			if (Helper.getPlayer().inventory.getStack(i).getItem() == item) {
-				find = i;
-			}
-		}
-		return find;
+		return findItem(item, 0, 44);
 	}
 
 	// Find item only on hotbat
 	public static int findItemOnHotbar(Item item) {
-		int find = -2;
-		for (int i = 0; i <= 8; i++) {
-			if (Helper.getPlayer().inventory.getStack(i).getItem() == item) {
-				find = i;
-			}
-		}
-		return find;
+		return findItem(item, 0, 8);
 	}
 
 	// Find item only internal inventory , no hotbar
 	public static int findItemInternalInv(Item item) {
-		int find = -2;
-		for (int i = 9; i <= 44; i++) {
-			if (Helper.getPlayer().inventory.getStack(i).getItem() == item) {
-				find = i;
-			}
-		}
-		return find;
+		return findItem(item, 9, 44);
 	}
 
 	// Find item only internal inv potion , no hotbar

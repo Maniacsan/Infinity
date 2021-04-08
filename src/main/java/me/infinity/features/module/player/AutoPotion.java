@@ -1,5 +1,10 @@
 package me.infinity.features.module.player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
+
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
@@ -10,17 +15,26 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.InvUtil;
 import me.infinity.utils.entity.EntityUtil;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically throws certain potions", key = -2, name = "AutoPotion", visible = true)
 public class AutoPotion extends Module {
+	
+	HashMap<StatusEffect, Settings> potions;
 
-	private Settings strength = new Settings(this, "Strength Potion", true, () -> true);
-	private Settings speed = new Settings(this, "Speed Potion", true, () -> true);
-	private Settings fire = new Settings(this, "Fire Resistance", false, () -> true);
-	private Settings jump = new Settings(this, "Jump Boost", false, () -> true);
+	public AutoPotion() {
+		this.potions = new HashMap<StatusEffect, Settings>();
+		
+		this.potions.put(StatusEffects.STRENGTH, new Settings(this, "Strength Potion", true, () -> true));
+		this.potions.put(StatusEffects.SPEED, new Settings(this, "Speed Potion", true, () -> true));
+		this.potions.put(StatusEffects.FIRE_RESISTANCE, new Settings(this, "Fire Resistance", false, () -> true));
+		this.potions.put(StatusEffects.JUMP_BOOST, new Settings(this, "Jump Boost", false, () -> true));
+		
+		this.addSettings(this.potions.values());
+	}
 
 	private Settings delay = new Settings(this, "Delay", 1D, 0D, 20D, () -> true);
 
@@ -31,82 +45,30 @@ public class AutoPotion extends Module {
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			int strSlot = InvUtil.findPotionHotbar(StatusEffects.STRENGTH, true);
-			int speedSlot = InvUtil.findPotionHotbar(StatusEffects.SPEED, true);
-			int fireSlot = InvUtil.findPotionHotbar(StatusEffects.FIRE_RESISTANCE, true);
-			int jumpSlot = InvUtil.findPotionHotbar(StatusEffects.JUMP_BOOST, true);
 			
-			if (speed.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
-				next = 1;
-			}
-
-			if (fire.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
-				next = 2;
-			}
-
-			if (jump.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
-				next = 3;
-			}
-
-			if (strength.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
-				next = 4;
-			}
-
-			// ground check
 			if (!Helper.getPlayer().isOnGround())
 				return;
-
-			// TODO Removed
-			// Na normalnuyu nasledstvennost vremeni netu izuchat
-			// A tak 10000iq code
-
-			if (timer > 0) {
-				timer--;
-				return;
-			}
-
-			if (speed.isToggle() && speedSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
-				if (next == 1) {
-					baff(event, speedSlot);
-					next += 1;
+			
+			int i = 1;
+			for(Entry entry : this.potions.entrySet()) {
+				StatusEffect effect = (StatusEffect)entry.getKey();
+				Settings sett = (Settings)entry.getValue();
+				int slot = InvUtil.findPotionHotbar(effect, true);
+				
+				if(sett.isToggle() && !EntityUtil.checkActivePotion(effect))
+					next = i;
+				if (timer > 0) {
+					timer--;
+					return;
 				}
-			}
-
-			if (timer > 0) {
-				timer--;
-				return;
-			}
-
-			if (fire.isToggle() && fireSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.FIRE_RESISTANCE)) {
-				if (next == 2) {
-					baff(event, fireSlot);
-					next += 1;
+				
+				if (sett.isToggle() && slot != -2 && !EntityUtil.checkActivePotion(effect)) {
+					if (next == i) {
+						baff(event, slot);
+						next += 1;
+					}
 				}
-			}
-
-			if (timer > 0) {
-				timer--;
-				return;
-			}
-
-			if (jump.isToggle() && jumpSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.JUMP_BOOST)) {
-				if (next == 3) {
-					baff(event, jumpSlot);
-					next += 1;
-				}
-			}
-
-			if (timer > 0) {
-				timer--;
-				return;
-			}
-
-			if (strength.isToggle() && strSlot != -2 && !EntityUtil.checkActivePotion(StatusEffects.STRENGTH)) {
-				if (next == 4) {
-					event.setPitch(90);
-					baff(event, strSlot);
-					next += 1;
-				}
+				i++;
 			}
 		}
 	}
