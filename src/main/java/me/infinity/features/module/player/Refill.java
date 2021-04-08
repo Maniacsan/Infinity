@@ -17,14 +17,15 @@ public class Refill extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "FreeSlots",
 			new ArrayList<>(Arrays.asList("FreeSlots", "Select")), () -> true);
-	
+
 	List<Settings> slots;
-	
+
 	public Refill() {
 		this.slots = new ArrayList<Settings>();
 		int count = 9;
-		for(int i = 1; i < count; i++) {
-			Settings slot = new Settings(this, "Slot " + i, true, () -> mode.getCurrentMode().equalsIgnoreCase("Select"));
+		for (int i = 1; i < count; i++) {
+			Settings slot = new Settings(this, "Slot " + i, true,
+					() -> mode.getCurrentMode().equalsIgnoreCase("Select"));
 			this.slots.add(slot);
 		}
 		this.addSettings(this.slots);
@@ -32,27 +33,28 @@ public class Refill extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		int find = InvUtil.findPotionInternalInv(StatusEffects.INSTANT_HEALTH);
+		int find = InvUtil.findPotionInternalInv(StatusEffects.INSTANT_HEALTH, false);
 		int freeSlots = Helper.getPlayer().inventory.getEmptySlot();
 
 		if (mode.getCurrentMode().equalsIgnoreCase("FreeSlots")) {
-			if (find != -2 && freeSlots != -1 && freeSlots < 9 && Helper.getPlayer().inventory.getStack(freeSlots).getItem() != Items.SPLASH_POTION)
-					switchPotion(find, freeSlots);
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Select")) {
-			if (find != -2) {
-				for(int i = 0; i < this.slots.size(); i++) {
-					Settings slot = (Settings)this.slots.get(i);
-					if (slot.isToggle() && Helper.getPlayer().inventory.getStack(i).getItem() != Items.SPLASH_POTION)
-						switchPotion(find, i);
-				}
+			if (find != -2 && freeSlots != -1 && freeSlots < 9)
+				switchPotion(find, freeSlots);
+		} 
+		else if (mode.getCurrentMode().equalsIgnoreCase("Select")) {
+			if (find == -2)
+				return;
+			for (int i = 0; i < this.slots.size(); i++) {
+				Settings slot = (Settings) this.slots.get(i);
+				if (slot.isToggle())
+					switchPotion(find, i);
 			}
+
 		}
 	}
 
 	private void switchPotion(int from, int slot) {
-		if (Helper.getPlayer().inventory.getStack(slot).getItem() != Items.SPLASH_POTION) {
+		if (Helper.getPlayer().inventory.getStack(slot).getItem() != Items.SPLASH_POTION)
 			InvUtil.swapItem(from, slot);
-		}
 	}
 
 }

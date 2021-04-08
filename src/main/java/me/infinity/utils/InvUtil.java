@@ -51,10 +51,10 @@ public class InvUtil {
 	}
 
 	// Find item only internal inv potion , no hotbar
-	public static int findPotionInternalInv(StatusEffect effect) {
+	public static int findPotionInternalInv(StatusEffect effect, boolean splash) {
 		for (int i = 9; i <= 44; i++) {
 			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
-			if (stack.getItem() == Items.SPLASH_POTION)
+			if (stack.getItem() == Items.SPLASH_POTION && !splash)
 				continue;
 			if (hasEffect(stack, effect))
 				return i;
@@ -64,10 +64,10 @@ public class InvUtil {
 	}
 
 	// Find item from hotbar potion
-	public static int findPotionHotbar(StatusEffect effect) {
+	public static int findPotionHotbar(StatusEffect effect, boolean splash) {
 		for (int i = 0; i < 9; i++) {
 			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
-			if (stack.getItem() != Items.SPLASH_POTION)
+			if (stack.getItem() == Items.SPLASH_POTION && !splash)
 				continue;
 			if (hasEffect(stack, effect))
 				return i;

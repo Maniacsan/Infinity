@@ -31,11 +31,11 @@ public class AutoPotion extends Module {
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			int strSlot = InvUtil.findPotionHotbar(StatusEffects.STRENGTH);
-			int speedSlot = InvUtil.findPotionHotbar(StatusEffects.SPEED);
-			int fireSlot = InvUtil.findPotionHotbar(StatusEffects.FIRE_RESISTANCE);
-			int jumpSlot = InvUtil.findPotionHotbar(StatusEffects.JUMP_BOOST);
-
+			int strSlot = InvUtil.findPotionHotbar(StatusEffects.STRENGTH, true);
+			int speedSlot = InvUtil.findPotionHotbar(StatusEffects.SPEED, true);
+			int fireSlot = InvUtil.findPotionHotbar(StatusEffects.FIRE_RESISTANCE, true);
+			int jumpSlot = InvUtil.findPotionHotbar(StatusEffects.JUMP_BOOST, true);
+			
 			if (speed.isToggle() && !EntityUtil.checkActivePotion(StatusEffects.SPEED)) {
 				next = 1;
 			}
@@ -56,6 +56,7 @@ public class AutoPotion extends Module {
 			if (!Helper.getPlayer().isOnGround())
 				return;
 
+			// TODO Removed
 			// Na normalnuyu nasledstvennost vremeni netu izuchat
 			// A tak 10000iq code
 
