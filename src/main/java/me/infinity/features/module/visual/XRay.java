@@ -18,17 +18,18 @@ import me.infinity.utils.TimeHelper;
 import me.infinity.utils.block.BlockUtil;
 import me.infinity.utils.render.WorldRender;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 @ModuleInfo(category = Module.Category.VISUAL, desc = "View ore blocks", key = GLFW.GLFW_KEY_X, name = "XRay", visible = true)
 public class XRay extends Module {
 
 	private ArrayList<Block> blocks = new ArrayList<>();
 
-	// ne beiteee za arraylist, Deque lagaet!
 	private ArrayList<BlockPos> oreBlocks = new ArrayList<>();
 	private ArrayList<BlockPos> clickedBlocks = new ArrayList<>();
 	private ArrayList<BlockPos> renderBlocks = new ArrayList<>();
@@ -50,6 +51,10 @@ public class XRay extends Module {
 			)), () -> true);
 
 	private TimeHelper updater = new TimeHelper();
+
+	private BlockPos currentBlock = new BlockPos(-1, -1, -1);
+	private float breakProgress;
+	private boolean hitBlock;
 
 	private int findTimer;
 
@@ -120,13 +125,9 @@ public class XRay extends Module {
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			
-			for (BlockPos pos : oreBlocks) {
-				Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos,
-						Helper.getPlayer().getHorizontalFacing()));
 
-				Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, pos,
-						Helper.getPlayer().getHorizontalFacing()));
+			for (BlockPos pos : oreBlocks) {
+				clickBlock(pos, Helper.getPlayer().getHorizontalFacing());
 				oreBlocks.remove(pos);
 				// System.out.println(clickedBlocks.size());
 				clickedBlocks.add(pos);
@@ -144,6 +145,35 @@ public class XRay extends Module {
 
 			WorldRender.drawBox(renderPos, 2, 0xff6BE979);
 		}
+	}
+
+	private boolean clickBlock(BlockPos pos, Direction direction) {
+		if (!Helper.getWorld().getWorldBorder().contains(pos)) {
+			return false;
+		} else {
+			BlockState blockState2;
+
+			if (!this.hitBlock) {
+				if (this.hitBlock) {
+					Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
+							this.currentBlock, direction));
+				}
+
+				blockState2 = Helper.getWorld().getBlockState(pos);
+				Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
+				Helper.sendPacket(
+						new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
+				boolean bl = !blockState2.isAir();
+				if (bl && this.breakProgress == 0.0F) {
+					blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
+				}
+
+				breakProgress = 0.0f;
+				hitBlock = true;
+				this.currentBlock = pos;
+			}
+		}
+		return true;
 	}
 
 	public boolean isValid(Block block1) {

@@ -9,6 +9,7 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.Vec3d;
 
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Whirls in a circle of entity", key = -2, name = "TargetStrafe", visible = true)
 public class TargetStrafe extends Module {
@@ -96,7 +97,7 @@ public class TargetStrafe extends Module {
 		double x = speed * s1 * direction + circleSin * speed;
 		double z = -speed * c1 * direction + circleCos * speed;
 
-		Helper.getPlayer().setVelocity(x, event.getVec3d().y, z);
+		event.setVec3d(new Vec3d(x, Helper.getPlayer().getVelocity().getY(), z));
 
 	}
 

@@ -1,5 +1,8 @@
 package me.infinity.features.module.player;
 
+import com.darkmagician6.eventapi.EventTarget;
+
+import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -10,11 +13,11 @@ public class ChestSteal extends Module {
 
 	public Settings maxDelay = new Settings(this, "Max Delay", 40.0D, 0D, 190D, () -> true);
 	public Settings minDelay = new Settings(this, "Min Delay", 10.0D, 0D, 190D, () -> true);
-	
+
 	public double delay;
 
-	@Override
-	public void onPlayerTick() {
+	@EventTarget
+	public void onTick(TickEvent event) {
 		delay = MathAssist.random(minDelay.getCurrentValueDouble(), maxDelay.getCurrentValueDouble());
 	}
 

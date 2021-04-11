@@ -34,7 +34,7 @@ public abstract class GenericContainerScreenMixin extends HandledScreen<GenericC
 	@Override
 	protected void init() {
 		super.init();
-
+		
 		if (stealer.isEnabled()) {
 			steal();
 		}

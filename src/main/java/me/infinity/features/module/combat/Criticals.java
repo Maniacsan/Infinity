@@ -31,6 +31,8 @@ public class Criticals extends Module {
 
 	private Settings falling = new Settings(this, "Falling", false,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
+	private Settings fallDistance = new Settings(this, "Fall Distance", 0.4, 0.15, 0.42,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Jump") && falling.isToggle());
 
 	private double y;
 	private int stage;
@@ -202,7 +204,8 @@ public class Criticals extends Module {
 		// lul
 		if (criticals.isEnabled() && criticals.mode.getCurrentMode().equalsIgnoreCase("Jump")
 				&& criticals.falling.isToggle()) {
-			if (Helper.getPlayer().fallDistance != 0 && !Helper.getPlayer().isOnGround()) {
+			if (Helper.getPlayer().fallDistance <= criticals.fallDistance.getCurrentValueDouble()
+					&& !Helper.getPlayer().isOnGround()) {
 				return true;
 			} else {
 				return false;

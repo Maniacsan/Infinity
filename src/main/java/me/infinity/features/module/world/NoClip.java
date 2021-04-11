@@ -16,7 +16,7 @@ public class NoClip extends Module {
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		if (event.getType().equals(EventType.POST)) {
+		if (event.getType().equals(EventType.PRE)) {
 			MoveUtil.setYVelocity(0);
 
 			if (Helper.minecraftClient.options.keySneak.isPressed()) {
