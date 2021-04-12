@@ -92,10 +92,12 @@ public class ChatCalculator extends Module {
 							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
 								Helper.getPlayer()
 										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
+								sendServer = false;
 								serverResult = null;
 							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
 								Helper.infoMessage(serverResult);
 								serverResult = null;
+								sendServer = false;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();

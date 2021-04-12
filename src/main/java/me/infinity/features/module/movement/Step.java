@@ -83,6 +83,9 @@ public class Step extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
+				if (Helper.minecraftClient.options.keyJump.isPressed())
+					return;
+				
 				offsetX = 0;
 				offsetY = 0;
 				offsetZ = 0;

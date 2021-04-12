@@ -11,21 +11,18 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
-import me.infinity.event.PacketEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.features.module.player.FakeLags;
-import me.infinity.mixin.IPlayerMoveC2SPacket;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -68,7 +65,8 @@ public class KillAura extends Module {
 	// rotations
 	private float[] focus;
 	private float[] smash;
-	private float[] matrix;
+	private float lastYaw = 999f;
+	private float lastPitch = 999f;
 
 	private float speed;
 
@@ -103,7 +101,6 @@ public class KillAura extends Module {
 
 		// set rotation
 		focus = RotationUtils.lookAtEntity(target, speed, speed);
-		;
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 	}
@@ -133,14 +130,14 @@ public class KillAura extends Module {
 			if (target == null)
 				return;
 
-			matrix = RotationUtils.lookAtEntity(target, speed, speed);
-
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				event.setRotation(focus[0], focus[1]);
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				event.setRotation(smash[0], smash[1]);
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
-				event.setRotation(matrix[0], matrix[1]);
+				if (lastYaw != 999 || lastPitch != 999) {
+					event.setRotation(lastYaw, lastPitch);
+				}
 			}
 
 			float[] rot = RotationUtils.lookAtEntity(target, 13, 13);
@@ -152,7 +149,7 @@ public class KillAura extends Module {
 				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 					MoveUtil.strafe(MoveUtil.calcMoveYaw(smash[0]), MoveUtil.getSpeed());
 				} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(matrix[0]), MoveUtil.getSpeed());
+					MoveUtil.strafe(MoveUtil.calcMoveYaw(lastYaw), MoveUtil.getSpeed());
 				}
 			}
 
@@ -174,7 +171,7 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
-		if (rayCast.isToggle()) {
+		if (rayCast.isToggle() || rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				if (smash[1] < 90 || smash[1] > -90) {
 					event.setYaw(smash[0]);
@@ -184,40 +181,24 @@ public class KillAura extends Module {
 				event.setYaw(focus[0]);
 				event.setPitch(focus[1]);
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
-				event.setYaw(matrix[0]);
-				event.setPitch(matrix[1]);
+				event.setYaw(lastYaw);
+				event.setPitch(lastPitch);
 			}
 		}
 		event.cancel();
-	}
-
-	@EventTarget
-	public void onPacket(PacketEvent event) {
-		if (target == null)
-			return;
-
-		if (event.getPacket() instanceof PlayerMoveC2SPacket) {
-			PlayerMoveC2SPacket cp = (PlayerMoveC2SPacket) event.getPacket();
-
-			float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
-			float gcd = f * f * f * 1.2F;
-
-			float yaw = cp.getYaw(matrix[0]) - cp.getYaw(matrix[0]) % gcd;
-			float pitch = cp.getPitch(matrix[1]) - cp.getPitch(matrix[1]) % gcd;
-
-			if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
-				((IPlayerMoveC2SPacket) cp).setYaw(yaw);
-				((IPlayerMoveC2SPacket) cp).setPitch(pitch);
-				((IPlayerMoveC2SPacket) cp).setLook(true);
-			}
-		}
-
 	}
 
 	public void attack() {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall()) {
+
+				float[] matrix = RotationUtils.lookAtEntity(target, speed, speed);
+
+				if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
+					lastYaw = matrix[0];
+					lastPitch = matrix[1];
+				}
 
 				// fakeLags reset
 				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())

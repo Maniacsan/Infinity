@@ -87,14 +87,15 @@ public class Scaffold extends Module {
 		}
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
-			MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.08);
+			MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.06);
 		}
 	}
 
 	@EventTarget
 	public void onTick(TickEvent event) {
-		if (pos == null)
+		if (pos == null) {
 			return;
+		}
 
 		look = rotation(pos);
 	}
@@ -104,7 +105,7 @@ public class Scaffold extends Module {
 		if (event.getType().equals(EventType.PRE)) {
 
 			pos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1, Helper.getPlayer().getZ());
-
+			
 			PlaceData data = getPlaceData(pos);
 
 			if (pData != null) {

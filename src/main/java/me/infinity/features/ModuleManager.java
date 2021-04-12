@@ -75,7 +75,8 @@ public class ModuleManager {
 			new AutoShift(),
 			new CrossbowAim(),
 			new Fly(),
-			new ShulkerView()
+			new ShulkerView(),
+			new Eagle()
 			);
 
 	public List<Module> getList() {

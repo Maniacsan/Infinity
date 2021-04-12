@@ -154,7 +154,7 @@ public class WorldRender {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
 		Helper.minecraftClient.textRenderer.draw(matrix, str, -i, 0, 553648127);
-		Helper.minecraftClient.textRenderer.draw(matrix, str, -i, 0, -1);
+		Helper.minecraftClient.textRenderer.draw(matrix, str, -i, 0, 0xFFFFFFFF);
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 
 		return matrix;

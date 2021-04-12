@@ -37,6 +37,9 @@ public class XRay extends Module {
 	// orebfuscator
 	private Settings orebfuscator = new Settings(this, "Orebfuscator", false, () -> true);
 	private Settings radius = new Settings(this, "Radius", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
+	private Settings up = new Settings(this, "Up Distance", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
+	private Settings down = new Settings(this, "Down Distance", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
+	private Settings info = new Settings(this, "Info", false, () -> orebfuscator.isToggle());
 
 	public Settings block = new Settings(this, "Blocks", blocks,
 			new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE, Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE,
@@ -63,6 +66,8 @@ public class XRay extends Module {
 		Helper.minecraftClient.worldRenderer.reload();
 
 		findTimer = 0;
+		if (!clickedBlocks.isEmpty())
+			clickedBlocks.clear();
 	}
 
 	@Override
@@ -82,9 +87,11 @@ public class XRay extends Module {
 
 				if (updater.hasReached(3000)) {
 					for (BlockPos pos : BlockUtil.getAllInBox(
-							(int) (Helper.getPlayer().getPos().x - radius.getCurrentValueDouble()), 0,
+							(int) (Helper.getPlayer().getPos().x - radius.getCurrentValueDouble()),
+							(int) (Helper.getPlayer().getPos().y - down.getCurrentValueDouble()),
 							(int) (Helper.getPlayer().getPos().z - radius.getCurrentValueDouble()),
-							(int) (Helper.getPlayer().getPos().x + radius.getCurrentValueDouble()), 256,
+							(int) (Helper.getPlayer().getPos().x + radius.getCurrentValueDouble()),
+							(int) (Helper.getPlayer().getPos().y + up.getCurrentValueDouble()),
 							(int) (Helper.getPlayer().getPos().z + radius.getCurrentValueDouble()))) {
 
 						for (Block valid : block.getBlocks()) {
@@ -109,10 +116,13 @@ public class XRay extends Module {
 				for (Block valid : block.getBlocks()) {
 					if (BlockUtil.getBlock(clicked) == valid) {
 						if (!renderBlocks.contains(clicked)) {
-							Helper.infoMessage("Finded " + Formatting.AQUA + valid.getName().getString()
-									+ Formatting.WHITE + " - x:" + Formatting.GRAY + clicked.getX() + Formatting.WHITE
-									+ " y:" + Formatting.GRAY + clicked.getY() + Formatting.WHITE + " z:"
-									+ Formatting.GRAY + clicked.getZ());
+
+							if (info.isToggle())
+								Helper.infoMessage("Finded " + Formatting.AQUA + valid.getName().getString()
+										+ Formatting.WHITE + " - x:" + Formatting.GRAY + clicked.getX()
+										+ Formatting.WHITE + " y:" + Formatting.GRAY + clicked.getY() + Formatting.WHITE
+										+ " z:" + Formatting.GRAY + clicked.getZ());
+
 							renderBlocks.add(clicked);
 						}
 					}
@@ -148,31 +158,35 @@ public class XRay extends Module {
 	}
 
 	private boolean clickBlock(BlockPos pos, Direction direction) {
-		if (!Helper.getWorld().getWorldBorder().contains(pos)) {
-			return false;
-		} else {
-			BlockState blockState2;
 
-			if (!this.hitBlock) {
-				if (this.hitBlock) {
-					Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
-							this.currentBlock, direction));
-				}
+		BlockState blockState2;
 
-				blockState2 = Helper.getWorld().getBlockState(pos);
-				Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
-				Helper.sendPacket(
-						new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
-				boolean bl = !blockState2.isAir();
-				if (bl && this.breakProgress == 0.0F) {
-					blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
-				}
+		if (Helper.getPlayer().isCreative()) {
+			blockState2 = Helper.getWorld().getBlockState(pos);
+			Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 1.0F);
+			Helper.sendPacket(
+					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 
-				breakProgress = 0.0f;
-				hitBlock = true;
-				this.currentBlock = pos;
+		} else if (!this.hitBlock) {
+			if (this.hitBlock) {
+				Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
+						this.currentBlock, direction));
 			}
+
+			blockState2 = Helper.getWorld().getBlockState(pos);
+			Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
+			Helper.sendPacket(
+					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
+			boolean bl = !blockState2.isAir();
+			if (bl && this.breakProgress == 0.0F) {
+				blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
+			}
+
+			breakProgress = 0.0f;
+			hitBlock = true;
+			this.currentBlock = pos;
 		}
+
 		return true;
 	}
 

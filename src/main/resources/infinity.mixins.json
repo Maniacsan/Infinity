@@ -21,7 +21,6 @@
   "IPlayerMoveC2SPacket",
   "IPlayerPositionLookS2CPacket",
   "IKeyBinding",
-  "GenericContainerScreenMixin",
   "MouseMixin",
   "RenderTickCounterMixin",
   "WorldRendererMixin",

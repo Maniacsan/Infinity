@@ -24,9 +24,9 @@ public class TargetStrafe extends Module {
 	private Settings distance = new Settings(this, "Entity Distance", 7.0D, 6.1D, 15.0D, () -> true);
 
 	private Settings radius = new Settings(this, "Strafing radius", 3.0D, 0.0D, 7.0D, () -> true);
-	private Settings speed = new Settings(this, "Speed", 0.35D, 0.0D, 1.0D, () -> true);
+	private Settings speed = new Settings(this, "Speed", 0.31D, 0.0D, 1.0D, () -> true);
 
-	private Settings damageBoost = new Settings(this, "Damaget Boost", true, () -> true);
+	private Settings damageBoost = new Settings(this, "Damaget Boost", false, () -> true);
 	private Settings boost = new Settings(this, "Boost Value", 0.2D, 0.0D, 0.8D, () -> damageBoost.isToggle());
 
 	private Entity target;
