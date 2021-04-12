@@ -38,6 +38,10 @@ dependencies {
 }
 
 
+shadowJar {
+	configurations = [ project.configurations.shadow ]
+}
+
 processResources {
 	inputs.property "version", project.version
 
