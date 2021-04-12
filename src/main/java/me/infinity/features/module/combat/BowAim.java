@@ -26,6 +26,7 @@ public class BowAim extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
+	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
 	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
 	private Settings range = new Settings(this, "Range", 40, 1, 80, () -> true);
 	private Settings speed = new Settings(this, "Speed", 90F, 1F, 180F, () -> true);
@@ -39,7 +40,7 @@ public class BowAim extends Module {
 					&& Helper.getPlayer().getItemUseTime() >= 3) {
 				target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(),
 						players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(),
-						animals.isToggle());
+						animals.isToggle(), throughWalls.isToggle());
 				if (target == null)
 					return;
 				float[] look = RotationUtils.bowAimRotation(target, speed.getCurrentValueFloat(),

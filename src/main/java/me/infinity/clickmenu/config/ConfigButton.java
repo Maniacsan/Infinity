@@ -141,9 +141,9 @@ public class ConfigButton {
 				if (listButton.select) {
 					InfMain.getConfigManager().delete(listButton.config);
 					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.GRAY + "deleted");
-					refresh();
 				}
 			}
+			refresh();
 
 		} else if (this.saveHovered && button == 0) {
 			for (ConfigListButton listButton : configList) {

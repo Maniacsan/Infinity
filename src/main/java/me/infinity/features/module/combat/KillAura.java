@@ -41,6 +41,8 @@ public class KillAura extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 
+	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+	
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", false, () -> true);
 
@@ -126,7 +128,7 @@ public class KillAura extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), throughWalls.isToggle());
 			if (target == null)
 				return;
 

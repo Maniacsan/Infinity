@@ -24,6 +24,8 @@ public class ClickAura extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", false, () -> true);
 
+	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+
 	private Settings rotation = new Settings(this, "Rotation", true, () -> true);
 	private Settings look = new Settings(this, "Look", true, () -> rotation.isToggle());
 
@@ -43,7 +45,8 @@ public class ClickAura extends Module {
 	public void onClick(ClickEvent event) {
 
 		target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
+				throughWalls.isToggle());
 
 		if (target == null)
 			return;
@@ -78,7 +81,7 @@ public class ClickAura extends Module {
 		float[] rotate = RotationUtils.lookAtEntity(target, 180, 180);
 		if (target == null)
 			return;
-		
+
 		if (!Helper.minecraftClient.options.keyAttack.isPressed())
 			return;
 

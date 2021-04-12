@@ -35,10 +35,10 @@ public class EntityUtil {
 	// Set target -> Entity entity -> to update method -> entity =
 	// EntityUtil.setTarget(values);
 	public static Entity setTarget(double range, double fov, boolean players, boolean friends, boolean invisibles,
-			boolean mobs, boolean animals) {
+			boolean mobs, boolean animals, boolean throughWalls) {
 		Entity entity = null;
 		float maxDist = (float) range;
-		for (Entity e : getTargets(fov, players, friends, invisibles, mobs, animals)) {
+		for (Entity e : getTargets(fov, players, friends, invisibles, mobs, animals, throughWalls)) {
 			if (e != null) {
 				float currentDist = Helper.getPlayer().distanceTo(e);
 				if (currentDist <= maxDist) {
@@ -51,9 +51,9 @@ public class EntityUtil {
 	}
 
 	public static List<Entity> getTargets(double fov, boolean players, boolean friends, boolean invisibles,
-			boolean mobs, boolean animals) {
+			boolean mobs, boolean animals, boolean throughWalls) {
 		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
-				.filter(entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals))
+				.filter(entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals, throughWalls))
 				.collect(Collectors.toList());
 	}
 
@@ -85,7 +85,7 @@ public class EntityUtil {
 	 * @return
 	 */
 	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
-			boolean invisibles, boolean mobs, boolean animals) {
+			boolean invisibles, boolean mobs, boolean animals, boolean throughWalls) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
@@ -96,6 +96,9 @@ public class EntityUtil {
 			return false;
 
 		if (!invisibles && entity.isInvisible())
+			return false;
+		
+		if(!throughWalls && !Helper.getPlayer().canSee(entity))
 			return false;
 
 		if (players && entity instanceof PlayerEntity)
@@ -127,7 +130,7 @@ public class EntityUtil {
 
 		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
 			return false;
-
+		
 		if (invisibles && entity.isInvisible())
 			return true;
 		if (players && entity instanceof PlayerEntity)

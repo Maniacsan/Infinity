@@ -37,7 +37,7 @@ public class TargetStrafe extends Module {
 	public void onPlayerTick() {
 
 		target = EntityUtil.setTarget(distance.getCurrentValueDouble(), 360, players.isToggle(), friends.isToggle(),
-				invisibles.isToggle(), mobs.isToggle(), animals.isToggle());
+				invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), true);
 
 		if (target == null)
 			return;
