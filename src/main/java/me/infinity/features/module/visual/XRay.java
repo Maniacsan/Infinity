@@ -32,7 +32,10 @@ public class XRay extends Module {
 
 	private ArrayList<BlockPos> oreBlocks = new ArrayList<>();
 	private ArrayList<BlockPos> clickedBlocks = new ArrayList<>();
+
+	// render
 	private ArrayList<BlockPos> renderBlocks = new ArrayList<>();
+	private BlockPos progressBlock;
 
 	// orebfuscator
 	private Settings orebfuscator = new Settings(this, "Orebfuscator", false, () -> true);
@@ -77,12 +80,18 @@ public class XRay extends Module {
 		renderBlocks.clear();
 		findTimer = 0;
 
+		progressBlock = null;
+
 		Helper.minecraftClient.worldRenderer.reload();
 	}
 
 	@Override
 	public void onPlayerTick() {
 		if (orebfuscator.isToggle()) {
+			
+			if (Helper.getPlayer().isCreative() || Helper.getPlayer().isSpectator())
+				return;
+
 			if (oreBlocks.isEmpty()) {
 
 				if (updater.hasReached(3000)) {
@@ -138,9 +147,6 @@ public class XRay extends Module {
 
 			for (BlockPos pos : oreBlocks) {
 				clickBlock(pos, Helper.getPlayer().getHorizontalFacing());
-				oreBlocks.remove(pos);
-				// System.out.println(clickedBlocks.size());
-				clickedBlocks.add(pos);
 				findTimer = 10;
 			}
 		}
@@ -148,6 +154,11 @@ public class XRay extends Module {
 
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
+		if (progressBlock != null) {
+
+			WorldRender.drawBox(progressBlock, 1, 0xFFFFFFFF);
+		}
+
 		if (renderBlocks.isEmpty())
 			return;
 
@@ -167,26 +178,27 @@ public class XRay extends Module {
 			Helper.sendPacket(
 					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 
-		} else if (!this.hitBlock) {
-			if (this.hitBlock) {
-				Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
-						this.currentBlock, direction));
-			}
-
-			blockState2 = Helper.getWorld().getBlockState(pos);
-			Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
-			Helper.sendPacket(
-					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
-			boolean bl = !blockState2.isAir();
-			if (bl && this.breakProgress == 0.0F) {
-				blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
-			}
-
-			breakProgress = 0.0f;
-			hitBlock = true;
-			this.currentBlock = pos;
+		}
+		if (this.hitBlock) {
 		}
 
+		blockState2 = Helper.getWorld().getBlockState(pos);
+		Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
+		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
+		boolean bl = !blockState2.isAir();
+		if (bl && this.breakProgress == 0.0F) {
+			blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
+		}
+		hitBlock = true;
+		breakProgress = 0.0f;
+		this.currentBlock = pos;
+		
+		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
+				this.currentBlock, direction));
+		oreBlocks.remove(pos);
+		clickedBlocks.add(pos);
+		progressBlock = pos;
+		
 		return true;
 	}
 

@@ -30,7 +30,9 @@ public class CrossbowAim extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
+
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+
 	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
 	private Settings range = new Settings(this, "Range", 40, 1, 80, () -> true);
 	private Settings speed = new Settings(this, "Speed", 90F, 1F, 180F, () -> true);
@@ -45,13 +47,13 @@ public class CrossbowAim extends Module {
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof CrossbowItem
 				&& ((ICrossbowItem) Helper.getPlayer().getMainHandStack().getItem()).isLoaded())
 			assist = Formatting.GRAY + "Press " + Formatting.BLUE + "LKM" + Formatting.GRAY + " for aiming";
-		else 
+		else
 			assist = null;
 
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof CrossbowItem
 				&& ((ICrossbowItem) Helper.getPlayer().getMainHandStack().getItem()).isLoaded()) {
 			if (assist != null)
-			FontUtils.drawHCenteredString(matrices, assist, width / 2, height / 2 - 70, -1);
+				FontUtils.drawHCenteredString(matrices, assist, width / 2, height / 2 - 70, -1);
 		}
 	}
 

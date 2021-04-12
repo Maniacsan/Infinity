@@ -11,6 +11,7 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
+import me.infinity.event.PacketEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
@@ -18,7 +19,7 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.features.module.player.FakeLags;
 import me.infinity.utils.Helper;
-import me.infinity.utils.MoveUtil;
+import me.infinity.utils.PacketUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.rotation.RotationUtils;
@@ -30,8 +31,8 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = GLFW.GLFW_KEY_R, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
-	private Settings rotation = new Settings(this, "Rotation", "Focus",
-			new ArrayList<>(Arrays.asList("Smash", "Focus", "Matrix")), () -> true);
+	private Settings rotation = new Settings(this, "Rotation", "Reset",
+			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")), () -> true);
 	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")),
 			() -> true);
 	// targets
@@ -42,21 +43,18 @@ public class KillAura extends Module {
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
-	
-	// raycasting target
-	private Settings rayCast = new Settings(this, "RayCast", false, () -> true);
 
-	// matrix packet rotation strafing check
-	private Settings badStrafe = new Settings(this, "Matrix Strafe", false, () -> true);
+	// raycasting target
+	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
 
 	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
 	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
 
-	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
-	private Settings maxSpeed = new Settings(this, "Max Speed", 135.0D, 0.0D, 180.0D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 80.0D, 0.0D, 180.0D, () -> true);
-	private Settings range = new Settings(this, "Range", 4.0D, 0.1D, 6.0D, () -> true);
+	private Settings fov = new Settings(this, "FOV", 240D, 0D, 360D, () -> true);
+	private Settings maxSpeed = new Settings(this, "Max Speed", 180.0D, 0.0D, 180.0D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed", 173.0D, 0.0D, 180.0D, () -> true);
+	private Settings range = new Settings(this, "Range", 3.7D, 0.1D, 6.0D, () -> true);
 
 	// target
 	public static Entity target;
@@ -70,6 +68,7 @@ public class KillAura extends Module {
 	private float lastYaw = 999f;
 	private float lastPitch = 999f;
 
+	private int time;
 	private float speed;
 
 	// rotation timers
@@ -82,6 +81,7 @@ public class KillAura extends Module {
 	@Override
 	public void onDisable() {
 		target = null;
+		time = 0;
 		super.onDisable();
 	}
 
@@ -114,6 +114,10 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
+		if (time > 0) {
+			time--;
+		}
+
 		if (rayCast.isToggle()) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				EntityUtil.updateTargetRaycast(target, range.getCurrentValueDouble(), focus[0], focus[1]);
@@ -128,42 +132,50 @@ public class KillAura extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), throughWalls.isToggle());
+					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
+					throughWalls.isToggle());
+
 			if (target == null)
 				return;
 
-			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				event.setRotation(focus[0], focus[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				event.setRotation(smash[0], smash[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
+			if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 				if (lastYaw != 999 || lastPitch != 999) {
 					event.setRotation(lastYaw, lastPitch);
 				}
 			}
 
-			float[] rot = RotationUtils.lookAtEntity(target, 13, 13);
-
-			rot[0] = (float) Math.toRadians(rot[0]);
-			if (badStrafe.isToggle()) {
-				if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-					MoveUtil.strafe(MoveUtil.getYaw(focus[0]), MoveUtil.getSpeed() * 0.8);
-				} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(smash[0]), MoveUtil.getSpeed());
-				} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(lastYaw), MoveUtil.getSpeed());
-				}
-			}
-
 			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
-				attack();
+				attack(event);
 			}
 		} else if (event.getType().equals(EventType.POST)) {
 			if (target == null)
 				return;
 
 			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
-				attack();
+				attack(event);
+			}
+		}
+	}
+
+	@EventTarget
+	public void onPacket(PacketEvent event) {
+		if (target == null)
+			return;
+
+		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+			PacketUtil.setRotation(event, focus[0], focus[1]);
+		} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+			PacketUtil.setRotation(event, smash[0], smash[1]);
+		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
+			if (lastYaw != 999 || lastPitch != 999) {
+				PacketUtil.setRotation(event, lastYaw, lastPitch);
+				Helper.getPlayer().bodyYaw = lastYaw;
+				Helper.getPlayer().headYaw = lastYaw;
+			}
+
+			if (time <= 0) {
+				lastYaw = 999;
+				lastPitch = 999;
 			}
 		}
 	}
@@ -173,7 +185,7 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
-		if (rayCast.isToggle() || rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
+		if (rayCast.isToggle()) {
 			if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 				if (smash[1] < 90 || smash[1] > -90) {
 					event.setYaw(smash[0]);
@@ -182,7 +194,7 @@ public class KillAura extends Module {
 			} else if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				event.setYaw(focus[0]);
 				event.setPitch(focus[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
+			} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 				event.setYaw(lastYaw);
 				event.setPitch(lastPitch);
 			}
@@ -190,16 +202,21 @@ public class KillAura extends Module {
 		event.cancel();
 	}
 
-	public void attack() {
+	public void attack(MotionEvent event) {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall()) {
 
 				float[] matrix = RotationUtils.lookAtEntity(target, speed, speed);
 
-				if (rotation.getCurrentMode().equalsIgnoreCase("Matrix")) {
+				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 					lastYaw = matrix[0];
 					lastPitch = matrix[1];
+					event.setYaw(matrix[0]);
+					event.setPitch(matrix[1]);
+					Helper.getPlayer().bodyYaw = matrix[0];
+					Helper.getPlayer().headYaw = matrix[0];
+					time = 2;
 				}
 
 				// fakeLags reset

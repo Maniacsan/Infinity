@@ -68,9 +68,11 @@ public class ChatCalculator extends Module {
 								Helper.getPlayer()
 										.sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
 								clientResult = null;
+								sendClient = false;
 							} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
 								Helper.infoMessage(clientResult);
 								clientResult = null;
+								sendClient = false;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -122,7 +124,7 @@ public class ChatCalculator extends Module {
 
 			Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
 
-			if (postfix.isPresent()) {
+			if (postfix.isPresent() && chatMessage != null) {
 
 				double result = TermSolver.solvePostfix(postfix.get());
 
@@ -145,12 +147,15 @@ public class ChatCalculator extends Module {
 							: cms.getChatMessage().replace("!", "");
 
 					Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
+					
+					if (postfix.isPresent() && chatMessage != null) {
 
 					double result = TermSolver.solvePostfix(postfix.get());
 
 					clientResult = String.valueOf((int) result);
 
 					sendClient = true;
+					}
 				}
 			}
 		}

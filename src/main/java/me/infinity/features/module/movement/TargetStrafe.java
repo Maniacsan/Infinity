@@ -62,7 +62,7 @@ public class TargetStrafe extends Module {
 		double speed = damageBoost.isToggle() && Helper.getPlayer().hurtTime != 0
 				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
 				: this.speed.getCurrentValueDouble();
-		
+
 		double distance = Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
 				+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2));
 		double strafeYaw = Math.atan2(target.getZ() - Helper.getPlayer().getZ(),

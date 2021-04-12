@@ -19,7 +19,7 @@ import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
-import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.PacketUtil;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -28,11 +28,11 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class Criticals extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel" })), () -> true);
+			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel", "Mini Jump" })), () -> true);
 
 	private Settings falling = new Settings(this, "Falling", false,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
-	private Settings fallDistance = new Settings(this, "Fall Distance", 0.4, 0.15, 0.42,
+	private Settings fallDistance = new Settings(this, "Min Distance", 0.29, 0.01, 0.38,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Jump") && falling.isToggle());
 
 	private double y;
@@ -62,38 +62,7 @@ public class Criticals extends Module {
 	@EventTarget()
 	public void onMotion(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-			double yOff = MathAssist.random(0.08, 0.12);
-			if (this.mode.getCurrentMode().equalsIgnoreCase("Spoof")) {
-				if (attackCount > 0) {
-					double ypos = Helper.getPlayer().getY();
-					if (Helper.getPlayer().isOnGround()) {
-						event.setOnGround(false);
-						if (this.stage == 0) {
-							this.y = ypos + 1.0E-8D;
 
-							event.setOnGround(true);
-
-						} else if (this.stage == 1) {
-							this.y -= 5.0E-15D;
-						} else {
-							this.y -= 4.0E-15D;
-						}
-
-						if (this.y <= Helper.getPlayer().getY()) {
-							this.stage = 0;
-							this.y = Helper.getPlayer().getY();
-							event.setOnGround(true);
-						}
-			
-						event.setY(this.y);
-
-						this.stage++;
-					} else {
-						this.stage = 0;
-					}
-					Helper.getPlayer().setPos(Helper.getPlayer().getPos().x, this.y, Helper.getPlayer().getPos().z);
-				}
-			}
 		}
 	}
 
@@ -144,6 +113,35 @@ public class Criticals extends Module {
 					doJumpModeSwing(event);
 				}
 
+			}
+		}
+
+		if (this.mode.getCurrentMode().equalsIgnoreCase("Spoof")) {
+			if (attackCount > 0) {
+				double ypos = Helper.getPlayer().getY();
+				if (Helper.getPlayer().isOnGround()) {
+					PacketUtil.setOnGround(event, false);
+					if (this.stage == 0) {
+						this.y = ypos + 1.0E-8D;
+
+						PacketUtil.setOnGround(event, true);
+
+					} else if (this.stage == 1) {
+						this.y -= 5.0E-15D;
+					} else {
+						this.y -= 4.0E-15D;
+					}
+
+					if (this.y <= Helper.getPlayer().getY()) {
+						this.stage = 0;
+						this.y = Helper.getPlayer().getY();
+						PacketUtil.setOnGround(event, true);
+					}
+					PacketUtil.setY(event, this.y);
+					this.stage++;
+				} else {
+					this.stage = 0;
+				}
 			}
 		}
 	}
@@ -206,8 +204,8 @@ public class Criticals extends Module {
 		// lul
 		if (criticals.isEnabled() && criticals.mode.getCurrentMode().equalsIgnoreCase("Jump")
 				&& criticals.falling.isToggle()) {
-			if (Helper.getPlayer().fallDistance <= criticals.fallDistance.getCurrentValueDouble()
-					&& !Helper.getPlayer().isOnGround()) {
+			if (Helper.getPlayer().fallDistance > criticals.fallDistance.getCurrentValueDouble()
+					&& !Helper.getPlayer().isOnGround() && Helper.getPlayer().fallDistance != 0) {
 				return true;
 			} else {
 				return false;
