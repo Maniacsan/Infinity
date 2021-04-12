@@ -32,17 +32,11 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
 	// Discord RPC
-	compile 'com.github.Vatuu:discord-rpc:1.6.2'
+	dependency "com.github.Vatuu:discord-rpc:1.6.2"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
-shadowJar {
-	configurations = [ project.configurations.shadow ]
-	 dependencies {
-	   include(dependency('com.github.Vatuu:discord-rpc:1.6.2'))
-	}
-}
 
 processResources {
 	inputs.property "version", project.version
