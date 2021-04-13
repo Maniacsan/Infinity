@@ -1,26 +1,21 @@
 package me.infinity.features.module.player;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.event.ClickEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.InvUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
@@ -34,6 +29,7 @@ public class AutoTool extends Module {
 
 	private int lastSlot = -1;
 	private int queueSlot = -1;
+	private int preSlot = -2;
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
@@ -84,6 +80,39 @@ public class AutoTool extends Module {
 		}
 	}
 
+	@EventTarget
+	public void onClick(ClickEvent event) {
+		int slotAxe = findAxe();
+
+		if (shieldCheck.isToggle()) {
+
+			Entity target = Helper.minecraftClient.targetedEntity;
+			if (target instanceof PlayerEntity) {
+				if (((PlayerEntity) target).isBlocking()) {
+					if (slotAxe != -2) {
+						preSlot = Helper.getPlayer().inventory.selectedSlot;
+						Helper.getPlayer().inventory.selectedSlot = slotAxe;
+
+						if (preSlot != -2) {
+							(new Thread() {
+								@Override
+								public void run() {
+									try {
+										Thread.sleep(120);
+
+										Helper.getPlayer().inventory.selectedSlot = preSlot;
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							}).start();
+						}
+					}
+				}
+			}
+		}
+	}
+
 	@Override
 	public void onPlayerTick() {
 
@@ -93,37 +122,6 @@ public class AutoTool extends Module {
 			queueSlot = -1;
 		}
 
-		/*
-		 * Shield check
-		 */
-
-		List<Item> collectedAxe = new ArrayList<>(Arrays.asList(Items.DIAMOND_AXE, Items.GOLDEN_AXE, Items.IRON_AXE,
-				Items.NETHERITE_AXE, Items.STONE_AXE, Items.WOODEN_AXE));
-
-		int slotAxe = -2;
-		for (Item axe : collectedAxe) {
-			slotAxe = InvUtil.findItemOnHotbar(axe);
-		}
-
-		int preSlot = -2;
-
-		if (shieldCheck.isToggle()) {
-			if (Helper.minecraftClient.options.keyAttack.isPressed()) {
-
-				Entity target = Helper.minecraftClient.targetedEntity;
-				if (target instanceof PlayerEntity) {
-					if (((PlayerEntity) target).isBlocking()) {
-						if (slotAxe != -2) {
-							preSlot = Helper.getPlayer().inventory.selectedSlot;
-							Helper.getPlayer().inventory.selectedSlot = slotAxe;
-							
-							if (preSlot != -2)
-							Helper.getPlayer().inventory.selectedSlot = preSlot;
-						}
-					}
-				}
-			}
-		}
 	}
 
 	private int getBestSlot(BlockPos pos) {
@@ -152,6 +150,14 @@ public class AutoTool extends Module {
 		}
 
 		return bestSlot;
+	}
+
+	private int findAxe() {
+		int find = -2;
+		for (int i = 0; i <= 8; i++)
+			if (Helper.getPlayer().inventory.getStack(i).getItem() instanceof AxeItem)
+				find = i;
+		return find;
 	}
 
 	private float getMiningSpeed(ItemStack stack, BlockState state) {

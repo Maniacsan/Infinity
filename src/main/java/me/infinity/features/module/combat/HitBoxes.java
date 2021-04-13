@@ -7,7 +7,6 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.MathAssist;
 import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.Entity;
 
@@ -20,11 +19,11 @@ public class HitBoxes extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 
-	public Settings size = new Settings(this, "Size", 0.5F, 0.0F, 5.0F, () -> true);
+	public Settings size = new Settings(this, "Size", 0.35D, 0.0D, 5.0D, () -> true);
 
 	@Override
 	public void onPlayerTick() {
-		setSuffix(String.valueOf(MathAssist.round(size.getCurrentValueFloat(), 1)));
+		setSuffix(Helper.DF(size.getCurrentValueDouble(), 2));
 	}
 
 	@EventTarget
@@ -53,7 +52,7 @@ public class HitBoxes extends Module {
 		if (!isEnabled())
 			return 0;
 		if (isTarget(entity))
-			return size.getCurrentValueFloat();
+			return (float) size.getCurrentValueDouble();
 		return 0;
 	}
 

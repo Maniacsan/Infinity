@@ -3,6 +3,7 @@ package me.infinity.utils.render;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
+import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.utils.Helper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
@@ -153,8 +154,7 @@ public class WorldRender {
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-		Helper.minecraftClient.textRenderer.draw(matrix, str, -i, 0, 553648127);
-		Helper.minecraftClient.textRenderer.draw(matrix, str, -i, 0, 0xFFFFFFFF);
+		FontUtils.drawString(matrix, str, -i, 0, -1);
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 
 		return matrix;

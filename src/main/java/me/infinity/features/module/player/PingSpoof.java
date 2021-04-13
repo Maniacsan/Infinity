@@ -9,12 +9,11 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import net.minecraft.network.packet.c2s.play.KeepAliveC2SPacket;
-import net.minecraft.network.packet.s2c.play.KeepAliveS2CPacket;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Sends KeepAlives packets increasing your ping", key = -2, name = "PingSpoof", visible = true)
 public class PingSpoof extends Module {
 
-	private Settings delay = new Settings(this, "Delay", 10, 0, 3000, () -> true);
+	private Settings delay = new Settings(this, "Delay", 1000, 100, 4000, () -> true);
 
 	@Override
 	public void onPlayerTick() {
@@ -23,33 +22,13 @@ public class PingSpoof extends Module {
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
-		if (event.getType().equals(EventType.RECIEVE)) {
-			if (Helper.minecraftClient.isInSingleplayer())
+		if (event.getType().equals(EventType.SEND)) {
+			if (Helper.minecraftClient.isInSingleplayer() || !Helper.getPlayer().isAlive())
 				return;
 
-			if (event.getPacket() instanceof KeepAliveS2CPacket) {
-
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep((long) delay.getCurrentValueInt());
-
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			}
-
-		} else if (event.getType().equals(EventType.SEND)) {
-			if (Helper.minecraftClient.isInSingleplayer())
-				return;
 			if (event.getPacket() instanceof KeepAliveC2SPacket) {
 				try {
-					Thread.sleep((long) (delay.getCurrentValueInt()));
-
-					Helper.sendPacket(new KeepAliveC2SPacket());
+					Thread.sleep((long) delay.getCurrentValueInt());
 				} catch (InterruptedException exception) {
 				}
 			}

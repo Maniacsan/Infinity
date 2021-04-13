@@ -44,17 +44,18 @@ public class XRay extends Module {
 	private Settings down = new Settings(this, "Down Distance", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
 	private Settings info = new Settings(this, "Info", false, () -> orebfuscator.isToggle());
 
-	public Settings block = new Settings(this, "Blocks", blocks,
-			new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE, Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE,
-					Blocks.IRON_ORE, Blocks.LAPIS_ORE, Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE,
-					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE, Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK,
-					Blocks.NETHER_GOLD_ORE, Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB,
-					Blocks.NETHER_BRICK_STAIRS, Blocks.NETHER_BRICK_WALL, Blocks.NETHER_PORTAL, Blocks.NETHERITE_BLOCK,
-					Blocks.BEACON, Blocks.BEDROCK, Blocks.BIRCH_PLANKS, Blocks.ACACIA_PLANKS, Blocks.CRIMSON_PLANKS,
-					Blocks.CHORUS_PLANT, Blocks.DARK_OAK_PLANKS, Blocks.JUNGLE_PLANKS, Blocks.OAK_PLANKS,
-					Blocks.SPRUCE_PLANKS, Blocks.WARPED_PLANKS, Blocks.SAND
-
-			)), () -> true);
+	public Settings block = new Settings(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
+			Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE, Blocks.IRON_ORE, Blocks.LAPIS_ORE,
+			Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE,
+			Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK, Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB,
+			Blocks.NETHER_BRICK_STAIRS, Blocks.NETHER_BRICK_WALL, Blocks.NETHER_PORTAL, Blocks.NETHERITE_BLOCK,
+			Blocks.BEACON, Blocks.BEDROCK, Blocks.BIRCH_PLANKS, Blocks.SAND, Blocks.LOOM, Blocks.COMPOSTER,
+			Blocks.BARREL, Blocks.SMOKER, Blocks.HONEYCOMB_BLOCK, Blocks.HONEY_BLOCK, Blocks.SOUL_CAMPFIRE,
+			Blocks.BEE_NEST, Blocks.SLIME_BLOCK, Blocks.ANVIL, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.OBSIDIAN,
+			Blocks.OBSERVER, Blocks.QUARTZ_BLOCK, Blocks.GILDED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE, Blocks.BLUE_ICE,
+			Blocks.SEA_LANTERN, Blocks.REDSTONE_LAMP, Blocks.SPONGE, Blocks.WET_SPONGE, Blocks.TNT, Blocks.CHEST,
+			Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS, Blocks.CRYING_OBSIDIAN)),
+			() -> true);
 
 	private TimeHelper updater = new TimeHelper();
 
@@ -88,7 +89,7 @@ public class XRay extends Module {
 	@Override
 	public void onPlayerTick() {
 		if (orebfuscator.isToggle()) {
-			
+
 			if (Helper.getPlayer().isCreative() || Helper.getPlayer().isSpectator())
 				return;
 
@@ -192,13 +193,13 @@ public class XRay extends Module {
 		hitBlock = true;
 		breakProgress = 0.0f;
 		this.currentBlock = pos;
-		
-		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK,
-				this.currentBlock, direction));
+
+		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, this.currentBlock,
+				direction));
 		oreBlocks.remove(pos);
 		clickedBlocks.add(pos);
 		progressBlock = pos;
-		
+
 		return true;
 	}
 

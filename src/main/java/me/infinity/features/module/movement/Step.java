@@ -73,6 +73,8 @@ public class Step extends Module {
 	@Override
 	public void onPlayerTick() {
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
+			if (Helper.minecraftClient.options.keyJump.isPressed())
+				return;
 			EntityUtil.setStepHeight(1.4f);
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 			EntityUtil.setStepHeight((float) height.getCurrentValueDouble());

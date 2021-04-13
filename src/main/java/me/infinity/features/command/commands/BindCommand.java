@@ -24,12 +24,6 @@ public class BindCommand extends Command {
 				m.setKey(-2);
 
 			set(Formatting.GRAY + "Binds cleared");
-		} else if (args[0].equalsIgnoreCase("list")) {
-			for (me.infinity.features.Module m : InfMain.getModuleManager().getList()) {
-				if (m.getKey() != -2) {
-					set(Formatting.GRAY + m.getName() + " - " + Formatting.WHITE + m.getKey());
-				}
-			}
 		}
 	}
 
@@ -39,7 +33,6 @@ public class BindCommand extends Command {
 		set(Formatting.WHITE + prefix + "bind add " + Formatting.AQUA + "module" + Formatting.GRAY + "<"
 				+ Formatting.AQUA + "key" + Formatting.GRAY + ">");
 		set(Formatting.WHITE + prefix + "bind del " + Formatting.AQUA + "module");
-		set(Formatting.WHITE + prefix + "bind list");
 		set(Formatting.WHITE + prefix + "bind clear");
 	}
 

@@ -76,8 +76,12 @@ public class NameTags extends Module {
 					LivingEntity e = (LivingEntity) entity;
 
 					String health = getHealthText(e);
+					
+					String name = entity.getDisplayName().getString();
+					
+					name = name + " " + health;
 
-					lines.add(entity.getDisplayName().getString() + " " + health);
+					lines.add(name);
 
 					/* Drawing Items */
 					double c = 0;

@@ -9,7 +9,6 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.PacketEvent;
 import me.infinity.event.ServerChatEvent;
-import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -40,6 +39,9 @@ public class ChatCalculator extends Module {
 	private boolean sendClient;
 	private boolean sendServer;
 
+	private String serverMessage;
+	private String clientMessage;
+
 	private String clientResult = null;
 	private String serverResult = null;
 
@@ -51,40 +53,12 @@ public class ChatCalculator extends Module {
 		sendServer = false;
 	}
 
-	@EventTarget
-	public void onTick(TickEvent event) {
-		if (sendClient) { /* client side */
+	@Override
+	public void onPlayerTick() {
 
-			sendServer = false;
+		if (serverResult != null) {
 
-			if (clientResult != null) {
-
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-							if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
-								Helper.getPlayer()
-										.sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
-								clientResult = null;
-								sendClient = false;
-							} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
-								Helper.infoMessage(clientResult);
-								clientResult = null;
-								sendClient = false;
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
-			}
-
-			sendClient = false;
-		} else if (sendServer) { /* server side */
-
-			if (serverResult != null) {
+			if (serverMessage != null) {
 
 				(new Thread() {
 					@Override
@@ -92,14 +66,21 @@ public class ChatCalculator extends Module {
 						try {
 							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
 							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+								if (serverMessage == null)
+									return;
+
 								Helper.getPlayer()
 										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
-								sendServer = false;
 								serverResult = null;
+								serverMessage = null;
+
 							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+								if (serverResult == null)
+									return;
+
 								Helper.infoMessage(serverResult);
 								serverResult = null;
-								sendServer = false;
+								serverMessage = null;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -107,7 +88,36 @@ public class ChatCalculator extends Module {
 					}
 				}).start();
 			}
-			sendServer = false;
+		}
+
+		if (clientResult != null) {
+			serverResult = null;
+			if (clientResult == null)
+				return;
+			(new Thread() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
+						if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
+							if (clientResult == null)
+								return;
+							Helper.getPlayer()
+									.sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
+							clientResult = null;
+							sendClient = false;
+						} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
+							if (clientResult == null)
+								return;
+							Helper.infoMessage(clientResult);
+							clientResult = null;
+							sendClient = false;
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
 		}
 	}
 
@@ -119,17 +129,46 @@ public class ChatCalculator extends Module {
 
 			String split = message.split(":")[0];
 
-			String chatMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
+			serverMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
 					: message.replace(split + ":", "");
 
-			Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
+			Optional<String> postfix = TermSolver.transformInfixToPostfix(serverMessage);
 
-			if (postfix.isPresent() && chatMessage != null) {
+			if (postfix.isPresent() && serverMessage != null) {
 
-				double result = TermSolver.solvePostfix(postfix.get());
+				try {
 
-				serverResult = String.valueOf((int) result);
-				sendServer = true;
+					String result = String.valueOf((int) TermSolver.solvePostfix(postfix.get()));
+
+					sendServer = true;
+					
+					if (sendServer) {
+					(new Thread() {
+						@Override
+						public void run() {
+							try {
+								Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
+								if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+
+									Helper.getPlayer()
+											.sendChatMessage(globalChat.isToggle() ? "!" + result : result);
+									sendServer = false;
+
+								} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+		
+
+									Helper.infoMessage(result);
+									sendServer = false;
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}).start();
+					}
+					
+				} catch (NumberFormatException ex) {
+				}
 			}
 
 		}
@@ -147,14 +186,14 @@ public class ChatCalculator extends Module {
 							: cms.getChatMessage().replace("!", "");
 
 					Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
-					
+
 					if (postfix.isPresent() && chatMessage != null) {
 
-					double result = TermSolver.solvePostfix(postfix.get());
+						double result = TermSolver.solvePostfix(postfix.get());
 
-					clientResult = String.valueOf((int) result);
+						clientResult = String.valueOf((int) result);
 
-					sendClient = true;
+						sendClient = true;
 					}
 				}
 			}

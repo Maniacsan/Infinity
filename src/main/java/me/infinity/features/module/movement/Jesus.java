@@ -6,6 +6,7 @@ import java.util.Arrays;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
@@ -32,6 +33,13 @@ public class Jesus extends Module {
 	private double dir;
 
 	@Override
+	public void onEnable() {
+		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled()) {
+			Helper.infoMessage("Jesus will not work stably, please turn off AntiWaterPush module");
+		}
+	}
+
+	@Override
 	public void onDisable() {
 		KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), false);
 	}
@@ -39,6 +47,9 @@ public class Jesus extends Module {
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
+		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+			return;
+
 		double offsetY = MathAssist.random(0.01, 0.3);
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
 			if (BlockUtil.isFluid(new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + offsetY,
@@ -52,8 +63,7 @@ public class Jesus extends Module {
 				Helper.getPlayer().setSprinting(false);
 				MoveUtil.strafe(MoveUtil.calcMoveYaw(), speed.getCurrentValueDouble());
 				KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), true);
-			} else
-				KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), false);
+			}
 
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 			if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
@@ -85,18 +95,25 @@ public class Jesus extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
+			if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+				return;
 
-			if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
-				if (Helper.getPlayer().age % 2 == 0) {
-					if (Helper.minecraftClient.options.keyRight.isPressed()
-							|| Helper.minecraftClient.options.keyLeft.isPressed()
-							|| Helper.minecraftClient.options.keyForward.isPressed())
-						Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().x, -0.2,
-								Helper.getPlayer().getVelocity().z);
+			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
+
+				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
+					if (Helper.getPlayer().age % 2 == 0) {
+						if (Helper.minecraftClient.options.keyRight.isPressed()
+								|| Helper.minecraftClient.options.keyLeft.isPressed()
+								|| Helper.minecraftClient.options.keyForward.isPressed())
+							Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().x, -0.2,
+									Helper.getPlayer().getVelocity().z);
+					}
 				}
 			}
 		} else if (event.getType().equals(EventType.POST)) {
+			if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+				return;
+
 			water = Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava();
 			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava()) {
@@ -109,6 +126,7 @@ public class Jesus extends Module {
 				}
 			}
 		}
+
 	}
 
 }

@@ -21,7 +21,7 @@ public class Speed extends Module {
 	private Settings mode = new Settings(this, "Mode", "Strafe",
 			new ArrayList<>(Arrays.asList("Strafe", "Sentiel Ground", "onGround")), () -> true);
 
-	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 1.0, 0.9, 3,
+	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 0.24, 0.2, 0.5,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Strafe"));
 
 	private TimeHelper timer = new TimeHelper();
@@ -48,7 +48,7 @@ public class Speed extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Strafe")) {
-				MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * strafeSpeed.getCurrentValueDouble());
+				MoveUtil.strafe(MoveUtil.calcMoveYaw(), strafeSpeed.getCurrentValueDouble());
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel Ground")) {
 
