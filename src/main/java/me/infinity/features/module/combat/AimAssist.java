@@ -90,8 +90,8 @@ public class AimAssist extends Module {
 		float j = (float) (-(MathHelper.atan2(g, h) * 57.2957763671875D));
 		float yaw = Helper.getPlayer().yaw;
 		float pitch = Helper.getPlayer().pitch;
-		pitch = RotationUtils.limitAngleChange(pitch, j, (float) speed);
-		yaw = RotationUtils.limitAngleChange(yaw, i, (float) speed);
+		pitch = RotationUtils.changeAngle(j, pitch, (float) speed);
+		yaw = RotationUtils.changeAngle(i, yaw, (float) speed);
 		float m = 0.005f * sens.getCurrentValueFloat();
 		float gcd = m * m * m * 1.2f;
 

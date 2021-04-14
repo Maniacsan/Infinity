@@ -8,12 +8,10 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.PacketEvent;
-import me.infinity.event.TickEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.UpdateUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
@@ -53,67 +51,28 @@ public class FakeLags extends Module {
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
-	}
 
-	@EventTarget
-	public void onPacket(PacketEvent event) {
-		if (event.getType().equals(EventType.SEND)) {
-			if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
-				if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate())
-					return;
-
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
-					packetList.add(event.getPacket());
-					event.cancel();
-					legitTicks++;
-				}
-
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
-				if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate() || pulseTicks > 0)
-					return;
-
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
-					packetList.add(event.getPacket());
-					event.cancel();
-					pulseTicks++;
-				}
-
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Always")) {
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
-
-					if (ticks > 0)
-						return;
-
-					ticks++;
-					bothDelay(event);
-				}
-			}
-		}
-	}
-
-	@EventTarget
-	public void onTick(TickEvent event) {
 		if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
-			if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate())
+			if (Helper.getPlayer().isDead())
 				return;
 
 			if (pulseTicks >= pulseDelay.getCurrentValueDouble()) {
 				try {
 					for (Packet<?> unsentPacket : this.packetList)
-						Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
+						Helper.sendPacket(unsentPacket);
 				} catch (Exception exception) {
 				}
 				packetList.clear();
 				pulseTicks = 0;
 			}
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
-			if (Helper.getPlayer().isDead() || !UpdateUtil.canUpdate() || Helper.minecraftClient.isInSingleplayer())
+			if (Helper.getPlayer().isDead() || Helper.minecraftClient.isInSingleplayer())
 				return;
 
 			if (legitTicks >= legitDelay.getCurrentValueDouble()) {
 				try {
 					for (Packet<?> unsentPacket : this.packetList)
-						Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
+						Helper.sendPacket(unsentPacket);
 				} catch (Exception exception) {
 				}
 				packetList.clear();
@@ -135,6 +94,44 @@ public class FakeLags extends Module {
 				bothPacket = null;
 			} else {
 				sendTimer--;
+			}
+		}
+	}
+
+	@EventTarget
+	public void onPacket(PacketEvent event) {
+		if (event.getType().equals(EventType.SEND)) {
+			if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+
+					if (Helper.getPlayer().isDead())
+						return;
+
+					packetList.add(event.getPacket());
+					event.cancel();
+					legitTicks++;
+				}
+
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+
+					if (Helper.getPlayer().isDead() || pulseTicks > 0)
+						return;
+
+					packetList.add(event.getPacket());
+					event.cancel();
+					pulseTicks++;
+				}
+
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Always")) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+
+					if (ticks > 0)
+						return;
+
+					ticks++;
+					bothDelay(event);
+				}
 			}
 		}
 	}

@@ -52,7 +52,7 @@ public class ChestSteal extends Module {
 						}
 					}
 				}
-			} else {
+			} else if (isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
 				if (autoClose.isToggle())
 					Helper.getPlayer().closeScreen();
 				packet = null;

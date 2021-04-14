@@ -99,18 +99,6 @@ public class KillAura extends Module {
 			y1 = Math.random();
 		if (random.nextGaussian() > 0.8D)
 			z1 = Math.random();
-
-		if (target == null)
-			return;
-
-		// set speed with minecraft tick
-		speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-				+ minSpeed.getCurrentValueDouble());
-
-		// set rotation
-		focus = RotationUtils.lookAtEntity(target, speed, speed);
-
-		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 	}
 
 	@Override
@@ -143,6 +131,14 @@ public class KillAura extends Module {
 
 			if (target == null)
 				return;
+			
+			speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+					+ minSpeed.getCurrentValueDouble());
+
+			// set rotation
+			focus = RotationUtils.lookAtEntity(target, speed, speed);
+
+			smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 
 			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 				event.setRotation(focus[0], focus[1]);
@@ -208,8 +204,8 @@ public class KillAura extends Module {
 				event.setYaw(lastYaw);
 				event.setPitch(lastPitch);
 			}
+			event.cancel();
 		}
-		event.cancel();
 	}
 
 	public void attack(MotionEvent event) {

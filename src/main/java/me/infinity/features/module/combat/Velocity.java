@@ -21,11 +21,13 @@ import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 public class Velocity extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList("Packet", "Matrix 6.1.0")), () -> true);
+			new ArrayList<>(Arrays.asList("Packet", "Reverse", "Matrix 6.1.0")), () -> true);
 	private Settings vertical = new Settings(this, "Vertical", 0.0D, 0.0D, 100.0D,
-			() -> Boolean.valueOf(mode.getCurrentMode().equalsIgnoreCase("Packet")));
+			() -> mode.getCurrentMode().equalsIgnoreCase("Packet")
+					|| mode.getCurrentMode().equalsIgnoreCase("Reverse"));
 	private Settings horizontal = new Settings(this, "Horizontal", 0.0D, 0.0D, 100.0D,
-			() -> Boolean.valueOf(mode.getCurrentMode().equalsIgnoreCase("Packet")));
+			() -> mode.getCurrentMode().equalsIgnoreCase("Packet")
+					|| mode.getCurrentMode().equalsIgnoreCase("Reverse"));
 
 	private EntityVelocityUpdateS2CPacket sVel;
 
@@ -61,15 +63,21 @@ public class Velocity extends Module {
 				EntityVelocityUpdateS2CPacket vp = (EntityVelocityUpdateS2CPacket) packet;
 				if (vp.getId() == Helper.getPlayer().getEntityId()) {
 					sVel = vp;
+					int x = vp.getVelocityX() * (int) horizontal.getCurrentValueDouble() / 100;
+					int y = vp.getVelocityY() * (int) vertical.getCurrentValueDouble() / 100;
+					int z = vp.getVelocityZ() * (int) horizontal.getCurrentValueDouble() / 100;
 					if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
-						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityX(vp.getVelocityX() * (int) horizontal.getCurrentValueDouble() / 100);
-						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityY(vp.getVelocityY() * (int) vertical.getCurrentValueDouble() / 100);
-						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityZ(vp.getVelocityZ() * (int) horizontal.getCurrentValueDouble() / 100);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(x);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityY(y);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(z);
+
+					} else if (mode.getCurrentMode().equalsIgnoreCase("Reverse")) {
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(-x);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityY(-y);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(-z);
 
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
+
 						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(0);
 						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(0);
 
