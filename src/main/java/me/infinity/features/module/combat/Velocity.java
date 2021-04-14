@@ -13,9 +13,9 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.mixin.IEntityVelocityUpdateS2CPacket;
 import me.infinity.utils.Helper;
-import me.infinity.utils.MoveUtil;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 
 @ModuleInfo(name = "Velocity", key = -2, visible = true, desc = "Anti knockback", category = Module.Category.COMBAT)
 public class Velocity extends Module {
@@ -43,12 +43,10 @@ public class Velocity extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
-				if (sVel != null) {
-					MoveUtil.hClip(0.15f);
-					event.setX(event.getX() + sVel.getVelocityX() / 7000);
-					event.setY(event.getY() + sVel.getVelocityY() / 7000);
-					event.setZ(event.getZ() + sVel.getVelocityZ() / 7000);
-					MoveUtil.hClip(-0.15f);
+				if (Helper.getPlayer().hurtTime > 0 && sVel != null) {
+					event.setX(event.getX() + sVel.getVelocityX() / 8000);
+					event.setY(event.getY() - sVel.getVelocityY() / 8000);
+					event.setZ(event.getZ() + sVel.getVelocityZ() / 8000);
 					sVel = null;
 				}
 			}
@@ -65,18 +63,20 @@ public class Velocity extends Module {
 					sVel = vp;
 					if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
 						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityX(vp.getVelocityX() * (int) vertical.getCurrentValueDouble() / 100);
+								.setVelocityX(vp.getVelocityX() * (int) horizontal.getCurrentValueDouble() / 100);
 						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityY(vp.getVelocityY() * (int) horizontal.getCurrentValueDouble() / 100);
+								.setVelocityY(vp.getVelocityY() * (int) vertical.getCurrentValueDouble() / 100);
 						((IEntityVelocityUpdateS2CPacket) vp)
-								.setVelocityZ(vp.getVelocityZ() * (int) vertical.getCurrentValueDouble() / 100);
+								.setVelocityZ(vp.getVelocityZ() * (int) horizontal.getCurrentValueDouble() / 100);
+
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
-						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(vp.getVelocityX() * 0);
-						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(vp.getVelocityZ() * 0);
-				
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityX(0);
+						((IEntityVelocityUpdateS2CPacket) vp).setVelocityZ(0);
 
 					}
 				}
+			} else if (packet instanceof ExplosionS2CPacket) {
+				event.cancel();
 			}
 		}
 	}

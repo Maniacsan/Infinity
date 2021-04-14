@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Allows you to fly freely and explore the territory", key = -2, name = "FreeCam", visible = true)
 public class FreeCam extends Module {
 
-	private Settings speed = new Settings(this, "Speed", 1.5, 0, 3.0, () -> true);
+	private Settings speed = new Settings(this, "Speed", 0.8, 0, 2.0, () -> true);
 
 	private OtherPlayer spawnPlayer = null;
 

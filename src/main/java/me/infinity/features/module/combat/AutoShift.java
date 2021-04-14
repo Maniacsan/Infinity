@@ -3,6 +3,7 @@ package me.infinity.features.module.combat;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.InfMain;
 import me.infinity.event.AttackEvent;
 import me.infinity.event.ClickEvent;
 import me.infinity.features.Module;
@@ -39,27 +40,29 @@ public class AutoShift extends Module {
 		}
 	}
 
-	public void shift() {
-		if (!Helper.getPlayer().isOnGround()) {
+	public static void shift() {
+		if (InfMain.getModuleManager().getModuleByClass(AutoShift.class).isEnabled()) {
+			if (!Helper.getPlayer().isOnGround()) {
 
-			(new Thread() {
-				@Override
-				public void run() {
-					try {
+				(new Thread() {
+					@Override
+					public void run() {
+						try {
 
-						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
-								true);
-						Thread.sleep(100);
+							KeyBinding.setKeyPressed(
+									((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), true);
+							Thread.sleep(100);
 
-						KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(),
-								false);
+							KeyBinding.setKeyPressed(
+									((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), false);
 
-					} catch (Exception e) {
-						e.printStackTrace();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 					}
-				}
 
-			}).start();
+				}).start();
+			}
 		}
 
 	}

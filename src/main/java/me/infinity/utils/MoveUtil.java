@@ -59,10 +59,6 @@ public class MoveUtil {
 	public static double getSpeed() {
 		return Math.hypot(Helper.getPlayer().getVelocity().x, Helper.getPlayer().getVelocity().z);
 	}
-	
-	public static double getSpeed(double speed) {
-		return Math.hypot(Helper.getPlayer().getVelocity().x * speed, Helper.getPlayer().getVelocity().z * speed);
-	}
 
 	public static void strafe(double yawL, double speed) {
 		if (!isMoving())

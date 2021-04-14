@@ -38,7 +38,7 @@ public class TriggerBot extends Module {
 
 				if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 						: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-					if (Criticals.fall()) {
+					if (Criticals.fall(Helper.minecraftClient.targetedEntity)) {
 						((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
 
 						Helper.getPlayer().resetLastAttackedTicks();

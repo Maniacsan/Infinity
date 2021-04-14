@@ -9,7 +9,6 @@ import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
-import me.infinity.event.AttackEvent;
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
 import me.infinity.event.TickEvent;
@@ -17,7 +16,6 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
-import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
@@ -95,33 +93,6 @@ public class Criticals extends Module {
 	}
 
 	@EventTarget
-	public void onAttack(AttackEvent event) {
-		if (event.getType().equals(EventType.PRE)) {
-			if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
-				if (!Helper.getPlayer().isOnGround())
-					return;
-
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY() + 0.0645, Helper.getPlayer().getZ(), false));
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel")) {
-
-				double boostY = MathAssist.random(0.07, 0.1);
-				if (!Helper.getPlayer().isOnGround())
-					return;
-
-				MoveUtil.setYVelocity(MathAssist.random(0.08, 0.1));
-
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY() + boostY, Helper.getPlayer().getZ(), false));
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
-			}
-		}
-	}
-
-	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Spoof")
@@ -141,7 +112,28 @@ public class Criticals extends Module {
 					doJumpModeSwing(event);
 				}
 
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
+				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
+						&& ((PlayerInteractEntityC2SPacket) event.getPacket())
+								.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
+					if (!Helper.getPlayer().isOnGround())
+						return;
+
+					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+							Helper.getPlayer().getY() + 0.0645, Helper.getPlayer().getZ(), false));
+					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+							Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+				}
+			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel")) {
+				if (!Helper.getPlayer().isOnGround())
+					return;
+
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY() + 1.28E-9D, Helper.getPlayer().getZ(), true));
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
 			}
+
 		}
 	}
 
@@ -199,7 +191,7 @@ public class Criticals extends Module {
 		return !a;
 	}
 
-	public static boolean fall() {
+	public static boolean fall(net.minecraft.entity.Entity target) {
 		Criticals criticals = ((Criticals) InfMain.getModuleManager().getModuleByClass(Criticals.class));
 		// lul
 		if (criticals.isEnabled() && criticals.mode.getCurrentMode().equalsIgnoreCase("Jump")

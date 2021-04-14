@@ -23,7 +23,11 @@ import me.infinity.utils.PacketUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.rotation.RotationUtils;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -43,6 +47,8 @@ public class KillAura extends Module {
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+
+	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
 
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
@@ -209,7 +215,7 @@ public class KillAura extends Module {
 	public void attack(MotionEvent event) {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-			if (Criticals.fall()) {
+			if (Criticals.fall(target)) {
 
 				float[] matrix = RotationUtils.lookAtEntity(target, speed, speed);
 
@@ -226,9 +232,29 @@ public class KillAura extends Module {
 				// fakeLags reset
 				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())
 					((FakeLags) InfMain.getModuleManager().getModuleByClass(FakeLags.class)).sendPackets();
+				
+				AutoShift.shift();
 
-				Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
+				Helper.sendPacket(new PlayerInteractEntityC2SPacket(target, Helper.getPlayer().isSneaking()));
 				EntityUtil.swing(!noSwing.isToggle());
+
+				if (keepSprint.isToggle()) {
+					if (Helper.getPlayer().fallDistance > 0.0F && !Helper.getPlayer().isOnGround()
+							&& !Helper.getPlayer().isClimbing() && !Helper.getPlayer().isTouchingWater()
+							&& !Helper.getPlayer().hasStatusEffect(StatusEffects.BLINDNESS)
+							&& !Helper.getPlayer().hasVehicle() && target instanceof LivingEntity) {
+						Helper.getPlayer().addCritParticles(target);
+					}
+					
+					if (EnchantmentHelper.getAttackDamage(Helper.getPlayer().getMainHandStack(), ((LivingEntity)target).getGroup()) > 0) {
+						Helper.getPlayer().addEnchantedHitParticles(target);
+					}
+
+					Helper.getPlayer().resetLastAttackedTicks();
+				} else {
+					Helper.getPlayer().attack(target);
+				}
+
 				timer.reset();
 			}
 		}

@@ -1,5 +1,8 @@
 package me.infinity.features.module.movement;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.darkmagician6.eventapi.EventTarget;
 
 import me.infinity.event.PlayerMoveEvent;
@@ -14,6 +17,9 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.MOVEMENT, desc = "Whirls in a circle of entity", key = -2, name = "TargetStrafe", visible = true)
 public class TargetStrafe extends Module {
 
+	private Settings mode = new Settings(this, "Mode", "Basic", new ArrayList<>(Arrays.asList("Basic", "Scroll")),
+			() -> true);
+
 	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
@@ -23,8 +29,11 @@ public class TargetStrafe extends Module {
 
 	private Settings distance = new Settings(this, "Entity Distance", 7.0D, 6.1D, 15.0D, () -> true);
 
-	private Settings radius = new Settings(this, "Strafing radius", 3.0D, 0.0D, 7.0D, () -> true);
+	private Settings radius = new Settings(this, "Strafing radius", 3.0D, 0.0D, 6.0D, () -> true);
 	private Settings speed = new Settings(this, "Speed", 0.31D, 0.0D, 1.0D, () -> true);
+
+	private Settings scrollSpeed = new Settings(this, "Speed to Entity", 0.26D, 0.0D, 1.0D,
+			() -> mode.getCurrentMode().equalsIgnoreCase("Scroll"));
 
 	private Settings damageBoost = new Settings(this, "Damaget Boost", false, () -> true);
 	private Settings boost = new Settings(this, "Boost Value", 0.2D, 0.0D, 0.8D, () -> damageBoost.isToggle());
@@ -35,7 +44,8 @@ public class TargetStrafe extends Module {
 
 	@Override
 	public void onPlayerTick() {
-
+		setSuffix(mode.getCurrentMode());
+		
 		target = EntityUtil.setTarget(distance.getCurrentValueDouble(), 360, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), true);
 
@@ -97,7 +107,14 @@ public class TargetStrafe extends Module {
 		double x = speed * s1 * direction + circleSin * speed;
 		double z = -speed * c1 * direction + circleCos * speed;
 
-		event.setVec3d(new Vec3d(x, Helper.getPlayer().getVelocity().getY(), z));
+		double scrollX = speed * s1 * direction - scrollSpeed.getCurrentValueDouble() * speed * c1;
+		double scrollZ = -speed * c1 * direction - scrollSpeed.getCurrentValueDouble() * speed * s1;
+
+		if (mode.getCurrentMode().equalsIgnoreCase("Basic")) {
+			event.setVec3d(new Vec3d(x, Helper.getPlayer().getVelocity().getY(), z));
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll")) {
+			event.setVec3d(new Vec3d(scrollX, Helper.getPlayer().getVelocity().getY(), scrollZ));
+		}
 
 	}
 
