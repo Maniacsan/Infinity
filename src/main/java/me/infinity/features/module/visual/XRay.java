@@ -25,7 +25,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "View ore blocks", key = GLFW.GLFW_KEY_X, name = "XRay", visible = true)
+@ModuleInfo(category = Module.Category.VISUAL, desc = "View ore blocks", key = -2, name = "XRay", visible = true)
 public class XRay extends Module {
 
 	private ArrayList<Block> blocks = new ArrayList<>();

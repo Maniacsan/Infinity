@@ -13,6 +13,7 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.TimeHelper;
 import me.infinity.utils.calc.TermSolver;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 
@@ -45,6 +46,8 @@ public class ChatCalculator extends Module {
 	private String clientResult = null;
 	private String serverResult = null;
 
+	private TimeHelper timer = new TimeHelper();
+
 	@Override
 	public void onDisable() {
 		clientResult = null;
@@ -55,41 +58,24 @@ public class ChatCalculator extends Module {
 
 	@Override
 	public void onPlayerTick() {
+		if (sendServer) {
+			if (timer.hasReached(delay.getCurrentValueDouble() * 1000)) {
+				if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+					Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
+					serverResult = null;
+					sendServer = false;
+					serverMessage = null;
 
-		if (serverResult != null) {
+				} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
 
-			if (serverMessage != null) {
-
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-							if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
-								if (serverMessage == null)
-									return;
-
-								Helper.getPlayer()
-										.sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
-								serverResult = null;
-								serverMessage = null;
-
-							} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-								if (serverResult == null)
-									return;
-
-								Helper.infoMessage(serverResult);
-								serverResult = null;
-								serverMessage = null;
-							}
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
+					Helper.infoMessage(serverResult);
+					serverResult = null;
+					sendServer = false;
+					serverMessage = null;
+				}
+				timer.reset();
 			}
 		}
-
 		if (clientResult != null) {
 			serverResult = null;
 			if (clientResult == null)
@@ -140,33 +126,9 @@ public class ChatCalculator extends Module {
 
 					String result = String.valueOf((int) TermSolver.solvePostfix(postfix.get()));
 
+					serverResult = result;
 					sendServer = true;
-					
-					if (sendServer) {
-					(new Thread() {
-						@Override
-						public void run() {
-							try {
-								Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-								if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
 
-									Helper.getPlayer()
-											.sendChatMessage(globalChat.isToggle() ? "!" + result : result);
-									sendServer = false;
-
-								} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
-		
-
-									Helper.infoMessage(result);
-									sendServer = false;
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}
-					}).start();
-					}
-					
 				} catch (NumberFormatException ex) {
 				}
 			}

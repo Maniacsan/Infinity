@@ -3,6 +3,8 @@ package me.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import javax.swing.event.CaretEvent;
+
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
@@ -49,6 +51,7 @@ public class Velocity extends Module {
 					event.setX(event.getX() + sVel.getVelocityX() / 8000);
 					event.setY(event.getY() - sVel.getVelocityY() / 8000);
 					event.setZ(event.getZ() + sVel.getVelocityZ() / 8000);
+					event.cancel();
 					sVel = null;
 				}
 			}

@@ -246,37 +246,43 @@ public class Render2D {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
 
+	public static boolean isFillHovered(double x, double y, double minX, double minY, double maxX, double maxY) {
+		if (x > minX && x < maxX && y > minY && y < maxY)
+			return true;
+		return false;
+	}
+
 	public static boolean isHovered(float mouseX, float mouseY, float x, float y, float width, float height) {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
 
 	public static void drawTriangle(int x, int y, int size, int rotation, int color) {
-        GL11.glTranslated(x, y, 0);
-        GL11.glRotatef(180 + rotation, 0F, 0F, 1.0F);
+		GL11.glTranslated(x, y, 0);
+		GL11.glRotatef(180 + rotation, 0F, 0F, 1.0F);
 
-        float alpha = (float) (color >> 24 & 255) / 255.0F;
-        float red = (float) (color >> 16 & 255) / 255.0F;
-        float green = (float) (color >> 8 & 255) / 255.0F;
-        float blue = (float) (color & 255) / 255.0F;
+		float alpha = (float) (color >> 24 & 255) / 255.0F;
+		float red = (float) (color >> 16 & 255) / 255.0F;
+		float green = (float) (color >> 8 & 255) / 255.0F;
+		float blue = (float) (color & 255) / 255.0F;
 
-        GL11.glColor4f(red, green, blue, alpha);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glDisable(GL11.GL_TEXTURE_2D);
-        GL11.glEnable(GL11.GL_LINE_SMOOTH);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-        GL11.glLineWidth(1);
-        GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+		GL11.glColor4f(red, green, blue, alpha);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glLineWidth(1);
+		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
 
-        GL11.glVertex2d(0, (1.0F * size));
-        GL11.glVertex2d((1 * size), -(1.0F * size));
-        GL11.glVertex2d(-(1 * size), -(1.0F * size));
+		GL11.glVertex2d(0, (1.0F * size));
+		GL11.glVertex2d((1 * size), -(1.0F * size));
+		GL11.glVertex2d(-(1 * size), -(1.0F * size));
 
-        GL11.glEnd();
-        GL11.glDisable(GL11.GL_LINE_SMOOTH);
-        GL11.glEnable(GL11.GL_TEXTURE_2D);
-        GL11.glDisable(GL11.GL_BLEND);
-        GL11.glRotatef(-180 - rotation, 0F, 0F, 1.0F);
-        GL11.glTranslated(-x, -y, 0);
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glRotatef(-180 - rotation, 0F, 0F, 1.0F);
+		GL11.glTranslated(-x, -y, 0);
 	}
 
 	// scroll

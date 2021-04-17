@@ -1,10 +1,13 @@
 package me.infinity;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import me.infinity.chat.InfChatHud;
+import me.infinity.chat.IRC.IRCClient;
 import me.infinity.clickmenu.ClickMenu;
 import me.infinity.features.HookManager;
 import me.infinity.features.ModuleManager;
@@ -16,6 +19,8 @@ import me.infinity.features.module.visual.HUD;
 import me.infinity.file.config.ConfigManager;
 import me.infinity.ui.account.main.AccountManager;
 import me.infinity.utils.Helper;
+import me.infinity.utils.user.User;
+import net.minecraft.client.MinecraftClient;
 
 public class InfMain {
 
@@ -31,9 +36,15 @@ public class InfMain {
 	private static AccountManager accountManager;
 	private static MacroManager macroManager;
 	private static Friend friend;
-	
+	private static User user;
+
+	private static InfChatHud chatHud;
+	private static IRCClient irc;
+
+	public static boolean infChat;
+
 	public static ClickMenu menu;
-	
+
 	/* Minecraft timer */
 	public static float TIMER = 1.0f;
 
@@ -47,20 +58,46 @@ public class InfMain {
 		commandManager = new CommandManager();
 		macroManager = new MacroManager();
 		friend = new Friend();
-		
+		chatHud = new InfChatHud(MinecraftClient.getInstance());
+
+		// dbuser set
+		user = new User("spray", "ADMIN");
+		irc = new IRCClient("irc.w3.org", 6667, user.getName(), user.getRole().getName(), "InfinityModChat1337");
+
 		// loads
 		friend.load();
 		configManager.loadConfig(false);
 		accountManager.load();
 		macroManager.load();
-		
+
 		// start modules
 		moduleManager.getModuleByClass(HUD.class).enable();
 		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
-		
+
 		menu = new ClickMenu();
 		
+		if (!irc.isActive()) {
+			try {
+				irc.start();
+				irc.joinChannel(irc.getChannel());
+			} catch (IOException e2) {
+				e2.printStackTrace();
+			}
+		}
+
 		LOGGER.info("Injected bullshit");
+	}
+
+	// shutdown process
+	public static void onShutdown() {
+		if (irc.isActive()) {
+
+			try {
+				irc.quit("Client disconnected.", false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static String getName() {
@@ -102,7 +139,19 @@ public class InfMain {
 	public static Friend getFriend() {
 		return friend;
 	}
-	
+
+	public static InfChatHud getChatHud() {
+		return chatHud;
+	}
+
+	public static IRCClient getIrc() {
+		return irc;
+	}
+
+	public static User getUser() {
+		return user;
+	}
+
 	public static void resetTimer() {
 		TIMER = 1.0f;
 	}

@@ -5,7 +5,6 @@ import com.darkmagician6.eventapi.types.EventType;
 import me.infinity.event.PacketEvent;
 import me.infinity.mixin.IPlayerMoveC2SPacket;
 import me.infinity.mixin.IPlayerPositionLookS2CPacket;
-import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.KeepAliveC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -26,7 +25,6 @@ public class PacketUtil {
 			if (event.getPacket() instanceof PlayerMoveC2SPacket) {
 				PlayerMoveC2SPacket cp = (PlayerMoveC2SPacket) event.getPacket();
 				if (!Float.isNaN(yaw) || !Float.isNaN(pitch)) {
-					RotationUtils.fixSensitivity((float) Helper.minecraftClient.options.mouseSensitivity, yaw, pitch);
 					((IPlayerMoveC2SPacket) cp).setYaw(yaw);
 					((IPlayerMoveC2SPacket) cp).setPitch(pitch);
 					((IPlayerMoveC2SPacket) cp).setLook(true);

@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.darkmagician6.eventapi.EventManager;
 
+import me.infinity.InfMain;
 import me.infinity.event.ClickEvent;
 import me.infinity.event.TickEvent;
 import net.minecraft.client.MinecraftClient;
@@ -35,5 +36,10 @@ public abstract class MinecraftClientMixin {
 		if (clickEvent.isCancelled())
 			info.cancel();
 	}
+	
+    @Inject(method = "stop", at = @At("HEAD"))
+    public void stop(CallbackInfo info) {
+        InfMain.onShutdown();
+    }
 
 }

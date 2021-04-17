@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.darkmagician6.eventapi.EventManager;
 
-import me.infinity.utils.Helper;
+import me.infinity.utils.StringUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
@@ -101,7 +101,7 @@ public class Module {
 	}
 	
 	public String toCompare() {
-		return getSortedName() + " " + Helper.replaceNull(getSuffix());
+		return getSortedName() + " " + StringUtil.replaceNull(getSuffix());
 	}
 
 	public String getDesc() {

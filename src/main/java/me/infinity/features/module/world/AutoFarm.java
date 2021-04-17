@@ -63,7 +63,7 @@ public class AutoFarm extends Module {
 				move(pos);
 
 				Vec3d posVec = new Vec3d(pos.getX(), pos.getY() - 1, pos.getZ());
-				float[] rotation = RotationUtils.lookAtVecPos(posVec, 145, 145);
+				float[] rotation = RotationUtils.lookAtVecPos(posVec);
 				Helper.getPlayer().yaw = rotation[0];
 				Helper.getPlayer().pitch = rotation[1];
 

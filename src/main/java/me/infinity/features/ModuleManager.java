@@ -31,7 +31,7 @@ public class ModuleManager {
 			new Scaffold(),
 			new SafeWalk(),
 			new HitBoxes(),
-			new AimAssist(),
+			new AimBot(),
 			new ClickAura(),
 			new Timer(),
 			new AutoTotem(),

@@ -77,6 +77,7 @@ public class Speed extends Module {
 					if (!Helper.getPlayer().isOnGround()) {
 						return;
 					}
+					
 					MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed());
 
 					if (Helper.getPlayer().age % 3 == 0) {
@@ -85,6 +86,8 @@ public class Speed extends Module {
 
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.3);
 					}
+					
+					MoveUtil.setYVelocity(-1e-2);
 				}
 			}
 		}

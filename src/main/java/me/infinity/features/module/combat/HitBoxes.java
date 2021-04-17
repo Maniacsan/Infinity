@@ -7,6 +7,7 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.StringUtil;
 import me.infinity.utils.entity.EntityUtil;
 import net.minecraft.entity.Entity;
 
@@ -23,7 +24,7 @@ public class HitBoxes extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		setSuffix(Helper.DF(size.getCurrentValueDouble(), 2));
+		setSuffix(StringUtil.DF(size.getCurrentValueDouble(), 2));
 	}
 
 	@EventTarget

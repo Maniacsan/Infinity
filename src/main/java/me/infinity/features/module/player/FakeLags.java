@@ -60,10 +60,10 @@ public class FakeLags extends Module {
 				try {
 					for (Packet<?> unsentPacket : this.packetList)
 						Helper.sendPacket(unsentPacket);
+					packetList.clear();
+					pulseTicks = 0;
 				} catch (Exception exception) {
 				}
-				packetList.clear();
-				pulseTicks = 0;
 			}
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
 			if (Helper.getPlayer().isDead() || Helper.minecraftClient.isInSingleplayer())
@@ -115,7 +115,7 @@ public class FakeLags extends Module {
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
 				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
 
-					if (Helper.getPlayer().isDead() || pulseTicks > 0)
+					if (Helper.getPlayer().isDead() || pulseTicks != 0)
 						return;
 
 					packetList.add(event.getPacket());

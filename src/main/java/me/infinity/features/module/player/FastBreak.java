@@ -3,7 +3,7 @@ package me.infinity.features.module.player;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
-import me.infinity.utils.Helper;
+import me.infinity.utils.StringUtil;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Allows you to dig blocks faster", key = -2, name = "FastBreak", visible = true)
 public class FastBreak extends Module {
@@ -12,7 +12,7 @@ public class FastBreak extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		setSuffix(Helper.DF(speed.getCurrentValueDouble(), 2));
+		setSuffix(StringUtil.DF(speed.getCurrentValueDouble(), 2));
 	}
 
 }

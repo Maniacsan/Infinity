@@ -45,15 +45,13 @@ public class BowAim extends Module {
 						animals.isToggle(), throughWalls.isToggle());
 				if (target == null)
 					return;
-				float[] look = RotationUtils.bowAimRotation(target, speed.getCurrentValueFloat(),
-						speed.getCurrentValueFloat());
+				float[] look = RotationUtils.bowAimRotation(target);
+				
+				look[0] = RotationUtils.limitAngleChange(event.getYaw(), look[0], speed.getCurrentValueFloat());
+				look[1] = RotationUtils.limitAngleChange(event.getPitch(), look[1], speed.getCurrentValueFloat());
 
-				if (mode.getCurrentMode().equalsIgnoreCase("Client")) {
-					Helper.getPlayer().yaw = look[0];
-					Helper.getPlayer().pitch = look[1];
-				} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
-					event.setRotation(look[0], look[1]);
-				}
+				event.setRotation(look[0], look[1], mode.getCurrentMode().equalsIgnoreCase("Client"));
+
 			}
 		}
 	}

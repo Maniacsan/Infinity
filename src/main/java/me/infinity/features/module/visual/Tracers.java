@@ -69,7 +69,7 @@ public class Tracers extends Module {
 				if (Helper.minecraftClient.currentScreen != null && !(Helper.minecraftClient.currentScreen instanceof ClickMenu))
 					return;
 
-				float[] toRot = RotationUtils.lookAtEntity(e, 360, 360);
+				float[] toRot = RotationUtils.lookAtEntity(e);
 				float yaw = RotationUtils.getYaw(e) + Helper.getPlayer().yaw;
 
 				// normalize 

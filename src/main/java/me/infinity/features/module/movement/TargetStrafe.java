@@ -11,6 +11,7 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
+import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
@@ -45,7 +46,7 @@ public class TargetStrafe extends Module {
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
-		
+
 		target = EntityUtil.setTarget(distance.getCurrentValueDouble(), 360, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), true);
 
@@ -73,10 +74,11 @@ public class TargetStrafe extends Module {
 				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
 				: this.speed.getCurrentValueDouble();
 
-		double distance = Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
-				+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2));
 		double strafeYaw = Math.atan2(target.getZ() - Helper.getPlayer().getZ(),
 				target.getX() - Helper.getPlayer().getX());
+		double distance = Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
+				+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2));
+
 		double yaw = strafeYaw - (0.5 * Math.PI);
 		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
@@ -88,6 +90,7 @@ public class TargetStrafe extends Module {
 				: distance - radius.getCurrentValueDouble();
 
 		// speed borders
+		double borderSpeed = speed * 0.5;
 		if (circle > speed)
 			circle = speed;
 		else if (circle < -speed)
@@ -104,8 +107,16 @@ public class TargetStrafe extends Module {
 				/ (Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
 						+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2)));
 
+		strafeYaw -= strafeYaw % gcd;
+
 		double x = speed * s1 * direction + circleSin * speed;
 		double z = -speed * c1 * direction + circleCos * speed;
+
+		if (Helper.getPlayer().distanceTo(target) < radius.getCurrentValueDouble() + 0.09 &&
+				Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble() - 0.09) {
+			x = circleSin + -Math.sin(strafeYaw) * speed * direction;
+			z = circleCos + Math.cos(strafeYaw) * speed * direction;
+		}
 
 		double scrollX = speed * s1 * direction - scrollSpeed.getCurrentValueDouble() * speed * c1;
 		double scrollZ = -speed * c1 * direction - scrollSpeed.getCurrentValueDouble() * speed * s1;

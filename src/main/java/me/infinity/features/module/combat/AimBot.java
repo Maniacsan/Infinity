@@ -3,6 +3,9 @@ package me.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import com.darkmagician6.eventapi.EventTarget;
+
+import me.infinity.event.MotionEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -13,10 +16,9 @@ import me.infinity.utils.entity.EntityUtil;
 import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.MathHelper;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Help aiming", key = -2, name = "AimAssist", visible = true)
-public class AimAssist extends Module {
+@ModuleInfo(category = Module.Category.COMBAT, desc = "Automatically aim at target", key = -2, name = "AimBot", visible = true)
+public class AimBot extends Module {
 
 	private Settings look = new Settings(this, "Look", "HEAD", new ArrayList<>(Arrays.asList("HEAD", "BODY", "LEGS")),
 			() -> true);
@@ -41,8 +43,8 @@ public class AimAssist extends Module {
 	private Settings maxSpeed = new Settings(this, "Max Speed %", 60D, 0D, 100D, () -> true);
 	private Settings minSpeed = new Settings(this, "Min Speed %", 20D, 0D, 100D, () -> true);
 
-	@Override
-	public void onPlayerTick() {
+	@EventTarget
+	public void onMotionTick(MotionEvent event) {
 		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
 				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
 				throughWalls.isToggle());
@@ -50,23 +52,26 @@ public class AimAssist extends Module {
 		if (target == null)
 			return;
 
+		double min = minSpeed.getCurrentValueDouble();
+		double max = maxSpeed.getCurrentValueDouble();
+		float speed = (float) MathAssist.random(min, max);
+
 		float[] look = look(target);
 
 		if (onMoving.isToggle() && !MoveUtil.isMoving())
 			return;
 
-		Helper.getPlayer().yaw = look[0];
-		Helper.getPlayer().pitch = look[1];
+		if (!Float.isNaN(look[0]) || !Float.isNaN(look[1]) || look[1] < 90 || look[1] > -90) {
+			Helper.getPlayer().yaw = RotationUtils.limitAngleChange(Helper.getPlayer().yaw, look[0], speed);
+			Helper.getPlayer().pitch = RotationUtils.limitAngleChange(Helper.getPlayer().pitch, look[1], speed);
+		}
 
 	}
 
 	private float[] look(Entity target) {
-		double min = minSpeed.getCurrentValueDouble() / 5;
-		double max = maxSpeed.getCurrentValueDouble() / 5;
-		double speed = MathAssist.random(min, max);
 
-		double d = target.getX() - Helper.getPlayer().getX();
-		double e = target.getZ() - Helper.getPlayer().getZ();
+		double d = target.getPos().x - Helper.getPlayer().getPos().x;
+		double e = target.getPos().z - Helper.getPlayer().getPos().z;
 		double pitchPos = 0;
 
 		if (look.getCurrentMode().equalsIgnoreCase("HEAD"))
@@ -85,18 +90,19 @@ public class AimAssist extends Module {
 					+ Helper.getPlayer().getEyeY() - pitchPos;
 		}
 
-		double h = (double) MathHelper.sqrt(d * d + e * e);
-		float i = (float) (MathHelper.atan2(e, d) * 57.2957763671875D) - 90.0F;
-		float j = (float) (-(MathHelper.atan2(g, h) * 57.2957763671875D));
-		float yaw = Helper.getPlayer().yaw;
-		float pitch = Helper.getPlayer().pitch;
-		pitch = RotationUtils.changeAngle(j, pitch, (float) speed);
-		yaw = RotationUtils.changeAngle(i, yaw, (float) speed);
+		double h = (double) Math.sqrt(d * d + e * e);
+		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
+		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
+
+		float pitch = j;
+		float yaw = i;
+
 		float m = 0.005f * sens.getCurrentValueFloat();
 		float gcd = m * m * m * 1.2f;
 
 		yaw -= yaw % gcd;
 		pitch -= pitch % gcd;
+
 		return new float[] { yaw, pitch };
 	}
 }

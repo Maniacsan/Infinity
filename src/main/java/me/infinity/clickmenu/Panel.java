@@ -136,6 +136,7 @@ public class Panel {
 			}
 		}
 		if (closeHovered && button == 0) {
+			this.dragging = false;
 			clickMenu.onClose();
 		}
 	}

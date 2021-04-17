@@ -46,6 +46,12 @@ public class ESP extends Module {
 	private Settings animalsColor = new Settings(this, "Animals Color", new Color(108, 234, 42),
 			() -> animals.isToggle());
 
+	private int lastWidth = -1;
+	private int lastHeight = -1;
+	private double lastShaderWidth;
+
+	private boolean shaderUnloaded = true;
+
 	@Override
 	public void onDisable() {
 		for (Entity e : Helper.getWorld().getEntities()) {
@@ -104,7 +110,7 @@ public class ESP extends Module {
 			}
 		} else {
 			event.getEntity().setGlowing(false);
-		}	
+		}
 	}
 
 	private VertexConsumerProvider getOutline(BufferBuilderStorage buffers, int color) {

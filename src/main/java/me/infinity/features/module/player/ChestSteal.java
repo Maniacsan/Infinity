@@ -12,6 +12,7 @@ import me.infinity.utils.InvUtil;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.TimeHelper;
 import net.minecraft.client.gui.screen.ingame.GenericContainerScreen;
+import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen;
 import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 
@@ -40,22 +41,27 @@ public class ChestSteal extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		if (packet != null && Helper.getPlayer().currentScreenHandler.syncId == packet.getSyncId()
-				&& Helper.minecraftClient.currentScreen instanceof GenericContainerScreen) {
-			if (!isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
-				for (int i = 0; i < Helper.getPlayer().currentScreenHandler.slots.size() - 36; ++i) {
-					net.minecraft.screen.slot.Slot slot = Helper.getPlayer().currentScreenHandler.getSlot(i);
-					if (slot.hasStack() && slot.getStack() != null) {
+		if (packet != null && Helper.getPlayer().currentScreenHandler.syncId == packet.getSyncId()) {
+			if (Helper.minecraftClient.currentScreen instanceof ShulkerBoxScreen
+					|| Helper.minecraftClient.currentScreen instanceof GenericContainerScreen) {
+				if (!isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
+					for (int i = 0; i < Helper.getPlayer().currentScreenHandler.slots.size() - 36; ++i) {
+						net.minecraft.screen.slot.Slot slot = Helper.getPlayer().currentScreenHandler.getSlot(i);
+						if (slot.hasStack() && slot.getStack() != null) {
 
-						if (timer.hasReached(delay)) {
-							quickItem(i);
+							if (timer.hasReached(delay)) {
+								quickItem(i);
+							}
 						}
 					}
 				}
-			} else if (isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
+			}
+
+			if (isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
 				if (autoClose.isToggle())
 					Helper.getPlayer().closeScreen();
-				packet = null;
+				if (packet != null)
+					packet = null;
 			}
 		}
 	}
@@ -71,7 +77,7 @@ public class ChestSteal extends Module {
 	private boolean isContainerEmpty(ScreenHandler container) {
 		boolean temp = true;
 		int i = 0;
-		for (int slotAmount = container.slots.size() == 90 ? 54 : 35; i < slotAmount; i++) {
+		for (int slotAmount = container.slots.size() == 90 ? 54 : 27; i < slotAmount; i++) {
 			if (container.getSlot(i).hasStack()) {
 				temp = false;
 			}

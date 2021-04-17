@@ -3,8 +3,6 @@ package me.infinity.features.module.visual;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.glfw.GLFW;
-
 import me.infinity.InfMain;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.features.Module;
@@ -12,11 +10,12 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
+import me.infinity.utils.StringUtil;
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Ingame Infinity Hud", key = GLFW.GLFW_KEY_N, name = "HUD", visible = true)
+@ModuleInfo(category = Module.Category.VISUAL, desc = "Ingame Infinity Hud", key = -2, name = "HUD", visible = true)
 public class HUD extends Module {
 
 	private Settings array = new Settings(this, "Arraylist", true, () -> true);
@@ -32,7 +31,7 @@ public class HUD extends Module {
 
 		InfMain.getModuleManager().getList().forEach(module -> {
 			if (module.isEnabled() && module.isVisible())
-				arrayList.add(module.getSortedName() + " " + Formatting.BLUE + Helper.replaceNull(module.getSuffix()));
+				arrayList.add(module.getSortedName() + " " + Formatting.BLUE + StringUtil.replaceNull(module.getSuffix()));
 		});
 
 		// sort

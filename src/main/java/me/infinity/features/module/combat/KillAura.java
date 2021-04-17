@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.lwjgl.glfw.GLFW;
-
 import com.darkmagician6.eventapi.EventTarget;
-import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.InfMain;
 import me.infinity.event.MotionEvent;
@@ -32,13 +29,12 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = GLFW.GLFW_KEY_R, name = "KillAura", visible = true)
+@ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
 	private Settings rotation = new Settings(this, "Rotation", "Reset",
 			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")), () -> true);
-	private Settings method = new Settings(this, "Method", "PRE", new ArrayList<>(Arrays.asList("PRE", "POST")),
-			() -> true);
+
 	// targets
 	private Settings players = new Settings(this, "Players", true, () -> true);
 	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
@@ -49,6 +45,8 @@ public class KillAura extends Module {
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
 
 	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
+
+	private Settings lockView = new Settings(this, "Look View", false, () -> true);
 
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
@@ -93,11 +91,11 @@ public class KillAura extends Module {
 
 	@EventTarget
 	public void onTick(TickEvent event) {
-		if (random.nextGaussian() > 0.8D)
+		if (random.nextGaussian() > 0.65D)
 			x1 = Math.random();
-		if (random.nextGaussian() > 0.8D)
+		if (random.nextGaussian() > 1D)
 			y1 = Math.random();
-		if (random.nextGaussian() > 0.8D)
+		if (random.nextGaussian() > 0.65D)
 			z1 = Math.random();
 	}
 
@@ -120,47 +118,51 @@ public class KillAura extends Module {
 			}
 		}
 
+		if (time <= 0) {
+			lastYaw = 999;
+			lastPitch = 999;
+		}
+
 	}
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		if (event.getType().equals(EventType.PRE)) {
-			target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
-					players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
-					throughWalls.isToggle());
+		target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(), players.isToggle(),
+				friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
+				throughWalls.isToggle());
 
-			if (target == null)
-				return;
-			
-			speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
-					+ minSpeed.getCurrentValueDouble());
+		if (target == null)
+			return;
 
-			// set rotation
-			focus = RotationUtils.lookAtEntity(target, speed, speed);
+		speed = (float) (Math.random() * (maxSpeed.getCurrentValueDouble() - minSpeed.getCurrentValueDouble())
+				+ minSpeed.getCurrentValueDouble());
 
-			smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+		// set rotation
+		focus = RotationUtils.lookAtEntity(target);
 
-			if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				event.setRotation(focus[0], focus[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				event.setRotation(smash[0], smash[1]);
-			} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
-				if (lastYaw != 999 || lastPitch != 999) {
-					event.setRotation(lastYaw, lastPitch);
-				}
-			}
+		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+		
+		focus[0] = RotationUtils.limitAngleChange(event.getYaw(),
+				focus[0], speed);
+		focus[1] = RotationUtils.limitAngleChange(event.getPitch(),
+				focus[1], speed);
 
-			if (method.getCurrentMode().equalsIgnoreCase("PRE")) {
-				attack(event);
-			}
-		} else if (event.getType().equals(EventType.POST)) {
-			if (target == null)
-				return;
+		smash[0] = RotationUtils.limitAngleChange(event.getYaw(),
+				smash[0], speed);
+		smash[1] = RotationUtils.limitAngleChange(event.getPitch(),
+				smash[1], speed);
 
-			if (method.getCurrentMode().equalsIgnoreCase("POST")) {
-				attack(event);
+		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+			event.setRotation(focus[0], focus[1], lockView.isToggle());
+		} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+			event.setRotation(smash[0], smash[1], lockView.isToggle());
+		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
+			if (lastYaw != 999 || lastPitch != 999) {
+				event.setRotation(lastYaw, lastPitch, lockView.isToggle());
 			}
 		}
+
+		attack(event);
 	}
 
 	@EventTarget
@@ -177,11 +179,6 @@ public class KillAura extends Module {
 				PacketUtil.setRotation(event, lastYaw, lastPitch);
 				Helper.getPlayer().bodyYaw = lastYaw;
 				Helper.getPlayer().headYaw = lastYaw;
-			}
-
-			if (time <= 0) {
-				lastYaw = 999;
-				lastPitch = 999;
 			}
 		}
 	}
@@ -213,7 +210,10 @@ public class KillAura extends Module {
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
 
-				float[] matrix = RotationUtils.lookAtEntity(target, speed, speed);
+				float[] matrix = RotationUtils.lookAtEntity(target);
+				
+				matrix[0] = RotationUtils.limitAngleChange(event.getYaw(), matrix[0], speed);
+				matrix[1] = RotationUtils.limitAngleChange(event.getPitch(), matrix[1], speed);
 
 				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 					lastYaw = matrix[0];
@@ -228,8 +228,6 @@ public class KillAura extends Module {
 				// fakeLags reset
 				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())
 					((FakeLags) InfMain.getModuleManager().getModuleByClass(FakeLags.class)).sendPackets();
-				
-				AutoShift.shift();
 
 				Helper.sendPacket(new PlayerInteractEntityC2SPacket(target, Helper.getPlayer().isSneaking()));
 				EntityUtil.swing(!noSwing.isToggle());
@@ -241,8 +239,9 @@ public class KillAura extends Module {
 							&& !Helper.getPlayer().hasVehicle() && target instanceof LivingEntity) {
 						Helper.getPlayer().addCritParticles(target);
 					}
-					
-					if (EnchantmentHelper.getAttackDamage(Helper.getPlayer().getMainHandStack(), ((LivingEntity)target).getGroup()) > 0) {
+
+					if (EnchantmentHelper.getAttackDamage(Helper.getPlayer().getMainHandStack(),
+							((LivingEntity) target).getGroup()) > 0) {
 						Helper.getPlayer().addEnchantedHitParticles(target);
 					}
 
@@ -250,7 +249,6 @@ public class KillAura extends Module {
 				} else {
 					Helper.getPlayer().attack(target);
 				}
-
 				timer.reset();
 			}
 		}
@@ -277,25 +275,12 @@ public class KillAura extends Module {
 		ly = RotationUtils.limitAngleChange(ly, (float) y1, speed);
 		lz = RotationUtils.limitAngleChange(lz, (float) z1, speed);
 
-		final Vec3d randomVec = new Vec3d(bb.minX + (bb.maxX - bb.minX) * lx * 0.8,
-				bb.minY + (bb.maxY - bb.minY) * ly * 0.8, bb.minZ + (bb.maxZ - bb.minZ) * lz * 0.8);
+		final Vec3d randomVec = new Vec3d(bb.minX + (bb.maxX - bb.minX) * lx * 0.65, bb.minY + (bb.maxY - bb.minY) * ly,
+				bb.minZ + (bb.maxZ - bb.minZ) * lz * 0.65);
 		float[] randomRotation = predictRotation(randomVec);
-		float[] rotations = RotationUtils.lookAtEntity(entity, speed, speed);
-		float[] hitbox = RotationUtils.getEntityBox(entity);
-		float yawDifference = RotationUtils.getYawDifference(Helper.getPlayer().yaw, rotations[0]);
 
-		if (yawDifference > hitbox[0] || yawDifference < -hitbox[0]) {
-			if (yawDifference < 0) {
-				yaw += yawDifference + hitbox[0];
-			} else if (yawDifference > 0) {
-				yaw += yawDifference - hitbox[0];
-			}
-		} else {
-			float randomYaw = RotationUtils.limitAngleChange(Helper.getPlayer().yaw, randomRotation[0], speed);
-			float randomPitch = RotationUtils.limitAngleChange(Helper.getPlayer().pitch, randomRotation[1], speed);
-			yaw = randomYaw;
-			pitch = randomPitch;
-		}
+		yaw = randomRotation[0];
+		pitch = randomRotation[1];
 
 		// matrix sensitive/acceleration check bypass
 		float f = (float) (sensitivy * 0.6F + 0.2F);

@@ -2,6 +2,9 @@ package me.infinity.clickmenu.util;
 
 import java.awt.Color;
 
+import me.infinity.InfMain;
+import net.minecraft.util.Formatting;
+
 public class ColorUtils {
 
 	public static final int SELECT = new Color(33, 170, 47).getRGB();
@@ -40,6 +43,50 @@ public class ColorUtils {
 			exp.printStackTrace();
 		}
 		return color;
+	}
+
+	public static Formatting getStringUserColor(String prefix) {
+		Formatting format = Formatting.WHITE;
+
+		switch (prefix) {
+
+		case "Admin":
+			format = Formatting.RED;
+			break;
+		case "Moderator":
+			format = Formatting.GREEN;
+			break;
+		case "Premium":
+			format = Formatting.YELLOW;
+			break;
+		case "User":
+			format = Formatting.BLUE;
+			break;
+		}
+		
+		return format;
+	}
+
+	public static Formatting getUserRoleColor() {
+		Formatting format = Formatting.WHITE;
+
+		switch (InfMain.getUser().getRole()) {
+
+		case ADMIN:
+			format = Formatting.RED;
+			break;
+		case MODERATOR:
+			format = Formatting.GREEN;
+			break;
+		case PREMIUM:
+			format = Formatting.YELLOW;
+			break;
+		case USER:
+			format = Formatting.BLUE;
+			break;
+		}
+
+		return format;
 	}
 
 }

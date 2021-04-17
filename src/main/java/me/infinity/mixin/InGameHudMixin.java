@@ -11,11 +11,12 @@ import com.darkmagician6.eventapi.EventManager;
 import me.infinity.InfMain;
 import me.infinity.event.HudRenderEvent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 
 @Mixin(InGameHud.class)
-public class InGameHudMixin {
+public class InGameHudMixin extends DrawableHelper {
 
 	@Shadow
 	private int scaledWidth;

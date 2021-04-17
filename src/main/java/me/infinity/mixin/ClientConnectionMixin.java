@@ -16,6 +16,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import me.infinity.InfMain;
+import me.infinity.chat.IRC.IRCClient;
 import me.infinity.event.PacketEvent;
 import me.infinity.features.command.Command;
 import me.infinity.features.module.hidden.AntiFabric;
@@ -44,7 +45,19 @@ public class ClientConnectionMixin {
 			CallbackInfo callback) {
 		if (packet instanceof ChatMessageC2SPacket) {
 			ChatMessageC2SPacket chatPacket = (ChatMessageC2SPacket) packet;
-			if (chatPacket.getChatMessage().startsWith(Command.prefix)) {
+			// irc
+			if (InfMain.getChatHud().currentChat == InfMain.getChatHud().infChat) {
+				IRCClient irc = InfMain.getIrc();
+				if (irc != null && irc.isActive()) {
+					irc.runIRC(chatPacket.getChatMessage());
+				}
+				
+				callback.cancel();
+			}
+			
+			// commands
+			if (chatPacket.getChatMessage().startsWith(Command.prefix)
+					&& InfMain.getChatHud().currentChat != InfMain.getChatHud().infChat) {
 				InfMain.getCommandManager().callCommand(chatPacket.getChatMessage().substring(Command.prefix.length()));
 				callback.cancel();
 			}

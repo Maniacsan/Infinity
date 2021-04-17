@@ -31,7 +31,8 @@
   "PlayerEntityMixin",
   "BlockModelRendererMixin",
   "ChunkOcclusionDataBuilderMixin",
-  "ScreenMixin"
+  "ScreenMixin",
+  "ChatHudMixin"
   ],
     "injectors": {
     "defaultRequire": 1

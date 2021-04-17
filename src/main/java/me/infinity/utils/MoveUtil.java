@@ -29,6 +29,12 @@ public class MoveUtil {
 		if ((Helper.getPlayer()).sidewaysSpeed < 0.0F)
 			moveYaw += 90.0F * forward;
 		moveYaw = (float) Math.toRadians(moveYaw);
+		
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+
+		moveYaw -= moveYaw % gcd;
+		
 		return moveYaw;
 	}
 
@@ -48,12 +54,13 @@ public class MoveUtil {
 		strafe *= (moveForward != 0.0F) ? (moveForward * 0.5F) : 1.0F;
 		float yaw = yawIn - strafe;
 		yaw -= ((moveForward < 0.0F) ? 180 : 0);
+		yaw = (float) Math.toRadians(yaw);
 		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity);
 		float f = (float) (sens * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 		
 		yaw -= yaw % gcd;
-		return Math.toRadians(yaw);
+		return yaw;
 	}
 
 	public static double getSpeed() {

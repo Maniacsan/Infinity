@@ -1,9 +1,6 @@
 package me.infinity.utils;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.util.Locale;
-
+import me.infinity.InfMain;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
@@ -26,7 +23,6 @@ public class Helper {
 	public static ClientWorld getWorld() {
 		return minecraftClient.world;
 	}
-	
 
 	//
 
@@ -34,23 +30,14 @@ public class Helper {
 		getPlayer().networkHandler.sendPacket(packet);
 	}
 
+	public static void ircMessage(String text) {
+		InfMain.getChatHud()
+		.addInfMessage(new LiteralText(text));
+	}
+
 	public static void infoMessage(String message) {
 		minecraftClient.inGameHud.getChatHud()
 				.addMessage(new LiteralText(Formatting.BLUE + "Infinity" + Formatting.WHITE + ": " + message));
-	}
-	
-	/**
-	 * @param str
-	 * @return
-	 */
-	public static String replaceNull(String str) {
-		return str == null ? "" : str + " ";
-	}
-	
-	public static String DF(Number value, int maxvalue) {
-		DecimalFormat df = new DecimalFormat("0", DecimalFormatSymbols.getInstance(Locale.ENGLISH));
-		df.setMaximumFractionDigits(maxvalue);
-		return df.format(value);
 	}
 
 }

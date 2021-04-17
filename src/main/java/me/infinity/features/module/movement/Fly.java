@@ -19,6 +19,8 @@ public class Fly extends Module {
 
 	private Settings mode = new Settings(this, "Mode", "Motion",
 			new ArrayList<>(Arrays.asList("Motion", "Glide")), () -> true);
+	
+	private Settings speed = new Settings(this, "Speed", 0.26, 0.15, 0.5, () -> true);
 
 	private int airTicks;
 
@@ -40,13 +42,13 @@ public class Fly extends Module {
 				MoveUtil.setYVelocity(0);
 
 				if (Helper.minecraftClient.options.keyJump.isPressed()) {
-					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.23);
+					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + speed.getCurrentValueDouble());
 				}
 				if (Helper.minecraftClient.options.keySneak.isPressed()) {
-					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - 0.23);
+					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - speed.getCurrentValueDouble());
 				}
 
-				MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.4);
+				MoveUtil.strafe(MoveUtil.calcMoveYaw(), speed.getCurrentValueDouble());
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Glide")) {
 

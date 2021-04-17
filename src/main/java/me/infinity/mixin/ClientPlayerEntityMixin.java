@@ -2,11 +2,9 @@ package me.infinity.mixin;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -18,13 +16,13 @@ import me.infinity.event.MotionEvent;
 import me.infinity.event.PlayerInWaterEvent;
 import me.infinity.event.PlayerMoveEvent;
 import me.infinity.event.PushOutBlockEvent;
+import me.infinity.event.TickMovementEvent;
 import me.infinity.features.module.movement.SafeWalk;
-import me.infinity.features.module.player.NoSlow;
 import me.infinity.features.module.player.Scaffold;
-import me.infinity.utils.Helper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.input.Input;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -41,6 +39,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
 		super(world, profile);
 	}
+	
+	@Shadow
+	public Input input;
 
 	@Shadow
 	private double lastX;
@@ -90,18 +91,13 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	protected void autoJump(float float_1, float float_2) {
 	}
 
-	@Overwrite
-	public void sendMovementPackets() {
-		try {
+	@Inject(method = "sendMovementPackets", at = @At("HEAD"), cancellable = true)
+	public void sendMovementPackets(CallbackInfo ci) {
+		MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.yaw, this.pitch, this.getX(), this.getY(),
+				this.getZ(), this.onGround);
+		EventManager.call(motionEvent);
 
-			MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.yaw, this.pitch, this.getX(), this.getY(),
-					this.getZ(), this.onGround);
-			EventManager.call(motionEvent);
-
-			if (motionEvent.isCancelled()) {
-				return;
-			}
-
+		if (motionEvent.isCancelled()) {
 			boolean bl = this.isSprinting();
 			if (bl != this.lastSprinting) {
 				ClientCommandC2SPacket.Mode mode = bl ? ClientCommandC2SPacket.Mode.START_SPRINTING
@@ -166,26 +162,26 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				this.lastOnGround = onGround;
 				this.autoJumpEnabled = this.client.options.autoJump;
 			}
-			MotionEvent motionPostEvent = new MotionEvent(EventType.POST, this.yaw, this.pitch, this.getX(),
-					this.getY(), this.getZ(), this.onGround);
-			EventManager.call(motionPostEvent);
-		} catch (final Exception e) {
-			e.printStackTrace();
+
+			ci.cancel();
 		}
+
 	}
 
-	@Redirect(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z"))
-	private boolean tickUseItem(ClientPlayerEntity player) {
-		NoSlow noSlow = ((NoSlow) InfMain.getModuleManager().getModuleByClass(NoSlow.class));
+	@Inject(method = "sendMovementPackets", at = @At("TAIL"), cancellable = true)
+	public void sendPostMovementPackets(CallbackInfo ci) {
+		MotionEvent motionEvent = new MotionEvent(EventType.POST, this.yaw, this.pitch, this.getX(), this.getY(),
+				this.getZ(), this.onGround);
+		EventManager.call(motionEvent);
+	}
 
-		if (noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("Vanilla")
-				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("NCP")
-				|| noSlow.isEnabled() && noSlow.mode.getCurrentMode().equalsIgnoreCase("Matrix")
-						&& !Helper.getPlayer().isOnGround()) {
-			return false;
-		}
+	@Inject(method = "tickMovement", at = @At("HEAD"), cancellable = true)
+	private void tickMovement(CallbackInfo ci) {
+		TickMovementEvent tickEvent = new TickMovementEvent(input);
+		EventManager.call(tickEvent);
 
-		return player.isUsingItem();
+		if (tickEvent.isCancelled())
+			ci.cancel();
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")

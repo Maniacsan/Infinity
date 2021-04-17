@@ -3,6 +3,9 @@ package me.infinity.event;
 import com.darkmagician6.eventapi.events.callables.EventCancellable;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.utils.Helper;
+import me.infinity.utils.rotation.RotationUtils;
+
 /**
  * MotionUpdate event for canceling move , rotate packets for new packet (govno
  * voobshem lucshe ne pridumal)
@@ -37,18 +40,27 @@ public class MotionEvent extends EventCancellable {
 		return type;
 	}
 
-	public void setRotation(float yaw, float pitch) {
+	public void setRotation(float yaw, float pitch, boolean clientRotation) {
 		if (Float.isNaN(yaw) || Float.isNaN(pitch) || pitch > 90 || pitch < -90)
 			return;
 
+		if (clientRotation) {
+			Helper.getPlayer().yaw = yaw;
+			Helper.getPlayer().pitch = pitch;
+		}
 		this.yaw = yaw;
 		this.pitch = pitch;
+
+		if (!isCancelled())
+			cancel();
 	}
 
 	public void setPosition(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public void setPosition(double x, double y, double z, boolean onGround) {
@@ -56,6 +68,8 @@ public class MotionEvent extends EventCancellable {
 		this.y = y;
 		this.z = z;
 		this.onGround = onGround;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public float getYaw() {
@@ -64,6 +78,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setYaw(float yaw) {
 		this.yaw = yaw;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public float getPitch() {
@@ -72,6 +88,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setPitch(float pitch) {
 		this.pitch = pitch;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public double getX() {
@@ -80,6 +98,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setX(double x) {
 		this.x = x;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public double getY() {
@@ -88,6 +108,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setY(double y) {
 		this.y = y;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public double getZ() {
@@ -96,6 +118,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setZ(double z) {
 		this.z = z;
+		if (!isCancelled())
+			cancel();
 	}
 
 	public boolean isOnGround() {
@@ -104,6 +128,8 @@ public class MotionEvent extends EventCancellable {
 
 	public void setOnGround(boolean onGround) {
 		this.onGround = onGround;
+		if (!isCancelled())
+			cancel();
 	}
 
 }

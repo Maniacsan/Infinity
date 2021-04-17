@@ -8,6 +8,7 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PacketEvent;
+import me.infinity.event.TickMovementEvent;
 import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
@@ -15,6 +16,7 @@ import me.infinity.utils.Helper;
 import me.infinity.utils.MathAssist;
 import me.infinity.utils.MoveUtil;
 import me.infinity.utils.entity.EntityUtil;
+import net.minecraft.client.input.Input;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
@@ -32,6 +34,19 @@ public class NoSlow extends Module {
 	@Override
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
+	}
+
+	@EventTarget
+	public void onTickMove(TickMovementEvent event) {
+		if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")
+				|| isEnabled() && mode.getCurrentMode().equalsIgnoreCase("NCP") || isEnabled()
+						&& mode.getCurrentMode().equalsIgnoreCase("Matrix") && !Helper.getPlayer().isOnGround()) {
+			if (Helper.getPlayer().isUsingItem() && !Helper.getPlayer().isRiding()) {
+				Input input = Helper.getPlayer().input;
+				input.movementForward *= 5;
+				input.movementSideways *= 5;
+			}
+		}
 	}
 
 	@EventTarget
@@ -65,10 +80,10 @@ public class NoSlow extends Module {
 							double e = 0.4D + d * 1.5D;
 							Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().multiply(e, 1.0D, e));
 						}
-						
+
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 0.99);
 						MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.145);
-						
+
 					}
 				}
 			}

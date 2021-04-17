@@ -2,7 +2,7 @@ package me.infinity.clickmenu.features.elements.sliders;
 
 import me.infinity.clickmenu.features.elements.SliderElement;
 import me.infinity.features.Settings;
-import me.infinity.utils.Helper;
+import me.infinity.utils.StringUtil;
 import net.minecraft.util.math.MathHelper;
 
 public class FloatSlider extends SliderElement {
@@ -16,7 +16,7 @@ public class FloatSlider extends SliderElement {
 	@Override
 	public String getRenderValue() {
 		double value = Math.round(setting.getCurrentValueFloat() * 100.0) / 100.0;
-		return Helper.DF(value, 1);
+		return StringUtil.DF(value, 1);
 	}
 
 	@Override

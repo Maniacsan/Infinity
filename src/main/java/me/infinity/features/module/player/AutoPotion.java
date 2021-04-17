@@ -28,17 +28,23 @@ public class AutoPotion extends Module {
 		
 		this.potions.put(StatusEffects.STRENGTH, new Settings(this, "Strength Potion", true, () -> true));
 		this.potions.put(StatusEffects.SPEED, new Settings(this, "Speed Potion", true, () -> true));
-		this.potions.put(StatusEffects.FIRE_RESISTANCE, new Settings(this, "Fire Resistance", false, () -> true));
+		this.potions.put(StatusEffects.FIRE_RESISTANCE, new Settings(this, "Fire Resistance", true, () -> true));
 		this.potions.put(StatusEffects.JUMP_BOOST, new Settings(this, "Jump Boost", false, () -> true));
 		
 		this.addSettings(this.potions.values());
 	}
 
-	private Settings delay = new Settings(this, "Delay", 1D, 0D, 20D, () -> true);
+	private Settings delay = new Settings(this, "Delay", 4.5D, 0D, 20D, () -> true);
 
 	private int timer;
 
 	private int next;
+	
+	@Override
+	public void onDisable() {
+		Helper.sendPacket(new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, Helper.getPlayer().pitch,
+				Helper.getPlayer().isOnGround()));
+	}
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {

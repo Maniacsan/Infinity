@@ -22,7 +22,7 @@ import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically takes the totem in the off hand", key = -2, name = "AutoTool", visible = true)
+@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically takes the desired tool when digging, attacking", key = -2, name = "AutoTool", visible = true)
 public class AutoTool extends Module {
 
 	private Settings shieldCheck = new Settings(this, "Axe on target Shield", true, () -> true);
@@ -51,29 +51,7 @@ public class AutoTool extends Module {
 						if (slot < 9) {
 							Helper.getPlayer().inventory.selectedSlot = slot;
 							Helper.getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(slot));
-						} else if (Helper.getPlayer().playerScreenHandler == Helper.getPlayer().currentScreenHandler) {
-							boolean itemInHand = !Helper.getPlayer().inventory.getMainHandStack().isEmpty();
-							Helper.minecraftClient.interactionManager.clickSlot(
-									Helper.getPlayer().currentScreenHandler.syncId, slot, 0, SlotActionType.PICKUP,
-									Helper.getPlayer());
-							Helper.minecraftClient.interactionManager.clickSlot(
-									Helper.getPlayer().currentScreenHandler.syncId,
-									36 + Helper.getPlayer().inventory.selectedSlot, 0, SlotActionType.PICKUP,
-									Helper.getPlayer());
-
-							if (itemInHand)
-								Helper.minecraftClient.interactionManager.clickSlot(
-										Helper.getPlayer().currentScreenHandler.syncId, slot, 0, SlotActionType.PICKUP,
-										Helper.getPlayer());
 						}
-					}
-				} else if (p.getAction() == Action.STOP_DESTROY_BLOCK) {
-					if (queueSlot == Helper.getPlayer().inventory.selectedSlot) {
-						queueSlot = Helper.getPlayer().inventory.selectedSlot == 0 ? 1
-								: Helper.getPlayer().inventory.selectedSlot - 1;
-					} else if (lastSlot >= 0 && lastSlot <= 8
-							&& lastSlot != Helper.getPlayer().inventory.selectedSlot) {
-						queueSlot = lastSlot;
 					}
 				}
 			}
@@ -98,7 +76,7 @@ public class AutoTool extends Module {
 								@Override
 								public void run() {
 									try {
-										Thread.sleep(120);
+										Thread.sleep(110);
 
 										Helper.getPlayer().inventory.selectedSlot = preSlot;
 									} catch (Exception e) {
@@ -116,20 +94,12 @@ public class AutoTool extends Module {
 	@Override
 	public void onPlayerTick() {
 
-		if (queueSlot != -1) {
-			Helper.getPlayer().inventory.selectedSlot = queueSlot;
-			Helper.getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(queueSlot));
-			queueSlot = -1;
-		}
-
 	}
 
 	private int getBestSlot(BlockPos pos) {
 		BlockState state = Helper.getWorld().getBlockState(pos);
 
 		int bestSlot = Helper.getPlayer().inventory.selectedSlot;
-
-		bestSlot = bestSlot == 0 ? 1 : bestSlot - 1;
 
 		if (state.isAir())
 			return Helper.getPlayer().inventory.selectedSlot;

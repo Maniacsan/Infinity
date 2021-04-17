@@ -35,10 +35,8 @@ public class Scaffold extends Module {
 	private Settings mode = new Settings(this, "Mode", "Normal", new ArrayList<>(Arrays.asList("Normal", "Safe")),
 			() -> true);
 
-	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D,
-			() -> true);
-	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D,
-			() -> true);
+	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, () -> true);
+	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, () -> true);
 
 	private Settings blockTake = new Settings(this, "Block Take", "Switch",
 			new ArrayList<>(Arrays.asList("Pick", "Switch")), () -> true);
@@ -102,74 +100,75 @@ public class Scaffold extends Module {
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		if (event.getType().equals(EventType.PRE)) {
 
-			pos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1, Helper.getPlayer().getZ());
-			
-			PlaceData data = getPlaceData(pos);
+		pos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1, Helper.getPlayer().getZ());
 
-			if (pData != null) {
-				BlockPos lookPos = pData.pos;
-				Vec3d vec = new Vec3d(lookPos.getX(), lookPos.getY(), lookPos.getZ());
-				float[] alwaysL = RotationUtils.lookAtVecPos(vec, (float) speed.getCurrentValueDouble(),
-						(float) speed.getCurrentValueDouble());
-				event.setRotation(alwaysL[0], alwaysL[1]);
-				Helper.getPlayer().bodyYaw = alwaysL[0];
-				Helper.getPlayer().headYaw = alwaysL[0];
+		PlaceData data = getPlaceData(pos);
+
+		if (pData != null) {
+			BlockPos lookPos = pData.pos;
+			Vec3d vec = new Vec3d(lookPos.getX(), lookPos.getY(), lookPos.getZ());
+			float[] alwaysL = RotationUtils.lookAtVecPos(vec);
+
+			alwaysL[0] = RotationUtils.limitAngleChange(event.getYaw(), alwaysL[0],
+					(float) speed.getCurrentValueDouble());
+			alwaysL[1] = RotationUtils.limitAngleChange(event.getYaw(), alwaysL[1],
+					(float) speed.getCurrentValueDouble());
+
+			event.setRotation(alwaysL[0], alwaysL[1], false);
+			Helper.getPlayer().bodyYaw = alwaysL[0];
+			Helper.getPlayer().headYaw = alwaysL[0];
+			;
+		}
+
+		if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
+
+			if (pos == null) {
+				timer.reset();
+				return;
 			}
 
-			if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
+			// rotation
 
-				if (pos == null) {
+			pData = data;
+			event.setRotation(look[0], look[1], false);
+			Helper.getPlayer().bodyYaw = look[0];
+			Helper.getPlayer().headYaw = look[0];
+
+			// slot calculate
+			int blockSlot = -2;
+			for (int i = 0; i < 9; i++) {
+				ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+				if (isBlock(stack.getItem())) {
+					blockSlot = i;
+				}
+			}
+
+			// placing
+			if (blockSlot != -2) {
+
+				if (timer.hasReached(
+						Math.random() * (maxDelay.getCurrentValueDouble() - minDelay.getCurrentValueDouble())
+								+ minDelay.getCurrentValueDouble())) {
+
+					if (!safe())
+						return;
+
+					if (Helper.minecraftClient.options.keyJump.isPressed() && Helper.getPlayer().fallDistance == 0) {
+						return;
+					}
+
+					int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
+					Helper.getPlayer().inventory.selectedSlot = blockSlot;
+
+					if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos, airPlace.isToggle())) {
+						pos = null;
+						if (blockTake.getCurrentMode().equalsIgnoreCase("Switch"))
+							Helper.getPlayer().inventory.selectedSlot = selectedSlot;
+					}
 					timer.reset();
-					return;
-				}
-
-				// rotation
-
-				pData = data;
-
-				event.setRotation(look[0], look[1]);
-				Helper.getPlayer().bodyYaw = look[0];
-				Helper.getPlayer().headYaw = look[0];
-
-				// slot calculate
-				int blockSlot = -2;
-				for (int i = 0; i < 9; i++) {
-					ItemStack stack = Helper.getPlayer().inventory.getStack(i);
-					if (isBlock(stack.getItem())) {
-						blockSlot = i;
-					}
-				}
-
-				// placing
-				if (blockSlot != -2) {
-
-					if (timer.hasReached(
-							Math.random() * (maxDelay.getCurrentValueDouble() - minDelay.getCurrentValueDouble())
-									+ minDelay.getCurrentValueDouble())) {
-
-						if (!safe())
-							return;
-						
-						if (Helper.minecraftClient.options.keyJump.isPressed() && Helper.getPlayer().fallDistance == 0) {
-							return;
-						}
-
-						int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
-						Helper.getPlayer().inventory.selectedSlot = blockSlot;
-
-						if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos, airPlace.isToggle())) {
-							pos = null;
-							if (blockTake.getCurrentMode().equalsIgnoreCase("Switch"))
-								Helper.getPlayer().inventory.selectedSlot = selectedSlot;
-						}
-						timer.reset();
-					}
 				}
 			}
-		} else if (event.getType().equals(EventType.POST)) {
-
 		}
 	}
 
