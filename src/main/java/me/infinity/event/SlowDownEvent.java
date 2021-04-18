@@ -4,11 +4,11 @@ import com.darkmagician6.eventapi.events.callables.EventCancellable;
 
 import net.minecraft.client.input.Input;
 
-public class TickMovementEvent extends EventCancellable {
+public class SlowDownEvent extends EventCancellable {
 	
 	private Input input;
 
-	public TickMovementEvent(Input input) {
+	public SlowDownEvent(Input input) {
 		this.setInput(input);
 	}
 

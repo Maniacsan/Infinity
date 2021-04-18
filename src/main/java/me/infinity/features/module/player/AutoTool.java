@@ -9,26 +9,23 @@ import me.infinity.features.Module;
 import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
+import me.infinity.utils.InvUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.math.BlockPos;
 
 @ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically takes the desired tool when digging, attacking", key = -2, name = "AutoTool", visible = true)
 public class AutoTool extends Module {
 
-	private Settings shieldCheck = new Settings(this, "Axe on target Shield", true, () -> true);
+	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
 
-	private int lastSlot = -1;
-	private int queueSlot = -1;
 	private int preSlot = -2;
 
 	@EventTarget
@@ -40,10 +37,6 @@ public class AutoTool extends Module {
 				if (p.getAction() == Action.START_DESTROY_BLOCK) {
 					if (Helper.getPlayer().isCreative() || Helper.getPlayer().isSpectator())
 						return;
-
-					queueSlot = -1;
-
-					lastSlot = Helper.getPlayer().inventory.selectedSlot;
 
 					int slot = getBestSlot(p.getPos());
 
@@ -60,9 +53,9 @@ public class AutoTool extends Module {
 
 	@EventTarget
 	public void onClick(ClickEvent event) {
-		int slotAxe = findAxe();
+		int slotAxe = InvUtil.findAxe();
 
-		if (shieldCheck.isToggle()) {
+		if (destroyShield.isToggle()) {
 
 			Entity target = Helper.minecraftClient.targetedEntity;
 			if (target instanceof PlayerEntity) {
@@ -120,14 +113,6 @@ public class AutoTool extends Module {
 		}
 
 		return bestSlot;
-	}
-
-	private int findAxe() {
-		int find = -2;
-		for (int i = 0; i <= 8; i++)
-			if (Helper.getPlayer().inventory.getStack(i).getItem() instanceof AxeItem)
-				find = i;
-		return find;
 	}
 
 	private float getMiningSpeed(ItemStack stack, BlockState state) {

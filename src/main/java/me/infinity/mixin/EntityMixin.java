@@ -17,6 +17,7 @@ import me.infinity.InfMain;
 import me.infinity.event.MoveEvent;
 import me.infinity.event.RotationEvent;
 import me.infinity.features.module.combat.HitBoxes;
+import me.infinity.features.module.combat.Velocity;
 import me.infinity.features.module.movement.AntiWaterPush;
 import me.infinity.utils.Helper;
 import net.minecraft.entity.Entity;
@@ -62,6 +63,11 @@ public abstract class EntityMixin {
 			return;
 
 		entity.setVelocity(velocity);
+	}
+
+	@Inject(method = "pushAwayFrom", at = @At("HEAD"), cancellable = true)
+	private void onPushAwayFrom(Entity entity, CallbackInfo ci) {
+		Velocity.pushAway((Entity) (Object) this, entity, ci);
 	}
 
 	@Overwrite

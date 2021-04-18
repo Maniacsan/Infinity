@@ -16,7 +16,7 @@ import me.infinity.event.MotionEvent;
 import me.infinity.event.PlayerInWaterEvent;
 import me.infinity.event.PlayerMoveEvent;
 import me.infinity.event.PushOutBlockEvent;
-import me.infinity.event.TickMovementEvent;
+import me.infinity.event.SlowDownEvent;
 import me.infinity.features.module.movement.SafeWalk;
 import me.infinity.features.module.player.Scaffold;
 import net.fabricmc.api.EnvType;
@@ -39,7 +39,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 	public ClientPlayerEntityMixin(ClientWorld world, GameProfile profile) {
 		super(world, profile);
 	}
-	
+
 	@Shadow
 	public Input input;
 
@@ -175,13 +175,10 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		EventManager.call(motionEvent);
 	}
 
-	@Inject(method = "tickMovement", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "tickMovement", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isUsingItem()Z", ordinal = 0))
 	private void tickMovement(CallbackInfo ci) {
-		TickMovementEvent tickEvent = new TickMovementEvent(input);
-		EventManager.call(tickEvent);
-
-		if (tickEvent.isCancelled())
-			ci.cancel();
+		SlowDownEvent slowDownEvent = new SlowDownEvent(input);
+		EventManager.call(slowDownEvent);
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")

@@ -16,6 +16,7 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.features.module.player.FakeLags;
 import me.infinity.utils.Helper;
+import me.infinity.utils.InvUtil;
 import me.infinity.utils.PacketUtil;
 import me.infinity.utils.TimeHelper;
 import me.infinity.utils.entity.EntityUtil;
@@ -24,6 +25,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -44,6 +46,8 @@ public class KillAura extends Module {
 
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
 
+	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
+	
 	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
 
 	private Settings lockView = new Settings(this, "Look View", false, () -> true);
@@ -79,6 +83,8 @@ public class KillAura extends Module {
 	private double x1 = random.nextDouble();
 	private double y1 = random.nextDouble();
 	private double z1 = random.nextDouble();
+	
+	private int preSlot = -2;
 
 	private TimeHelper timer = new TimeHelper();
 
@@ -204,11 +210,44 @@ public class KillAura extends Module {
 			event.cancel();
 		}
 	}
+	
+	private void destroyShield() {
+		int slotAxe = InvUtil.findAxe();
+		
+		if (destroyShield.isToggle()) {
+
+			if (target instanceof PlayerEntity) {
+				if (((PlayerEntity) target).isBlocking()) {
+					if (slotAxe != -2) {
+						preSlot = Helper.getPlayer().inventory.selectedSlot;
+						Helper.getPlayer().inventory.selectedSlot = slotAxe;
+
+						if (preSlot != -2) {
+							(new Thread() {
+								@Override
+								public void run() {
+									try {
+										Thread.sleep(110);
+
+										Helper.getPlayer().inventory.selectedSlot = preSlot;
+									} catch (Exception e) {
+										e.printStackTrace();
+									}
+								}
+							}).start();
+						}
+					}
+				}
+			}
+		}
+	}
 
 	public void attack(MotionEvent event) {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
+				
+				destroyShield();
 
 				float[] matrix = RotationUtils.lookAtEntity(target);
 				

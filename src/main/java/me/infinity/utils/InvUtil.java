@@ -7,6 +7,7 @@ import java.util.List;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -16,7 +17,7 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.screen.slot.SlotActionType;
 
 public class InvUtil {
-	
+
 	public static int findItem(Item item, int index, int slots) {
 		int find = -2;
 		for (int i = index; i <= slots; i++)
@@ -63,6 +64,14 @@ public class InvUtil {
 				return i;
 		}
 		return -2;
+	}
+
+	public static int findAxe() {
+		int find = -2;
+		for (int i = 0; i <= 8; i++)
+			if (Helper.getPlayer().inventory.getStack(i).getItem() instanceof AxeItem)
+				find = i;
+		return find;
 	}
 
 	public static boolean checkArmorEmpty(EquipmentSlot slot) {

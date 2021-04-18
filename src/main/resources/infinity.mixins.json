@@ -32,7 +32,8 @@
   "BlockModelRendererMixin",
   "ChunkOcclusionDataBuilderMixin",
   "ScreenMixin",
-  "ChatHudMixin"
+  "ChatHudMixin",
+  "IExplosionS2CPacket"
   ],
     "injectors": {
     "defaultRequire": 1

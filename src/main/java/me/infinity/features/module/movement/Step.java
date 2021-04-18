@@ -95,6 +95,8 @@ public class Step extends Module {
 				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
 						Helper.getPlayer().getY() + (.7531999805212 * (1 + Helper.getPlayer().stepHeight)),
 						Helper.getPlayer().getZ(), Helper.getPlayer().isOnGround()));
+			} else {
+				InfMain.resetTimer();
 			}
 		}
 	}
@@ -169,8 +171,10 @@ public class Step extends Module {
 						|| (Helper.getPlayer().verticalCollision))
 					Helper.getPlayer().stepHeight = 1F;
 
-				if (cancelSomePackets)
+				if (cancelSomePackets) {
+					InfMain.resetTimer();
 					this.stepTicks++;
+				}
 				if (this.stepTicks >= 3) {
 					InfMain.TIMER = 0.35F;
 					cancelSomePackets = false;
