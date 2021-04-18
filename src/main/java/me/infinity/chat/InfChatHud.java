@@ -1,6 +1,5 @@
 package me.infinity.chat;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Iterator;
@@ -12,8 +11,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import me.infinity.InfMain;
-import me.infinity.chat.IRC.IRCClient;
 import me.infinity.clickmenu.util.FontUtils;
 import me.infinity.clickmenu.util.Render2D;
 import net.fabricmc.api.EnvType;

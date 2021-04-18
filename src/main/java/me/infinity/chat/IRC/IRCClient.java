@@ -14,7 +14,7 @@ public class IRCClient extends IIRC {
 	private String prefix;
 
 	public IRCClient(String host, int port, String username, String prefix, String channel) {
-		super(host, port, username);
+		super(host, port, prefix + "_" + username);
 
 		this.channel = channel;
 		this.prefix = prefix;
@@ -32,10 +32,12 @@ public class IRCClient extends IIRC {
 		String[] args = message.split(" (?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)");
 		args = Arrays.stream(args).map(s -> s.replace("\"", "")).toArray(size -> new String[size]);
 
+		String prefix = getUsername().split("_")[0];
+		String name = getUsername().split("_")[1];
 		try {
 			sendMessage(getChannel(), message);
-			Helper.ircMessage("> " + ColorUtils.getUserRoleColor() + getPrefix() + " " + Formatting.GRAY + getUsername()
-					+ ": " + Formatting.WHITE + message);
+			Helper.ircMessage("> " + ColorUtils.getUserRoleColor() + prefix + " " + Formatting.GRAY + name + ": "
+					+ Formatting.WHITE + message);
 		} catch (IOException e) {
 			e.printStackTrace();
 			Helper.ircMessage(
@@ -48,11 +50,15 @@ public class IRCClient extends IIRC {
 		if (!(isActive()))
 			return;
 
-		String name = line.substring(1, line.indexOf(":"));
+		if (!(line.contains("!")) || !(line.contains(":")))
+			return;
+
+		String name = line.substring(1, line.indexOf("!"));
 		String message = line.substring(line.lastIndexOf(":") + 1, line.length());
 
 		Helper.ircMessage(ColorUtils.getStringUserColor(prefix) + prefix + " " + Formatting.GRAY + name + ": "
 				+ Formatting.WHITE + message);
+		System.out.println(name + ": " + message);
 	}
 
 	@Override

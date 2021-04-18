@@ -18,25 +18,18 @@ import me.infinity.utils.TimeHelper;
 import me.infinity.utils.calc.TermSolver;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically solves examples from the server", key = -2, name = "ChatCalc", visible = true)
+@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically solves examples", key = -2, name = "ChatCalculator", visible = true)
 public class ChatCalculator extends Module {
 
-	// server
-	private Settings serverSide = new Settings(this, "Server Side", true, () -> true);
-	private Settings serverMode = new Settings(this, "Server", "Message",
-			new ArrayList<>(Arrays.asList("Message", "Info")), () -> serverSide.isToggle());
+	private Settings mode = new Settings(this, "Mode", "Message", new ArrayList<>(Arrays.asList("Message", "Info")),
+			() -> true);
 
-	// client
-	private Settings clientSide = new Settings(this, "Client Side", true, () -> true);
-	private Settings clientMode = new Settings(this, "Client", "Message",
-			new ArrayList<>(Arrays.asList("Message", "Info")), () -> clientSide.isToggle());
+	private Settings serverSide = new Settings(this, "Server Messages", true, () -> true);
 
 	private Settings globalChat = new Settings(this, "Global Chat", true,
-			() -> clientMode.getCurrentMode().equalsIgnoreCase("Message")
-					|| serverMode.getCurrentMode().equalsIgnoreCase("Message"));
+			() -> mode.getCurrentMode().equalsIgnoreCase("Message"));
 
-	private Settings delay = new Settings(this, "Delay", 1D, 0D, 5D,
-			() -> clientSide.isToggle() || serverSide.isToggle());
+	private Settings delay = new Settings(this, "Delay", 1D, 0D, 5D, () -> true);
 
 	private String serverMessage;
 
@@ -68,11 +61,17 @@ public class ChatCalculator extends Module {
 				public void run() {
 					try {
 						Thread.sleep((long) (delay.getCurrentValueDouble() * 1000));
-						if (clientMode.getCurrentMode().equalsIgnoreCase("Message")) {
+						if (mode.getCurrentMode().equalsIgnoreCase("Message")) {
+							if (clientResult == null)
+								return;
+
 							Helper.getPlayer()
 									.sendChatMessage(globalChat.isToggle() ? "!" + clientResult : clientResult);
 							clientResult = null;
-						} else if (clientMode.getCurrentMode().equalsIgnoreCase("Info")) {
+						} else if (mode.getCurrentMode().equalsIgnoreCase("Info")) {
+							if (clientResult == null)
+								return;
+
 							Helper.infoMessage(clientResult);
 							clientResult = null;
 						}
@@ -98,10 +97,6 @@ public class ChatCalculator extends Module {
 			serverMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
 					: message.replace(split + ":", "");
 
-			if (!serverMessage.contains("+") || !serverMessage.contains("-") || !serverMessage.contains("*")
-					|| !serverMessage.contains("/"))
-				return;
-
 			Optional<String> postfix = TermSolver.transformInfixToPostfix(serverMessage);
 
 			try {
@@ -115,13 +110,13 @@ public class ChatCalculator extends Module {
 				serverResult = result;
 
 				if (timer.hasReached(delay.getCurrentValueDouble() * 1000)) {
-					if (serverMode.getCurrentMode().equalsIgnoreCase("Message")) {
+					if (mode.getCurrentMode().equalsIgnoreCase("Message")) {
 						Helper.getPlayer().sendChatMessage(globalChat.isToggle() ? "!" + serverResult : serverResult);
 						solvesResults.add(serverResult);
 						serverResult = null;
 						serverMessage = null;
 
-					} else if (serverMode.getCurrentMode().equalsIgnoreCase("Info")) {
+					} else if (mode.getCurrentMode().equalsIgnoreCase("Info")) {
 
 						Helper.infoMessage(serverResult);
 						serverResult = null;
@@ -138,26 +133,20 @@ public class ChatCalculator extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
-			if (clientSide.isToggle()) {
-				if (event.getPacket() instanceof ChatMessageC2SPacket) {
-					ChatMessageC2SPacket cms = (ChatMessageC2SPacket) event.getPacket();
+			if (event.getPacket() instanceof ChatMessageC2SPacket) {
+				ChatMessageC2SPacket cms = (ChatMessageC2SPacket) event.getPacket();
 
-					String chatMessage = cms.getChatMessage().contains("Решите пример:")
-							? cms.getChatMessage().replace("Решите пример:", "")
-							: cms.getChatMessage().replace("!", "");
+				String chatMessage = cms.getChatMessage().contains("Решите пример:")
+						? cms.getChatMessage().replace("Решите пример:", "")
+						: cms.getChatMessage().replace("!", "");
 
-					if (!chatMessage.contains("+") || !chatMessage.contains("-") || !chatMessage.contains("*")
-							|| !chatMessage.contains("/"))
-						return;
+				Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
 
-					Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);
+				if (postfix.isPresent()) {
 
-					if (postfix.isPresent() && chatMessage != null) {
+					double result = TermSolver.solvePostfix(postfix.get());
 
-						double result = TermSolver.solvePostfix(postfix.get());
-
-						clientResult = String.valueOf((int) result);
-					}
+					clientResult = String.valueOf((int) result);
 				}
 			}
 		}

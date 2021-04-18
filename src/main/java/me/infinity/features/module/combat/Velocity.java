@@ -26,7 +26,7 @@ import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 @ModuleInfo(name = "Velocity", key = -2, visible = true, desc = "Anti knockback", category = Module.Category.COMBAT)
 public class Velocity extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Packet",
+	private Settings mode = new Settings(this, "Mode", "Matrix 6.1.0",
 			new ArrayList<>(Arrays.asList("Packet", "Reverse", "Matrix 6.1.0")), () -> true);
 	
 	private Settings vertical = new Settings(this, "Vertical",

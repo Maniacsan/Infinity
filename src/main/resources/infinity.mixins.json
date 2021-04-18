@@ -33,7 +33,8 @@
   "ChunkOcclusionDataBuilderMixin",
   "ScreenMixin",
   "ChatHudMixin",
-  "IExplosionS2CPacket"
+  "IExplosionS2CPacket",
+  "GameMenuScreenMixin"
   ],
     "injectors": {
     "defaultRequire": 1

@@ -34,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
-	private Settings rotation = new Settings(this, "Rotation", "Reset",
+	private Settings rotation = new Settings(this, "Rotation", "Focus",
 			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")), () -> true);
 
 	// targets
@@ -43,14 +43,18 @@ public class KillAura extends Module {
 	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
-
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+	
+	private Settings fov = new Settings(this, "FOV", 240D, 0D, 360D, () -> true);
 
 	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
-	
+
 	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
 
 	private Settings lockView = new Settings(this, "Look View", false, () -> true);
+	
+	private Settings maxSpeed = new Settings(this, "Max Speed", 190.0D, 0.0D, 200.0D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed", 173.0D, 0.0D, 200.0D, () -> true);
 
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
@@ -59,9 +63,6 @@ public class KillAura extends Module {
 	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
 	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
 
-	private Settings fov = new Settings(this, "FOV", 240D, 0D, 360D, () -> true);
-	private Settings maxSpeed = new Settings(this, "Max Speed", 190.0D, 0.0D, 200.0D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 173.0D, 0.0D, 200.0D, () -> true);
 	private Settings range = new Settings(this, "Range", 3.7D, 0.1D, 6.0D, () -> true);
 
 	// target
@@ -83,7 +84,7 @@ public class KillAura extends Module {
 	private double x1 = random.nextDouble();
 	private double y1 = random.nextDouble();
 	private double z1 = random.nextDouble();
-	
+
 	private int preSlot = -2;
 
 	private TimeHelper timer = new TimeHelper();
@@ -148,15 +149,11 @@ public class KillAura extends Module {
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 		
-		focus[0] = RotationUtils.limitAngleChange(event.getYaw(),
-				focus[0], speed);
-		focus[1] = RotationUtils.limitAngleChange(event.getPitch(),
-				focus[1], speed);
+		focus[0] = RotationUtils.updateAngle(event.getYaw(), focus[0], speed);
+		focus[1] = RotationUtils.updateAngle(event.getPitch(), focus[1], speed);
 
-		smash[0] = RotationUtils.limitAngleChange(event.getYaw(),
-				smash[0], speed);
-		smash[1] = RotationUtils.limitAngleChange(event.getPitch(),
-				smash[1], speed);
+		smash[0] = RotationUtils.limitAngleChange(event.getYaw(), smash[0], speed);
+		smash[1] = RotationUtils.limitAngleChange(event.getPitch(), smash[1], speed);
 
 		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 			event.setRotation(focus[0], focus[1], lockView.isToggle());
@@ -176,9 +173,7 @@ public class KillAura extends Module {
 		if (target == null)
 			return;
 
-		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-			PacketUtil.setRotation(event, focus[0], focus[1]);
-		} else if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+		if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
 			PacketUtil.setRotation(event, smash[0], smash[1]);
 		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 			if (lastYaw != 999 || lastPitch != 999) {
@@ -210,10 +205,10 @@ public class KillAura extends Module {
 			event.cancel();
 		}
 	}
-	
+
 	private void destroyShield() {
 		int slotAxe = InvUtil.findAxe();
-		
+
 		if (destroyShield.isToggle()) {
 
 			if (target instanceof PlayerEntity) {
@@ -246,11 +241,11 @@ public class KillAura extends Module {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
-				
+
 				destroyShield();
 
 				float[] matrix = RotationUtils.lookAtEntity(target);
-				
+
 				matrix[0] = RotationUtils.limitAngleChange(event.getYaw(), matrix[0], speed);
 				matrix[1] = RotationUtils.limitAngleChange(event.getPitch(), matrix[1], speed);
 
@@ -261,7 +256,7 @@ public class KillAura extends Module {
 					event.setPitch(matrix[1]);
 					Helper.getPlayer().bodyYaw = matrix[0];
 					Helper.getPlayer().headYaw = matrix[0];
-					time = 2;
+					time = 4;
 				}
 
 				// fakeLags reset

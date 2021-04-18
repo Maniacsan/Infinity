@@ -11,7 +11,6 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import me.infinity.utils.Helper;
 import me.infinity.utils.entity.EntityUtil;
-import me.infinity.utils.rotation.RotationUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
@@ -90,7 +89,6 @@ public class TargetStrafe extends Module {
 				: distance - radius.getCurrentValueDouble();
 
 		// speed borders
-		double borderSpeed = speed * 0.5;
 		if (circle > speed)
 			circle = speed;
 		else if (circle < -speed)
@@ -106,8 +104,6 @@ public class TargetStrafe extends Module {
 		double s1 = (Helper.getPlayer().getZ() - target.getZ())
 				/ (Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
 						+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2)));
-
-		strafeYaw -= strafeYaw % gcd;
 
 		double x = speed * s1 * direction + circleSin * speed;
 		double z = -speed * c1 * direction + circleCos * speed;

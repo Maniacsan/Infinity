@@ -21,13 +21,13 @@ public class FakeLags extends Module {
 	private Settings mode = new Settings(this, "Mode", "Pulse",
 			new ArrayList<>(Arrays.asList("Pulse", "Always", "Legit")), () -> true);
 
-	private Settings pulseDelay = new Settings(this, "Pulse Delay", 0.2, 0.0, 30.0,
+	private Settings pulseDelay = new Settings(this, "Pulse Delay", 8, 0.0, 30.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Pulse"));
 
 	private Settings delay = new Settings(this, "Delay", 0.2, 0.0, 30.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Always"));
 
-	private Settings legitDelay = new Settings(this, "Delay", 0.2, 0.0, 30.0,
+	private Settings legitDelay = new Settings(this, "Delay", 2.1, 0.0, 30.0,
 			() -> mode.getCurrentMode().equalsIgnoreCase("Legit"));
 
 	// legit
@@ -102,7 +102,7 @@ public class FakeLags extends Module {
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket) {
 
 					if (Helper.getPlayer().isDead())
 						return;
@@ -113,7 +113,7 @@ public class FakeLags extends Module {
 				}
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket) {
 
 					if (Helper.getPlayer().isDead() || pulseTicks != 0)
 						return;

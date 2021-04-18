@@ -11,11 +11,16 @@ import com.darkmagician6.eventapi.EventManager;
 import me.infinity.InfMain;
 import me.infinity.event.ClickEvent;
 import me.infinity.event.TickEvent;
+import me.infinity.ui.FirstStartUI;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.util.profiler.Profiler;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
+
+	@Shadow
+	public ClientWorld world;
 
 	@Shadow
 	public abstract Profiler getProfiler();
@@ -24,6 +29,13 @@ public abstract class MinecraftClientMixin {
 	private void tick(CallbackInfo info) {
 		TickEvent tickEvent = new TickEvent();
 		EventManager.call(tickEvent);
+
+		if (world != null) {
+			if (InfMain.firstStart) {
+				((MinecraftClient) (Object) this).openScreen(new FirstStartUI());
+			}
+		}
+
 	}
 
 	@Inject(at = {
@@ -36,10 +48,10 @@ public abstract class MinecraftClientMixin {
 		if (clickEvent.isCancelled())
 			info.cancel();
 	}
-	
-    @Inject(method = "stop", at = @At("HEAD"))
-    public void stop(CallbackInfo info) {
-        InfMain.onShutdown();
-    }
+
+	@Inject(method = "stop", at = @At("HEAD"))
+	public void stop(CallbackInfo info) {
+		InfMain.onShutdown();
+	}
 
 }

@@ -39,7 +39,7 @@ public abstract class IIRC implements Runnable {
 	public String getUsername() {
 		return username;
 	}
-
+	
 	public BufferedReader getIn() {
 		return in;
 	}

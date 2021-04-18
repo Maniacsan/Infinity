@@ -4,7 +4,7 @@ import me.infinity.utils.Helper;
 
 public abstract class Command {
 
-	public static String prefix = "#";
+	public static String prefix = "-";
 	private String name;
 	private String desc;
 

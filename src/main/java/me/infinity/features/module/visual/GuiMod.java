@@ -12,7 +12,7 @@ import me.infinity.features.ModuleInfo;
 import me.infinity.features.Settings;
 import net.minecraft.client.MinecraftClient;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Infinity features menu", key = GLFW.GLFW_KEY_RIGHT_SHIFT, name = "Gui", visible = false)
+@ModuleInfo(category = Module.Category.VISUAL, desc = "Infinity features menu", key = GLFW.GLFW_KEY_GRAVE_ACCENT, name = "Gui", visible = false)
 public class GuiMod extends Module {
 
 	public Settings scale = new Settings(this, "Scale", "60%",

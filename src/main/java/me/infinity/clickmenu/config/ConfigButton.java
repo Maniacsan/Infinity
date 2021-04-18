@@ -56,8 +56,8 @@ public class ConfigButton {
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 5, 62, 12);
 		this.deleteHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 23, 62, 12);
 		this.saveHovered = Render2D.isHovered(mouseX, mouseY, setX + 76, setY + 41, 62, 12);
-		this.loadHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 23, 56, 12);
-		this.refreshHovered = Render2D.isHovered(mouseX, mouseY, setX + 316, setY + 5, 56, 12);
+		this.loadHovered = Render2D.isHovered(mouseX, mouseY, setX + 336, setY + 23, 56, 12);
+		this.refreshHovered = Render2D.isHovered(mouseX, mouseY, setX + 336, setY + 5, 56, 12);
 		this.infoHovered = Render2D.isHovered(mouseX, mouseY, setX + 381, setY + 231, 15, 15);
 
 		Render2D.drawRectWH(matrices, setX + 150, setY + 1, 180, 17, 0xFF989595);

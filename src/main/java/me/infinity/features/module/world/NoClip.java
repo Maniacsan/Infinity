@@ -1,7 +1,6 @@
 package me.infinity.features.module.world;
 
 import com.darkmagician6.eventapi.EventTarget;
-import com.darkmagician6.eventapi.types.EventType;
 
 import me.infinity.event.MotionEvent;
 import me.infinity.event.PlayerMoveEvent;
@@ -16,14 +15,12 @@ public class NoClip extends Module {
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		if (event.getType().equals(EventType.PRE)) {
-			MoveUtil.setYVelocity(0);
+		MoveUtil.setYVelocity(0);
 
-			if (Helper.minecraftClient.options.keySneak.isPressed()) {
-				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y - 0.2);
-			} else if (Helper.minecraftClient.options.keyJump.isPressed()) {
-				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y + 0.2);
-			}
+		if (Helper.minecraftClient.options.keySneak.isPressed()) {
+			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y - 0.2);
+		} else if (Helper.minecraftClient.options.keyJump.isPressed()) {
+			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y + 0.2);
 		}
 	}
 

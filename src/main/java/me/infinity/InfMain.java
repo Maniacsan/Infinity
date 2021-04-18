@@ -45,6 +45,8 @@ public class InfMain {
 
 	public static ClickMenu menu;
 
+	public static boolean firstStart; /* Check first start mod */
+
 	/* Minecraft timer */
 	public static float TIMER = 1.0f;
 
@@ -60,9 +62,13 @@ public class InfMain {
 		friend = new Friend();
 		chatHud = new InfChatHud(MinecraftClient.getInstance());
 
+		if (!infDirection.exists()) {
+			firstStart = true;
+		}
+
 		// dbuser set
 		user = new User("spray", "ADMIN");
-		irc = new IRCClient("irc.w3.org", 6667, user.getName(), user.getRole().getName(), "InfinityModChat1337");
+		irc = new IRCClient("irc.w3.org", 6667, user.getName(), user.getRole().getName(), "#InfinityModChat");
 
 		// loads
 		friend.load();
@@ -75,7 +81,7 @@ public class InfMain {
 		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
 
 		menu = new ClickMenu();
-		
+
 		if (!irc.isActive()) {
 			try {
 				irc.start();
@@ -84,7 +90,7 @@ public class InfMain {
 				e2.printStackTrace();
 			}
 		}
-
+		
 		LOGGER.info("Injected bullshit");
 	}
 
