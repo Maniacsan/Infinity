@@ -54,11 +54,16 @@ public class IRCClient extends IIRC {
 			return;
 
 		String name = line.substring(1, line.indexOf("!"));
+		String prefix = name.split("_")[0];
+		String username = name.replace(name.split("_")[0], "");
 		String message = line.substring(line.lastIndexOf(":") + 1, line.length());
 
-		Helper.ircMessage(ColorUtils.getStringUserColor(prefix) + prefix + " " + Formatting.GRAY + name + ": "
-				+ Formatting.WHITE + message);
-		System.out.println(name + ": " + message);
+		if (message.contains("#InfinityModChat") || message.isEmpty())
+			return;
+
+		Helper.ircMessage(ColorUtils.getStringUserColor(prefix) + prefix + " " + Formatting.GRAY + username.substring(1)
+				+ ": " + Formatting.WHITE + message);
+		System.out.println(username + ": " + message);
 	}
 
 	@Override

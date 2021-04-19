@@ -8,6 +8,7 @@ import java.util.Optional;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
+import me.infinity.InfMain;
 import me.infinity.event.PacketEvent;
 import me.infinity.event.ServerChatEvent;
 import me.infinity.features.Module;
@@ -135,6 +136,9 @@ public class ChatCalculator extends Module {
 		if (event.getType().equals(EventType.SEND)) {
 			if (event.getPacket() instanceof ChatMessageC2SPacket) {
 				ChatMessageC2SPacket cms = (ChatMessageC2SPacket) event.getPacket();
+
+				if (InfMain.getChatHud().currentChat == InfMain.getChatHud().infChat)
+					return;
 
 				String chatMessage = cms.getChatMessage().contains("Решите пример:")
 						? cms.getChatMessage().replace("Решите пример:", "")
