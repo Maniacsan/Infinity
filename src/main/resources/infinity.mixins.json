@@ -1,7 +1,7 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_8",
-   "package": "me.infinity.mixin",
+   "package": "org.infinity.mixin",
   "client": [
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
@@ -34,7 +34,8 @@
   "ScreenMixin",
   "ChatHudMixin",
   "IExplosionS2CPacket",
-  "GameMenuScreenMixin"
+  "GameMenuScreenMixin",
+  "IAbstractButtonWidget"
   ],
     "injectors": {
     "defaultRequire": 1

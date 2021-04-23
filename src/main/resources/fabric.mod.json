@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "me.infinity.MainInitialize"
+      "org.infinity.MainInitialize"
     ]
   },
   "mixins": [
