@@ -54,8 +54,8 @@ public class KillAura extends Module {
 
 	private Settings lockView = new Settings(this, "Look View", false, () -> true);
 	
-	private Settings maxSpeed = new Settings(this, "Max Speed", 190.0D, 0.0D, 200.0D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 173.0D, 0.0D, 200.0D, () -> true);
+	private Settings maxSpeed = new Settings(this, "Max Speed", 170.0D, 0.0D, 200.0D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed", 168.0D, 0.0D, 200.0D, () -> true);
 
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
@@ -150,8 +150,8 @@ public class KillAura extends Module {
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 		
-		focus[0] = RotationUtils.updateAngle(event.getYaw(), focus[0], speed);
-		focus[1] = RotationUtils.updateAngle(event.getPitch(), focus[1], speed);
+		focus[0] = RotationUtils.limitAngleChange(event.getYaw(), focus[0], speed);
+		focus[1] = RotationUtils.limitAngleChange(event.getPitch(), focus[1], speed);
 
 		smash[0] = RotationUtils.limitAngleChange(event.getYaw(), smash[0], speed);
 		smash[1] = RotationUtils.limitAngleChange(event.getPitch(), smash[1], speed);

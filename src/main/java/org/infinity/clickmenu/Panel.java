@@ -88,7 +88,7 @@ public class Panel {
 		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10,
 				closeHovered ? 0xFFECEAEA : 0xFF181818);
 
-		RenderUtil.drawTexture(matrices, AVATAR, x + 11, y + 1, 47, 46);
+		RenderUtil.drawTexture(matrices, AVATAR, x + 11, y, 47, 46);
 		double yOff = 3;
 		for (CategoryButton catButton : catButton) {
 			if (catButton.displayModulePanel) {

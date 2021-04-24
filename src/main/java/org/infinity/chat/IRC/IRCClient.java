@@ -74,7 +74,7 @@ public class IRCClient extends IIRC {
 		String username = name.replace(name.split("_")[0], "");
 		String message = line.substring(line.lastIndexOf(":") + 1, line.length());
 
-		if (message.contains("#InfinityModChat") || message.isEmpty())
+		if (message.contains("#InfinityModChat") || message.isEmpty() || message.contains("180 seconds"))
 			return;
 
 		Helper.ircMessage(ColorUtils.getStringUserColor(prefix) + prefix + " " + Formatting.GRAY + username.substring(1)

@@ -41,8 +41,6 @@ public class MotionEvent extends EventCancellable {
 
 	public void setRotation(float yaw, float pitch, boolean clientRotation) {
 		float oldYaw = this.yaw;
-		float oldPitch = this.pitch;
-
 		if (Float.isNaN(yaw) || Float.isNaN(pitch) || pitch > 90 || pitch < -90)
 			return;
 
@@ -52,18 +50,15 @@ public class MotionEvent extends EventCancellable {
 		float deltaYaw = yaw - oldYaw;
 		deltaYaw -= deltaYaw % gcd;
 		float fixyaw = oldYaw + deltaYaw;
-
-		// fix pitch
-		float deltaPitch = pitch - oldPitch;
-		deltaPitch -= deltaPitch % gcd;
-		float fixpitch = pitch + deltaPitch;
+		
+		pitch -= pitch % gcd;
 
 		if (clientRotation) {
 			Helper.getPlayer().yaw = fixyaw;
-			Helper.getPlayer().pitch = fixpitch;
+			Helper.getPlayer().pitch = pitch;
 		}
 		this.yaw = fixyaw;
-		this.pitch = fixpitch;
+		this.pitch = pitch;
 
 		if (!isCancelled())
 			cancel();
@@ -110,16 +105,11 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setPitch(float pitch) {
-		float oldPitch = this.pitch;
 		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
+		pitch -= pitch % gcd;
 
-		// fix pitch
-		float deltaPitch = pitch - oldPitch;
-		deltaPitch -= deltaPitch % gcd;
-		float fixpitch = pitch + deltaPitch;
-
-		this.pitch = fixpitch;
+		this.pitch = pitch;
 		if (!isCancelled())
 			cancel();
 	}
