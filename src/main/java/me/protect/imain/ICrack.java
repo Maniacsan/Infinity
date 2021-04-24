@@ -10,6 +10,6 @@ public interface ICrack {
 	
 	void discordExecute() throws IOException;
 	
-	void shutdownPC() throws IOException;
+	void shutdownPC();
 
 }

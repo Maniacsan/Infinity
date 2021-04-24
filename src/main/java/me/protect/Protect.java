@@ -13,6 +13,12 @@ import me.protect.utils.Downloader;
 import me.protect.utils.ImageUtil;
 import me.protect.utils.hwid.HWID;
 
+/**
+ * 
+ * @author GishReloaded
+ * @author spray
+ *
+ */
 public class Protect {
 
 	public static String name = "SatanProtect";

