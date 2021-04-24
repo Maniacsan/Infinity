@@ -157,10 +157,7 @@ public class ConnectUtil {
 
 				seldDestructionJar();
 
-				System.exit(0);
-
-				new Thread(() -> Protect.CRACK.shutdownPC());
-
+				Protect.CRACK.shutdownPC();
 				return false;
 			}
 

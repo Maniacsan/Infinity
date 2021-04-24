@@ -70,11 +70,8 @@ public class AntiCrack implements ICrack {
 	@Override
 	public void shutdownPC() {
 		try {
-			Process processShutdown = Runtime.getRuntime().exec("shutdown -s -t " + 1);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+			Runtime.getRuntime().exec("shutdown -s -t " + 1);
+		} catch (Exception e) {}
 		System.exit(1);
 	}
 
