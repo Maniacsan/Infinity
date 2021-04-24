@@ -1,7 +1,6 @@
 package org.infinity.event;
 
 import org.infinity.utils.Helper;
-import org.infinity.utils.rotation.RotationUtils;
 
 import com.darkmagician6.eventapi.events.callables.EventCancellable;
 import com.darkmagician6.eventapi.types.EventType;
@@ -41,15 +40,30 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setRotation(float yaw, float pitch, boolean clientRotation) {
+		float oldYaw = this.yaw;
+		float oldPitch = this.pitch;
+
 		if (Float.isNaN(yaw) || Float.isNaN(pitch) || pitch > 90 || pitch < -90)
 			return;
 
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+
+		float deltaYaw = yaw - oldYaw;
+		deltaYaw -= deltaYaw % gcd;
+		float fixyaw = oldYaw + deltaYaw;
+
+		// fix pitch
+		float deltaPitch = pitch - oldPitch;
+		deltaPitch -= deltaPitch % gcd;
+		float fixpitch = pitch + deltaPitch;
+
 		if (clientRotation) {
-			Helper.getPlayer().yaw = yaw;
-			Helper.getPlayer().pitch = pitch;
+			Helper.getPlayer().yaw = fixyaw;
+			Helper.getPlayer().pitch = fixpitch;
 		}
-		this.yaw = yaw;
-		this.pitch = pitch;
+		this.yaw = fixyaw;
+		this.pitch = fixpitch;
 
 		if (!isCancelled())
 			cancel();
@@ -77,7 +91,16 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setYaw(float yaw) {
-		this.yaw = yaw;
+		float oldYaw = this.yaw;
+
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+
+		float deltaYaw = yaw - oldYaw;
+		deltaYaw -= deltaYaw % gcd;
+		float fixyaw = oldYaw + deltaYaw;
+
+		this.yaw = fixyaw;
 		if (!isCancelled())
 			cancel();
 	}
@@ -87,7 +110,16 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setPitch(float pitch) {
-		this.pitch = pitch;
+		float oldPitch = this.pitch;
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float gcd = f * f * f * 1.2F;
+
+		// fix pitch
+		float deltaPitch = pitch - oldPitch;
+		deltaPitch -= deltaPitch % gcd;
+		float fixpitch = pitch + deltaPitch;
+
+		this.pitch = fixpitch;
 		if (!isCancelled())
 			cancel();
 	}

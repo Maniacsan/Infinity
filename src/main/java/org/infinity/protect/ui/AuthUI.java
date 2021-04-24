@@ -10,6 +10,7 @@ import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
+import org.lwjgl.glfw.GLFW;
 
 import me.protect.Protect;
 import me.protect.connection.Auth.AuthType;
@@ -45,15 +46,7 @@ public class AuthUI extends Screen {
 		this.loginButton = (CustomButtonWidget) this.addButton(new CustomButtonWidget(this.width / 2 - 50,
 				this.height / 2 + 15, 100, 20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!usernameField.getText().isEmpty()) {
-						new Thread(() -> {
-							Protect.LOGIN.login(usernameField.getText(), passwordField.getText());
-
-							if (Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
-								// TODO Action
-							} else {
-								errorTime = 45;
-							}
-						}).start();
+						login();
 					}
 				}));
 	}
@@ -130,6 +123,24 @@ public class AuthUI extends Screen {
 				hovered ? 0xFFEDFAF9 : 0xFFAFADAD);
 
 		super.render(matrices, mouseX, mouseY, delta);
+	}
+	
+	@Override
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (keyCode == GLFW.GLFW_KEY_ENTER && loginButton.active) {
+			login();
+		}
+		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	private void login() {
+		
+		if (Protect.LOGIN.login(usernameField.getText(), passwordField.getText()) != null) {
+			if (!Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
+				errorTime = 45;
+			}
+		}
+		
 	}
 
 	@Override

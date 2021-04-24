@@ -1,9 +1,9 @@
 package me.protect.connection;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
+import org.infinity.utils.ConnectUtil;
 import org.json.JSONObject;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -16,8 +16,6 @@ import me.protect.imain.ILogin;
 public class LoginUtil implements ILogin {
 
 	private Auth auth;
-	public static ArrayList<String> username = new ArrayList<>();
-	public static ArrayList<String> password = new ArrayList<>();
 
 	@Override
 	public Auth login(String username, String password) {
@@ -26,7 +24,8 @@ public class LoginUtil implements ILogin {
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 			Date date = new Date();
 
-			Unirest.setTimeouts(0, 0);
+			ConnectUtil.httpsSertificate();
+
 			HttpResponse<String> response = Unirest.post(url + "entry/signInWithHWID")
 					.field("ClientHour", formatter.format(date)).field("Email", username).field("Password", password)
 					.field("Sign In", "Sign In").field("DeliveryType", "VIEW").field("DeliveryMethod", "JSON")
@@ -35,28 +34,30 @@ public class LoginUtil implements ILogin {
 			JSONObject responseJSON = new JSONObject(response.getBody());
 
 			String result = String.valueOf(responseJSON.getBoolean("FormSaved"));
-			String userName = responseJSON.getString("RedirectUrl").replace(url, "");
+			String[] split = responseJSON.getString("RedirectUrl").replace(url, "").split(":");
+			String userName = split[0];
+			String role = split[1];
+
+			Protect.CHECK.setResult(() -> result, userName, role);
 
 			if (responseJSON.getBoolean("FormSaved")) {
-				if (LoginUtil.username.size() == 0)
-					LoginUtil.username.add(username);
-
-				if (LoginUtil.password.size() == 0)
-					LoginUtil.password.add(password);
-
-				Protect.CHECK.setResult(() -> result, userName);
-
-				return auth = new Auth(AuthType.valueOf("SUCCESS"));
+				return auth = new Auth(AuthType.valueOf("SUCCESS"), username, password);
 			} else
-				return auth = new Auth(AuthType.valueOf("NOLICENSE"));
+				return auth = new Auth(AuthType.valueOf("NOLICENSE"), username, password);
 
 		} catch (Exception ex) {
-			return auth = new Auth(AuthType.valueOf("ERROR"));
+			return auth = new Auth(AuthType.valueOf("ERROR"), username, password);
 		}
+
 	}
 
 	public Auth getAuth() {
 		return auth;
+	}
+
+	@Override
+	public void setAuth(Auth auth) {
+		this.auth = auth;
 	}
 
 }

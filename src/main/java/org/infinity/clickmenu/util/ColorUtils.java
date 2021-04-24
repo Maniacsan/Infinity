@@ -73,16 +73,16 @@ public class ColorUtils {
 
 		switch (InfMain.getUser().getRole()) {
 
-		case ADMIN:
+		case Admin:
 			format = Formatting.RED;
 			break;
-		case MODERATOR:
+		case Moderator:
 			format = Formatting.GREEN;
 			break;
-		case PREMIUM:
+		case Premium:
 			format = Formatting.YELLOW;
 			break;
-		case USER:
+		case User:
 			format = Formatting.BLUE;
 			break;
 		}

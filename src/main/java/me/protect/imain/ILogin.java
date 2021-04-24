@@ -6,6 +6,8 @@ public interface ILogin {
 	
 	Auth getAuth();
 	
+	void setAuth(Auth auth);
+	
 	Auth login(String username, String password);
 
 }

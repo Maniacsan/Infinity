@@ -7,13 +7,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.network.Packet;
-import net.minecraft.text.ClickEvent;
 import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
 
 public class Helper {
-	
+
 	// from net.minecraft
 	public static MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
@@ -49,10 +48,7 @@ public class Helper {
 
 	public static void openSite(String url) {
 
-		Text component = new LiteralText(url);
-
-		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
-		component.getStyle().withClickEvent(event);
+		Util.getOperatingSystem().open(url);
 
 	}
 

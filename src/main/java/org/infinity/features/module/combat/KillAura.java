@@ -317,13 +317,6 @@ public class KillAura extends Module {
 		yaw = randomRotation[0];
 		pitch = randomRotation[1];
 
-		// matrix sensitive/acceleration check bypass
-		float f = (float) (sensitivy * 0.6F + 0.2F);
-		float gcd = f * f * f * 1.2F;
-
-		yaw -= yaw % gcd;
-		pitch -= pitch % gcd;
-
 		return new float[] { yaw, pitch };
 
 	}

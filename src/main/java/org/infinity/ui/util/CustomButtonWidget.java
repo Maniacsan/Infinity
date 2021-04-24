@@ -34,8 +34,6 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	}
 
 	public void onPress() {
-		ButtonPressEvent event = new ButtonPressEvent();
-		EventManager.call(event);
 		this.onPress.onPress(this);
 	}
 

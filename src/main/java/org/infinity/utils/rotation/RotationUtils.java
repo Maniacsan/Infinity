@@ -63,11 +63,6 @@ public class RotationUtils {
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
 		float yaw = i;
 		float pitch = j;
-		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
-		float gcd = f * f * f * 1.2F;
-
-		yaw -= yaw % gcd;
-		pitch -= pitch % gcd;
 		return new float[] { yaw, pitch };
 	}
 
@@ -89,11 +84,6 @@ public class RotationUtils {
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
 		float yaw = i;
 		float pitch = j;
-		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
-		float gcd = f * f * f * 1.2F;
-
-		yaw -= yaw % gcd;
-		pitch -= pitch % gcd;
 		return new float[] { yaw, pitch };
 	}
 
@@ -105,11 +95,6 @@ public class RotationUtils {
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
-		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
-		float gcd = f * f * f * 1.2F;
-
-		i -= i % gcd;
-		j -= j % gcd;
 		return new float[] { i, j };
 	}
 
@@ -123,7 +108,7 @@ public class RotationUtils {
 
 		return currentRotation + (diff > turnSpeed ? turnSpeed : Math.max(diff, -turnSpeed));
 	}
-	
+
 	public static float updateAngle(float oldAngle, float newAngle, float maxChangeInAngle) {
 		float f = MathHelper.wrapDegrees(newAngle - oldAngle);
 		if (f > maxChangeInAngle) {

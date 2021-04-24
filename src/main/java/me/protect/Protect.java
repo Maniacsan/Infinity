@@ -2,10 +2,12 @@ package me.protect;
 
 import me.protect.connection.LoginUtil;
 import me.protect.imain.ICheck;
+import me.protect.imain.ICrack;
 import me.protect.imain.IDownload;
 import me.protect.imain.IHWID;
 import me.protect.imain.IImage;
 import me.protect.imain.ILogin;
+import me.protect.utils.AntiCrack;
 import me.protect.utils.Check;
 import me.protect.utils.Downloader;
 import me.protect.utils.ImageUtil;
@@ -23,5 +25,6 @@ public class Protect {
 	public static IHWID HWID = new HWID();
 	public static IImage IMAGE = new ImageUtil();
 	public static ICheck CHECK = new Check();
+	public static ICrack CRACK = new AntiCrack();
 
 }

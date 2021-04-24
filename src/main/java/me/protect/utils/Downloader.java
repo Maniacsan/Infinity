@@ -14,16 +14,19 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.infinity.utils.ConnectUtil;
 
 import me.protect.imain.IDownload;
 
 public class Downloader implements IDownload {
 
 	@Override
-	public File download(URL url, File dstFile) {
-
+	public File download(URL url, File dstFile) throws Exception {
+		ConnectUtil.httpsSertificate();
+		
 		CloseableHttpClient httpclient = HttpClients.custom().setRedirectStrategy(new LaxRedirectStrategy()).build();
 		try {
+			ConnectUtil.httpsSertificate();
 			HttpGet get = new HttpGet(url.toURI());
 			File downloaded = httpclient.execute(get, new FileDownloadResponseHandler(dstFile));
 			return downloaded;

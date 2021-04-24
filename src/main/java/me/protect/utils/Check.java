@@ -3,10 +3,12 @@ package me.protect.utils;
 import java.util.function.Supplier;
 
 import org.infinity.InfMain;
+import org.infinity.event.protect.ButtonPressEvent;
 import org.infinity.utils.user.User;
 
+import com.darkmagician6.eventapi.EventManager;
+
 import me.protect.Protect;
-import me.protect.connection.LoginUtil;
 import me.protect.imain.ICheck;
 
 public class Check implements ICheck {
@@ -23,17 +25,11 @@ public class Check implements ICheck {
 	}
 
 	@Override
-	public void setResult(Supplier<String> result, String username) {
-		LoginUtil.username.forEach(name -> {
-			LoginUtil.password.forEach(pass -> {
-				if (name == null || pass == null)
-					return;
-
-				InfMain.setUser(new User(username, "ADMIN"));
-				this.result = result;
-
-			});
-		});
+	public void setResult(Supplier<String> result, String username, String role) {
+		InfMain.setUser(new User(username, role));
+		this.result = result;
+		ButtonPressEvent event = new ButtonPressEvent();
+		EventManager.call(event);
 	}
 
 }

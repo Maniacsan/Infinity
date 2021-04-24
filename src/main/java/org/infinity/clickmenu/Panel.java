@@ -10,6 +10,7 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module.Category;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
@@ -87,8 +88,7 @@ public class Panel {
 		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10,
 				closeHovered ? 0xFFECEAEA : 0xFF181818);
 
-		Helper.minecraftClient.getTextureManager().bindTexture(AVATAR);
-		DrawableHelper.drawTexture(matrices, (int) x + 16, (int) y + 4, 0, 0, 34, 36, 34, 36);
+		RenderUtil.drawTexture(matrices, AVATAR, x + 11, y + 1, 47, 46);
 		double yOff = 3;
 		for (CategoryButton catButton : catButton) {
 			if (catButton.displayModulePanel) {

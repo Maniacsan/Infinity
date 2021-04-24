@@ -5,6 +5,6 @@ import java.net.URL;
 
 public interface IDownload {
 	
-	File download(URL url, File dstFile);
+	File download(URL url, File dstFile) throws Exception;
 
 }

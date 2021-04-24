@@ -2,7 +2,7 @@ package org.infinity.ui;
 
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.utils.UpdaterUtil;
+import org.infinity.utils.ConnectUtil;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,7 +19,7 @@ public class UpdateUI extends Screen {
 	
 	@Override
 	public void init() {
-		UpdaterUtil.downloadClient();
+		ConnectUtil.downloadClient();
 	}
 
 	@Override

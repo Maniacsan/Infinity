@@ -5,15 +5,14 @@ import org.infinity.event.protect.ButtonPressEvent;
 import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
 import org.infinity.protect.Handler;
+import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;
-import org.infinity.utils.UpdaterUtil;
 
 import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import me.protect.Protect;
-import me.protect.connection.Auth.AuthType;
 import net.minecraft.client.gui.screen.TitleScreen;
 
 public class AuthHandler extends Handler {
@@ -25,17 +24,17 @@ public class AuthHandler extends Handler {
 		}
 	}
 
-	@EventTarget
+	@EventTarget(5)
 	public void onButtonPress(ButtonPressEvent event) {
-		if (Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
+		if (Protect.CHECK.getResult().get().equalsIgnoreCase("true")) {
 
 			SuccessEvent successEvent = new SuccessEvent();
 			EventManager.call(successEvent);
 
-			if (UpdaterUtil.checkUpdate())
-			Helper.openScreen(new TitleScreen(true));
-			
-			setInit(false);
+			if (ConnectUtil.checkUpdate()) {
+				if (ConnectUtil.checkJarSize())
+					Helper.openScreen(new TitleScreen(true));
+			}
 		}
 	}
 
