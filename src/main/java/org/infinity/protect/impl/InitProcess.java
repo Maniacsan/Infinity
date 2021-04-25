@@ -15,27 +15,25 @@ public class InitProcess extends Handler {
 	@EventTarget(3)
 	public void onSuccess(SuccessEvent event) {
 		InfMain.getHandler().getHandler(TickLogger.class).enable();
-		
+
 		InfMain.configManager = new ConfigManager();
 		InfMain.macroManager = new MacroManager();
-		
+
 		// loads
 		InfMain.configManager.loadConfig(false);
 		InfMain.macroManager.load();
-		
+
 		InfMain.menu = new ClickMenu();
-		
+
 		try {
-			InfMain.irc = new IRCClient("irc.w3.org", 6667, InfMain.getUser().getName(),
-					InfMain.getUser().getRole().getName(), "#InfinityModChat");
+			InfMain.irc = new IRCClient("chat.freenode.net", 6667, InfMain.getUser().getName(),
+					InfMain.getUser().getRole().getName(), "#InfinityClientModChat");
 
 			InfMain.getIrc().startInit();
-		
+
 		} catch (Exception e) {
 		}
-		
 
 		setInit(false);
 	}
-
 }
