@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 
 public class Panel {
 
-	private static final Identifier AVATAR = new Identifier("infinity", "logo.png");
+	private static final Identifier AVATAR = new Identifier("infinity", "logo_47x48.png");
 	private ArrayList<CategoryButton> catButton = new ArrayList<>();
 	private ClickMenu clickMenu;
 	public double x;

@@ -13,12 +13,9 @@ import net.minecraft.util.Util;
 
 public class Helper {
 
-	// from net.minecraft
 	public static MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-	/*
-	 * Static import for net.minecraft
-	 */
+
 	public static ClientPlayerEntity getPlayer() {
 		return minecraftClient.player;
 	}

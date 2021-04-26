@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 
 public class InventoryLogo {
 
-	private static final Identifier LOGO = new Identifier("infinity", "logo.png");
+	private static final Identifier LOGO = new Identifier("infinity", "logo_38x40.png");
 	private static final Identifier NAME = new Identifier("infinity", "infinity.png");
 
 	private int width;

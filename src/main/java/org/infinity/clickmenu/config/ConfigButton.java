@@ -3,6 +3,7 @@ package org.infinity.clickmenu.config;
 import java.util.ArrayList;
 
 import org.infinity.InfMain;
+import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.Panel;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
@@ -160,6 +161,7 @@ public class ConfigButton {
 				if (listButton.select) {
 					listButton.config.load();
 
+					InfMain.menu = new ClickMenu();
 					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "loaded");
 				}
 			}

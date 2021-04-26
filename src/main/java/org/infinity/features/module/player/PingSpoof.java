@@ -32,6 +32,7 @@ public class PingSpoof extends Module {
 					Thread.sleep((long) delay.getCurrentValueInt());
 				} catch (InterruptedException exception) {
 				}
+
 			}
 		}
 	}

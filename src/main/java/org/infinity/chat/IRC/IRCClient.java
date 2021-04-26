@@ -20,6 +20,25 @@ public class IRCClient extends IIRC {
 
 		this.channel = channel;
 		this.prefix = prefix;
+		
+        new Thread(() -> {
+            while(!Thread.currentThread().isInterrupted()) {
+                if(isActive()) {
+                	try {
+						sendMessage(getChannel(), "EJGLJEGLI34UIOJHIGJ59YUHPJMDLFKBNW8RY39TIRKHPARKHPRNB827EY39T4MN");
+						
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+                }
+                
+                try {
+                    Thread.sleep(60 * 2850); // anti timeout 
+                } catch(InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, "AntiTimeOut").start();
 	}
 
 	public void startInit() {
@@ -74,7 +93,7 @@ public class IRCClient extends IIRC {
 		String username = name.replace(name.split("_")[0], "");
 		String message = line.substring(line.lastIndexOf(":") + 1, line.length());
 
-		if (message.contains("#InfinityModChat") || message.isEmpty() || message.contains("180 seconds"))
+		if (message.contains("EJGLJEGLI34UIOJHIGJ59YUHPJMDLFKBNW8RY39TIRKHPARKHPRNB827EY39T4MN"))
 			return;
 
 		Helper.ircMessage(ColorUtils.getStringUserColor(prefix) + prefix + " " + Formatting.GRAY + username.substring(1)
@@ -83,6 +102,7 @@ public class IRCClient extends IIRC {
 
 	@Override
 	public void onConnect() {
+
 	}
 
 	@Override

@@ -112,31 +112,25 @@ public class ConnectUtil {
 	}
 
 	public static void httpsSertificate() throws Exception {
-		try {
+		TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+				return null;
+			}
 
-			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-					return null;
-				}
+			public void checkClientTrusted(X509Certificate[] certs, String authType) {
+			}
 
-				public void checkClientTrusted(X509Certificate[] certs, String authType) {
-				}
+			public void checkServerTrusted(X509Certificate[] certs, String authType) {
+			}
 
-				public void checkServerTrusted(X509Certificate[] certs, String authType) {
-				}
+		} };
 
-			} };
-
-			SSLContext sslcontext = SSLContext.getInstance("SSL");
-			sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
-			HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
-			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext);
-			CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-			Unirest.setHttpClient(httpclient);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		SSLContext sslcontext = SSLContext.getInstance("SSL");
+		sslcontext.init(null, trustAllCerts, new java.security.SecureRandom());
+		HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
+		SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext);
+		CloseableHttpClient httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		Unirest.setHttpClient(httpclient);
 	}
 
 	public static boolean checkJarSize() {

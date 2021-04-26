@@ -26,11 +26,11 @@ public class InitProcess extends Handler {
 		InfMain.menu = new ClickMenu();
 
 		try {
-			InfMain.irc = new IRCClient("chat.freenode.net", 6667, InfMain.getUser().getName(),
+			InfMain.irc = new IRCClient("irc.w3.org", 6667, InfMain.getUser().getName(),
 					InfMain.getUser().getRole().getName(), "#InfinityClientModChat");
 
 			InfMain.getIrc().startInit();
-
+			
 		} catch (Exception e) {
 		}
 

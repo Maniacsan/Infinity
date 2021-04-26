@@ -36,6 +36,7 @@ public class InfChatHud extends DrawableHelper {
 	private final Deque<Text> messageQueue = Queues.newArrayDeque();
 	private final List<ChatHudLine<OrderedText>> visibleMessages = Lists.newArrayList();
 	private int scrolledLines;
+	private int iscrolledLines;
 	private boolean hasUnreadNewMessages;
 	private long lastMessageAddedTime = 0L;
 
@@ -86,33 +87,34 @@ public class InfChatHud extends DrawableHelper {
 				int aa;
 				int ab;
 				if (currentChat == infChat) {
-				for (m = 0; m + this.scrolledLines < this.currentChat.lines.size() && m < i; ++m) {
-					ChatHudLine<OrderedText> chatHudLine = (ChatHudLine) this.currentChat.lines
-							.get(m + this.scrolledLines);
-					if (chatHudLine != null) {
-						x = tickDelta - chatHudLine.getCreationTick();
-						if (x < 200 || bl) {
-							double o = bl ? 1.0D : getMessageOpacityMultiplier(x);
-							aa = (int) (255.0D * o * e);
-							ab = (int) (255.0D * o * f);
-							++l;
-							if (aa > 3) {
-								double s = (double) (-m) * g;
-								matrices.push();
-								matrices.translate(0.0D, 0.0D, 50.0D);
-								fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
-								topY = (int) (s - g + 4);
-								RenderSystem.enableBlend();
-								matrices.translate(0.0D, 0.0D, 50.0D);
-								this.client.textRenderer.drawWithShadow(matrices, (OrderedText) chatHudLine.getText(),
-										0.0F, (float) ((int) (s + h)), 16777215 + (aa << 24));
-								RenderSystem.disableAlphaTest();
-								RenderSystem.disableBlend();
-								matrices.pop();
+					for (m = 0; m + this.iscrolledLines < this.currentChat.lines.size() && m < i; ++m) {
+						ChatHudLine<OrderedText> chatHudLine = (ChatHudLine) this.currentChat.lines
+								.get(m + this.iscrolledLines);
+						if (chatHudLine != null) {
+							x = tickDelta - chatHudLine.getCreationTick();
+							if (x < 200 || bl) {
+								double o = bl ? 1.0D : getMessageOpacityMultiplier(x);
+								aa = (int) (255.0D * o * e);
+								ab = (int) (255.0D * o * f);
+								++l;
+								if (aa > 3) {
+									double s = (double) (-m) * g;
+									matrices.push();
+									matrices.translate(0.0D, 0.0D, 50.0D);
+									fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
+									topY = (int) (s - g + 4);
+									RenderSystem.enableBlend();
+									matrices.translate(0.0D, 0.0D, 50.0D);
+									this.client.textRenderer.drawWithShadow(matrices,
+											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
+											16777215 + (aa << 24));
+									RenderSystem.disableAlphaTest();
+									RenderSystem.disableBlend();
+									matrices.pop();
+								}
 							}
 						}
 					}
-				}
 				} else if (currentChat == mcChat) {
 					for (m = 0; m + this.scrolledLines < this.visibleMessages.size() && m < i; ++m) {
 						ChatHudLine<OrderedText> chatHudLine = (ChatHudLine) this.visibleMessages
@@ -132,8 +134,9 @@ public class InfChatHud extends DrawableHelper {
 									topY = (int) (s - g + 4);
 									RenderSystem.enableBlend();
 									matrices.translate(0.0D, 0.0D, 50.0D);
-									this.client.textRenderer.drawWithShadow(matrices, (OrderedText) chatHudLine.getText(),
-											0.0F, (float) ((int) (s + h)), 16777215 + (aa << 24));
+									this.client.textRenderer.drawWithShadow(matrices,
+											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
+											16777215 + (aa << 24));
 									RenderSystem.disableAlphaTest();
 									RenderSystem.disableBlend();
 									matrices.pop();
@@ -166,7 +169,7 @@ public class InfChatHud extends DrawableHelper {
 					RenderSystem.translatef(-3.0F, 0.0F, 0.0F);
 					w = j * v + j;
 					x = l * v + l;
-					int y = this.scrolledLines * x / j;
+					int y = currentChat == mcChat ? this.scrolledLines * x / j : this.iscrolledLines * x / j;
 					int z = x * x / w;
 					if (w != x) {
 						aa = y > 0 ? 170 : 96;
@@ -254,7 +257,7 @@ public class InfChatHud extends DrawableHelper {
 		for (Iterator<OrderedText> var8 = list.iterator(); var8.hasNext(); this.currentChat.lines.add(0,
 				new ChatHudLine<OrderedText>(timestamp, orderedText, messageId))) {
 			orderedText = (OrderedText) var8.next();
-			if (bl && this.scrolledLines > 0) {
+			if (bl && this.iscrolledLines > 0) {
 				this.hasUnreadNewMessages = true;
 				this.scroll(1.0D);
 			}
@@ -331,20 +334,23 @@ public class InfChatHud extends DrawableHelper {
 	}
 
 	public void resetScroll() {
-		this.scrolledLines = 0;
+		if (currentChat == mcChat)
+			this.scrolledLines = 0;
+		else
+			this.iscrolledLines = 0;
 		this.hasUnreadNewMessages = false;
 	}
 
 	public void scroll(double amount) {
 		if (currentChat == infChat) {
-			this.scrolledLines = (int) ((double) this.scrolledLines + amount);
+			this.iscrolledLines = (int) ((double) this.iscrolledLines + amount);
 			int i = this.currentChat.lines.size();
-			if (this.scrolledLines > i - this.getVisibleLineCount()) {
-				this.scrolledLines = i - this.getVisibleLineCount();
+			if (this.iscrolledLines > i - this.getVisibleLineCount()) {
+				this.iscrolledLines = i - this.getVisibleLineCount();
 			}
 
-			if (this.scrolledLines <= 0) {
-				this.scrolledLines = 0;
+			if (this.iscrolledLines <= 0) {
+				this.iscrolledLines = 0;
 				this.hasUnreadNewMessages = false;
 			}
 		} else if (currentChat == mcChat) {

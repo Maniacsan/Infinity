@@ -1,6 +1,7 @@
 package org.infinity.event;
 
 import org.infinity.utils.Helper;
+import org.infinity.utils.rotation.RotationUtils;
 
 import com.darkmagician6.eventapi.events.callables.EventCancellable;
 import com.darkmagician6.eventapi.types.EventType;
@@ -40,24 +41,20 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setRotation(float yaw, float pitch, boolean clientRotation) {
-		float oldYaw = this.yaw;
 		if (Float.isNaN(yaw) || Float.isNaN(pitch) || pitch > 90 || pitch < -90)
 			return;
 
 		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 
-		float deltaYaw = yaw - oldYaw;
-		deltaYaw -= deltaYaw % gcd;
-		float fixyaw = oldYaw + deltaYaw;
-		
+		yaw -= yaw % gcd;
 		pitch -= pitch % gcd;
 
 		if (clientRotation) {
-			Helper.getPlayer().yaw = fixyaw;
+			Helper.getPlayer().yaw = yaw;
 			Helper.getPlayer().pitch = pitch;
 		}
-		this.yaw = fixyaw;
+		this.yaw = yaw;
 		this.pitch = pitch;
 
 		if (!isCancelled())
@@ -86,16 +83,12 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setYaw(float yaw) {
-		float oldYaw = this.yaw;
 
 		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
+		yaw -= yaw % gcd;
 
-		float deltaYaw = yaw - oldYaw;
-		deltaYaw -= deltaYaw % gcd;
-		float fixyaw = oldYaw + deltaYaw;
-
-		this.yaw = fixyaw;
+		this.yaw = yaw;
 		if (!isCancelled())
 			cancel();
 	}

@@ -39,7 +39,7 @@ public abstract class IIRC implements Runnable {
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public BufferedReader getIn() {
 		return in;
 	}
@@ -77,7 +77,8 @@ public abstract class IIRC implements Runnable {
 							onConnect();
 						}
 					}
-				}
+
+				}	
 			} catch (IOException e) {
 				exception(e);
 			}

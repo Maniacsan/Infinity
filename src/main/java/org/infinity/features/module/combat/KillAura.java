@@ -6,7 +6,6 @@ import java.util.Random;
 
 import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
-import org.infinity.event.PacketEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.event.TickEvent;
 import org.infinity.features.Module;
@@ -15,7 +14,6 @@ import org.infinity.features.Settings;
 import org.infinity.features.module.player.FakeLags;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
-import org.infinity.utils.PacketUtil;
 import org.infinity.utils.TimeHelper;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.rotation.RotationUtils;
@@ -35,7 +33,7 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
-	private Settings rotation = new Settings(this, "Rotation", "Focus",
+	private Settings rotation = new Settings(this, "Rotation", "Reset",
 			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")), () -> true);
 
 	// targets
@@ -45,7 +43,7 @@ public class KillAura extends Module {
 	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
 	private Settings animals = new Settings(this, "Animals", true, () -> true);
 	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
-	
+
 	private Settings fov = new Settings(this, "FOV", 240D, 0D, 360D, () -> true);
 
 	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
@@ -53,9 +51,9 @@ public class KillAura extends Module {
 	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
 
 	private Settings lockView = new Settings(this, "Look View", false, () -> true);
-	
-	private Settings maxSpeed = new Settings(this, "Max Speed", 170.0D, 0.0D, 200.0D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 168.0D, 0.0D, 200.0D, () -> true);
+
+	private Settings maxSpeed = new Settings(this, "Max Speed", 199.0D, 0.0D, 200.0D, () -> true);
+	private Settings minSpeed = new Settings(this, "Min Speed", 184.0D, 0.0D, 200.0D, () -> true);
 
 	// raycasting target
 	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
@@ -75,6 +73,7 @@ public class KillAura extends Module {
 	// rotations
 	private float[] focus;
 	private float[] smash;
+
 	private float lastYaw = 999f;
 	private float lastPitch = 999f;
 
@@ -149,7 +148,7 @@ public class KillAura extends Module {
 		focus = RotationUtils.lookAtEntity(target);
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
-		
+
 		focus[0] = RotationUtils.limitAngleChange(event.getYaw(), focus[0], speed);
 		focus[1] = RotationUtils.limitAngleChange(event.getPitch(), focus[1], speed);
 
@@ -163,26 +162,12 @@ public class KillAura extends Module {
 		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 			if (lastYaw != 999 || lastPitch != 999) {
 				event.setRotation(lastYaw, lastPitch, lockView.isToggle());
-			}
-		}
-
-		attack(event);
-	}
-
-	@EventTarget
-	public void onPacket(PacketEvent event) {
-		if (target == null)
-			return;
-
-		if (rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-			PacketUtil.setRotation(event, smash[0], smash[1]);
-		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
-			if (lastYaw != 999 || lastPitch != 999) {
-				PacketUtil.setRotation(event, lastYaw, lastPitch);
 				Helper.getPlayer().bodyYaw = lastYaw;
 				Helper.getPlayer().headYaw = lastYaw;
 			}
 		}
+
+		attack(event);
 	}
 
 	@EventTarget
@@ -253,8 +238,7 @@ public class KillAura extends Module {
 				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 					lastYaw = matrix[0];
 					lastPitch = matrix[1];
-					event.setYaw(matrix[0]);
-					event.setPitch(matrix[1]);
+					event.setRotation(matrix[0], matrix[1], lockView.isToggle());
 					Helper.getPlayer().bodyYaw = matrix[0];
 					Helper.getPlayer().headYaw = matrix[0];
 					time = 4;
