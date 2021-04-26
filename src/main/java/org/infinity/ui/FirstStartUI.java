@@ -14,35 +14,21 @@ import net.minecraft.util.Formatting;
 
 public class FirstStartUI extends Screen {
 
-	private ButtonWidget continueButton;
-	private int timer;
+
 
 	public FirstStartUI() {
 		super(new LiteralText(""));
-		timer = 80;
 	}
 
 	@Override
 	public void init() {
 
-		addButton(continueButton = new ButtonWidget(width - 100, height - 30, 70, 20, new TranslatableText("Continue"), (continueButton) -> {
+		addButton(new ButtonWidget(width - 100, height - 30, 70, 20, new TranslatableText("Continue"), (continueButton) -> {
 			Helper.getPlayer().closeScreen();
 			InfMain.firstStart = false;
 		}));
 
 		super.init();
-	}
-
-	@Override
-	public void tick() {
-
-		if (timer > 0) {
-			timer--;
-		}
-		
-		continueButton.active = timer <= 0;
-
-		super.tick();
 	}
 
 	@Override

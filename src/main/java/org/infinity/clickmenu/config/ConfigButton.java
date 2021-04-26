@@ -162,6 +162,7 @@ public class ConfigButton {
 					listButton.config.load();
 
 					InfMain.menu = new ClickMenu();
+					Helper.openScreen(InfMain.menu);
 					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "loaded");
 				}
 			}
