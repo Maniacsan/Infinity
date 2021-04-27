@@ -428,7 +428,7 @@ public class InfChatHud extends DrawableHelper {
 				} else {
 					return null;
 				}
-			} else if (currentChat == infChat) {
+			} else if (currentChat == mcChat) {
 				if (this.isChatFocused() && !this.client.options.hudHidden && !this.isChatHidden()) {
 					double d = x - 2.0D;
 					double e = (double) this.client.getWindow().getScaledHeight() - y - 40.0D;
