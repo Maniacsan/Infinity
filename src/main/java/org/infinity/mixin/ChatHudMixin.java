@@ -3,7 +3,6 @@ package org.infinity.mixin;
 import org.infinity.InfMain;
 import org.infinity.chat.InfChatHud;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -72,12 +71,10 @@ public abstract class ChatHudMixin extends DrawableHelper {
 		ci.cancel();
 	}
 
-	@Overwrite
-	public boolean mouseClicked(double mouseX, double mouseY) {
-		if (infChat.mouseClicked(mouseX, mouseY)) {
-			return true;
-		}
-		return false;
+	@Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
+	public void mouseClicked(double mouseX, double mouseY, CallbackInfoReturnable<Boolean> ci) {
+		ci.setReturnValue(infChat.mouseClicked(mouseX, mouseY));
+		ci.cancel();
 	}
 
 }

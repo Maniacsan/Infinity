@@ -9,7 +9,6 @@ import org.infinity.features.module.movement.AntiWaterPush;
 import org.infinity.utils.Helper;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -70,23 +69,21 @@ public abstract class EntityMixin {
 		Velocity.pushAway((Entity) (Object) this, entity, ci);
 	}
 
-	@Overwrite
-	public final Vec3d getRotationVector(float pitch, float yaw) {
+	@Inject(method = "getRotationVector", at = @At("HEAD"), cancellable = true)
+	public final void getRotationVector(float pitch, float yaw, CallbackInfoReturnable<Vec3d> ci) {
 		RotationEvent rotationEvent = new RotationEvent(yaw, pitch);
 		EventManager.call(rotationEvent);
 
 		if (rotationEvent.isCancelled()) {
-			pitch = rotationEvent.getPitch();
-			yaw = rotationEvent.getYaw();
+			float f = rotationEvent.getPitch() * 0.017453292F;
+			float g = -rotationEvent.getYaw() * 0.017453292F;
+			float h = MathHelper.cos(g);
+			float i = MathHelper.sin(g);
+			float j = MathHelper.cos(f);
+			float k = MathHelper.sin(f);
+			ci.setReturnValue(new Vec3d((double) (i * j), (double) (-k), (double) (h * j)));
+			ci.cancel();
 		}
-
-		float f = pitch * 0.017453292F;
-		float g = -yaw * 0.017453292F;
-		float h = MathHelper.cos(g);
-		float i = MathHelper.sin(g);
-		float j = MathHelper.cos(f);
-		float k = MathHelper.sin(f);
-		return new Vec3d((double) (i * j), (double) (-k), (double) (h * j));
 	}
 
 }
