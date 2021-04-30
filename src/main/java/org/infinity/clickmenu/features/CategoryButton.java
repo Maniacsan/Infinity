@@ -8,6 +8,7 @@ import org.infinity.clickmenu.config.ConfigButton;
 import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
+import org.infinity.features.Module.Category;
 import org.infinity.features.module.visual.GuiMod;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -30,9 +31,9 @@ public class CategoryButton {
 		this.name = name;
 		this.panel = panel;
 		for (org.infinity.features.Module module : InfMain.getModuleManager().getList()) {
-			if (module.getCategory().name() == name && name != "ENABLED") {
+			if (module.getCategory().name() == name && name != Category.ENABLED.name()) {
 				modButton.add(new ModuleButton(module, module.getName(), this));
-			} else if (name == "CONFIGS") {
+			} else if (name == panel.configButton.getName()) {
 				configButton = new ConfigButton(panel);
 			}
 		}
@@ -42,7 +43,7 @@ public class CategoryButton {
 
 	public void enabledRefresh() {
 		InfMain.getModuleManager().getEnableModules().clear();
-		if (name == "ENABLED") {
+		if (name == Category.ENABLED.name()) {
 			modButton.clear();
 			for (org.infinity.features.Module module : InfMain.getModuleManager().getEnableModules()) {
 				ModuleButton enabledButton = new ModuleButton(module, module.getName(), this);
@@ -86,7 +87,7 @@ public class CategoryButton {
 				}
 
 			}
-			if (getName() == "CONFIGS") {
+			if (getName() == panel.configButton.getName()) {
 				configButton.render(matrices, mouseX, mouseY, delta, xOffset, yOffset, width, height, yMod, setX, setY,
 						setWidth, setHeight);
 			} else {
@@ -126,7 +127,7 @@ public class CategoryButton {
 			if (button == 0) {
 				this.displayModulePanel = !this.displayModulePanel;
 
-				if (getName() == "ENABLED") {
+				if (getName() == Category.ENABLED.name()) {
 					enabledRefresh();
 				}
 
@@ -137,7 +138,7 @@ public class CategoryButton {
 			}
 		}
 		if (displayModulePanel) {
-			if (getName() == "CONFIGS") {
+			if (getName() == panel.configButton.getName()) {
 				configButton.mouseClicked(mouseX, mouseY, button);
 			} else {
 				modButton.forEach(modButton -> modButton.mouseClicked(mouseX, mouseY, button));
@@ -174,7 +175,7 @@ public class CategoryButton {
 
 	public void charTyped(char chr, int keyCode) {
 		if (displayModulePanel) {
-			if (getName() == "CONFIGS") {
+			if (getName() == panel.configButton.getName()) {
 				configButton.charTyped(chr, keyCode);
 			}
 		}
@@ -182,7 +183,7 @@ public class CategoryButton {
 
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (displayModulePanel) {
-			if (getName() == "CONFIGS") {
+			if (getName() == panel.configButton.getName()) {
 				configButton.keyPressed(keyCode, scanCode, modifiers);
 			}
 		}

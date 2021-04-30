@@ -12,7 +12,6 @@ import org.infinity.features.module.visual.GuiMod;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -21,6 +20,7 @@ public class Panel {
 
 	private static final Identifier AVATAR = new Identifier("infinity", "logo_47x48.png");
 	private ArrayList<CategoryButton> catButton = new ArrayList<>();
+	public Button configButton = new Button("CONFIGS");
 	private ClickMenu clickMenu;
 	public double x;
 	public double y;
@@ -45,7 +45,7 @@ public class Panel {
 			if (category != Category.HIDDEN)
 				catButton.add(new CategoryButton(category.name(), this));
 		}
-		catButton.add(new CategoryButton("CONFIGS", this));
+		catButton.add(new CategoryButton(configButton.getName(), this));
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -92,7 +92,7 @@ public class Panel {
 		double yOff = 3;
 		for (CategoryButton catButton : catButton) {
 			if (catButton.displayModulePanel) {
-				if (catButton.getName() == "CONFIGS") {
+				if (catButton.getName() == configButton.getName()) {
 					Render2D.drawRectWH(matrices, x + 68, y + 2, 79, height - 4, ColorUtils.lineColor);
 					Render2D.drawRectWH(matrices, x + 69, y + 3, 77, height - 6, ColorUtils.backNight);
 					Render2D.drawRectWH(matrices, x + 150, y + 20, 180, height - 22, ColorUtils.lineColor);
@@ -108,7 +108,7 @@ public class Panel {
 			catButton.render(matrices, mouseX, mouseY, delta, x + 4, yOff + y + 40, 60, 20, y, x, y, width, height);
 			yOff += 23;
 
-			if (catButton.displayModulePanel && catButton.getName() != "CONFIGS") {
+			if (catButton.displayModulePanel && catButton.getName() != configButton.getName()) {
 
 				if (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).descriptions.isToggle()) {
 					// description
@@ -167,6 +167,20 @@ public class Panel {
 
 	public ArrayList<CategoryButton> getCatButton() {
 		return catButton;
+	}
+
+	
+	public class Button {
+
+		String name;
+
+		public Button(String name) {
+			this.name = name;
+		}
+
+		public String getName() {
+			return name;
+		}
 	}
 
 }
