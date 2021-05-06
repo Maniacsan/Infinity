@@ -18,7 +18,7 @@ import net.minecraft.util.Identifier;
 
 public class Panel {
 
-	private static final Identifier AVATAR = new Identifier("infinity", "logo_47x48.png");
+	private static final Identifier AVATAR = new Identifier("infinity", "logoneon.png");
 	private ArrayList<CategoryButton> catButton = new ArrayList<>();
 	public Button configButton = new Button("CONFIGS");
 	private ClickMenu clickMenu;
@@ -88,7 +88,7 @@ public class Panel {
 		FontUtils.drawString(matrices, "x", (int) ((int) x + width - 13), (int) y - 10,
 				closeHovered ? 0xFFECEAEA : 0xFF181818);
 
-		RenderUtil.drawTexture(matrices, AVATAR, x + 11, y, 47, 46);
+		RenderUtil.drawTexture(matrices, AVATAR, x + 13, y + 2, 41, 41);
 		double yOff = 3;
 		for (CategoryButton catButton : catButton) {
 			if (catButton.displayModulePanel) {

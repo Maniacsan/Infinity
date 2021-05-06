@@ -13,6 +13,12 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version + (System.getenv("CIRCLE_BUILD_NUM") != null ? ("-" + System.getenv("CIRCLE_BUILD_NUM")) : "")
 group = project.maven_group
 
+apply plugin: 'java'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 repositories {
 	maven { url "https://jitpack.io" }
 	jcenter()

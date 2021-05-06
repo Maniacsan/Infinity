@@ -98,8 +98,8 @@ public class AuthUI extends Screen {
 		FontUtils.drawString(matrices, "x", this.width / 2 + 107, this.height / 2 - 144,
 				exitHover ? 0xFFFFFFFF : 0xFF000000);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "logo_60x60.png"), width / 2 - 60 / 2,
-				this.height / 2 - 126, 60, 60);
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "logo_60x60.png"), width / 2 - 50 / 2,
+				this.height / 2 - 123, 52, 52);
 
 		this.usernameField.render(matrices, mouseX, mouseY, delta);
 		this.passwordField.render(matrices, mouseX, mouseY, delta);

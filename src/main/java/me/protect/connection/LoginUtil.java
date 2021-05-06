@@ -46,6 +46,7 @@ public class LoginUtil implements ILogin {
 				return auth = new Auth(AuthType.valueOf("NOLICENSE"), username, password);
 
 		} catch (Exception ex) {
+			System.out.println(ex);
 			return auth = new Auth(AuthType.valueOf("ERROR"), username, password);
 		}
 
