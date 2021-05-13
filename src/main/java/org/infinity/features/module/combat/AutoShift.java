@@ -3,9 +3,10 @@ package org.infinity.features.module.combat;
 import org.infinity.InfMain;
 import org.infinity.event.ClickEvent;
 import org.infinity.event.PacketEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 
@@ -15,10 +16,10 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Sneaking on attack or hit", key = -2, name = "AutoShift", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Sneaking on attack or hit", key = -2, name = "AutoShift", visible = true)
 public class AutoShift extends Module {
 
-	public Settings onlyAttack = new Settings(this, "Only on Attack", false, () -> true);
+	public Setting onlyAttack = new Setting(this, "Only on Attack", false);
 
 	@Override
 	public void onDisable() {

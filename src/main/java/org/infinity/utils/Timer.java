@@ -1,6 +1,6 @@
 package org.infinity.utils;
 
-public class TimeHelper {
+public class Timer {
 
 	private long lastMS = -1L;
 

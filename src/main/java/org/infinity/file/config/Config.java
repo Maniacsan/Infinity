@@ -7,9 +7,10 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.infinity.InfMain;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
-import org.infinity.features.Settings;
-import org.infinity.utils.FileUtil;
+import org.infinity.features.Setting;
+import org.infinity.utils.system.FileUtil;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -61,7 +62,7 @@ public class Config {
 					JsonObject jsonObject = (JsonObject) entry.getValue();
 					for (Module module : InfMain.getModuleManager().getList()) {
 						
-						if (module.getCategory().equals(Module.Category.HIDDEN))
+						if (module.getCategory().equals(Category.HIDDEN))
 							continue;
 						
 						if (module.getName().equalsIgnoreCase(entry.getKey())) {
@@ -72,7 +73,7 @@ public class Config {
 							module.setVisible(jsonObject.get("Visible").getAsBoolean());
 							module.setKey(jsonObject.get("Key").getAsInt());
 
-							for (Settings setting : module.getSettings()) {
+							for (Setting setting : module.getSettings()) {
 								if (setting.getModule().getName().equalsIgnoreCase(module.getName())) {
 
 									if (setting.isMode()) {
@@ -118,7 +119,7 @@ public class Config {
 			JsonObject json = new JsonObject();
 			for (Module m : InfMain.getModuleManager().getList()) {
 				
-				if (m.getCategory().equals(Module.Category.HIDDEN))
+				if (m.getCategory().equals(Category.HIDDEN))
 					continue;
 				
 				JsonObject dataJson = new JsonObject();
@@ -126,10 +127,10 @@ public class Config {
 				dataJson.addProperty("Enabled", Boolean.valueOf(def ? m.isDefaultEnabled() : m.isEnabled()));
 				dataJson.addProperty("Visible", Boolean.valueOf(def ? m.isDefaultVisible() : m.isVisible()));
 				dataJson.addProperty("Key", Integer.valueOf(def ? m.getDefaultKey() : m.getKey()));
-				List<Settings> settings = m.getSettings();
+				List<Setting> settings = m.getSettings();
 
 				if (settings != null) {
-					for (Settings setting : settings) {
+					for (Setting setting : settings) {
 						if (setting.isBoolean())
 							dataJson.addProperty(setting.getName(),
 									def ? setting.isDefaultToogle() : setting.isToggle());

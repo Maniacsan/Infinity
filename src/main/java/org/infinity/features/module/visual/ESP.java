@@ -6,9 +6,10 @@ import java.util.Arrays;
 
 import org.infinity.event.RenderEntityEvent;
 import org.infinity.event.RenderEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.combat.KillAura;
 import org.infinity.utils.Helper;
 import org.infinity.utils.entity.EntityUtil;
@@ -21,37 +22,31 @@ import net.minecraft.client.render.OutlineVertexConsumerProvider;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.entity.Entity;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Draw entity esp", key = -2, name = "ESP", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "Draw entity esp", key = -2, name = "ESP", visible = true)
 public class ESP extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Fill", new ArrayList<>(Arrays.asList("Fill", "Box", "Vanilla")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Fill", new ArrayList<>(Arrays.asList("Fill", "Box", "Vanilla")));
 
-	private Settings width = new Settings(this, "Width", 2.0f, 0.5f, 3.0f,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Box"));
+	private Setting width = new Setting(this, "Width", 2.0f, 0.5f, 3.0f)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Box"));
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", true, () -> players.isToggle());
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", true).setVisible(() -> players.isToggle());
 
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", false, () -> true);
+	private Setting invisibles = new Setting(this, "Invisibles", true);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", false);
 
 	// colors
-	private Settings playerColor = new Settings(this, "Player Color", new Color(247, 251, 247),
-			() -> players.isToggle());
-	private Settings friendsColor = new Settings(this, "Friends Color", new Color(247, 251, 247),
-			() -> players.isToggle() && friends.isToggle());
-	private Settings mobsColor = new Settings(this, "Mobs Color", new Color(236, 173, 24), () -> mobs.isToggle());
-	private Settings animalsColor = new Settings(this, "Animals Color", new Color(108, 234, 42),
-			() -> animals.isToggle());
-
-	private int lastWidth = -1;
-	private int lastHeight = -1;
-	private double lastShaderWidth;
-
-	private boolean shaderUnloaded = true;
+	private Setting playerColor = new Setting(this, "Player Color", new Color(247, 251, 247))
+			.setVisible(() -> players.isToggle());
+	private Setting friendsColor = new Setting(this, "Friends Color", new Color(247, 251, 247))
+			.setVisible(() -> players.isToggle() && friends.isToggle());
+	private Setting mobsColor = new Setting(this, "Mobs Color", new Color(236, 173, 24))
+			.setVisible(() -> mobs.isToggle());
+	private Setting animalsColor = new Setting(this, "Animals Color", new Color(108, 234, 42))
+			.setVisible(() -> animals.isToggle());
 
 	@Override
 	public void onDisable() {

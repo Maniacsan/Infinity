@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-import org.infinity.features.Module.Category;
 import org.infinity.features.module.combat.*;
 import org.infinity.features.module.hidden.*;
 import org.infinity.features.module.movement.*;
@@ -19,6 +18,7 @@ public class ModuleManager {
 			// hidden
 			new DiscordRPCMod(),
 			new AntiFabric(),
+			new StringCleaner(),
 			
 			new KillAura(),
 			new HUD(),
@@ -76,7 +76,8 @@ public class ModuleManager {
 			new CrossbowAim(),
 			new Fly(),
 			new ShulkerView(),
-			new Eagle()
+			new Eagle(),
+			new SelfDestruction()
 			);
 
 	public List<Module> getList() {
@@ -120,6 +121,16 @@ public class ModuleManager {
 		List<Module> eList = new ArrayList<>();
 		for (Module m : getList()) {
 			if (m.isEnabled() && m.getCategory() != Category.HIDDEN) {
+				eList.add(m);
+			}
+		}
+		return eList;
+	}
+	
+	public List<Module> getFullEnableModules() {
+		List<Module> eList = new ArrayList<>();
+		for (Module m : getList()) {
+			if (m.isEnabled()) {
 				eList.add(m);
 			}
 		}

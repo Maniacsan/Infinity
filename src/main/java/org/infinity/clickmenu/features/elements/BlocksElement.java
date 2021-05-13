@@ -5,7 +5,7 @@ import java.awt.Color;
 import org.infinity.InfMain;
 import org.infinity.clickmenu.features.SettingElement;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.utils.Helper;
 
@@ -16,7 +16,7 @@ public class BlocksElement extends SettingElement {
 
 	public double x, y;
 
-	public BlocksElement(Settings setting) {
+	public BlocksElement(Setting setting) {
 		super(setting);
 	}
 

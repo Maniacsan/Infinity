@@ -7,13 +7,14 @@ import java.util.Arrays;
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.event.RenderEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.WorldRender;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 
@@ -22,38 +23,38 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Draw lines / arrows to entities", key = -2, name = "Tracers", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "Draw lines / arrows to entities", key = -2, name = "Tracers", visible = true)
 public class Tracers extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Arrows", new ArrayList<>(Arrays.asList("Lines", "Arrows")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Arrows", new ArrayList<>(Arrays.asList("Lines", "Arrows")));
 
 	// lines
-	private Settings width = new Settings(this, "Width", 2.0f, 0.5f, 3.5f,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Lines"));
+	private Setting width = new Setting(this, "Width", 2.0f, 0.5f, 3.5f)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Lines"));
 
 	// arrows
-	private Settings radius = new Settings(this, "Radius", 1.6D, 0.5D, 8.0D,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
-	private Settings size = new Settings(this, "Size", 3.0D, 1.0D, 8.0D,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
+	private Setting radius = new Setting(this, "Radius", 1.6D, 0.5D, 8.0D)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
+	private Setting size = new Setting(this, "Size", 3.0D, 1.0D, 8.0D)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", true, () -> players.isToggle());
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", true).setVisible(() -> players.isToggle());
 
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", false, () -> true);
+	private Setting invisibles = new Setting(this, "Invisibles", true);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", false);
 
 	// colors
-	private Settings playerColor = new Settings(this, "Player Color", new Color(120, 97, 238),
-			() -> players.isToggle());
-	private Settings friendsColor = new Settings(this, "Friends Color", new Color(247, 251, 247),
-			() -> players.isToggle() && friends.isToggle());
-	private Settings mobsColor = new Settings(this, "Mobs Color", new Color(236, 173, 24), () -> mobs.isToggle());
-	private Settings animalsColor = new Settings(this, "Animals Color", new Color(108, 234, 42),
-			() -> animals.isToggle());
+	private Setting playerColor = new Setting(this, "Player Color", new Color(120, 97, 238))
+			.setVisible(() -> players.isToggle());
+	private Setting friendsColor = new Setting(this, "Friends Color", new Color(247, 251, 247))
+			.setVisible(() -> players.isToggle() && friends.isToggle());
+	private Setting mobsColor = new Setting(this, "Mobs Color", new Color(236, 173, 24))
+			.setVisible(() -> mobs.isToggle());
+	private Setting animalsColor = new Setting(this, "Animals Color", new Color(108, 234, 42))
+			.setVisible(() -> animals.isToggle());
 
 	@Override
 	public void onPlayerTick() {
@@ -67,13 +68,14 @@ public class Tracers extends Module {
 			for (Entity e : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
 					mobs.isToggle(), animals.isToggle())) {
 
-				if (Helper.minecraftClient.currentScreen != null && !(Helper.minecraftClient.currentScreen instanceof ClickMenu))
+				if (Helper.minecraftClient.currentScreen != null
+						&& !(Helper.minecraftClient.currentScreen instanceof ClickMenu))
 					return;
 
-				float[] toRot = RotationUtils.lookAtEntity(e);
-				float yaw = RotationUtils.getYaw(e) + Helper.getPlayer().yaw;
+				float[] toRot = RotationUtil.lookAtEntity(e);
+				float yaw = RotationUtil.getYaw(e) + Helper.getPlayer().yaw;
 
-				// normalize 
+				// normalize
 				yaw = (float) Math.toRadians(yaw);
 
 				int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),

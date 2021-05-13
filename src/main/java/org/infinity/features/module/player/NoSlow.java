@@ -6,11 +6,11 @@ import java.util.Arrays;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.SlowDownEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
-import org.infinity.utils.MathAssist;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
 
@@ -22,14 +22,14 @@ import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Direction;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Do not slow down when using / eating", key = -2, name = "NoSlow", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Do not slow down when using / eating", key = -2, name = "NoSlow", visible = true)
 public class NoSlow extends Module {
 
-	public Settings mode = new Settings(this, "Mode", "Vanilla",
-			new ArrayList<>(Arrays.asList("Vanilla", "NCP", "Matrix 6.1.0")), () -> true);
+	public Setting mode = new Setting(this, "Mode", "Vanilla",
+			new ArrayList<>(Arrays.asList("Vanilla", "NCP", "Matrix 6.1.0")));
 
-	private Settings packet = new Settings(this, "Packet", true,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
+	private Setting packet = new Setting(this, "Packet", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
 
 	@Override
 	public void onPlayerTick() {

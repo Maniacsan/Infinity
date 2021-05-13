@@ -2,6 +2,7 @@ package org.infinity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.function.Supplier;
 
 import org.infinity.chat.InfChatHud;
 import org.infinity.chat.IRC.IRCClient;
@@ -48,8 +49,9 @@ public class InfMain {
 
 	public static ClickMenu menu;
 	
-	public static AuthUI authUI = new AuthUI();
+	public static AuthUI authUI;
 
+	public static Supplier<Boolean> selfDestruct;
 	public static boolean firstStart; /* Check first start mod */
 	public static boolean reLogin; /* Re-Loginitsya pri pervom zapuske mira */
 
@@ -64,6 +66,7 @@ public class InfMain {
 
 		//
 		handler = new HandlerManager();
+		authUI = new AuthUI();
 
 		moduleManager = new ModuleManager();
 		hookManager = new HookManager();
@@ -79,9 +82,10 @@ public class InfMain {
 		// loads
 		friend.load();
 		accountManager.load();
+		
+		InfMain.moduleManager.getModuleByClass(HUD.class).enable();
+		InfMain.moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
 			
-		moduleManager.getModuleByClass(HUD.class).enable();
-		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
 	}
 
 	// shutdown process

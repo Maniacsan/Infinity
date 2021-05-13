@@ -1,5 +1,6 @@
 package org.infinity.features.module.movement;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.utils.Helper;
@@ -8,7 +9,7 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Allows you to walk with an open inventory", key = -2, name = "InvWalk", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Allows you to walk with an open inventory", key = -2, name = "InvWalk", visible = true)
 public class InvWalk extends Module {
 
 	@Override

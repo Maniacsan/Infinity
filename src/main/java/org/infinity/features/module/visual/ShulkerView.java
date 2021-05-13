@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.event.RenderTooltipEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.utils.Helper;
@@ -26,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.text.Text;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "See the contents of the shulker in the inventory", key = -2, name = "ShulkerView", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "See the contents of the shulker in the inventory", key = -2, name = "ShulkerView", visible = true)
 public class ShulkerView extends Module {
 
 	@EventTarget

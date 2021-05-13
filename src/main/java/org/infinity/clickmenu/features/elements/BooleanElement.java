@@ -7,7 +7,7 @@ import org.infinity.clickmenu.features.SettingElement;
 import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,7 +16,7 @@ public class BooleanElement extends SettingElement {
 
 	private boolean hovered;
 
-	public BooleanElement(Settings setting) {
+	public BooleanElement(Setting setting) {
 		super(setting);
 	}
 

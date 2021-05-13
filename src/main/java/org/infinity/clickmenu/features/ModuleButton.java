@@ -15,7 +15,7 @@ import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -38,9 +38,9 @@ public class ModuleButton {
 		this.module = module;
 		this.name = name;
 		this.catBut = catBut;
-		List<Settings> settings = this.module.getSettings();
+		List<Setting> settings = this.module.getSettings();
 		if (settings != null) {
-			for (Settings setting : settings) {
+			for (Setting setting : settings) {
 				if (setting.isBoolean()) {
 					this.elements.add(new BooleanElement(setting));
 				} else if (setting.isMode()) {

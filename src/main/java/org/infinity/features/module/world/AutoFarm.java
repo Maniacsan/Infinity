@@ -5,16 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.infinity.event.RenderEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 import org.infinity.utils.block.BlockUtil;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.WorldRender;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 
@@ -26,15 +27,15 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.WORLD, desc = "Auto farms the necessary resources", key = -2, name = "AutoFarm", visible = true)
+@ModuleInfo(category = Category.WORLD, desc = "Auto farms the necessary resources", key = -2, name = "AutoFarm", visible = true)
 public class AutoFarm extends Module {
 
-	private Settings beans = new Settings(this, "Cocoa Beans", true, () -> true);
-	private Settings range = new Settings(this, "Range", 15.0D, 0.0D, 25.0D, () -> true);
-	private Settings delay = new Settings(this, "Delay", 5.0D, 0.0D, 15.0D, () -> true);
+	private Setting beans = new Setting(this, "Cocoa Beans", true);
+	private Setting range = new Setting(this, "Range", 15.0D, 0.0D, 25.0D);
+	private Setting delay = new Setting(this, "Delay", 5.0D, 0.0D, 15.0D);
 
-	private Settings esp = new Settings(this, "ESP", true, () -> true);
-	private Settings color = new Settings(this, "ESP Color", new Color(17, 223, 161), () -> esp.isToggle());
+	private Setting esp = new Setting(this, "ESP", true);
+	private Setting color = new Setting(this, "ESP Color", new Color(17, 223, 161)).setVisible(() -> esp.isToggle());
 
 	private BlockPos renderPos;
 
@@ -64,7 +65,7 @@ public class AutoFarm extends Module {
 				move(pos);
 
 				Vec3d posVec = new Vec3d(pos.getX(), pos.getY() - 1, pos.getZ());
-				float[] rotation = RotationUtils.lookAtVecPos(posVec);
+				float[] rotation = RotationUtil.lookAtVecPos(posVec);
 				Helper.getPlayer().yaw = rotation[0];
 				Helper.getPlayer().pitch = rotation[1];
 

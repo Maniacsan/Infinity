@@ -2,9 +2,10 @@ package org.infinity.features.module.player;
 
 import org.infinity.event.ClickEvent;
 import org.infinity.event.PacketEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 
@@ -22,10 +23,10 @@ import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.math.BlockPos;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically takes the desired tool when digging, attacking", key = -2, name = "AutoTool", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically takes the desired tool when digging, attacking", key = -2, name = "AutoTool", visible = true)
 public class AutoTool extends Module {
 
-	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
+	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
 
 	private int preSlot = -2;
 

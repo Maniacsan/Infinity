@@ -1,7 +1,7 @@
 package org.infinity.features.command.commands;
 
 import org.infinity.InfMain;
-import org.infinity.features.Module.Category;
+import org.infinity.features.Category;
 import org.infinity.features.command.Command;
 import org.infinity.features.command.CommandInfo;
 import org.infinity.utils.Helper;

@@ -1,14 +1,15 @@
 package org.infinity.features.module.world;
 
 import org.infinity.InfMain;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 
-@ModuleInfo(category = Module.Category.WORLD, desc = "Editing game speed", key = -2, name = "Timer", visible = true)
+@ModuleInfo(category = Category.WORLD, desc = "Editing game speed", key = -2, name = "Timer", visible = true)
 public class Timer extends Module {
 
-	private Settings value = new Settings(this, "Value", 1.1f, 0.3f, 10.0f, () -> true);
+	private Setting value = new Setting(this, "Value", 1.1f, 0.3f, 10.0f);
 	
 	@Override
 	public void onDisable() {

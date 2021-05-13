@@ -1,9 +1,10 @@
 package org.infinity.features.module.combat;
 
 import org.infinity.event.RotationEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.StringUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -12,16 +13,16 @@ import com.darkmagician6.eventapi.EventTarget;
 
 import net.minecraft.entity.Entity;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Edit entity hitbox", key = -2, name = "HitBoxes", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Edit entity hitbox", key = -2, name = "HitBoxes", visible = true)
 public class HitBoxes extends Module {
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", true, () -> true);
+	private Setting players = new Setting(this, "Players", true);
+	private Setting invisibles = new Setting(this, "Invisibles", false);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", false);
 
-	public Settings size = new Settings(this, "Size", 0.35D, 0.0D, 5.0D, () -> true);
+	public Setting size = new Setting(this, "Size", 0.35D, 0.0D, 5.0D);
 
 	@Override
 	public void onPlayerTick() {

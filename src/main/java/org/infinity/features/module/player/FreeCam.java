@@ -3,9 +3,10 @@ package org.infinity.features.module.player;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.PlayerMoveEvent;
 import org.infinity.event.PushOutBlockEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.PacketUtil;
 import org.infinity.utils.entity.OtherPlayer;
@@ -14,10 +15,10 @@ import com.darkmagician6.eventapi.EventTarget;
 
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Allows you to fly freely and explore the territory", key = -2, name = "FreeCam", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Allows you to fly freely and explore the territory", key = -2, name = "FreeCam", visible = true)
 public class FreeCam extends Module {
 
-	private Settings speed = new Settings(this, "Speed", 0.8, 0, 2.0, () -> true);
+	private Setting speed = new Setting(this, "Speed", 0.8, 0, 2.0);
 
 	private OtherPlayer spawnPlayer = null;
 

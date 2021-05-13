@@ -4,29 +4,30 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.item.Items;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically fills the hotbar with healing potions", key = -2, name = "Refill", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically fills the hotbar with healing potions", key = -2, name = "Refill", visible = true)
 public class Refill extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "FreeSlots",
-			new ArrayList<>(Arrays.asList("FreeSlots", "Select")), () -> true);
+	private Setting mode = new Setting(this, "Mode", "FreeSlots",
+			new ArrayList<>(Arrays.asList("FreeSlots", "Select")));
 
-	List<Settings> slots;
+	List<Setting> slots;
 
 	public Refill() {
-		this.slots = new ArrayList<Settings>();
+		this.slots = new ArrayList<Setting>();
 		int count = 9;
 		for (int i = 1; i < count; i++) {
-			Settings slot = new Settings(this, "Slot " + i, true,
-					() -> mode.getCurrentMode().equalsIgnoreCase("Select"));
+			Setting slot = new Setting(this, "Slot " + i, true)
+					.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Select"));
 			this.slots.add(slot);
 		}
 		this.addSettings(this.slots);
@@ -40,12 +41,11 @@ public class Refill extends Module {
 		if (mode.getCurrentMode().equalsIgnoreCase("FreeSlots")) {
 			if (find != -2 && freeSlots != -1 && freeSlots < 9)
 				switchPotion(find, freeSlots);
-		} 
-		else if (mode.getCurrentMode().equalsIgnoreCase("Select")) {
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Select")) {
 			if (find == -2)
 				return;
 			for (int i = 0; i < this.slots.size(); i++) {
-				Settings slot = (Settings) this.slots.get(i);
+				Setting slot = (Setting) this.slots.get(i);
 				if (slot.isToggle())
 					switchPotion(find, i);
 			}

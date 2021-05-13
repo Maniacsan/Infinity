@@ -1,9 +1,10 @@
 package org.infinity.features.module.combat;
 
 import org.infinity.clickmenu.util.FontUtils;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -14,13 +15,13 @@ import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "When holding the bowstring and LKM, the bow will automatically spam with arrows", key = -2, name = "BetterBow", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "When holding the bowstring and LKM, the bow will automatically spam with arrows", key = -2, name = "BetterBow", visible = true)
 public class BetterBow extends Module {
 
-	private Settings counter = new Settings(this, "Count Helper", true, () -> true);
-	private Settings autoShoot = new Settings(this, "Auto Shoot", false, () -> true);
+	private Setting counter = new Setting(this, "Count Helper", true);
+	private Setting autoShoot = new Setting(this, "Auto Shoot", false);
 
-	private Settings delay = new Settings(this, "Delay", 2.5, 0.1, 25.0, () -> true);
+	private Setting delay = new Setting(this, "Delay", 2.5, 0.1, 25.0);
 
 	@Override
 	public void onPlayerTick() {

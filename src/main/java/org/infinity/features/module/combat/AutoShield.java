@@ -1,17 +1,18 @@
 package org.infinity.features.module.combat;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 
 import net.minecraft.item.Items;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Automatically takes the shield in the off hand", key = -2, name = "AutoShield", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Automatically takes the shield in the off hand", key = -2, name = "AutoShield", visible = true)
 public class AutoShield extends Module {
 
-	private Settings ignoreTotem = new Settings(this, "Ignore Totem", false, () -> true);
+	private Setting ignoreTotem = new Setting(this, "Ignore Totem", false);
 
 	@Override
 	public void onPlayerTick() {

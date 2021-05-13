@@ -1,13 +1,13 @@
 package org.infinity.clickmenu.features.elements.sliders;
 
 import org.infinity.clickmenu.features.elements.SliderElement;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 
 import net.minecraft.util.math.MathHelper;
 
 public class DoubleSlider extends SliderElement {
 
-	public DoubleSlider(Settings setting) {
+	public DoubleSlider(Setting setting) {
 		super(setting);
 		this.selected = setting.getCurrentValueDouble() / setting.getMaxValueDouble();
 	}

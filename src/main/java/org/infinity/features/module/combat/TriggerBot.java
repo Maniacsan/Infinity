@@ -1,36 +1,37 @@
 package org.infinity.features.module.combat;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.mixin.IMinecraftClient;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.entity.EntityUtil;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Automatically hits when hovering over an entity", key = -2, name = "TriggerBot", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Automatically hits when hovering over an entity", key = -2, name = "TriggerBot", visible = true)
 public class TriggerBot extends Module {
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", true, () -> true);
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", false).setVisible(() -> players.isToggle());
+	private Setting invisibles = new Setting(this, "Invisibles", true);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", true);
 
-	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
+	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
 
-	public Settings range = new Settings(this, "Range", 3.7D, 0D, 6.0D, () -> true);
+	public Setting range = new Setting(this, "Range", 3.7D, 0D, 6.0D);
 
-	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
-	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
+	private Setting coolDown = new Setting(this, "CoolDown", true);
+	private Setting aps = new Setting(this, "APS", 1.8D, 0.1D, 15.0D).setVisible(() -> !coolDown.isToggle());
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 
 	private int preSlot = -2;
 

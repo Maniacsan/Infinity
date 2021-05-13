@@ -5,26 +5,27 @@ import java.util.Arrays;
 
 import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Make you faster", key = -2, name = "Speed", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Make you faster", key = -2, name = "Speed", visible = true)
 public class Speed extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Strafe",
-			new ArrayList<>(Arrays.asList("Strafe", "Sentiel Ground", "onGround")), () -> true);
+	private Setting mode = new Setting(this, "Mode", "Strafe",
+			new ArrayList<>(Arrays.asList("Strafe", "Sentiel Ground", "onGround")));
 
-	private Settings strafeSpeed = new Settings(this, "Strafe Speed", 0.24, 0.2, 0.5,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Strafe"));
+	private Setting strafeSpeed = new Setting(this, "Strafe Speed", 0.24, 0.2, 0.5)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Strafe"));
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 
 	@Override
 	public void onDisable() {
@@ -68,27 +69,16 @@ public class Speed extends Module {
 					InfMain.resetTimer();
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("onGround")) {
-				if (MoveUtil.isMoving()) {
+				if (!Helper.getPlayer().isOnGround())
+					return;
 
-					if (Helper.getPlayer().forwardSpeed != 0) {
-						Helper.getPlayer().setSprinting(true);
-					}
+				Helper.getPlayer().velocityDirty = false;
 
-					if (!Helper.getPlayer().isOnGround()) {
-						return;
-					}
-					
-					MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed());
+				Helper.getPlayer().abilities.allowFlying = false;
 
-					if (Helper.getPlayer().age % 3 == 0) {
+				MoveUtil.setHVelocity(0, 0);
+				MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.4);
 
-						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.7);
-
-						MoveUtil.strafe(MoveUtil.calcMoveYaw(), MoveUtil.getSpeed() * 1.3);
-					}
-					
-					MoveUtil.setYVelocity(-1e-2);
-				}
 			}
 		}
 	}

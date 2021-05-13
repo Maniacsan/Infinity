@@ -17,6 +17,7 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -154,7 +155,7 @@ public class WorldRender {
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 
-		FontUtils.drawString(matrix, str, -i, 0, -1);
+		FontUtils.drawString(matrix, Formatting.RESET + str, -i, 0, -1);
 		GL11.glDepthFunc(GL11.GL_LEQUAL);
 
 		return matrix;

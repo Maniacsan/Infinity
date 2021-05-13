@@ -3,6 +3,7 @@ package org.infinity.features.module.world;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.PlayerMoveEvent;
 import org.infinity.event.PushOutBlockEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.utils.Helper;
@@ -10,7 +11,7 @@ import org.infinity.utils.MoveUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 
-@ModuleInfo(category = Module.Category.WORLD, desc = "Allows you to walk through blocks", key = -2, name = "NoClip", visible = true)
+@ModuleInfo(category = Category.WORLD, desc = "Allows you to walk through blocks", key = -2, name = "NoClip", visible = true)
 public class NoClip extends Module {
 
 	@EventTarget

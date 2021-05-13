@@ -1,5 +1,6 @@
 package org.infinity.mixin;
 
+import org.infinity.InfMain;
 import org.infinity.ui.account.GuiAccountManager;
 import org.infinity.ui.tools.ToolsMain;
 import org.infinity.utils.Helper;
@@ -29,15 +30,13 @@ public class MultiplayerScreenMixin extends Screen {
 			Helper.minecraftClient.openScreen(new ToolsMain(this));
 		});
 		
-		addButton(tools);
-		
 		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 0,
 				new Identifier("infinity", "alt.png"), 20, 20,
 				buttonWidget -> Helper.minecraftClient.openScreen(new GuiAccountManager(this)),
 				new TranslatableText("Account"));
 
+		addButton(tools);
 		addButton(accButton);
-
 	}
 
 }

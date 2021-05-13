@@ -5,22 +5,23 @@ import java.util.Arrays;
 
 import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Lets fly in survival", key = -2, name = "Fly", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Lets fly in survival", key = -2, name = "Fly", visible = true)
 public class Fly extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Motion",
-			new ArrayList<>(Arrays.asList("Motion", "Glide")), () -> true);
-	
-	private Settings speed = new Settings(this, "Speed", 0.26, 0.15, 0.5, () -> true);
+	private Setting mode = new Setting(this, "Mode", "Motion", new ArrayList<>(Arrays.asList("Motion", "Glide")));
+
+	private Setting speed = new Setting(this, "Speed", 0.26, 0.15, 0.5)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Motion"));
 
 	private int airTicks;
 

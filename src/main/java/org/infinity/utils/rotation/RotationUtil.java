@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-public class RotationUtils {
+public class RotationUtil {
 
 	/**
 	 * This rotation with predict for aim from long distance
@@ -104,7 +104,7 @@ public class RotationUtils {
 
 	public static float limitAngleChange(final float currentRotation, final float targetRotation,
 			final float turnSpeed) {
-		final float diff = RotationUtils.getAngleDifference(targetRotation, currentRotation);
+		final float diff = RotationUtil.getAngleDifference(targetRotation, currentRotation);
 
 		return currentRotation + (diff > turnSpeed ? turnSpeed : Math.max(diff, -turnSpeed));
 	}

@@ -1,8 +1,9 @@
 package org.infinity.features.module.combat;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 
@@ -17,12 +18,12 @@ import net.minecraft.item.ItemStack;
  * @author Alexander01998
  *
  */
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Automatically puts on the best armor", key = -2, name = "AutoArmor", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Automatically puts on the best armor", key = -2, name = "AutoArmor", visible = true)
 public class AutoArmor extends Module {
 
-	private Settings onInv = new Settings(this, "On Open Inventory", false, () -> true);
+	private Setting onInv = new Setting(this, "On Open Inventory", false);
 
-	private Settings delay = new Settings(this, "Delay", 1.0D, 0D, 20.0D, () -> true);
+	private Setting delay = new Setting(this, "Delay", 1.0D, 0D, 20.0D);
 
 	private int currentProt, currentBlast, currentFire, currentProj, currentArmour, currentUnbreaking;
 	private float currentToughness = 0;

@@ -5,9 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.infinity.event.PacketEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventTarget;
@@ -16,20 +17,20 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.network.Packet;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Creates fake lags in movements", key = -2, name = "FakeLags", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Creates fake lags in movements", key = -2, name = "FakeLags", visible = true)
 public class FakeLags extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Pulse",
-			new ArrayList<>(Arrays.asList("Pulse", "Always", "Legit")), () -> true);
+	private Setting mode = new Setting(this, "Mode", "Pulse",
+			new ArrayList<>(Arrays.asList("Pulse", "Always", "Legit")));
 
-	private Settings pulseDelay = new Settings(this, "Pulse Delay", 8, 0.0, 30.0,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Pulse"));
+	private Setting pulseDelay = new Setting(this, "Pulse Delay", 8, 0.0, 30.0)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Pulse"));
 
-	private Settings delay = new Settings(this, "Delay", 0.2, 0.0, 30.0,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Always"));
+	private Setting delay = new Setting(this, "Delay", 0.2, 0.0, 30.0)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Always"));
 
-	private Settings legitDelay = new Settings(this, "Delay", 2.1, 0.0, 30.0,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Legit"));
+	private Setting legitDelay = new Setting(this, "Delay", 2.1, 0.0, 30.0)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Legit"));
 
 	// legit
 	private double legitTicks;

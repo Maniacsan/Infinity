@@ -6,7 +6,7 @@ import java.util.stream.StreamSupport;
 
 import org.infinity.InfMain;
 import org.infinity.utils.Helper;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -89,16 +89,18 @@ public class EntityUtil {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
-		if (!RotationUtils.isInFOV(entity, fov))
+		if (!RotationUtil.isInFOV(entity, fov))
 			return false;
-
-		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
-			return false;
-
+		
 		if (!invisibles && entity.isInvisible())
 			return false;
 		
 		if(!throughWalls && !Helper.getPlayer().canSee(entity))
+			return false;
+		
+		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
+		
+		if (!friends && isFriend)
 			return false;
 
 		if (players && entity instanceof PlayerEntity)
@@ -127,8 +129,10 @@ public class EntityUtil {
 			boolean animals) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
-
-		if (!friends && InfMain.getFriend().check(entity.getEntityName()))
+		
+		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
+		
+		if (!friends && isFriend)
 			return false;
 		
 		if (invisibles && entity.isInvisible())

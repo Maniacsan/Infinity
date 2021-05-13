@@ -1,8 +1,9 @@
 package org.infinity.features.module.player;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 
@@ -12,10 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically eats food when there is a certain hunger", key = -2, name = "AutoEat", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically eats food when there is a certain hunger", key = -2, name = "AutoEat", visible = true)
 public class AutoEat extends Module {
 
-	private Settings hunger = new Settings(this, "Hunger", 19, 0, 19, () -> true);
+	private Setting hunger = new Setting(this, "Hunger", 19, 0, 19);
 
 	private int lastSlot = -1;
 	private boolean eating = false;

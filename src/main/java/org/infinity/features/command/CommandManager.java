@@ -32,7 +32,7 @@ public class CommandManager {
 		for (Command c : getCommands()) {
 			if (c.getName().equalsIgnoreCase(command)) {
 				try {
-					c.command(args.split(" "), command);
+					c.command(args.split(" "), input);
 				} catch (Exception e) {
 					c.error();
 					e.printStackTrace();

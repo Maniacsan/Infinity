@@ -1,13 +1,15 @@
 package org.infinity.features.module.visual;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
@@ -16,33 +18,37 @@ import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Ingame Infinity Hud", key = -2, name = "HUD", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "Ingame Infinity Hud", key = -2, name = "HUD", visible = true)
 public class HUD extends Module {
 
-	private Settings array = new Settings(this, "Arraylist", true, () -> true);
+	private Setting array = new Setting(this, "Arraylist", true);
+	private Setting arrayColor = new Setting(this, "List Color", new Color(50, 109, 220));
 
-	private Settings coordinates = new Settings(this, "Coordinates", true, () -> true);
+	private Setting coordinates = new Setting(this, "Coordinates", true);
 
-	private Settings netherCoords = new Settings(this, "Nether Coordinates", false, () -> true);
+	private Setting netherCoords = new Setting(this, "Nether Coordinates", false);
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-
+		
 		List<String> arrayList = new ArrayList<>();
 
 		InfMain.getModuleManager().getList().forEach(module -> {
 			if (module.isEnabled() && module.isVisible())
-				arrayList.add(module.getSortedName() + " " + Formatting.BLUE + StringUtil.replaceNull(module.getSuffix()));
+				arrayList.add(Formatting.WHITE + module.getSortedName() + " " + Formatting.RESET + StringUtil.replaceNull(module.getSuffix()));
 		});
 
 		// sort
 		arrayList.sort((a, b) -> Integer.compare(FontUtils.getStringWidth(b), FontUtils.getStringWidth(a)));
+		
+		if (Helper.minecraftClient.options.debugEnabled)
+			return;
 
 		float yOffset = 1;
 		if (array.isToggle()) {
 			for (String module : arrayList) {
 				float widthOffset = width - FontUtils.getStringWidth(module);
-				FontUtils.drawStringWithShadow(matrices, module, widthOffset + 1, yOffset, -1);
+				FontUtils.drawStringWithShadow(matrices, module, widthOffset + 1, yOffset, arrayColor.getColor().getRGB());
 				yOffset += 10;
 			}
 		}

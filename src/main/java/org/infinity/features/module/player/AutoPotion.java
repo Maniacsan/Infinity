@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -19,23 +20,23 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically throws certain potions", key = -2, name = "AutoPotion", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically throws certain potions", key = -2, name = "AutoPotion", visible = true)
 public class AutoPotion extends Module {
 
-	HashMap<StatusEffect, Settings> potions;
+	HashMap<StatusEffect, Setting> potions;
 
 	public AutoPotion() {
-		this.potions = new HashMap<StatusEffect, Settings>();
+		this.potions = new HashMap<StatusEffect, Setting>();
 
-		this.potions.put(StatusEffects.STRENGTH, new Settings(this, "Strength Potion", true, () -> true));
-		this.potions.put(StatusEffects.SPEED, new Settings(this, "Speed Potion", true, () -> true));
-		this.potions.put(StatusEffects.FIRE_RESISTANCE, new Settings(this, "Fire Resistance", true, () -> true));
-		this.potions.put(StatusEffects.JUMP_BOOST, new Settings(this, "Jump Boost", false, () -> true));
+		this.potions.put(StatusEffects.STRENGTH, new Setting(this, "Strength Potion", true));
+		this.potions.put(StatusEffects.SPEED, new Setting(this, "Speed Potion", true));
+		this.potions.put(StatusEffects.FIRE_RESISTANCE, new Setting(this, "Fire Resistance", true));
+		this.potions.put(StatusEffects.JUMP_BOOST, new Setting(this, "Jump Boost", false));
 
 		this.addSettings(this.potions.values());
 	}
 
-	private Settings delay = new Settings(this, "Delay", 5.2D, 3D, 20D, () -> true);
+	private Setting delay = new Setting(this, "Delay", 5.2D, 3D, 20D);
 
 	private int timer;
 
@@ -57,7 +58,7 @@ public class AutoPotion extends Module {
 			int i = 1;
 			for (Entry entry : this.potions.entrySet()) {
 				StatusEffect effect = (StatusEffect) entry.getKey();
-				Settings sett = (Settings) entry.getValue();
+				Setting sett = (Setting) entry.getValue();
 				int slot = InvUtil.findPotionHotbar(effect, true);
 
 				if (sett.isToggle() && !EntityUtil.checkActivePotion(effect))

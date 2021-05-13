@@ -1,15 +1,15 @@
 package org.infinity.clickmenu.features;
 
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
 
 public abstract class SettingElement {
 
-	public Settings setting;
+	public Setting setting;
 	public double height;
 
-	public SettingElement(Settings setting) {
+	public SettingElement(Setting setting) {
 		this.setting = setting;
 	}
 

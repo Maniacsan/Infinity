@@ -7,7 +7,7 @@ import org.infinity.clickmenu.features.CategoryButton;
 import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Module.Category;
+import org.infinity.features.Category;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;

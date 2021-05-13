@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.combat.KillAura;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
@@ -14,17 +15,16 @@ import org.infinity.utils.MathAssist;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Moves differently to make it harder for the enemy to hit", key = -2, name = "AntiAim", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Moves differently to make it harder for the enemy to hit", key = -2, name = "AntiAim", visible = true)
 public class AntiAim extends Module {
 
-	private Settings yawMode = new Settings(this, "Yaw Mode", "Spin", new ArrayList<>(Arrays.asList("Spin", "Random")),
-			() -> true);
+	private Setting yawMode = new Setting(this, "Yaw Mode", "Spin", new ArrayList<>(Arrays.asList("Spin", "Random")));
 
-	private Settings spinSpeed = new Settings(this, "Spin Speed", 20D, 0D, 60D,
-			() -> yawMode.getCurrentMode().equalsIgnoreCase("Spin"));
+	private Setting spinSpeed = new Setting(this, "Spin Speed", 20D, 0D, 60D)
+			.setVisible(() -> yawMode.getCurrentMode().equalsIgnoreCase("Spin"));
 
-	private Settings pitchMode = new Settings(this, "Pitch Mode", "Down",
-			new ArrayList<>(Arrays.asList("Down", "Up", "Random", "None")), () -> true);
+	private Setting pitchMode = new Setting(this, "Pitch Mode", "Down",
+			new ArrayList<>(Arrays.asList("Down", "Up", "Random", "None")));
 
 	private float yaw;
 	private float pitch;

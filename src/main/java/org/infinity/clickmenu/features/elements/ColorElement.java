@@ -5,7 +5,7 @@ import java.awt.Color;
 import org.infinity.clickmenu.features.SettingElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -21,7 +21,7 @@ public class ColorElement extends SettingElement {
 	private boolean noExtHover;
 	private double posX, posY, huePos;
 
-	public ColorElement(Settings setting) {
+	public ColorElement(Setting setting) {
 		super(setting);
 		float[] hsb = new float[3];
 		Color clr = setting.getColor();

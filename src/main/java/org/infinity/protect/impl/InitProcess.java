@@ -22,7 +22,7 @@ public class InitProcess extends Handler {
 		// loads
 		InfMain.configManager.loadConfig(false);
 		InfMain.macroManager.load();
-
+		
 		InfMain.menu = new ClickMenu();
 
 		try {

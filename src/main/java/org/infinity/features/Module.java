@@ -25,7 +25,7 @@ public class Module {
 	private int key, defaultKey;
 	private boolean visible, defaultVisible;
 	private boolean enabled, defaultEnabled;
-	private List<Settings> settings;
+	private List<Setting> settings;
 
 	public Module() {
 		name = this.getClass().getAnnotation(ModuleInfo.class).name();
@@ -35,10 +35,6 @@ public class Module {
 		setCategory(this.getClass().getAnnotation(ModuleInfo.class).category());
 		desc = this.getClass().getAnnotation(ModuleInfo.class).desc();
 		this.settings = new ArrayList<>();
-	}
-
-	public enum Category {
-		COMBAT, MOVEMENT, WORLD, PLAYER, VISUAL, HIDDEN, ENABLED;
 	}
 
 	// HookManager methods
@@ -77,8 +73,8 @@ public class Module {
 			try {
 				field.setAccessible(true);
 				final Object o = field.get(this);
-				if (o instanceof Settings) {
-					Settings sett = (Settings) o;
+				if (o instanceof Setting) {
+					Setting sett = (Setting) o;
 					this.addSettings(sett);
 				}
 			} catch (IllegalAccessException e) {
@@ -87,17 +83,17 @@ public class Module {
 		}
 	}
 
-	public List<Settings> getSettings() {
+	public List<Setting> getSettings() {
 		this.updateSettings();
 		return this.settings;
 	}
 	
-	public void addSettings(Settings settings) {
+	public void addSettings(Setting settings) {
 		if(!this.settings.contains(settings))
 			this.settings.add(settings);
 	}
 
-	public void addSettings(Collection<Settings> c) {
+	public void addSettings(Collection<Setting> c) {
 		this.settings.addAll(c);
 	}
 	

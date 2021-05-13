@@ -5,9 +5,10 @@ import java.util.Arrays;
 
 import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
@@ -20,14 +21,13 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.util.math.BlockPos;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Lets you walk on water", key = -2, name = "Jesus", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Lets you walk on water", key = -2, name = "Jesus", visible = true)
 public class Jesus extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Swing", new ArrayList<>(Arrays.asList("Swing", "Matrix 6.0.6")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Swing", new ArrayList<>(Arrays.asList("Swing", "Matrix 6.0.6")));
 
-	private Settings speed = new Settings(this, "Speed", 0.32, 0.2, 0.5,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6"));
+	private Setting speed = new Setting(this, "Speed", 0.32, 0.2, 1)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6"));
 
 	private boolean water;
 

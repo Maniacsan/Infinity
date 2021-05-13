@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.InfMain;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 
 import net.minecraft.entity.Entity;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "If at a certain radius the player appears automatically exits | writes / spawns", key = -2, name = "AutoLeave", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "If at a certain radius the player appears automatically exits | writes / spawns", key = -2, name = "AutoLeave", visible = true)
 public class AutoLeave extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "/spawn", new ArrayList<>(Arrays.asList("/spawn", "Disconnect")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "/spawn",
+			new ArrayList<>(Arrays.asList("/spawn", "Disconnect")));
 
-	private Settings ignoreFriends = new Settings(this, "Ignore Friends", true, () -> true);
+	private Setting ignoreFriends = new Setting(this, "Ignore Friends", true);
 
-	private Settings radius = new Settings(this, "Radius", 20D, 1D, 50D, () -> true);
+	private Setting radius = new Setting(this, "Radius", 20D, 1D, 50D);
 
 	@Override
 	public void onPlayerTick() {

@@ -1,13 +1,14 @@
 package org.infinity.features.module.player;
 
 import org.infinity.event.PacketEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 import org.infinity.utils.MathAssist;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
@@ -17,15 +18,15 @@ import net.minecraft.client.gui.screen.ingame.ShulkerBoxScreen;
 import net.minecraft.network.packet.s2c.play.InventoryS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically takes things from the chest", key = -2, name = "ChestSteal", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically takes things from the chest", key = -2, name = "ChestSteal", visible = true)
 public class ChestSteal extends Module {
 
-	public Settings maxDelay = new Settings(this, "Max Delay", 160.0D, 10D, 300D, () -> true);
-	public Settings minDelay = new Settings(this, "Min Delay", 90.0D, 10D, 300D, () -> true);
+	public Setting maxDelay = new Setting(this, "Max Delay", 160.0D, 10D, 300D);
+	public Setting minDelay = new Setting(this, "Min Delay", 90.0D, 10D, 300D);
 
-	private Settings autoClose = new Settings(this, "Auto Close", false, () -> true);
+	private Setting autoClose = new Setting(this, "Auto Close", false);
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 	private InventoryS2CPacket packet;
 
 	public double delay;

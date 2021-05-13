@@ -1,7 +1,6 @@
 package org.infinity.event;
 
 import org.infinity.utils.Helper;
-import org.infinity.utils.rotation.RotationUtils;
 
 import com.darkmagician6.eventapi.events.callables.EventCancellable;
 import com.darkmagician6.eventapi.types.EventType;
@@ -54,6 +53,8 @@ public class MotionEvent extends EventCancellable {
 			Helper.getPlayer().yaw = yaw;
 			Helper.getPlayer().pitch = pitch;
 		}
+		Helper.getPlayer().bodyYaw = yaw;
+		Helper.getPlayer().headYaw = yaw;
 		this.yaw = yaw;
 		this.pitch = pitch;
 
@@ -88,6 +89,8 @@ public class MotionEvent extends EventCancellable {
 		float gcd = f * f * f * 1.2F;
 		yaw -= yaw % gcd;
 
+		Helper.getPlayer().bodyYaw = yaw;
+		Helper.getPlayer().headYaw = yaw;
 		this.yaw = yaw;
 		if (!isCancelled())
 			cancel();

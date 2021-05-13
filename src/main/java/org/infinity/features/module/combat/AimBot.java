@@ -4,45 +4,45 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.event.MotionEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Automatically aim at target", key = -2, name = "AimBot", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Automatically aim at target", key = -2, name = "AimBot", visible = true)
 public class AimBot extends Module {
 
-	private Settings look = new Settings(this, "Look", "HEAD", new ArrayList<>(Arrays.asList("HEAD", "BODY", "LEGS")),
-			() -> true);
+	private Setting look = new Setting(this, "Look", "HEAD", new ArrayList<>(Arrays.asList("HEAD", "BODY", "LEGS")));
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", false, () -> true);
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", false).setVisible(() -> players.isToggle());
+	private Setting invisibles = new Setting(this, "Invisibles", true);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", false);
 
-	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+	private Setting throughWalls = new Setting(this, "Through Walls", false);
 
 	// on mooving
-	private Settings onMoving = new Settings(this, "On Moving", false, () -> true);
+	private Setting onMoving = new Setting(this, "On Moving", false);
 
-	private Settings range = new Settings(this, "Range", 3.5D, 0D, 6D, () -> true);
+	private Setting range = new Setting(this, "Range", 3.5D, 0D, 6D);
 
-	private Settings fov = new Settings(this, "FOV", 120D, 0D, 360D, () -> true);
-	private Settings sens = new Settings(this, "Sensitivity", 45f, 10f, 200f, () -> true);
+	private Setting fov = new Setting(this, "FOV", 120D, 0D, 360D);
+	private Setting sens = new Setting(this, "Sensitivity", 45f, 10f, 200f);
 
-	private Settings maxSpeed = new Settings(this, "Max Speed %", 60D, 0D, 100D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed %", 20D, 0D, 100D, () -> true);
+	private Setting maxSpeed = new Setting(this, "Max Speed %", 60D, 0D, 100D);
+	private Setting minSpeed = new Setting(this, "Min Speed %", 20D, 0D, 100D);
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
@@ -63,8 +63,8 @@ public class AimBot extends Module {
 			return;
 
 		if (!Float.isNaN(look[0]) || !Float.isNaN(look[1]) || look[1] < 90 || look[1] > -90) {
-			Helper.getPlayer().yaw = RotationUtils.limitAngleChange(Helper.getPlayer().yaw, look[0], speed);
-			Helper.getPlayer().pitch = RotationUtils.limitAngleChange(Helper.getPlayer().pitch, look[1], speed);
+			Helper.getPlayer().yaw = RotationUtil.limitAngleChange(Helper.getPlayer().yaw, look[0], speed);
+			Helper.getPlayer().pitch = RotationUtil.limitAngleChange(Helper.getPlayer().pitch, look[1], speed);
 		}
 
 	}

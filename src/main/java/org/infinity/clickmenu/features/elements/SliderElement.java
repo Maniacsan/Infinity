@@ -4,7 +4,7 @@ import org.infinity.InfMain;
 import org.infinity.clickmenu.features.SettingElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ public class SliderElement extends SettingElement {
 	// update slider
 	protected double width;
 
-	public SliderElement(Settings setting) {
+	public SliderElement(Setting setting) {
 		super(setting);
 	}
 

@@ -5,14 +5,14 @@ import java.util.Arrays;
 
 import org.infinity.event.MotionEvent;
 import org.infinity.event.RenderEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.block.BlockUtil;
 import org.infinity.utils.render.WorldRender;
-import org.lwjgl.glfw.GLFW;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
@@ -25,7 +25,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "View ore blocks", key = -2, name = "XRay", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "View ore blocks", key = -2, name = "XRay", visible = true)
 public class XRay extends Module {
 
 	private ArrayList<Block> blocks = new ArrayList<>();
@@ -38,13 +38,14 @@ public class XRay extends Module {
 	private BlockPos progressBlock;
 
 	// orebfuscator
-	private Settings orebfuscator = new Settings(this, "Orebfuscator", false, () -> true);
-	private Settings radius = new Settings(this, "Radius", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
-	private Settings up = new Settings(this, "Up Distance", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
-	private Settings down = new Settings(this, "Down Distance", 10.0D, 1.0D, 50.0D, () -> orebfuscator.isToggle());
-	private Settings info = new Settings(this, "Info", false, () -> orebfuscator.isToggle());
+	private Setting orebfuscator = new Setting(this, "Orebfuscator", false);
+	private Setting radius = new Setting(this, "Radius", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
+	private Setting up = new Setting(this, "Up Distance", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
+	private Setting down = new Setting(this, "Down Distance", 10.0D, 1.0D, 50.0D)
+			.setVisible(() -> orebfuscator.isToggle());
+	private Setting info = new Setting(this, "Info", false).setVisible(() -> orebfuscator.isToggle());
 
-	public Settings block = new Settings(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
+	public Setting block = new Setting(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
 			Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE, Blocks.IRON_ORE, Blocks.LAPIS_ORE,
 			Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE,
 			Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK, Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB,
@@ -54,10 +55,9 @@ public class XRay extends Module {
 			Blocks.BEE_NEST, Blocks.SLIME_BLOCK, Blocks.ANVIL, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.OBSIDIAN,
 			Blocks.OBSERVER, Blocks.QUARTZ_BLOCK, Blocks.GILDED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE, Blocks.BLUE_ICE,
 			Blocks.SEA_LANTERN, Blocks.REDSTONE_LAMP, Blocks.SPONGE, Blocks.WET_SPONGE, Blocks.TNT, Blocks.CHEST,
-			Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS, Blocks.CRYING_OBSIDIAN)),
-			() -> true);
+			Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS, Blocks.CRYING_OBSIDIAN)));
 
-	private TimeHelper updater = new TimeHelper();
+	private Timer updater = new Timer();
 
 	private BlockPos currentBlock = new BlockPos(-1, -1, -1);
 	private float breakProgress;

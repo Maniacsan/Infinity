@@ -1,11 +1,11 @@
-package org.infinity.utils;
+package org.infinity.utils.system;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
-public class ProgramDirectoryUtilities {
+public class JarDirectory {
 	private static String getJarName() {
-		return new File(ProgramDirectoryUtilities.class.getProtectionDomain().getCodeSource().getLocation().getPath())
+		return new File(JarDirectory.class.getProtectionDomain().getCodeSource().getLocation().getPath())
 				.getName();
 	}
 
@@ -38,6 +38,6 @@ public class ProgramDirectoryUtilities {
 
 	public static File getCurrentJARFilePath() throws URISyntaxException {
 		return new File(
-				ProgramDirectoryUtilities.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+				JarDirectory.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
 	}
 }

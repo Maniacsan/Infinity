@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.infinity.InfMain;
 import org.infinity.features.component.macro.Macro;
-import org.infinity.utils.FileUtil;
+import org.infinity.utils.system.FileUtil;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;

@@ -6,18 +6,18 @@ import java.util.Arrays;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.event.TickEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.block.BlockUtil;
 import org.infinity.utils.entity.EntityUtil;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
-import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -30,25 +30,24 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Placing block", key = -2, name = "Scaffold", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Placing block", key = -2, name = "Scaffold", visible = true)
 public class Scaffold extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Normal", new ArrayList<>(Arrays.asList("Normal", "Safe")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Normal", new ArrayList<>(Arrays.asList("Normal", "Safe")));
 
-	private Settings maxDelay = new Settings(this, "Max Delay", 200D, 0D, 500D, () -> true);
-	private Settings minDelay = new Settings(this, "Min Delay", 200D, 0D, 500D, () -> true);
+	private Setting maxDelay = new Setting(this, "Max Delay", 200D, 0D, 500D);
+	private Setting minDelay = new Setting(this, "Min Delay", 200D, 0D, 500D);
 
-	private Settings blockTake = new Settings(this, "Block Take", "Switch",
-			new ArrayList<>(Arrays.asList("Pick", "Switch")), () -> true);
-	private Settings eagle = new Settings(this, "Eagle", false, () -> true);
-	public Settings safeWalk = new Settings(this, "SafeWalk", true, () -> true);
+	private Setting blockTake = new Setting(this, "Block Take", "Switch",
+			new ArrayList<>(Arrays.asList("Pick", "Switch")));
+	private Setting eagle = new Setting(this, "Eagle", false);
+	public Setting safeWalk = new Setting(this, "SafeWalk", true);
 
-	private Settings speed = new Settings(this, "Rotation Speed", 140D, 0D, 180D, () -> true);
+	private Setting speed = new Setting(this, "Rotation Speed", 140D, 0D, 180D);
 
-	public Settings airPlace = new Settings(this, "Air Place", false, () -> true);
+	public Setting airPlace = new Setting(this, "Air Place", false);
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 
 	private PlaceData pData;
 
@@ -109,17 +108,16 @@ public class Scaffold extends Module {
 		if (pData != null) {
 			BlockPos lookPos = pData.pos;
 			Vec3d vec = new Vec3d(lookPos.getX(), lookPos.getY(), lookPos.getZ());
-			float[] alwaysL = RotationUtils.lookAtVecPos(vec);
+			float[] alwaysL = RotationUtil.lookAtVecPos(vec);
 
-			alwaysL[0] = RotationUtils.limitAngleChange(event.getYaw(), alwaysL[0],
+			alwaysL[0] = RotationUtil.limitAngleChange(event.getYaw(), alwaysL[0],
 					(float) speed.getCurrentValueDouble());
-			alwaysL[1] = RotationUtils.limitAngleChange(event.getYaw(), alwaysL[1],
+			alwaysL[1] = RotationUtil.limitAngleChange(event.getYaw(), alwaysL[1],
 					(float) speed.getCurrentValueDouble());
 
 			event.setRotation(alwaysL[0], alwaysL[1], false);
 			Helper.getPlayer().bodyYaw = alwaysL[0];
 			Helper.getPlayer().headYaw = alwaysL[0];
-			;
 		}
 
 		if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
@@ -130,11 +128,8 @@ public class Scaffold extends Module {
 			}
 
 			// rotation
-
 			pData = data;
 			event.setRotation(look[0], look[1], false);
-			Helper.getPlayer().bodyYaw = look[0];
-			Helper.getPlayer().headYaw = look[0];
 
 			// slot calculate
 			int blockSlot = -2;
@@ -170,6 +165,8 @@ public class Scaffold extends Module {
 					timer.reset();
 				}
 			}
+		} else {
+			timer.reset();
 		}
 	}
 

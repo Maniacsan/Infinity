@@ -1,4 +1,4 @@
-package org.infinity.utils;
+package org.infinity.utils.system.crypt;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

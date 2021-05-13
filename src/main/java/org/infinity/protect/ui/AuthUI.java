@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
+import org.infinity.file.AuthData;
 import org.infinity.mixin.IAbstractButtonWidget;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
@@ -25,10 +26,15 @@ public class AuthUI extends Screen {
 	private CustomFieldWidget usernameField;
 	private CustomFieldWidget passwordField;
 	private CustomButtonWidget loginButton;
+	private String usernameData;
+	private String passwordData;
 	private int errorTime;
 
 	public AuthUI() {
 		super(new LiteralText(""));
+		String[] data = AuthData.INSTANCE.loadAccount();
+		usernameData = data[0];
+		passwordData = data[1];
 	}
 
 	@Override
@@ -36,10 +42,16 @@ public class AuthUI extends Screen {
 		this.client.keyboard.setRepeatEvents(true);
 		this.usernameField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 80, this.height / 2 - 58, 160,
 				22, new TranslatableText("Login"), false);
+		if (usernameData != null && !usernameData.isEmpty())
+			usernameField.setText(usernameData);
+
 		this.usernameField.setMaxLength(40);
 		this.children.add(usernameField);
 		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 80, this.height / 2 - 26, 160,
 				22, new TranslatableText("Password"), true);
+		if (passwordData != null && !passwordData.isEmpty())
+			passwordField.setText(passwordData);
+		
 		this.passwordField.setMaxLength(128);
 		this.children.add(passwordField);
 
@@ -140,7 +152,6 @@ public class AuthUI extends Screen {
 				errorTime = 45;
 			}
 		}
-		
 	}
 
 	@Override

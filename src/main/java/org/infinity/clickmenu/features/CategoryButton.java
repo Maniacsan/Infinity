@@ -8,7 +8,7 @@ import org.infinity.clickmenu.config.ConfigButton;
 import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.Module.Category;
+import org.infinity.features.Category;
 import org.infinity.features.module.visual.GuiMod;
 
 import net.minecraft.client.util.math.MatrixStack;

@@ -1,10 +1,11 @@
 package org.infinity.features.module.movement;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.utils.Helper;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Auto sprinting", key = -2, name = "Sprint", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Auto sprinting", key = -2, name = "Sprint", visible = true)
 public class Sprint extends Module {
 
 	@Override

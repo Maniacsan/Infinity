@@ -1,14 +1,15 @@
 package org.infinity.features.module.player;
 
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.StringUtil;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Allows you to dig blocks faster", key = -2, name = "FastBreak", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Allows you to dig blocks faster", key = -2, name = "FastBreak", visible = true)
 public class FastBreak extends Module {
 
-	public Settings speed = new Settings(this, "Speed", 1, 1.6, 3, () -> true);
+	public Setting speed = new Setting(this, "Speed", 1, 1.6, 3);
 
 	@Override
 	public void onPlayerTick() {

@@ -13,8 +13,9 @@ public class MacroCommand extends Command {
 
 	@Override
 	public void command(String[] args, String msg) {
+		String macroMsg = msg.replace(getName() + " " + args[0] + " " + args[1] + " ", "");
 		if (args[0].equalsIgnoreCase("add")) {
-			InfMain.getMacroManager().getList().add(new Macro(args[2],
+			InfMain.getMacroManager().getList().add(new Macro(macroMsg,
 					InputUtil.fromTranslationKey("key.keyboard." + args[1].toLowerCase()).getCode()));
 			set(Formatting.GRAY + "Macro added to key " + Formatting.WHITE + args[1]);
 			InfMain.getMacroManager().save();

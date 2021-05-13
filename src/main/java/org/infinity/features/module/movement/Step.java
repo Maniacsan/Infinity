@@ -7,9 +7,10 @@ import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.TickEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -19,14 +20,14 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-@ModuleInfo(category = Module.Category.MOVEMENT, desc = "Let you walk up Blocks very fast", key = -2, name = "Step", visible = true)
+@ModuleInfo(category = Category.MOVEMENT, desc = "Let you walk up Blocks very fast", key = -2, name = "Step", visible = true)
 public class Step extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Matrix 6.1.0",
-			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.1.0", "NCP")), () -> true);
+	private Setting mode = new Setting(this, "Mode", "Matrix 6.1.0",
+			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.1.0", "NCP", "AAC 5.0.14")));
 
-	private Settings height = new Settings(this, "Height", 1.5, 0.5, 10.0,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
+	private Setting height = new Setting(this, "Height", 1.5, 0.5, 10.0)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
 
 	private double previousX, previousY, previousZ;
 	private double offsetX, offsetY, offsetZ;
@@ -73,6 +74,20 @@ public class Step extends Module {
 				Helper.getPlayer().tick();
 				Helper.getPlayer().tick();
 			}
+		} else if (mode.getCurrentMode().equalsIgnoreCase("AAC 5.0.14")) {
+			if (hasStep) {
+				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 20;
+			}
+			if (Helper.getPlayer().isOnGround()) {
+				hasStep = false;
+				InfMain.resetTimer();
+			}
+			if (Helper.getPlayer().horizontalCollision && MoveUtil.isMoving() && Helper.getPlayer().isOnGround()) {
+
+				hasStep = true;
+				InfMain.TIMER = 3.8f;
+				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.47);
+			}
 		}
 	}
 
@@ -85,9 +100,8 @@ public class Step extends Module {
 				EntityUtil.setStepHeight(1.4f);
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 			EntityUtil.setStepHeight((float) height.getCurrentValueDouble());
-		}
 
-		if (mode.getCurrentMode().equalsIgnoreCase("NCP")) {
+		} else if (mode.getCurrentMode().equalsIgnoreCase("NCP")) {
 			if (Helper.getPlayer().horizontalCollision) {
 				cancelSomePackets = true;
 				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),

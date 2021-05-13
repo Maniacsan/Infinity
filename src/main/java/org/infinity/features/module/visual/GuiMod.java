@@ -5,22 +5,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.InfMain;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Infinity features menu", key = GLFW.GLFW_KEY_GRAVE_ACCENT, name = "Gui", visible = false)
+@ModuleInfo(category = Category.VISUAL, desc = "Infinity features menu", key = GLFW.GLFW_KEY_GRAVE_ACCENT, name = "Gui", visible = false)
 public class GuiMod extends Module {
 
-	public Settings scale = new Settings(this, "Scale", "60%",
-			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })), () -> true);
+	public Setting scale = new Setting(this, "Scale", "60%",
+			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })));
 
-	public Settings descriptions = new Settings(this, "Description", true, () -> true);
+	public Setting descriptions = new Setting(this, "Description", true);
 
-	public Settings color = new Settings(this, "Color", new Color(123, 233, 123), () -> true);
+	public Setting color = new Setting(this, "Color", new Color(49, 109, 214));
 
 	@Override
 	public void onEnable() {

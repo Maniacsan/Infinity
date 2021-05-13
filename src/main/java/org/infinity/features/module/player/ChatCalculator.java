@@ -8,11 +8,12 @@ import java.util.Optional;
 import org.infinity.InfMain;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.ServerChatEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.calc.TermSolver;
 
 import com.darkmagician6.eventapi.EventTarget;
@@ -20,18 +21,17 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 
-@ModuleInfo(category = Module.Category.PLAYER, desc = "Automatically solves examples", key = -2, name = "ChatCalculator", visible = true)
+@ModuleInfo(category = Category.PLAYER, desc = "Automatically solves examples", key = -2, name = "ChatCalculator", visible = true)
 public class ChatCalculator extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Message", new ArrayList<>(Arrays.asList("Message", "Info")),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Message", new ArrayList<>(Arrays.asList("Message", "Info")));
 
-	private Settings serverSide = new Settings(this, "Server Messages", true, () -> true);
+	private Setting serverSide = new Setting(this, "Server Messages", true);
 
-	private Settings globalChat = new Settings(this, "Global Chat", true,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Message"));
+	private Setting globalChat = new Setting(this, "Global Chat", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Message"));
 
-	private Settings delay = new Settings(this, "Delay", 1D, 0D, 5D, () -> true);
+	private Setting delay = new Setting(this, "Delay", 1D, 0D, 5D);
 
 	private String serverMessage;
 
@@ -40,7 +40,7 @@ public class ChatCalculator extends Module {
 
 	private List<String> solvesResults = new ArrayList<>();
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 
 	@Override
 	public void onDisable() {

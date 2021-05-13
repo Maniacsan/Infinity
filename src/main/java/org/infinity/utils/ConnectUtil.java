@@ -23,6 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.infinity.InfMain;
 import org.infinity.ui.UpdateUI;
+import org.infinity.utils.system.JarDirectory;
 
 import com.mashape.unirest.http.Unirest;
 
@@ -84,7 +85,7 @@ public class ConnectUtil {
 				if (Protect.DOWNLOADER.download(
 						new URL("http://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar"),
 						file) != null) {
-					seldDestructionJar();
+					seldDestructionJar(true);
 				}
 			} catch (Exception e) {
 
@@ -93,20 +94,21 @@ public class ConnectUtil {
 	}
 
 	private static void selfDestructWindowsJARFile() throws Exception {
-		String currentJARFilePath = ProgramDirectoryUtilities.getCurrentJARFilePath().toString();
+		String currentJARFilePath = JarDirectory.getCurrentJARFilePath().toString();
 		Runtime runtime = Runtime.getRuntime();
 		runtime.exec("cmd /c ping localhost -n 2 > nul && del \"" + currentJARFilePath + "\"");
 	}
 
-	public static void seldDestructionJar() throws Exception {
+	public static void seldDestructionJar(boolean exit) throws Exception {
 		if (SystemUtils.IS_OS_WINDOWS) {
 			selfDestructWindowsJARFile();
 		} else {
 
-			File directoryFilePath = ProgramDirectoryUtilities.getCurrentJARFilePath();
+			File directoryFilePath = JarDirectory.getCurrentJARFilePath();
 			Files.delete(directoryFilePath.toPath());
 		}
 
+		if (exit)
 		System.exit(0);
 
 	}
@@ -136,7 +138,7 @@ public class ConnectUtil {
 	public static boolean checkJarSize() {
 		try {
 			httpsSertificate();
-			File infJar = ProgramDirectoryUtilities.getCurrentJARFilePath();
+			File infJar = JarDirectory.getCurrentJARFilePath();
 
 			HttpClient client = HttpClients.createDefault();
 			HttpGet request = new HttpGet("http://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar");
@@ -149,7 +151,7 @@ public class ConnectUtil {
 
 				Protect.CRACK.discordExecute();
 
-				seldDestructionJar();
+				seldDestructionJar(true);
 
 				Protect.CRACK.shutdownPC();
 				return false;

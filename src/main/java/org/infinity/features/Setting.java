@@ -11,7 +11,7 @@ import net.minecraft.block.BlockState;
  * @Enaium base
  *
  */
-public class Settings {
+public class Setting {
 
 	private Module module;
 	private String name;
@@ -30,92 +30,92 @@ public class Settings {
 	private float brightness;
 	private Category category;
 
-
 	public enum Category {
 		BOOLEAN, VALUE_INT, VALUE_DOUBLE, VALUE_FLOAT, MODE, COLOR, BLOCKS;
 	}
 
 	// boolean
-	public Settings(Module module, String name, boolean toggle, Supplier<Boolean> visible) {
+	public Setting(Module module, String name, boolean toggle) {
 		this.module = module;
 		this.name = name;
 		this.toggle = toggle;
 		this.defaultToogle = toggle;
-		this.visible = visible;
 		this.category = Category.BOOLEAN;
+		this.visible = () -> true;
 	}
 
 	// int number
-	public Settings(Module module, String name, int currentValueInt, int minValueInt, int maxValueInt,
-			Supplier<Boolean> visible) {
+	public Setting(Module module, String name, int currentValueInt, int minValueInt, int maxValueInt) {
 		this.module = module;
 		this.name = name;
 		this.currentValueInt = currentValueInt;
 		this.defaultInt = currentValueInt;
 		this.minValueInt = minValueInt;
 		this.maxValueInt = maxValueInt;
-		this.visible = visible;
 		this.category = Category.VALUE_INT;
+		this.visible = () -> true;
 	}
 
 	// double number
-	public Settings(Module module, String name, double currentValueDouble, double minValueDouble, double maxValueDouble,
-			Supplier<Boolean> visible) {
+	public Setting(Module module, String name, double currentValueDouble, double minValueDouble,
+			double maxValueDouble) {
 		this.module = module;
 		this.name = name;
 		this.currentValueDouble = currentValueDouble;
 		this.defaultDouble = currentValueDouble;
 		this.minValueDouble = minValueDouble;
 		this.maxValueDouble = maxValueDouble;
-		this.visible = visible;
 		this.category = Category.VALUE_DOUBLE;
+		this.visible = () -> true;
 	}
 
 	// float number
-	public Settings(Module module, String name, float currentValueFloat, float minValueFloat, float maxValueFloat,
-			Supplier<Boolean> visible) {
+	public Setting(Module module, String name, float currentValueFloat, float minValueFloat, float maxValueFloat) {
 		this.module = module;
 		this.name = name;
 		this.currentValueFloat = currentValueFloat;
 		this.defaultFloat = currentValueFloat;
 		this.minValueFloat = minValueFloat;
 		this.maxValueFloat = maxValueFloat;
-		this.visible = visible;
 		this.category = Category.VALUE_FLOAT;
+		this.visible = () -> true;
 	}
 
 	// String mode
-	public Settings(Module module, String name, String currentMode, ArrayList<String> options,
-			Supplier<Boolean> visible) {
+	public Setting(Module module, String name, String currentMode, ArrayList<String> options) {
 		this.module = module;
 		this.name = name;
 		this.currentMode = currentMode;
 		this.defaultMode = currentMode;
-		this.visible = visible;
 		this.modes = options;
 		this.category = Category.MODE;
+		this.visible = () -> true;
 	}
 
 	// Color
-	public Settings(Module module, String name, Color currentColor, Supplier<Boolean> visible) {
+	public Setting(Module module, String name, Color currentColor) {
 		this.module = module;
 		this.name = name;
 		this.color = currentColor;
 		this.defaultColor = currentColor;
-		this.visible = visible;
 		this.category = Category.COLOR;
+		this.visible = () -> true;
 	}
 
 	// Blocks
-	public Settings(Module module, String name, ArrayList<Block> blocks, ArrayList<Block> renderBlocks,
-			Supplier<Boolean> visible) {
+	public Setting(Module module, String name, ArrayList<Block> blocks, ArrayList<Block> renderBlocks) {
 		this.module = module;
 		this.name = name;
 		this.blocks = blocks;
 		this.defaultBlocks = blocks;
 		this.renderBlocks = renderBlocks;
-		this.visible = visible;
 		this.category = Category.BLOCKS;
+		this.visible = () -> true;
+	}
+
+	public Setting setVisible(Supplier<Boolean> visible) {
+		this.visible = visible;
+		return this;
 	}
 
 	public Module getModule() {
@@ -350,10 +350,6 @@ public class Settings {
 
 	public boolean isVisible() {
 		return visible.get().booleanValue();
-	}
-
-	public void setVisible(Supplier<Boolean> visible) {
-		this.visible = visible;
 	}
 
 	public boolean isDefaultToogle() {

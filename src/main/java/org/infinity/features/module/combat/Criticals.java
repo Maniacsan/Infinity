@@ -7,9 +7,10 @@ import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.TickEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
 
@@ -20,17 +21,16 @@ import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Critical hit", key = -2, name = "Criticals", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Critical hit", key = -2, name = "Criticals", visible = true)
 public class Criticals extends Module {
 
-	private Settings mode = new Settings(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel", "Mini Jump" })),
-			() -> true);
+	private Setting mode = new Setting(this, "Mode", "Packet",
+			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel", "Mini Jump" })));
 
-	private Settings falling = new Settings(this, "Falling", false,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
-	private Settings fallDistance = new Settings(this, "Min Distance", 0.29, 0.01, 0.38,
-			() -> mode.getCurrentMode().equalsIgnoreCase("Jump") && falling.isToggle());
+	private Setting falling = new Setting(this, "Falling", false)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
+	private Setting fallDistance = new Setting(this, "Min Distance", 0.21, 0.01, 0.38)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Jump") && falling.isToggle());
 
 	private double y;
 	private int stage;
@@ -127,14 +127,14 @@ public class Criticals extends Module {
 				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
 						&& ((PlayerInteractEntityC2SPacket) event.getPacket())
 								.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-				if (!Helper.getPlayer().isOnGround())
-					return;
+					if (!Helper.getPlayer().isOnGround())
+						return;
 
-				MoveUtil.setYVelocity(-1e-2);
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY() + 1.28E-9D, Helper.getPlayer().getZ(), true));
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-						Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+					MoveUtil.setYVelocity(-1e-2);
+					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+							Helper.getPlayer().getY() + 1.28E-9D, Helper.getPlayer().getZ(), true));
+					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+							Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
 				}
 			}
 

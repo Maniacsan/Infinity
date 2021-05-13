@@ -1,14 +1,14 @@
 package org.infinity.clickmenu.features.elements.sliders;
 
 import org.infinity.clickmenu.features.elements.SliderElement;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.StringUtil;
 
 import net.minecraft.util.math.MathHelper;
 
 public class IntSlider extends SliderElement {
 
-	public IntSlider(Settings setting) {
+	public IntSlider(Setting setting) {
 		super(setting);
 		this.selected = this.width / (setting.getMaxValueInt() - setting.getMinValueInt())
 				* (setting.getCurrentValueInt() - setting.getMinValueInt());

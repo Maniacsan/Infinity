@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 
 import org.infinity.event.EntityTagEvent;
 import org.infinity.event.RenderEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.WorldRender;
@@ -29,22 +30,22 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.VISUAL, desc = "Makes name tags convenient", key = -2, name = "NameTags", visible = true)
+@ModuleInfo(category = Category.VISUAL, desc = "Makes name tags convenient", key = -2, name = "NameTags", visible = true)
 public class NameTags extends Module {
 
-	private Settings armor = new Settings(this, "Armor", true, () -> true);
+	private Setting armor = new Setting(this, "Armor", true);
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", true, () -> players.isToggle());
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", true).setVisible(() -> players.isToggle());
 
-	private Settings invisibles = new Settings(this, "Invisibles", false, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", false, () -> true);
+	private Setting invisibles = new Setting(this, "Invisibles", false);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", false);
 
-	private Settings items = new Settings(this, "Items", true, () -> true);
+	private Setting items = new Setting(this, "Items", true);
 
-	private Settings scale = new Settings(this, "Scale", 2D, 0.2D, 5D, () -> true);
+	private Setting scale = new Setting(this, "Scale", 2D, 0.2D, 5D);
 
 	@EventTarget
 	public void onTagRender(EntityTagEvent event) {
@@ -60,14 +61,15 @@ public class NameTags extends Module {
 			double scale = 0;
 
 			Vec3d rPos = EntityUtil.getRenderPos(entity);
-			
-			scale = Math.max(this.scale.getCurrentValueDouble()
-					* (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20), 1);
+
+			scale = Math.max(
+					this.scale.getCurrentValueDouble() * (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20),
+					1);
 
 			if (items.isToggle() && entity instanceof ItemEntity) {
 				ItemEntity e = (ItemEntity) entity;
 
-					lines.add(e.getDisplayName().getString());
+				lines.add(e.getDisplayName().getString());
 
 			} else if (entity instanceof LivingEntity) {
 				if (EntityUtil.isTarget(entity, players.isToggle(), friends.isToggle(), invisibles.isToggle(),
@@ -76,9 +78,9 @@ public class NameTags extends Module {
 					LivingEntity e = (LivingEntity) entity;
 
 					String health = getHealthText(e);
-					
+
 					String name = entity.getDisplayName().getString();
-					
+
 					name = name + " " + health;
 
 					lines.add(name);
@@ -100,7 +102,7 @@ public class NameTags extends Module {
 						}
 					}
 				}
-			}	
+			}
 
 			if (!lines.isEmpty()) {
 				float offset = 0.25f + lines.size() * 0.25f;
@@ -146,8 +148,7 @@ public class NameTags extends Module {
 
 		RenderSystem.disableBlend();
 	}
-	
-		
+
 	private String getHealthText(LivingEntity e) {
 		return getHealthColor(e) + String.valueOf((int) (e.getHealth() + e.getAbsorptionAmount()));
 

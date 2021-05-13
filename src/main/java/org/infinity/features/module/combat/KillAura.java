@@ -8,15 +8,16 @@ import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.event.TickEvent;
+import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Settings;
+import org.infinity.features.Setting;
 import org.infinity.features.module.player.FakeLags;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
-import org.infinity.utils.TimeHelper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.entity.EntityUtil;
-import org.infinity.utils.rotation.RotationUtils;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 
@@ -30,39 +31,39 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
-@ModuleInfo(category = Module.Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
+@ModuleInfo(category = Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
-	private Settings rotation = new Settings(this, "Rotation", "Reset",
-			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")), () -> true);
+	private Setting rotation = new Setting(this, "Rotation", "Reset",
+			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")));
 
 	// targets
-	private Settings players = new Settings(this, "Players", true, () -> true);
-	private Settings friends = new Settings(this, "Friends", false, () -> players.isToggle());
-	private Settings invisibles = new Settings(this, "Invisibles", true, () -> true);
-	private Settings mobs = new Settings(this, "Mobs", true, () -> true);
-	private Settings animals = new Settings(this, "Animals", true, () -> true);
-	private Settings throughWalls = new Settings(this, "Through Walls", false, () -> true);
+	private Setting players = new Setting(this, "Players", true);
+	private Setting friends = new Setting(this, "Friends", false).setVisible(() -> players.isToggle());
+	private Setting invisibles = new Setting(this, "Invisibles", true);
+	private Setting mobs = new Setting(this, "Mobs", true);
+	private Setting animals = new Setting(this, "Animals", true);
+	private Setting throughWalls = new Setting(this, "Through Walls", false);
 
-	private Settings fov = new Settings(this, "FOV", 240D, 0D, 360D, () -> true);
+	private Setting fov = new Setting(this, "FOV", 240D, 0D, 360D);
 
-	private Settings destroyShield = new Settings(this, "Destroy Shield (Axe)", true, () -> true);
+	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
 
-	private Settings keepSprint = new Settings(this, "Keep Sprint", true, () -> true);
+	private Setting keepSprint = new Setting(this, "Keep Sprint", true);
 
-	private Settings lockView = new Settings(this, "Look View", false, () -> true);
+	private Setting lockView = new Setting(this, "Look View", false);
 
-	private Settings maxSpeed = new Settings(this, "Max Speed", 199.0D, 0.0D, 200.0D, () -> true);
-	private Settings minSpeed = new Settings(this, "Min Speed", 184.0D, 0.0D, 200.0D, () -> true);
+	private Setting maxSpeed = new Setting(this, "Max Speed", 199.0D, 0.0D, 200.0D);
+	private Setting minSpeed = new Setting(this, "Min Speed", 184.0D, 0.0D, 200.0D);
 
 	// raycasting target
-	private Settings rayCast = new Settings(this, "RayCast", true, () -> true);
+	private Setting rayCast = new Setting(this, "RayCast", true);
 
-	private Settings noSwing = new Settings(this, "No Swing", false, () -> true);
-	private Settings coolDown = new Settings(this, "CoolDown", true, () -> true);
-	private Settings aps = new Settings(this, "APS", 1.8D, 0.1D, 15.0D, () -> Boolean.valueOf(!coolDown.isToggle()));
+	private Setting noSwing = new Setting(this, "No Swing", false);
+	private Setting coolDown = new Setting(this, "CoolDown", true);
+	private Setting aps = new Setting(this, "APS", 1.8D, 0.1D, 15.0D).setVisible(() -> !coolDown.isToggle());
 
-	private Settings range = new Settings(this, "Range", 3.7D, 0.1D, 6.0D, () -> true);
+	private Setting range = new Setting(this, "Range", 3.7D, 0.1D, 6.0D);
 
 	// target
 	public static Entity target;
@@ -80,14 +81,14 @@ public class KillAura extends Module {
 	private int time;
 	private float speed;
 
-	// rotation timers
+	// smash
 	private double x1 = random.nextDouble();
 	private double y1 = random.nextDouble();
 	private double z1 = random.nextDouble();
 
 	private int preSlot = -2;
 
-	private TimeHelper timer = new TimeHelper();
+	private Timer timer = new Timer();
 
 	@Override
 	public void onDisable() {
@@ -145,15 +146,18 @@ public class KillAura extends Module {
 				+ minSpeed.getCurrentValueDouble());
 
 		// set rotation
-		focus = RotationUtils.lookAtEntity(target);
+		focus = RotationUtil.lookAtEntity(target);
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 
-		focus[0] = RotationUtils.limitAngleChange(event.getYaw(), focus[0], speed);
-		focus[1] = RotationUtils.limitAngleChange(event.getPitch(), focus[1], speed);
+		focus[0] = RotationUtil.limitAngleChange(event.getYaw(), focus[0], speed);
+		focus[1] = RotationUtil.limitAngleChange(event.getPitch(), focus[1], speed);
 
-		smash[0] = RotationUtils.limitAngleChange(event.getYaw(), smash[0], speed);
-		smash[1] = RotationUtils.limitAngleChange(event.getPitch(), smash[1], speed);
+		focus[0] = Math.round(focus[0] * 1000) / 1000;
+		focus[1] = Math.round(focus[1] * 1000) / 1000;
+
+		smash[0] = RotationUtil.limitAngleChange(event.getYaw(), smash[0], speed);
+		smash[1] = RotationUtil.limitAngleChange(event.getPitch(), smash[1], speed);
 
 		if (rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
 			event.setRotation(focus[0], focus[1], lockView.isToggle());
@@ -162,8 +166,6 @@ public class KillAura extends Module {
 		} else if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 			if (lastYaw != 999 || lastPitch != 999) {
 				event.setRotation(lastYaw, lastPitch, lockView.isToggle());
-				Helper.getPlayer().bodyYaw = lastYaw;
-				Helper.getPlayer().headYaw = lastYaw;
 			}
 		}
 
@@ -230,10 +232,10 @@ public class KillAura extends Module {
 
 				destroyShield();
 
-				float[] matrix = RotationUtils.lookAtEntity(target);
+				float[] matrix = RotationUtil.lookAtEntity(target);
 
-				matrix[0] = RotationUtils.limitAngleChange(event.getYaw(), matrix[0], speed);
-				matrix[1] = RotationUtils.limitAngleChange(event.getPitch(), matrix[1], speed);
+				matrix[0] = RotationUtil.limitAngleChange(event.getYaw(), matrix[0], speed);
+				matrix[1] = RotationUtil.limitAngleChange(event.getPitch(), matrix[1], speed);
 
 				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
 					lastYaw = matrix[0];
@@ -290,9 +292,9 @@ public class KillAura extends Module {
 		float yaw = Helper.getPlayer().yaw, pitch = Helper.getPlayer().pitch;
 		Box bb = entity.getBoundingBox();
 		float lx = 0, ly = 0, lz = 0;
-		lx = RotationUtils.limitAngleChange(lx, (float) x1, speed);
-		ly = RotationUtils.limitAngleChange(ly, (float) y1, speed);
-		lz = RotationUtils.limitAngleChange(lz, (float) z1, speed);
+		lx = RotationUtil.limitAngleChange(lx, (float) x1, speed);
+		ly = RotationUtil.limitAngleChange(ly, (float) y1, speed);
+		lz = RotationUtil.limitAngleChange(lz, (float) z1, speed);
 
 		final Vec3d randomVec = new Vec3d(bb.minX + (bb.maxX - bb.minX) * lx * 0.65, bb.minY + (bb.maxY - bb.minY) * ly,
 				bb.minZ + (bb.maxZ - bb.minZ) * lz * 0.65);

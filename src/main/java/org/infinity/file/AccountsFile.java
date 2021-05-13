@@ -7,8 +7,8 @@ import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.infinity.InfMain;
 import org.infinity.ui.account.main.AddThread;
-import org.infinity.utils.AES;
-import org.infinity.utils.FileUtil;
+import org.infinity.utils.system.FileUtil;
+import org.infinity.utils.system.crypt.AES;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
