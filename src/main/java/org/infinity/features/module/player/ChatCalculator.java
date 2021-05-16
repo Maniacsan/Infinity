@@ -96,7 +96,7 @@ public class ChatCalculator extends Module {
 			if (split.contains(Helper.getPlayer().getEntityName()))
 				return;
 
-			serverMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
+			serverMessage = message.contains("ђешите пример:") ? message.replace("ђешите пример:", "")
 					: message.replace(split + ":", "");
 
 			Optional<String> postfix = TermSolver.transformInfixToPostfix(serverMessage);
