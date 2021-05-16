@@ -28,7 +28,7 @@ public class InfMain {
 
 	public static InfMain INSTANCE = new InfMain();
 	private static String name = "Infinity";
-	private static String version = "1.0";
+	private static String version = "1.01";
 	private static File infDirection;
 
 	private static IHandler handler;

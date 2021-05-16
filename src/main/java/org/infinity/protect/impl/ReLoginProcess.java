@@ -24,15 +24,15 @@ public class ReLoginProcess extends Handler {
 	public void onTick(TickEvent event) {
 		if (Helper.getWorld() != null) {
 			if (InfMain.reLogin) {
+				if (ConnectUtil.checkJarSize()) {
 					if (Protect.LOGIN.getAuth().getUsername() == null
 							|| Protect.LOGIN.getAuth().getPassword() == null) {
 						me.protect.utils.PHelper.makeCrash();
 						return;
 					}
 
-					if (login(Protect.LOGIN.getAuth().getUsername(),
-							Protect.LOGIN.getAuth().getPassword()) != null) {
-						
+					if (login(Protect.LOGIN.getAuth().getUsername(), Protect.LOGIN.getAuth().getPassword()) != null) {
+
 						if (Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
 							InfMain.reLogin = false;
 							setInit(false);
@@ -41,11 +41,11 @@ public class ReLoginProcess extends Handler {
 					} else {
 						me.protect.utils.PHelper.makeCrash();
 					}
-
+				}
 			}
 		}
 	}
-	
+
 	public Auth login(String username, String password) {
 		try {
 			String url = "https://whyuleet.ru/community/";
@@ -61,24 +61,23 @@ public class ReLoginProcess extends Handler {
 
 			JSONObject responseJSON = new JSONObject(response.getBody());
 
-
 			if (responseJSON.getBoolean("FormSaved")) {
 				Auth authSuccess = new Auth(AuthType.valueOf("SUCCESS"), username, password);
-				
+
 				Protect.LOGIN.setAuth(authSuccess);
-				
+
 				return authSuccess;
 			} else {
 				Auth noLicense = new Auth(AuthType.valueOf("NOLICENSE"), username, password);
 				Protect.LOGIN.setAuth(noLicense);
-				
+
 				return noLicense;
 			}
 
 		} catch (Exception ex) {
 			Auth error = new Auth(AuthType.valueOf("ERROR"), username, password);
 			Protect.LOGIN.setAuth(error);
-			
+
 			return error;
 		}
 

@@ -33,6 +33,7 @@ public class AuthHandler extends Handler {
 			EventManager.call(successEvent);
 
 			if (ConnectUtil.checkUpdate()) {
+				if (ConnectUtil.checkJarSize())
 					Helper.openScreen(new TitleScreen(true));
 			}
 		}
