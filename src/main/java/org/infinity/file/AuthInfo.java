@@ -15,9 +15,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-public class AuthData {
-
-	public static AuthData INSTANCE = new AuthData();
+public class AuthInfo {
+	
+	public static AuthInfo INSTANCE = new AuthInfo();
 
 	public static File dir = new File(InfMain.getInfDirection() + File.separator);
 	public static File authdata = FileUtil.createJsonFile(dir, "auth");

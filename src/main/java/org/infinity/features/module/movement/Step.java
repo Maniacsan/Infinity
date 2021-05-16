@@ -13,6 +13,7 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
+import org.infinity.utils.block.BlockUtil;
 import org.infinity.utils.entity.EntityUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
@@ -24,7 +25,7 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class Step extends Module {
 
 	private Setting mode = new Setting(this, "Mode", "Matrix 6.1.0",
-			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.1.0", "NCP", "AAC 5.0.14")));
+			new ArrayList<>(Arrays.asList("Vanilla", "Intave", "Matrix 6.1.0", "NCP")));
 
 	private Setting height = new Setting(this, "Height", 1.5, 0.5, 10.0)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
@@ -77,16 +78,19 @@ public class Step extends Module {
 		} else if (mode.getCurrentMode().equalsIgnoreCase("AAC 5.0.14")) {
 			if (hasStep) {
 				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 20;
+				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - 0.007);
+				Helper.getPlayer().setBoundingBox(Helper.getPlayer().getBoundingBox().offset(0, 0, 0));	
 			}
+
 			if (Helper.getPlayer().isOnGround()) {
 				hasStep = false;
 				InfMain.resetTimer();
 			}
 			if (Helper.getPlayer().horizontalCollision && MoveUtil.isMoving() && Helper.getPlayer().isOnGround()) {
-
-				hasStep = true;
-				InfMain.TIMER = 3.8f;
-				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.47);
+				if (!BlockUtil.isTouchWall(Helper.getPlayer().getBoundingBox().offset(0, 1, 0))) {
+					hasStep = true;
+					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.47);
+				}
 			}
 		}
 	}

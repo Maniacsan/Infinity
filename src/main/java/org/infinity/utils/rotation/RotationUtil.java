@@ -61,8 +61,8 @@ public class RotationUtil {
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
-		float yaw = i;
-		float pitch = j;
+		float yaw = updateAngle(Helper.getPlayer().yaw, i);
+		float pitch = updateAngle(Helper.getPlayer().pitch, j);
 		return new float[] { yaw, pitch };
 	}
 
@@ -82,8 +82,8 @@ public class RotationUtil {
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
-		float yaw = i;
-		float pitch = j;
+		float yaw = updateAngle(Helper.getPlayer().yaw, i);
+		float pitch = updateAngle(Helper.getPlayer().pitch, j);
 		return new float[] { yaw, pitch };
 	}
 
@@ -109,15 +109,8 @@ public class RotationUtil {
 		return currentRotation + (diff > turnSpeed ? turnSpeed : Math.max(diff, -turnSpeed));
 	}
 
-	public static float updateAngle(float oldAngle, float newAngle, float maxChangeInAngle) {
+	public static float updateAngle(float oldAngle, float newAngle) {
 		float f = MathHelper.wrapDegrees(newAngle - oldAngle);
-		if (f > maxChangeInAngle) {
-			f = maxChangeInAngle;
-		}
-
-		if (f < -maxChangeInAngle) {
-			f = -maxChangeInAngle;
-		}
 
 		return oldAngle + f;
 	}

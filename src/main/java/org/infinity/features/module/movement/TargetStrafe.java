@@ -3,11 +3,13 @@ package org.infinity.features.module.movement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.features.module.combat.KillAura;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -31,18 +33,18 @@ public class TargetStrafe extends Module {
 
 	private Setting distance = new Setting(this, "Entity Distance", 7.0D, 6.1D, 15.0D);
 
-	private Setting radius = new Setting(this, "Strafing radius", 3.0D, 0.0D, 6.0D);
-	private Setting speed = new Setting(this, "Speed", 0.31D, 0.0D, 1.0D);
+	private Setting radius = new Setting(this, "Strafing radius", 1.9D, 0.0D, 6.0D);
+	private Setting speed = new Setting(this, "Speed", 0.24D, 0.0D, 1.0D);
 
 	private Setting scrollSpeed = new Setting(this, "Speed to Entity", 0.26D, 0.0D, 1.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Scroll"));
 
 	private Setting damageBoost = new Setting(this, "Damaget Boost", false);
-	private Setting boost = new Setting(this, "Boost Value", 0.2D, 0.0D, 0.8D).setVisible(() -> damageBoost.isToggle());
+	private Setting boost = new Setting(this, "Boost Value", 0.09D, 0.0D, 0.8D)
+			.setVisible(() -> damageBoost.isToggle());
 
 	private Entity target;
 
-	private double forward;
 	private double direction = 1;
 
 	@EventTarget
@@ -58,36 +60,39 @@ public class TargetStrafe extends Module {
 		if (Helper.getPlayer().isOnGround())
 			Helper.getPlayer().jump();
 
-		if (Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble() + 1) {
-			forward = 1;
-		} else if (Helper.getPlayer().distanceTo(target) < radius.getCurrentValueDouble() + 1
-				&& Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble() - 0.1) {
-			forward = -1;
-		} else {
-			forward = 0;
-		}
-
-		if (Helper.minecraftClient.options.keyLeft.isPressed())
-			direction = -1;
-		else if (Helper.minecraftClient.options.keyRight.isPressed())
+		if (Helper.minecraftClient.options.keyLeft.isPressed()) {
 			direction = 1;
+		} else if (Helper.minecraftClient.options.keyRight.isPressed()) {
+			direction = -1;
+		}
 
 		if (Helper.getPlayer().horizontalCollision)
 			direction = direction == 1 ? -1 : 1;
 
-		Helper.getPlayer().bodyYaw = getNormalizeYaw(target);
-		Helper.getPlayer().headYaw = getNormalizeYaw(target);
-
-		double[] move = move(target);
-		MoveUtil.setHVelocity(move[0], move[1]);
-	}
-
-	public double[] move(Entity target) {
 		double speed = damageBoost.isToggle() && Helper.getPlayer().hurtTime != 0
 				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
 				: this.speed.getCurrentValueDouble();
 
 		float yaw = getNormalizeYaw(target);
+
+		Helper.getPlayer().bodyYaw = yaw;
+		Helper.getPlayer().headYaw = yaw;
+
+		if (mode.getCurrentMode().equalsIgnoreCase("Basic")) {
+			if (Helper.getPlayer().distanceTo(target) >= radius.getCurrentValueDouble()) {
+				getBasic(yaw, speed, 1, direction);
+			} else {
+				getBasic(yaw, speed, 0, direction);
+			}
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll")) {
+			getScroll(target);
+		}
+	}
+
+	private void getScroll(Entity target) {
+		double speed = damageBoost.isToggle() && Helper.getPlayer().hurtTime != 0
+				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
+				: this.speed.getCurrentValueDouble();
 
 		double c1 = (Helper.getPlayer().getX() - target.getX())
 				/ (Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
@@ -96,39 +101,33 @@ public class TargetStrafe extends Module {
 				/ (Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
 						+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2)));
 
-		double cosX = Math.cos(Math.toRadians(yaw + 90.0F));
-		double sinZ = Math.sin(Math.toRadians(yaw + 90.0F));
+		double x = speed * s1 * direction - scrollSpeed.getCurrentValueDouble() * speed * c1;
+		double z = -speed * c1 * direction - scrollSpeed.getCurrentValueDouble() * speed * s1;
 
-		double sSpeed = 0;
+		MoveUtil.setHVelocity(x, z);
+	}
 
-		if (Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble())
-			sSpeed = speed;
-		else if (Helper.getPlayer().distanceTo(target) < radius.getCurrentValueDouble())
-			sSpeed = -speed;
-
-		double x = 0;
-		double z = 0;
-		if (mode.getCurrentMode().equalsIgnoreCase("Basic")) {
-			if (forward > 0) {
-				// forwarding to entity (not circle special)
-				x = sSpeed * cosX - sSpeed * speed * sinZ;
-				z = sSpeed * sinZ - sSpeed * speed * cosX;
-
-			} else if (forward == 0) {
-				x = speed * s1 * direction - sSpeed * speed * c1;
-				z = -speed * c1 * direction - sSpeed * speed * s1;
-			} else if (forward == -1) {
-				x = speed * s1 * direction - sSpeed * speed * c1;
-				z = -speed * c1 * direction - sSpeed * speed * s1;
+	private void getBasic(float yaw, double speed, double forward, double direction) {
+		if (forward != 0.0D) {
+			if (direction < 0.0D) {
+				yaw += ((forward > 0.0D) ? -50 : 50);
+			} else if (direction > 0.0D) {
+				yaw += ((forward > 0.0D) ? 50 : -50);
 			}
-
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll")) {
-			x = speed * s1 * direction - scrollSpeed.getCurrentValueDouble() * speed * c1;
-			z = -speed * c1 * direction - scrollSpeed.getCurrentValueDouble() * speed * s1;
+			direction = 0.0D;
+			if (forward > 0.0D) {
+				forward = 1.0D;
+			} else if (forward < 0.0D) {
+				forward = -1.0D;
+			}
 		}
 
-		return new double[] { x, z };
+		double x = forward * speed * Math.cos(Math.toRadians((yaw + 90.0F)))
+				- direction * speed * Math.sin(Math.toRadians((yaw + 90.0F)));
+		double z = forward * speed * Math.sin(Math.toRadians((yaw + 90.0F)))
+				+ direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 
+		MoveUtil.setHVelocity(x, z);
 	}
 
 	public static float getNormalizeYaw(Entity entity) {
@@ -137,6 +136,16 @@ public class TargetStrafe extends Module {
 		float gcd = f * f * f * 1.2F;
 
 		yaw -= yaw % gcd;
+
+		KillAura killAura = ((KillAura) InfMain.getModuleManager().getModuleByClass(KillAura.class));
+		if (killAura.isEnabled() && KillAura.target != null) {
+			if (killAura.rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
+				yaw = killAura.focus[0];
+			} else if (killAura.rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
+				yaw = killAura.smash[0];
+			}
+		}
+
 		return yaw;
 	}
 

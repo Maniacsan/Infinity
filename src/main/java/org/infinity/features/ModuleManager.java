@@ -18,7 +18,6 @@ public class ModuleManager {
 			// hidden
 			new DiscordRPCMod(),
 			new AntiFabric(),
-			new StringCleaner(),
 			
 			new KillAura(),
 			new HUD(),

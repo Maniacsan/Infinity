@@ -61,20 +61,25 @@ public class Config {
 
 					JsonObject jsonObject = (JsonObject) entry.getValue();
 					for (Module module : InfMain.getModuleManager().getList()) {
-						
+
 						if (module.getCategory().equals(Category.HIDDEN))
 							continue;
-						
+
 						if (module.getName().equalsIgnoreCase(entry.getKey())) {
 							if (Boolean.valueOf(jsonObject.get("Enabled").getAsBoolean())) {
 								module.setEnabled(true);
 							}
-							
+
 							module.setVisible(jsonObject.get("Visible").getAsBoolean());
 							module.setKey(jsonObject.get("Key").getAsInt());
 
 							for (Setting setting : module.getSettings()) {
 								if (setting.getModule().getName().equalsIgnoreCase(module.getName())) {
+
+									// fix crash with new settings
+									if (jsonObject.get(setting.getName()) == null
+											|| jsonObject.get(setting.getName()).isJsonNull())
+										continue;
 
 									if (setting.isMode()) {
 										setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
@@ -118,10 +123,10 @@ public class Config {
 				configFile.createNewFile();
 			JsonObject json = new JsonObject();
 			for (Module m : InfMain.getModuleManager().getList()) {
-				
+
 				if (m.getCategory().equals(Category.HIDDEN))
 					continue;
-				
+
 				JsonObject dataJson = new JsonObject();
 				JsonArray jsonArray = new JsonArray();
 				dataJson.addProperty("Enabled", Boolean.valueOf(def ? m.isDefaultEnabled() : m.isEnabled()));

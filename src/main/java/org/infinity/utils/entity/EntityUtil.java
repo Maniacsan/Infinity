@@ -52,8 +52,8 @@ public class EntityUtil {
 
 	public static List<Entity> getTargets(double fov, boolean players, boolean friends, boolean invisibles,
 			boolean mobs, boolean animals, boolean throughWalls) {
-		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
-				.filter(entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals, throughWalls))
+		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false).filter(
+				entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals, throughWalls))
 				.collect(Collectors.toList());
 	}
 
@@ -91,15 +91,15 @@ public class EntityUtil {
 
 		if (!RotationUtil.isInFOV(entity, fov))
 			return false;
-		
+
 		if (!invisibles && entity.isInvisible())
 			return false;
-		
-		if(!throughWalls && !Helper.getPlayer().canSee(entity))
+
+		if (!throughWalls && !Helper.getPlayer().canSee(entity))
 			return false;
-		
+
 		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
-		
+
 		if (!friends && isFriend)
 			return false;
 
@@ -129,12 +129,12 @@ public class EntityUtil {
 			boolean animals) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
-		
+
 		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
-		
+
 		if (!friends && isFriend)
 			return false;
-		
+
 		if (invisibles && entity.isInvisible())
 			return true;
 		if (players && entity instanceof PlayerEntity)
@@ -282,7 +282,7 @@ public class EntityUtil {
 		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
 		return MathHelper.sqrt(f * f + g * g + h * h);
 	}
-	
+
 	public static void setStepHeight(float height) {
 		Helper.getPlayer().stepHeight = height;
 	}

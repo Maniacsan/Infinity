@@ -10,7 +10,7 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 public class SelfDestructUI extends Screen {
 
@@ -43,12 +43,13 @@ public class SelfDestructUI extends Screen {
 		this.renderBackground(matrices);
 		class_5489 var10000 = this.lines;
 		this.textRenderer.getClass();
-		var10000.method_30893(matrices, this.width / 2, 70, 9 * 2, 16777215);
+		var10000.method_30893(matrices, this.width / 2 - 90, 70, 9 * 2, 16777215);
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	static {
-		MESSAGE = new TranslatableText("Do you really want to self-destruct? ");
+		MESSAGE = new LiteralText(
+				"Do you really want to" + Formatting.BLUE + " self-destruct" + Formatting.RESET + "? ");
 	}
 
 }

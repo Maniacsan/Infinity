@@ -66,7 +66,10 @@ public abstract class EntityMixin {
 
 	@Inject(method = "pushAwayFrom", at = @At("HEAD"), cancellable = true)
 	private void onPushAwayFrom(Entity entity, CallbackInfo ci) {
-		Velocity.pushAway((Entity) (Object) this, entity, ci);
+		Velocity velocity = ((Velocity) InfMain.getModuleManager().getModuleByClass(Velocity.class));
+
+		if (velocity.isEnabled() && velocity.mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0"))
+			velocity.pushAway((Entity) (Object) this, entity, ci);
 	}
 
 	@Inject(method = "getRotationVector", at = @At("HEAD"), cancellable = true)

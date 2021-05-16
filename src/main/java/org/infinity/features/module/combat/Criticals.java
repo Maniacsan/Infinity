@@ -25,11 +25,11 @@ import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 public class Criticals extends Module {
 
 	private Setting mode = new Setting(this, "Mode", "Packet",
-			new ArrayList<>(Arrays.asList(new String[] { "Jump", "Packet", "Spoof", "Sentiel", "Mini Jump" })));
+			new ArrayList<>(Arrays.asList(new String[] { "Packet", "Jump", "Spoof", "Sentiel", "Mini Jump" })));
 
 	private Setting falling = new Setting(this, "Falling", false)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Jump"));
-	private Setting fallDistance = new Setting(this, "Min Distance", 0.21, 0.01, 0.38)
+	private Setting fallDistance = new Setting(this, "Min Distance", 0.26, 0.01, 0.41)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Jump") && falling.isToggle());
 
 	private double y;
@@ -49,6 +49,12 @@ public class Criticals extends Module {
 		attackPacket = null;
 		sendTimer = 0;
 		attackCount = 0;
+	}
+
+	@Override
+	public void onDisable() {
+		Helper.getPlayer().flyingSpeed = 0.02f;
+		InfMain.resetTimer();
 	}
 
 	@Override
@@ -137,7 +143,6 @@ public class Criticals extends Module {
 							Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
 				}
 			}
-
 		}
 	}
 

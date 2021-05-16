@@ -25,6 +25,7 @@ import net.minecraft.block.entity.EnderChestBlockEntity;
 import net.minecraft.block.entity.MobSpawnerBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShapes;
 
 public class BlockUtil {
@@ -102,6 +103,17 @@ public class BlockUtil {
 				for (int z = Math.min(z1, z2); z <= Math.max(z1, z2); z++)
 					list.add(new BlockPos(x, y, z));
 		return list;
+	}
+
+	/**
+	 * Выполняет задачу чека высоты блоков вокруг игрока, напримере для step
+	 * чекать высоту блока на которую можно залезть
+	 * 
+	 * @return
+	 */
+	public static boolean isTouchWall(Box box) {
+		return !Helper.getWorld().isSpaceEmpty(box.expand(0.01, 0, 0))
+				|| !Helper.getWorld().isSpaceEmpty(box.expand(0, 0, 0.01));
 	}
 
 }

@@ -5,7 +5,7 @@ import java.awt.Color;
 import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.file.AuthData;
+import org.infinity.file.AuthInfo;
 import org.infinity.mixin.IAbstractButtonWidget;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
@@ -32,7 +32,7 @@ public class AuthUI extends Screen {
 
 	public AuthUI() {
 		super(new LiteralText(""));
-		String[] data = AuthData.INSTANCE.loadAccount();
+		String[] data = AuthInfo.INSTANCE.loadAccount();
 		usernameData = data[0];
 		passwordData = data[1];
 	}
@@ -51,7 +51,7 @@ public class AuthUI extends Screen {
 				22, new TranslatableText("Password"), true);
 		if (passwordData != null && !passwordData.isEmpty())
 			passwordField.setText(passwordData);
-		
+
 		this.passwordField.setMaxLength(128);
 		this.children.add(passwordField);
 
@@ -136,7 +136,7 @@ public class AuthUI extends Screen {
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
-	
+
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ENTER && loginButton.active) {
@@ -146,11 +146,13 @@ public class AuthUI extends Screen {
 	}
 
 	private void login() {
-		
+
 		if (Protect.LOGIN.login(usernameField.getText(), passwordField.getText()) != null) {
 			if (!Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
 				errorTime = 45;
-			}
+			} else
+				AuthInfo.INSTANCE.saveAccount(Protect.LOGIN.getAuth().getUsername(),
+						Protect.LOGIN.getAuth().getPassword());
 		}
 	}
 

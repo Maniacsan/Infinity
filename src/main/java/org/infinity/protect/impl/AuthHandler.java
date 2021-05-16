@@ -4,7 +4,7 @@ import org.infinity.InfMain;
 import org.infinity.event.protect.ButtonPressEvent;
 import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
-import org.infinity.file.AuthData;
+import org.infinity.file.AuthInfo;
 import org.infinity.protect.Handler;
 import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;
@@ -35,8 +35,6 @@ public class AuthHandler extends Handler {
 			if (ConnectUtil.checkUpdate()) {
 					Helper.openScreen(new TitleScreen(true));
 			}
-			
-			AuthData.INSTANCE.saveAccount(Protect.LOGIN.getAuth().getUsername(), Protect.LOGIN.getAuth().getPassword());
 		}
 	}
 

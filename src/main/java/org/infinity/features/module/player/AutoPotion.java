@@ -70,7 +70,7 @@ public class AutoPotion extends Module {
 
 				if (sett.isToggle() && slot != -2 && !EntityUtil.checkActivePotion(effect)) {
 					if (next == i) {
-						baff(event, slot);
+						baff(slot);
 						next += 1;
 					}
 				}
@@ -79,27 +79,22 @@ public class AutoPotion extends Module {
 		}
 	}
 
-	private void baff(MotionEvent event, int slot) {
+	private synchronized void baff(int slot) {
 		int preSlot = Helper.getPlayer().inventory.selectedSlot;
-		float oldPitch = event.getPitch();
-		event.setPitch(90);
 		Helper.sendPacket(
 				new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, 90, Helper.getPlayer().isOnGround()));
 
-		if (event.getPitch() == 90) {
 			Helper.getPlayer().inventory.selectedSlot = slot;
 			Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
 					Hand.MAIN_HAND);
 
 			// set timer
 			timer = (int) delay.getCurrentValueDouble();
-		}
 
 		// reset
 		Helper.getPlayer().inventory.selectedSlot = preSlot;
 		Helper.sendPacket(new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, Helper.getPlayer().pitch,
 				Helper.getPlayer().isOnGround()));
-		event.setPitch(oldPitch);
 	}
 
 }

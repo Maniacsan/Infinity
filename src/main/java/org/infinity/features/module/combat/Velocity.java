@@ -3,7 +3,6 @@ package org.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.infinity.InfMain;
 import org.infinity.event.PacketEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
@@ -26,7 +25,7 @@ import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 @ModuleInfo(name = "Velocity", key = -2, visible = true, desc = "Anti knockback", category = Category.COMBAT)
 public class Velocity extends Module {
 
-	private Setting mode = new Setting(this, "Mode", "Matrix 6.1.0",
+	public Setting mode = new Setting(this, "Mode", "Matrix 6.1.0",
 			new ArrayList<>(Arrays.asList("Packet", "Reverse", "Matrix 6.1.0")));
 
 	private Setting vertical = new Setting(this, "Vertical",
@@ -99,40 +98,35 @@ public class Velocity extends Module {
 	}
 
 	/* EntityMixin action */
-	public static void pushAway(Entity e, Entity e2, CallbackInfo ci) {
-		if (InfMain.getModuleManager().getModuleByClass(Velocity.class).isEnabled()
-				&& ((Velocity) InfMain.getModuleManager().getModuleByClass(Velocity.class)).mode.getCurrentMode()
-						.equalsIgnoreCase("Matrix 6.1.0")) {
+	public void pushAway(Entity e, Entity e2, CallbackInfo ci) {
+		if (e != Helper.getPlayer() && e2 != Helper.getPlayer())
+			return;
 
-			if (e != Helper.getPlayer() && e2 != Helper.getPlayer())
-				return;
+		double x = e2.getX() - e.getX();
+		double z = e2.getZ() - e.getZ();
+		double dist = Math.max(Math.abs(x), Math.abs(z));
 
-			double x = e2.getX() - e.getX();
-			double z = e2.getZ() - e.getZ();
-			double dist = Math.max(Math.abs(x), Math.abs(z));
+		if (dist < 0.01)
+			return;
 
-			if (dist < 0.01)
-				return;
+		dist = Math.sqrt(dist);
+		x /= dist;
+		z /= dist;
 
-			dist = Math.sqrt(dist);
-			x /= dist;
-			z /= dist;
-
-			double multiplier = 1.0D / dist;
-			if (multiplier > 1.0D) {
-				multiplier = 1.0D;
-			}
-
-			double collisionReduction = 1.0f - e.pushSpeedReduction;
-
-			x *= multiplier * 0.05 * collisionReduction;
-			z *= multiplier * 0.05 * collisionReduction;
-
-			addPushVelocity(e, Helper.getPlayer(), -x, -z);
-			addPushVelocity(e2, Helper.getPlayer(), x, z);
-
-			ci.cancel();
+		double multiplier = 1.0D / dist;
+		if (multiplier > 1.0D) {
+			multiplier = 1.0D;
 		}
+
+		double collisionReduction = 1.0f - e.pushSpeedReduction;
+
+		x *= multiplier * 0.05 * collisionReduction;
+		z *= multiplier * 0.05 * collisionReduction;
+
+		addPushVelocity(e, Helper.getPlayer(), -x, -z);
+		addPushVelocity(e2, Helper.getPlayer(), x, z);
+
+		ci.cancel();
 	}
 
 	private static void addPushVelocity(Entity e, ClientPlayerEntity player, double x, double z) {

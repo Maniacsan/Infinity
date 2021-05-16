@@ -74,7 +74,6 @@ public abstract class ChatHudMixin extends DrawableHelper {
 	@Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
 	public void mouseClicked(double mouseX, double mouseY, CallbackInfoReturnable<Boolean> ci) {
 		ci.setReturnValue(infChat.mouseClicked(mouseX, mouseY));
-		ci.cancel();
 	}
 
 }

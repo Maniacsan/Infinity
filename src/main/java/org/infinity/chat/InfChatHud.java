@@ -369,8 +369,6 @@ public class InfChatHud extends DrawableHelper {
 
 	public boolean mouseClicked(double mouseX, double mouseY) {
 		if (this.isChatFocused()) {
-			double d = mouseX - 2.0D;
-			double e = (double) this.client.getWindow().getScaledHeight() - mouseY - 40.0D;
 			int i = this.chats.size();
 			int width = (int) (Math.ceil(getWidth() / getChatScale()) + 1);
 			int tabCount = Math.min(3, i);
@@ -386,17 +384,6 @@ public class InfChatHud extends DrawableHelper {
 
 			}
 			topY -= 16;
-
-			if (!this.client.options.hudHidden && !this.isChatHidden() && !this.messageQueue.isEmpty()) {
-				if (d <= (double) MathHelper.floor((double) this.getWidth() / this.getChatScale()) && e < 0.0D
-						&& e > (double) MathHelper.floor(-9.0D * this.getChatScale())) {
-					this.addMessage((Text) this.messageQueue.remove());
-					this.lastMessageAddedTime = System.currentTimeMillis();
-					return true;
-				} else {
-					return false;
-				}
-			}
 		}
 		return false;
 	}

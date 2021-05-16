@@ -117,10 +117,10 @@ public class FakeLags extends Module {
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
 				if (event.getPacket() instanceof PlayerMoveC2SPacket) {
 
-					if (Helper.getPlayer().isDead() || pulseTicks != 0)
-						return;
-
+					if (!Helper.getPlayer().isDead() || pulseTicks == 0)
 					packetList.add(event.getPacket());
+					
+					if (pulseTicks > 0)
 					event.cancel();
 					pulseTicks++;
 				}
