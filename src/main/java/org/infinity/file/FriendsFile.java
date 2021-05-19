@@ -16,7 +16,7 @@ import com.google.gson.JsonSyntaxException;
 
 public class FriendsFile {
 
-	public static File dir = new File(InfMain.getInfDirection() + File.separator);
+	public static File dir = new File(InfMain.getDirection() + File.separator);
 	public static File friendFile = FileUtil.createJsonFile(dir, "friend");
 
 	public void loadFriends() {

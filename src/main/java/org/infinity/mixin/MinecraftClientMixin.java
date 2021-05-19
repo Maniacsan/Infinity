@@ -73,7 +73,7 @@ public abstract class MinecraftClientMixin {
 
 	@Inject(method = "stop", at = @At("HEAD"))
 	public void stop(CallbackInfo info) {
-		InfMain.onShutdown();
+		InfMain.INSTANCE.shutDown();
 	}
 
 	@Inject(method = "openScreen", at = @At("HEAD"), cancellable = true)

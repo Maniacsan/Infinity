@@ -61,6 +61,10 @@ public class PingSpoof extends Module {
 				}
 
 				if (event.getPacket() instanceof KeepAliveC2SPacket) {
+					
+					if (idSpoof.isToggle()) {
+						((IKeepAliveC2SPacket) event.getPacket()).setID(RandomUtils.nextInt(1000, 239812));
+					}
 
 					if (id == ((KeepAliveC2SPacket) event.getPacket()).getId())
 						return;
@@ -78,10 +82,6 @@ public class PingSpoof extends Module {
 							return;
 
 						id = ((KeepAliveC2SPacket) event.getPacket()).getId();
-
-						if (idSpoof.isToggle()) {
-							((IKeepAliveC2SPacket) event.getPacket()).setID(RandomUtils.nextInt(1000, 239812094));
-						}
 
 						Helper.sendPacket(event.getPacket());
 

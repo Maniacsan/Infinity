@@ -25,7 +25,7 @@ public class GuiMod extends Module {
 
 	@Override
 	public void onEnable() {
-		MinecraftClient.getInstance().openScreen(InfMain.menu);
+		MinecraftClient.getInstance().openScreen(InfMain.INSTANCE.init.menu);
 		setEnabled(false);
 	}
 

@@ -16,17 +16,17 @@ public class InitProcess extends Handler {
 	public void onSuccess(SuccessEvent event) {
 		InfMain.getHandler().getHandler(TickLogger.class).enable();
 
-		InfMain.configManager = new ConfigManager();
-		InfMain.macroManager = new MacroManager();
+		InfMain.INSTANCE.init.configManager = new ConfigManager();
+		InfMain.INSTANCE.init.macroManager = new MacroManager();
 
 		// loads
-		InfMain.configManager.loadConfig(false);
-		InfMain.macroManager.load();
+		InfMain.INSTANCE.init.configManager.loadConfig(false);
+		InfMain.INSTANCE.init.macroManager.load();
 
-		InfMain.menu = new ClickMenu();
+		InfMain.INSTANCE.init.menu = new ClickMenu();
 
 		try {
-			InfMain.irc = new IRCClient("irc.w3.org", 6667, InfMain.getUser().getName(),
+			InfMain.INSTANCE.init.irc = new IRCClient("irc.w3.org", 6667, InfMain.getUser().getName(),
 					InfMain.getUser().getRole().getName(), "#InfinityClientModChat");
 
 			InfMain.getIrc().startInit();

@@ -24,7 +24,6 @@ public class ReLoginProcess extends Handler {
 	public void onTick(TickEvent event) {
 		if (Helper.getWorld() != null) {
 			if (InfMain.reLogin) {
-				if (ConnectUtil.checkJarSize()) {
 					if (Protect.LOGIN.getAuth().getUsername() == null
 							|| Protect.LOGIN.getAuth().getPassword() == null) {
 						me.protect.utils.PHelper.makeCrash();
@@ -41,7 +40,7 @@ public class ReLoginProcess extends Handler {
 					} else {
 						me.protect.utils.PHelper.makeCrash();
 					}
-				}
+		
 			}
 		}
 	}

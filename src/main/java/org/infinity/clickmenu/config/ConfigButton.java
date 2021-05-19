@@ -161,8 +161,8 @@ public class ConfigButton {
 				if (listButton.select) {
 					listButton.config.load();
 
-					InfMain.menu = new ClickMenu();
-					Helper.openScreen(InfMain.menu);
+					InfMain.INSTANCE.init.menu = new ClickMenu();
+					Helper.openScreen(InfMain.INSTANCE.init.menu);
 					Helper.infoMessage(listButton.config.getName() + " config " + Formatting.AQUA + "loaded");
 				}
 			}

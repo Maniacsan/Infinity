@@ -18,7 +18,7 @@ public class AES {
     
     public static String getKey() {
     	// TODO Get user license key
-		return InfMain.getInfDirection().getAbsolutePath();
+		return InfMain.getDirection().getAbsolutePath();
     }
  
     public static void setKey(String myKey) 

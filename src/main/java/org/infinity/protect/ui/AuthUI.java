@@ -159,7 +159,7 @@ public class AuthUI extends Screen {
 	@Override
 	public void onClose() {
 		if (!Protect.CHECK.getResult().get().equalsIgnoreCase("true")) {
-			Helper.openScreen(InfMain.authUI);
+			Helper.openScreen(InfMain.INSTANCE.init.authUI);
 		}
 	}
 }

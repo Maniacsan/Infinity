@@ -33,7 +33,7 @@ public class SelfDestruction extends Module {
 			modules.setEnabled(false);
 		});
 
-		File path = InfMain.getInfDirection();
+		File path = InfMain.getDirection();
 
 		try {
 			String jarPath = JarDirectory.getCurrentJARDirectory();

@@ -8,7 +8,7 @@ import org.infinity.InfMain;
 
 public class ConfigManager {
 
-	public static File dir = new File(InfMain.getInfDirection() + File.separator + "configs");
+	public static File dir = new File(InfMain.getDirection() + File.separator + "configs");
 
 	public ArrayList<Config> configList;
 

@@ -19,7 +19,7 @@ public class AuthInfo {
 	
 	public static AuthInfo INSTANCE = new AuthInfo();
 
-	public static File dir = new File(InfMain.getInfDirection() + File.separator);
+	public static File dir = new File(InfMain.getDirection() + File.separator);
 	public static File authdata = FileUtil.createJsonFile(dir, "auth");
 
 	public String[] loadAccount() {

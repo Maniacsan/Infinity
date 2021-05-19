@@ -6,7 +6,6 @@ import org.infinity.InfMain;
 import org.infinity.clickmenu.Panel;
 import org.infinity.clickmenu.config.ConfigButton;
 import org.infinity.clickmenu.util.ColorUtils;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.module.visual.GuiMod;
@@ -65,8 +64,8 @@ public class CategoryButton {
 				: hovered
 						? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB()
 						: 0x50000000);
-		FontUtils.drawHVCenteredString(matrices, getName(), x + 30, y + 11,
-				displayModulePanel ? ColorUtils.openColor : -1);
+		InfMain.getFont().drawStringWithShadow(matrices, getName(), (double) (x + 10), (double) (y + 5),
+				displayModulePanel ? ColorUtils.openColor : -1, 11);
 		if (displayModulePanel) {
 			double xOffset = 2;
 			double yOffset = 2;

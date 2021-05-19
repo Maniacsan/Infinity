@@ -4,7 +4,6 @@ import org.infinity.InfMain;
 import org.infinity.event.protect.ButtonPressEvent;
 import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
-import org.infinity.file.AuthInfo;
 import org.infinity.protect.Handler;
 import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;
@@ -21,7 +20,7 @@ public class AuthHandler extends Handler {
 	@EventTarget
 	public void onPostStart(StartProcessEvent event) {
 		if (event.getType().equals(EventType.POST)) {
-			Helper.openScreen(InfMain.authUI);
+			Helper.openScreen(InfMain.INSTANCE.init.authUI);
 		}
 	}
 
@@ -33,7 +32,7 @@ public class AuthHandler extends Handler {
 			EventManager.call(successEvent);
 
 			if (ConnectUtil.checkUpdate()) {
-				if (ConnectUtil.checkJarSize())
+				
 					Helper.openScreen(new TitleScreen(true));
 			}
 		}
