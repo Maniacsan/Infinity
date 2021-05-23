@@ -1,7 +1,7 @@
 package org.infinity.mixin;
 
-import org.infinity.InfMain;
 import org.infinity.features.module.player.FastBreak;
+import org.infinity.main.InfMain;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

@@ -1,4 +1,4 @@
-package org.infinity;
+package org.infinity.main;
 
 import java.io.File;
 import java.util.function.Supplier;
@@ -13,7 +13,6 @@ import org.infinity.features.component.macro.MacroManager;
 import org.infinity.file.config.ConfigManager;
 import org.infinity.protect.IHandler;
 import org.infinity.ui.account.main.AccountManager;
-import org.infinity.ui.util.font.ILegacyFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.user.User;
 
@@ -22,9 +21,9 @@ public class InfMain {
 	public static InfMain INSTANCE = new InfMain();
 	private static String NAME = "Infinity";
 	private static String VERSION = "1.01";
-	
+
 	private static File direction;
-	public InitMain init;
+	public Initialize init;
 
 	public static Supplier<Boolean> selfDestruct;
 	public static boolean firstStart;
@@ -35,7 +34,7 @@ public class InfMain {
 
 	public void initialize() {
 		direction = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
-		init = new InitMain();
+		init = new Initialize();
 
 		if (!direction.exists()) {
 			firstStart = true;
@@ -90,10 +89,6 @@ public class InfMain {
 
 	public static InfChatHud getChatHud() {
 		return InfMain.INSTANCE.init.chatHud;
-	}
-	
-	public static ILegacyFont getFont() {
-		return InfMain.INSTANCE.init.font;
 	}
 
 	public static IRCClient getIrc() {

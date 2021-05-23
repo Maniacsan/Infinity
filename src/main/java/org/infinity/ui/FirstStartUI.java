@@ -1,8 +1,8 @@
 package org.infinity.ui;
 
-import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.command.Command;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;

@@ -4,11 +4,11 @@ import java.io.File;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomUtils;
-import org.infinity.InfMain;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.ui.features.SelfDestructUI;
 import org.infinity.utils.Helper;
 import org.infinity.utils.system.FileUtil;

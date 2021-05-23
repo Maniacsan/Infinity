@@ -2,7 +2,7 @@ package org.infinity.clickmenu.util;
 
 import java.awt.Color;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 
 import net.minecraft.util.Formatting;
 

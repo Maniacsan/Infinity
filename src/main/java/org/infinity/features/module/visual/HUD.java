@@ -4,12 +4,12 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;

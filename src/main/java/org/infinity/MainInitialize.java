@@ -1,5 +1,7 @@
 package org.infinity;
 
+import org.infinity.main.InfMain;
+
 import net.fabricmc.api.ModInitializer;
 
 public class MainInitialize implements ModInitializer {

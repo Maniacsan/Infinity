@@ -1,10 +1,10 @@
 package org.infinity.features.module.hidden;
 
-import org.infinity.InfMain;
 import org.infinity.event.TickEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
+import org.infinity.main.InfMain;
 import org.infinity.protect.impl.TickLogger;
 import org.infinity.utils.Helper;
 

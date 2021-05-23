@@ -1,15 +1,16 @@
-package org.infinity.clickmenu.features.elements;
+package org.infinity.clickmenu.components.elements;
 
 import java.awt.Color;
 
-import org.infinity.clickmenu.features.SettingElement;
+import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
 
-public class ColorElement extends SettingElement {
+public class ColorPickerElement extends AbstractElement {
 
 	private boolean extended;
 	private float hue, saturation, brightness;
@@ -21,8 +22,8 @@ public class ColorElement extends SettingElement {
 	private boolean noExtHover;
 	private double posX, posY, huePos;
 
-	public ColorElement(Setting setting) {
-		super(setting);
+	public ColorPickerElement(Setting setting, Panel panel) {
+		super(setting, panel);
 		float[] hsb = new float[3];
 		Color clr = setting.getColor();
 		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
@@ -57,20 +58,18 @@ public class ColorElement extends SettingElement {
 	}
 	
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x1, double y1, double width,
-			double height) {
-		this.height = height;
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		double hueHeight = 60;
 		double sbWidth = 70;
-		double x = x1 + 111;
-		double y = y1 + 4;
+		double x = this.x + 111;
+		double y = this.y + 4;
 		noExtHover = Render2D.isHovered(mouseX, mouseY, x, y, sbWidth + 12, hueHeight + 2);
-		extendedHovered = Render2D.isHovered(mouseX, mouseY, x1, y1, width, height);
+		extendedHovered = Render2D.isHovered(mouseX, mouseY, this.x, this.y, width, height);
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, sbWidth - 1, hueHeight);
 		hueHovered = Render2D.isHovered(mouseX, mouseY, x + 73, y, 7, hueHeight);
-		FontUtils.drawStringWithShadow(matrices, setting.getName(), x1, y1 + 2, -1);
-		Render2D.drawRectWH(matrices, x1 + 95.5, y1 + 1, extended ? 17 : 12, 11, 0xFFB8BEBC);
-		Render2D.drawRectWH(matrices, x1 + 96, y1 + 1.5, extended ? 15 : 11, 10, setting.getColor().getRGB());
+		FontUtils.drawStringWithShadow(matrices, setting.getName(), this.x, this.y + 2, -1);
+		Render2D.drawRectWH(matrices, this.x + 95.5, this.y + 1, extended ? 17 : 12, 11, 0xFFB8BEBC);
+		Render2D.drawRectWH(matrices, this.x + 96, this.y + 1.5, extended ? 15 : 11, 10, setting.getColor().getRGB());
 		if (!extended) {
 			pressedhue = false;
 			pressedSB = false;
@@ -164,6 +163,12 @@ public class ColorElement extends SettingElement {
 	public void onClose() {
 		pressedhue = false;
 		pressedSB = false;
+		
+	}
+
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
 		
 	}
 }

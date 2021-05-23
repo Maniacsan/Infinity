@@ -2,10 +2,10 @@ package org.infinity.protect.ui;
 
 import java.awt.Color;
 
-import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.AuthInfo;
+import org.infinity.main.InfMain;
 import org.infinity.mixin.IAbstractButtonWidget;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
@@ -110,7 +110,7 @@ public class AuthUI extends Screen {
 		FontUtils.drawString(matrices, "x", this.width / 2 + 107, this.height / 2 - 144,
 				exitHover ? 0xFFFFFFFF : 0xFF000000);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "logo_60x60.png"), width / 2 - 50 / 2,
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/logo.png"), width / 2 - 50 / 2,
 				this.height / 2 - 123, 52, 52);
 
 		this.usernameField.render(matrices, mouseX, mouseY, delta);

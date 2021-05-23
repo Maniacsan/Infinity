@@ -3,12 +3,12 @@ package org.infinity.features.module.movement;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;

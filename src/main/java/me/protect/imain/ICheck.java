@@ -6,6 +6,6 @@ public interface ICheck {
 
 	Supplier<String> getResult();
 
-	void setResult(Supplier<String> result, String username, String role);
+	void setResult(Supplier<String> result, String username, String role, String photo);
 
 }

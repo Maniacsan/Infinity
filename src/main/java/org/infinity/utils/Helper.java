@@ -1,6 +1,6 @@
 package org.infinity.utils;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;

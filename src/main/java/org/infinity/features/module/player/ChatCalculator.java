@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.infinity.InfMain;
 import org.infinity.event.PacketEvent;
 import org.infinity.event.ServerChatEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
 import org.infinity.utils.calc.TermSolver;

@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.infinity.InfMain;
 import org.infinity.event.protect.StartProcessEvent;
+import org.infinity.main.InfMain;
 import org.infinity.protect.impl.InitProcess;
 import org.infinity.protect.impl.OpenScreenLocker;
 import org.infinity.protect.impl.ProtectHandler;

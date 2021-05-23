@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 
 public class ConfigManager {
 

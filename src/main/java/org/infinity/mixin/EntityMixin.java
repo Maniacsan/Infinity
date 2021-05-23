@@ -1,11 +1,11 @@
 package org.infinity.mixin;
 
-import org.infinity.InfMain;
 import org.infinity.event.MoveEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.features.module.combat.HitBoxes;
 import org.infinity.features.module.combat.Velocity;
 import org.infinity.features.module.movement.AntiWaterPush;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;

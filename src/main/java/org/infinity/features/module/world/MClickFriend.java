@@ -1,10 +1,10 @@
 package org.infinity.features.module.world;
 
-import org.infinity.InfMain;
 import org.infinity.event.ClickButtonEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventTarget;

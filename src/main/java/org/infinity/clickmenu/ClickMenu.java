@@ -1,7 +1,8 @@
 package org.infinity.clickmenu;
 
-import org.infinity.InfMain;
+import org.infinity.clickmenu.components.Panel;
 import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -19,16 +20,20 @@ public class ClickMenu extends Screen {
 
 	public ClickMenu() {
 		super(new LiteralText("ClickMenu"));
-		panel = new Panel(this, 20, 20, 400, 250);
+		panel = new Panel(this, 20, 20, 400, 290);
 	}
 
 	@Override
 	public void init() {
+		panel.init();
+		
+		children.add(panel.searchField);
 		super.init();
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		this.renderBackground(matrices);
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 
 		mouseX /= scale;
@@ -40,6 +45,12 @@ public class ClickMenu extends Screen {
 		GL11.glPopMatrix();
 
 		super.render(matrices, mouseX, mouseY, delta);
+	}
+	
+	@Override
+	public void tick() {
+		panel.tick();
+		super.tick();
 	}
 
 	@Override

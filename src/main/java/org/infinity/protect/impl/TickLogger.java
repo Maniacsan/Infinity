@@ -1,7 +1,7 @@
 package org.infinity.protect.impl;
 
-import org.infinity.InfMain;
 import org.infinity.event.OpenScreenEvent;
+import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
 import org.infinity.protect.ui.AuthUI;
 

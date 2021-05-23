@@ -1,6 +1,6 @@
 package org.infinity.features;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;

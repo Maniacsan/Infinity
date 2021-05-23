@@ -1,10 +1,13 @@
 package org.infinity.utils.system;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -91,4 +94,24 @@ public class FileUtil {
 			return false;
 		}
 	}
+
+	public static byte[] readBytes(File file) {
+		try {
+			InputStream in = new FileInputStream(file);
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+			byte[] buffer = new byte[256];
+			int read;
+			while ((read = in.read(buffer)) > 0)
+				out.write(buffer, 0, read);
+
+			in.close();
+			return out.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return new byte[0];
+	}
+
 }

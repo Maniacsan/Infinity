@@ -1,30 +1,30 @@
-package org.infinity.clickmenu.features.elements;
+package org.infinity.clickmenu.components.elements;
 
 import java.awt.Color;
 
-import org.infinity.InfMain;
-import org.infinity.clickmenu.features.SettingElement;
+import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 
 import net.minecraft.client.util.math.MatrixStack;
 
-public class BooleanElement extends SettingElement {
+public class CheckBoxElement extends AbstractElement {
 
 	private boolean hovered;
+	private int move;
 
-	public BooleanElement(Setting setting) {
-		super(setting);
+	public CheckBoxElement(Setting setting, Panel panel) {
+		super(setting, panel);
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
-			double height) {
-		this.height = height;
-		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 5);
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 4);
 
 		Render2D.drawRectWH(matrices, x + 2, y + 0, 10, 10,
 				setting.isToggle()
@@ -64,6 +64,12 @@ public class BooleanElement extends SettingElement {
 
 	@Override
 	public void onClose() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void tick() {
 		// TODO Auto-generated method stub
 		
 	}

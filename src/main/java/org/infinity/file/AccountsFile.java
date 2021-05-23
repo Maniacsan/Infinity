@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 import org.infinity.ui.account.main.AddThread;
 import org.infinity.utils.system.FileUtil;
 import org.infinity.utils.system.crypt.AES;

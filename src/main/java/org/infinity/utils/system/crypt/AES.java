@@ -9,7 +9,7 @@ import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 
 public class AES {
 	

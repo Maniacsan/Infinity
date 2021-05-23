@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.infinity.InfMain;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;

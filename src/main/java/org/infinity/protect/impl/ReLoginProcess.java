@@ -3,8 +3,8 @@ package org.infinity.protect.impl;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.infinity.InfMain;
 import org.infinity.event.TickEvent;
+import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
 import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;

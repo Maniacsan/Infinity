@@ -1,11 +1,11 @@
 package org.infinity.features.module.player;
 
-import org.infinity.InfMain;
 import org.infinity.event.ClickButtonEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.module.world.MClickFriend;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 

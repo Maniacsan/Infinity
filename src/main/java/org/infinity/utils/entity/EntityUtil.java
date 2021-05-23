@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.rotation.RotationUtil;
 

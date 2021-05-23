@@ -3,8 +3,8 @@ package org.infinity.chat.IRC;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.infinity.InfMain;
 import org.infinity.clickmenu.util.ColorUtils;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.util.Formatting;

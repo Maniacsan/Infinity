@@ -1,44 +1,41 @@
-package org.infinity.clickmenu.features.elements;
+package org.infinity.clickmenu.components.elements;
 
 import java.awt.Color;
 
-import org.infinity.InfMain;
-import org.infinity.clickmenu.features.SettingElement;
+import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;
 
-public class BlocksElement extends SettingElement {
+public class BlocksSelectElement extends AbstractElement {
 
-	public double x, y;
-
-	public BlocksElement(Setting setting) {
-		super(setting);
+	public BlocksSelectElement(Setting setting, Panel panel) {
+		super(setting, panel);
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
-			double height) {
-		this.height = height;
-		this.x = x;
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		int xOffset = 3;
 		int yOffset = 0;
 		for (Block blocks : setting.getRenderBlocks()) {
 			boolean hover = Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19);
 			boolean isAdded = setting.getBlocks().contains(blocks);
-			this.y = y;
 			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y - 2, 21, 19, isAdded
-					? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB() : hover ? Color.GRAY.getRGB(): 0x70000000);
+					? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB()
+					: hover ? Color.GRAY.getRGB() : 0x70000000);
 			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
 					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y));
 			xOffset += 23;
 			if (xOffset > 140) {
 				xOffset = 3;
 				yOffset += 21;
+				height += 21;
 			}
 		}
 	}
@@ -48,17 +45,13 @@ public class BlocksElement extends SettingElement {
 		int xOffset = 3;
 		int yOffset = 0;
 		for (Block blocks : setting.getRenderBlocks()) {
-			if (Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19)) {
-				if (button == 0) {
-					if (setting.getBlocks().contains(blocks)) {
-						setting.getBlocks().remove(blocks);
-						//System.out.println("Removed " + blocks.getName());
-					} else {
-						setting.getBlocks().add(blocks);
-						//System.out.println("added " + blocks.getName());
-					}
-				}
+			if (Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19) && button == 0) {
+				if (setting.getBlocks().contains(blocks))
+					setting.getBlocks().remove(blocks);
+					else
+					setting.getBlocks().add(blocks);
 			}
+			
 			xOffset += 23;
 			if (xOffset > 140) {
 				xOffset = 3;
@@ -66,7 +59,7 @@ public class BlocksElement extends SettingElement {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean isVisible() {
 		return this.setting.isVisible();
@@ -75,17 +68,23 @@ public class BlocksElement extends SettingElement {
 	@Override
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseScrolled(double d, double e, double amount) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onClose() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void tick() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -2,12 +2,12 @@ package org.infinity.mixin;
 
 import java.io.IOException;
 
-import org.infinity.InfMain;
 import org.infinity.chat.IRC.IRCClient;
 import org.infinity.event.PacketEvent;
 import org.infinity.features.command.Command;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.features.module.player.PacketKick;
+import org.infinity.main.InfMain;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

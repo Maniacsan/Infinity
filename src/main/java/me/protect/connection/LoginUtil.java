@@ -35,10 +35,8 @@ public class LoginUtil implements ILogin {
 
 			String result = String.valueOf(responseJSON.getBoolean("FormSaved"));
 			String[] split = responseJSON.getString("RedirectUrl").replace(url, "").split(":");
-			String userName = split[0];
-			String role = split[1];
 
-			Protect.CHECK.setResult(() -> result, userName, role);
+			Protect.CHECK.setResult(() -> result, split[0], split[1], split[2]);
 
 			if (responseJSON.getBoolean("FormSaved")) {
 				return auth = new Auth(AuthType.valueOf("SUCCESS"), username, password);

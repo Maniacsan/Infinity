@@ -77,22 +77,30 @@ public class LegacyFontRenderer implements ILegacyFont {
 		getGlyphPage().drawString(matrices, text, x, y, color, shadow);
 	}
 
+	@Override
+	public int drawCenteredString(MatrixStack matrices, String text, double x, double y, int color, double size) {
+		return drawString(matrices, text, x - getStringWidth(text) / 2, y, color, size, false);
+	}
 
 	@Override
-	public int drawStringWithShadow(MatrixStack matrices, String text, double x, double y, int color,
+	public int drawCenteredStringWithShadow(MatrixStack matrices, String text, double x, double y, int color,
 			double size) {
+		return drawString(matrices, text, x - getStringWidth(text) / 2, y, color, size, true);
+	}
+
+	@Override
+	public int drawStringWithShadow(MatrixStack matrices, String text, double x, double y, int color, double size) {
 		return drawString(matrices, text, x, y, color, size, true);
 	}
 
 	@Override
-	public int drawString(MatrixStack matrices, String text, double x, double y, int color,
-			double size) {
+	public int drawString(MatrixStack matrices, String text, double x, double y, int color, double size) {
 		return drawString(matrices, text, x, y, color, size, false);
 	}
 
 	@Override
-	public int drawString(MatrixStack matrices, String text, double x, double y, int color,
-			double size, boolean shadow) {
+	public int drawString(MatrixStack matrices, String text, double x, double y, int color, double size,
+			boolean shadow) {
 		double scale = size / getFontHeight();
 		matrices.scale((float) scale, (float) scale, 1);
 		drawString(matrices, text, x / scale, y / scale, color, shadow);
@@ -348,7 +356,7 @@ public class LegacyFontRenderer implements ILegacyFont {
 			float red = (color >> 16 & 0xFF) / 255.0F;
 			float green = (color >> 8 & 0xFF) / 255.0F;
 			float blue = (color & 0xFF) / 255.0F;
-			
+
 			if (shadow) {
 				RenderSystem.color4f(0, 0, 0, 0.8f);
 

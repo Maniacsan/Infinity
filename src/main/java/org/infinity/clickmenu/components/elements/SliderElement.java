@@ -1,39 +1,36 @@
-package org.infinity.clickmenu.features.elements;
+package org.infinity.clickmenu.components.elements;
 
-import org.infinity.InfMain;
-import org.infinity.clickmenu.features.SettingElement;
+import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 
 import net.minecraft.client.util.math.MatrixStack;
 
-public class SliderElement extends SettingElement {
+public class SliderElement extends AbstractElement {
 
-	public double selected;
-	public boolean dragging;
-	public boolean hovered;
+	protected boolean dragging;
+	protected boolean hovered;
 
-	// update slider
-	protected double width;
-
-	public SliderElement(Setting setting) {
-		super(setting);
+	public SliderElement(Setting setting, Panel panel) {
+		super(setting, panel);
 	}
 
 	public String getRenderValue() {
 		return null;
+	}
+	
+	public void tick() {
 	}
 
 	public void setValue(int mouseX, double x, double width) {
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
-			double height) {
-		this.height = height;
-		this.width = width;
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x + 2, y, width, height);
 
 		String sname = setting.getName();
@@ -44,9 +41,9 @@ public class SliderElement extends SettingElement {
 		FontUtils.drawHVCenteredString(matrices, this.getRenderValue(), (float) (x + width + 17), (float) (y + 14.0),
 				-1);
 		Render2D.drawRectWH(matrices, x + 2, y + 12, width, 2, -2130706433);
-		Render2D.drawRectWH(matrices, x + 2, y + 12, width * this.selected, 2,
+		Render2D.drawRectWH(matrices, x + 2, y + 12, width * this.animation, 2,
 				((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB());
-		Render2D.drawFullCircle(x + 1 + width * selected, y + 13, 3, 0xFFCCD6C8);
+		Render2D.drawFullCircle(x + 1 + width * animation, y + 13, 3, 0xFFCCD6C8);
 
 		if (!this.dragging)
 			return;
@@ -76,6 +73,6 @@ public class SliderElement extends SettingElement {
 
 	@Override
 	public void onClose() {
-		this.dragging = false;	
+		this.dragging = false;
 	}
 }

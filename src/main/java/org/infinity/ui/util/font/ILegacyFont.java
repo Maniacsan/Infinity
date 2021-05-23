@@ -11,6 +11,10 @@ public interface ILegacyFont {
 	int drawString(MatrixStack matrices, String text, double x, double y, int color, double size);
 
 	int drawStringWithShadow(MatrixStack matrices, String text, double x, double y, int color, double size);
+	
+	int drawCenteredString(MatrixStack matrices, String text, double x, double y, int color, double size);
+	
+	int drawCenteredStringWithShadow(MatrixStack matrices, String text, double x, double y, int color, double size);
 
 	int drawSplitString(MatrixStack matrices, String text, double x, double y, int color, double width);
 

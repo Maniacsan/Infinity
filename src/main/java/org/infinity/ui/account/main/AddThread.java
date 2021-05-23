@@ -2,7 +2,7 @@ package org.infinity.ui.account.main;
 
 import java.net.Proxy;
 
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;

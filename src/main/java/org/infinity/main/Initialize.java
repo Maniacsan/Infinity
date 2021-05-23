@@ -1,5 +1,6 @@
-package org.infinity;
+package org.infinity.main;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.infinity.chat.InfChatHud;
@@ -17,23 +18,21 @@ import org.infinity.protect.HandlerManager;
 import org.infinity.protect.IHandler;
 import org.infinity.protect.ui.AuthUI;
 import org.infinity.ui.account.main.AccountManager;
-import org.infinity.ui.util.font.ILegacyFont;
-import org.infinity.ui.util.font.LegacyFontRenderer;
 import org.infinity.utils.user.User;
 
 import net.minecraft.client.MinecraftClient;
 
-public class InitMain {
+public class Initialize {
 
 	public IHandler handler;
 
+	public static File dir = new File(InfMain.getDirection() + File.separator);
 	public CommandManager commandManager;
 	public ConfigManager configManager;
 	public ModuleManager moduleManager;
 	public HookManager hookManager;
 	public AccountManager accountManager;
 	public MacroManager macroManager;
-	public ILegacyFont font;
 	public Friend friend;
 	public User user;
 
@@ -45,7 +44,7 @@ public class InitMain {
 	public ClickMenu menu;
 	public AuthUI authUI;
 
-	public InitMain() {
+	public Initialize() {
 		chatHud = new InfChatHud(MinecraftClient.getInstance());
 
 		//
@@ -57,8 +56,7 @@ public class InitMain {
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
 		friend = new Friend();
-		font = new LegacyFontRenderer("/assets/infinity/font/legacy.otf", 64);
-
+		
 		// loads
 		friend.load();
 		accountManager.load();

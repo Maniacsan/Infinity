@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.infinity.InfMain;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.utils.system.FileUtil;
 
 import com.google.gson.GsonBuilder;

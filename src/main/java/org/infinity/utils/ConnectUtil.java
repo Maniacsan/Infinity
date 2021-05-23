@@ -21,7 +21,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.infinity.InfMain;
+import org.infinity.main.InfMain;
 import org.infinity.ui.UpdateUI;
 import org.infinity.utils.system.JarDirectory;
 
@@ -73,6 +73,23 @@ public class ConnectUtil {
 	public static String readURLToString(String url) throws IOException {
 		try (InputStream inputStream = new URL(url).openStream()) {
 			return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+		}
+	}
+
+	public static void downloadPhoto() {
+		try {
+			httpsSertificate();
+			String photoUrl = InfMain.getUser().getPhoto().split("/")[2];
+			String pathUrl = InfMain.getUser().getPhoto().split("/")[0] + "/"
+					+ InfMain.getUser().getPhoto().split("/")[1] + "/";
+			File path = new File(InfMain.getDirection() + File.separator + "profile" + File.separator);
+			if (!path.exists())
+				path.mkdirs();
+			
+			Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/" + pathUrl + "n" + photoUrl,
+					path + "photo.png");
+
+		} catch (Exception e) {
 		}
 	}
 

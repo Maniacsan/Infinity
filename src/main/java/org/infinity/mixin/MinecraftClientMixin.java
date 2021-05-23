@@ -1,10 +1,10 @@
 package org.infinity.mixin;
 
-import org.infinity.InfMain;
 import org.infinity.event.ClickEvent;
 import org.infinity.event.OpenScreenEvent;
 import org.infinity.event.TickEvent;
 import org.infinity.event.protect.StartProcessEvent;
+import org.infinity.main.InfMain;
 import org.infinity.ui.FirstStartUI;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

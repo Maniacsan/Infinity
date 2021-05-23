@@ -1,9 +1,9 @@
 package org.infinity.protect.impl;
 
-import org.infinity.InfMain;
 import org.infinity.event.protect.ButtonPressEvent;
 import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
+import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
 import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;

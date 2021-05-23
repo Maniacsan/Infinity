@@ -1,6 +1,5 @@
 package org.infinity.mixin;
 
-import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.PlayerInWaterEvent;
 import org.infinity.event.PlayerMoveEvent;
@@ -8,6 +7,7 @@ import org.infinity.event.PushOutBlockEvent;
 import org.infinity.event.SlowDownEvent;
 import org.infinity.features.module.movement.SafeWalk;
 import org.infinity.features.module.player.Scaffold;
+import org.infinity.main.InfMain;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

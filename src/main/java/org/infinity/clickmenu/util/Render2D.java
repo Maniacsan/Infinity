@@ -2,8 +2,8 @@ package org.infinity.clickmenu.util;
 
 import java.awt.Color;
 
-import org.infinity.InfMain;
 import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
@@ -93,6 +93,48 @@ public class Render2D {
 		bufferBuilder.vertex(matrix, (float) xStart, (float) yStart, (float) z).color(0, 0, 0, 100).next();
 		bufferBuilder.vertex(matrix, (float) xStart, (float) yEnd, (float) z).color(g, h, i, f).next();
 		bufferBuilder.vertex(matrix, (float) xEnd, (float) yEnd, (float) z).color(k, l, m, j).next();
+	}
+
+	public static void fillGradient(double x, double y, double x2, double y2, int col1, int col2) {
+		float f = (float) (col1 >> 24 & 255) / 255.0F;
+		float f1 = (float) (col1 >> 16 & 255) / 255.0F;
+		float f2 = (float) (col1 >> 8 & 255) / 255.0F;
+		float f3 = (float) (col1 & 255) / 255.0F;
+		float f4 = (float) (col2 >> 24 & 255) / 255.0F;
+		float f5 = (float) (col2 >> 16 & 255) / 255.0F;
+		float f6 = (float) (col2 >> 8 & 255) / 255.0F;
+		float f7 = (float) (col2 & 255) / 255.0F;
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(1048575);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glPushMatrix();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glVertex2d(x2, y);
+		GL11.glVertex2d(x, y);
+		GL11.glColor4f(f5, f6, f7, f4);
+		GL11.glVertex2d(x, y2);
+		GL11.glVertex2d(x2, y2);
+		GL11.glEnd();
+		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glShadeModel(GL11.GL_FLAT);
+		GL11.glColor4d(1.0D, 1.0D, 1.0D, 1.0D);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
 	}
 
 	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
@@ -190,14 +232,6 @@ public class Render2D {
 		RenderSystem.disableBlend();
 	}
 
-	/**
-	 * Treugolnik povernutiy na pravo
-	 * 
-	 * @param x
-	 * @param y
-	 * @param size
-	 * @param color
-	 */
 	public static void drawRightTriangle(int x, int y, int size, int color) {
 		float f = (color >> 24 & 0xFF) / 255.0F;
 		float f1 = (color >> 16 & 0xFF) / 255.0F;
@@ -285,7 +319,6 @@ public class Render2D {
 		GL11.glTranslated(-x, -y, 0);
 	}
 
-	// scroll
 	public static void startScissor(double x, double y, double width, double height) {
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();

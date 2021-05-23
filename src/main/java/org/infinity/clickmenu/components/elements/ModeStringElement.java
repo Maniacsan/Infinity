@@ -1,26 +1,25 @@
-package org.infinity.clickmenu.features.elements;
+package org.infinity.clickmenu.components.elements;
 
 import java.awt.Color;
 
-import org.infinity.clickmenu.features.SettingElement;
+import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
 
-public class ModeStringElement extends SettingElement {
+public class ModeStringElement extends AbstractElement {
 
 	private boolean addHovered;
 
-	public ModeStringElement(Setting setting) {
-		super(setting);
+	public ModeStringElement(Setting setting, Panel panel) {
+		super(setting, panel);
 	}
 
 	@Override
-	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, double x, double y, double width,
-			double height) {
-		this.height = height;
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		Render2D.drawRectWH(matrices, x + 1, y, width, height, 0xFF787878);
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width, height - 2, 0xFF343434);
@@ -53,17 +52,23 @@ public class ModeStringElement extends SettingElement {
 	@Override
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseScrolled(double d, double e, double amount) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onClose() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void tick() {
 		// TODO Auto-generated method stub
 		
 	}

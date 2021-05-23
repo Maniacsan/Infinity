@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import org.infinity.InfMain;
 import org.infinity.event.MotionEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.event.TickEvent;
@@ -13,6 +12,7 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.features.module.player.FakeLags;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 import org.infinity.utils.Timer;

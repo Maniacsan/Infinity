@@ -1,7 +1,7 @@
 package org.infinity.ui.features;
 
-import org.infinity.InfMain;
 import org.infinity.features.module.world.SelfDestruction;
+import org.infinity.main.InfMain;
 
 import net.minecraft.class_5489;
 import net.minecraft.client.gui.screen.Screen;

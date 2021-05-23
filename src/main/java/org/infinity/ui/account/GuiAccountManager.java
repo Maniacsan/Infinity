@@ -3,9 +3,9 @@ package org.infinity.ui.account;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinity.InfMain;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
+import org.infinity.main.InfMain;
 import org.infinity.ui.account.main.Account;
 import org.infinity.ui.account.main.AccountManager;
 import org.infinity.ui.account.main.AccountThread;
