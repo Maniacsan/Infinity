@@ -390,7 +390,7 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			int j;
 			if (this.hasBorder()) {
 				j = this.isFocused() ? -1 : 0xFF8F8E8E;
-				fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, j);
+				fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, 0xFF0D0D1C);
 				fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, color);
 			}
 

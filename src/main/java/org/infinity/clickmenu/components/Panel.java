@@ -1,11 +1,10 @@
 package org.infinity.clickmenu.components;
 
-import java.awt.Color;
 import java.util.ArrayList;
 
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.components.buttons.CategoryButton;
-import org.infinity.clickmenu.config.ConfigPanel;
+import org.infinity.clickmenu.components.config.ConfigPanel;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WSearchField;
@@ -13,21 +12,17 @@ import org.infinity.features.Category;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
-import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Identifier;
 
 public class Panel {
 
-	private static final Identifier AVATAR = new Identifier("infinity", "logoneon.png");
-
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
 	public ConfigPanel configPanel = new ConfigPanel("Config");
-
 	private Search searchPanel;
+
 	public WSearchField searchField;
 	private ClickMenu clickMenu;
 
@@ -44,6 +39,7 @@ public class Panel {
 
 	private boolean search;
 	private boolean dragging;
+	
 
 	public Panel(ClickMenu clickMenu, double x, double y, double width, double height) {
 		this.clickMenu = clickMenu;
@@ -76,7 +72,7 @@ public class Panel {
 
 		searchField.setMaxLength(40);
 		searchField.setColor(0xFF1D1F30);
-		
+
 		configPanel.init();
 	}
 
@@ -109,27 +105,28 @@ public class Panel {
 		}
 
 		// panel
-		Render2D.drawRectWH(matrices, this.x, this.y + 1, this.width, this.height - 1, 0xFF0C1441);
-		Render2D.drawRectWH(matrices, this.x + 1, this.y + 1, this.width - 2, this.height - 2, 0xFF2E3349);
+		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, 0xFF181818);
+		Render2D.fillGradient(this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
 
 		// category panel
-		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, new Color(24, 30, 54).getRGB());
+		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
 
 		// profile info
 		Render2D.drawRectWH(matrices, this.x + 2, this.y + 66.5, 90, 0.5, 0xFF4A4F65);
 		FontUtils.drawHCenteredString(matrices, InfMain.getUser().getName(), x + 94 / 2, y + 50, -1);
 
 		// header
-		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0x90181E34);
+		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, width - 92, 1, 0xFF1F1F1F);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, 0.5, 28, 0xFF4A4F65);
 
-		Render2D.fillGradient(this.x + 92, this.y + 28, this.x + width, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
+		Render2D.fillGradient(this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
 
 		searchField.setX((int) (x + width - 115));
-		searchField.setY((int) y + 7);
+		searchField.setY((int) y + 8);
 		searchField.setWidth((int) 110);
 		searchField.setHeight((int) 16);
+		searchField.setOpen(searchField.isOpen());
 		searchField.render(matrices, mouseX, mouseY, delta);
 		
 		setSearch(!searchField.getText().isEmpty());
@@ -155,9 +152,9 @@ public class Panel {
 
 			if (categoryButton.isOpen() && !isSearch()
 					&& categoryButton.getName().equalsIgnoreCase(configPanel.getName())) {
-				configPanel.setX(x);
-				configPanel.setY(y);
-				configPanel.setWidth(width);
+				configPanel.setX(x + 92);
+				configPanel.setY(y + 34);
+				configPanel.setWidth(width - 92);
 				configPanel.setHeight(height);
 				configPanel.render(matrices, mouseX, mouseY, delta);
 			}
@@ -166,7 +163,7 @@ public class Panel {
 
 	public void tick() {
 		categoryButtons.forEach(CategoryButton::tick);
-		searchPanel.tick();
+		configPanel.tick();
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -187,6 +184,7 @@ public class Panel {
 		});
 
 		searchPanel.mouseClicked(mouseX, mouseY, button);
+
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
@@ -194,6 +192,7 @@ public class Panel {
 			categoryButton.mouseScrolled(d, e, amount);
 		});
 
+		configPanel.mouseScrolled(d, e, amount);
 		searchPanel.mouseScrolled(d, e, amount);
 	}
 
@@ -204,8 +203,8 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.mouseReleased(mouseX, mouseY, button);
 		});
+		searchPanel.mouseScrolled(mouseX, mouseY, button);
 
-		searchPanel.mouseReleased(mouseX, mouseY, button);
 	}
 
 	public void charTyped(char chr, int keyCode) {
@@ -218,7 +217,6 @@ public class Panel {
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.keyPressed(keyCode, scanCode, modifiers);
-
 		});
 		searchPanel.keyPressed(keyCode, scanCode, modifiers);
 	}
@@ -227,6 +225,7 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.onClose();
 		});
+		searchPanel.onClose();
 	}
 
 	public ArrayList<CategoryButton> getCategoryButtons() {

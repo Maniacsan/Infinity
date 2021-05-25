@@ -24,12 +24,12 @@ public class DoubleSlider extends SliderElement {
 
 		animation = animation + (currentPos - animation) / 4;
 		stringAnimation = stringAnimation
-				+ (setting.getCurrentValueDouble() - stringAnimation) / 2;
+				+ (setting.getCurrentValueDouble() - stringAnimation) / 3;
 	}
 
 	@Override
 	public String getRenderValue() {
-		double value = Math.round(setting.getCurrentValueDouble() * 100) / 100;
+		double value = Math.round(stringAnimation * 100) / 100;
 		return String.valueOf(value);
 	}
 

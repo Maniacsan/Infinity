@@ -176,4 +176,20 @@ public class RenderUtil {
 				(int) height);
 	}
 
+	public static double animate(double target, double current, double speed) {
+		boolean larger = target > current;
+		if (speed < 0.0) {
+			speed = 0.0;
+		} else if (speed > 1.0) {
+			speed = 1.0;
+		}
+		double dif = Math.max(target, current) - Math.min(target, current);
+		double factor = dif * speed;
+		if (factor < 2) {
+			factor = 2;
+		}
+		current = larger ? (current += dif) : (current -= dif);
+		return current;
+	}
+
 }

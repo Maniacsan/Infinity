@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.infinity.clickmenu.components.buttons.ModuleButton;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
@@ -15,8 +14,11 @@ import net.minecraft.client.util.math.MatrixStack;
 public class Search {
 
 	private ArrayList<ModuleButton> moduleButtons = new ArrayList<>();
-	private List<Module> modules;
 	private Panel panel;
+	
+	private int offset;
+	private boolean scrollHover;
+	private int _cbuttonsHeight;
 
 	private boolean open;
 
@@ -43,11 +45,9 @@ public class Search {
 			
 			List<Module> searchList = new ArrayList<>();
 			refresh(searchList);
-			
-			modules = searchList;
 
 			double yMod = 2;
-			Render2D.startMenuScissor(panel.x + 65, panel.y + 5, 203, panel.height - 8);
+			Render2D.startMenuScissor(panel.x + 90, panel.y + 37, 150, panel.height - 40);
 			for (ModuleButton moduleButton : moduleButtons) {
 
 				moduleButton.setX(panel.x + 96);

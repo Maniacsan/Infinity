@@ -1,13 +1,13 @@
 package org.infinity.utils.system;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -95,23 +95,18 @@ public class FileUtil {
 		}
 	}
 
-	public static byte[] readBytes(File file) {
+	public static void copyFile(File file, String path) {
 		try {
-			InputStream in = new FileInputStream(file);
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-			byte[] buffer = new byte[256];
+			InputStream in = FileUtil.class.getResourceAsStream(path + File.separator + file.getName());
+			OutputStream out = new FileOutputStream(file);
+			byte[] bytes = new byte[256];
 			int read;
-			while ((read = in.read(buffer)) > 0)
-				out.write(buffer, 0, read);
-
+			for (; (read = in.read(bytes)) > 0; out.write(bytes, 0, read))
+				;
+			out.close();
 			in.close();
-			return out.toByteArray();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		return new byte[0];
 	}
-
 }

@@ -56,11 +56,13 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	private Consumer<String> changedListener;
 	private Predicate<String> textPredicate;
 	private BiFunction<String, Integer, OrderedText> renderTextProvider;
-	
+
+	private boolean open;
+	private int position;
+
 	private int color;
 
-	public WSearchField(TextRenderer textRenderer, int x, int y, int width, int height, Text text,
-			boolean obfText) {
+	public WSearchField(TextRenderer textRenderer, int x, int y, int width, int height, Text text, boolean obfText) {
 		this(textRenderer, x, y, width, height, (TextFieldWidget) null, text, obfText);
 	}
 
@@ -361,10 +363,16 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		if (!this.isVisible()) {
+
+		boolean openHover = mouseX >= (double) this.x - 13 + position && mouseX < (double) (this.x + 6 + position)
+				&& mouseY >= (double) this.y && mouseY < (double) (this.y + this.height);
+		if (openHover && button == 0)
+			setOpen(!isOpen());
+
+		if (!this.isVisible() || !isOpen()) {
 			return false;
 		} else {
-			boolean bl = mouseX >= (double) this.x && mouseX < (double) (this.x + this.width)
+			boolean bl = mouseX >= (double) this.x + 6 && mouseX < (double) (this.x + 6 + this.width)
 					&& mouseY >= (double) this.y && mouseY < (double) (this.y + this.height);
 			if (this.focusUnlocked) {
 				this.setSelected(bl);
@@ -391,16 +399,26 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		position = (int) (isOpen() ? Math.max(0, position - 10.5) : Math.min(width - 6, position + 10.5));
 		if (this.isVisible()) {
 			int j;
-			if (this.hasBorder()) {
+
+			if (this.hasBorder() && position != width - 6) {
 				j = this.isFocused() ? -1 : 0xFF8F8E8E;
-				fill(matrices, this.x - 13, this.y, this.x + this.width, this.y + this.height, color);
-				RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 11, y + 3, 10, 10);
+				fill(matrices, this.x + position - 13, this.y, this.x + this.width, this.y + this.height, color);
 			}
 			
+			RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 10 + position,
+					y + 3, 10, 10);
+
+			if (!isOpen())
+				return;
+
 			if (!this.isFocused() && getText().isEmpty())
-				FontUtils.drawString(matrices, "search..", x + 4, y + 5, 0xFF979797);
+				FontUtils.drawString(matrices, "search..", x + 6, y + 5, 0xFF979797);
+
+			if (position != 0)
+				return;
 
 			j = this.editable ? this.editableColor : this.uneditableColor;
 			int k = this.selectionStart - this.firstCharacterIndex;
@@ -411,7 +429,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 					this.getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = this.isFocused() && this.focusedTicks / 6 % 2 == 0 && bl;
-			int m = this.focused ? this.x + 4 : this.x;
+			int m = this.focused ? this.x + 5 : this.x + 6;
 			int n = this.focused ? this.y + (this.height - 8) / 2 + 1 : this.y;
 			int o = m;
 			if (l > string.length()) {
@@ -429,7 +447,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
 			int p = o;
 			if (!bl) {
-				p = k > 0 ? m + this.width : m;
+				p = k > 0 ? m + this.width - 6 : m;
 			} else if (bl3) {
 				p = o - 1;
 				--o;
@@ -620,24 +638,32 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	public void setX(int x) {
 		this.x = x;
 	}
-	
+
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public void setWidth(int width) {
 		this.width = width;
 	}
-	
+
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
+
 	public int getColor() {
 		return color;
 	}
-	
+
 	public void setColor(int color) {
 		this.color = color;
+	}
+
+	public boolean isOpen() {
+		return open;
+	}
+
+	public void setOpen(boolean open) {
+		this.open = open;
 	}
 }

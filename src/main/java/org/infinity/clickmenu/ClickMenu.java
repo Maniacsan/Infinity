@@ -26,8 +26,9 @@ public class ClickMenu extends Screen {
 	@Override
 	public void init() {
 		panel.init();
-		
+
 		children.add(panel.searchField);
+		children.add(panel.configPanel.textField);
 		super.init();
 	}
 
@@ -46,7 +47,7 @@ public class ClickMenu extends Screen {
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
-	
+
 	@Override
 	public void tick() {
 		panel.tick();
@@ -89,7 +90,7 @@ public class ClickMenu extends Screen {
 
 	@Override
 	public void onClose() {
-		panel.onClose();	
+		panel.onClose();
 		super.onClose();
 	}
 

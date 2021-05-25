@@ -23,6 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.infinity.main.InfMain;
 import org.infinity.ui.UpdateUI;
+import org.infinity.utils.system.FileUtil;
 import org.infinity.utils.system.JarDirectory;
 
 import com.mashape.unirest.http.Unirest;
@@ -82,12 +83,15 @@ public class ConnectUtil {
 			String photoUrl = InfMain.getUser().getPhoto().split("/")[2];
 			String pathUrl = InfMain.getUser().getPhoto().split("/")[0] + "/"
 					+ InfMain.getUser().getPhoto().split("/")[1] + "/";
-			File path = new File(InfMain.getDirection() + File.separator + "profile" + File.separator);
+			File path = new File(InfMain.getDirection() + File.separator + "profile");
 			if (!path.exists())
 				path.mkdirs();
-			
+
 			Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/" + pathUrl + "n" + photoUrl,
 					path + "photo.png");
+
+			if (!path.exists())
+				FileUtil.copyFile(new File(path + "/photo.png"), "/assets/infinity/photo.png");
 
 		} catch (Exception e) {
 		}

@@ -22,6 +22,11 @@ public class CategoryButton {
 	private String name;
 	private boolean open;
 
+	private boolean scrollHover;
+
+	private int offset;
+	private int _cbuttonsHeight;
+
 	private double x;
 	private double y;
 	private double width;
@@ -54,57 +59,37 @@ public class CategoryButton {
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 		if (isOpen()) {
 			Render2D.drawRectWH(matrices, x, y, width, height, 0xFF2E375A);
 			Render2D.fillGradient(x, y, x + 2, y + height, 0xFF8CEDEB, 0xFF2D4780);
 		}
 
 		// icon
-		String name = "";
-
-		switch (this.getName()) {
-		case "Combat":
-			name = "combat";
-			break;
-		case "Movement":
-			name = "movement";
-			break;
-		case "World":
-			name = "world";
-			break;
-		case "Player":
-			name = "player";
-			break;
-		case "Visual":
-			name = "visual";
-			break;
-		case "Enabled":
-			name = "enabled";
-			break;
-		case "Config":
-			name = "settings";
-			break;
-		}
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/category/" + name + ".png"), x + 6,
+		RenderUtil.drawTexture(matrices,
+				new Identifier("infinity", "textures/icons/category/" + this.getName().toLowerCase() + ".png"), x + 6,
 				y + 4, 13, 13);
 
 		FontUtils.drawString(matrices, getName(), (int) x + 25, (int) y + 7, 0xFFDBDBDB);
 
 		double yMod = 2;
 
-		if (panel.isSearch())
-			return;
-
-		Render2D.startMenuScissor(panel.x + 65, panel.y + 5, width + 113, panel.height - 8);
+		Render2D.startMenuScissor(panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 		if (isOpen()) {
-			for (ModuleButton moduleButton : moduleButtons) {
+			if (scrollHover && _cbuttonsHeight > panel.height) {
+				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37, 2, panel.height - 40, 0x90000000);
+				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37 + offset, 2,
+						panel.height - 40 - getHeightDifference(), 0xFF1F5A96);
+			}
 
+			for (ModuleButton moduleButton : moduleButtons) {
+				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
 				moduleButton.setX(panel.x + 96);
-				moduleButton.setY(yMod + panel.y + 34);
+				moduleButton.setY(yMod + panel.y + 34 - offset);
 				moduleButton.setWidth(140);
 				moduleButton.setHeight(25);
 
-				yMod += 26;
+				yMod += 28;
 
 				moduleButton.render(matrices, mouseX, mouseY, delta);
 			}
@@ -124,6 +109,8 @@ public class CategoryButton {
 
 			panel.searchField.setText("");
 			panel.setSearch(false);
+
+			moduleButtons.forEach(ModuleButton::resetAnimation);
 
 			setOpen(!isOpen());
 
@@ -149,6 +136,25 @@ public class CategoryButton {
 		if (isOpen()) {
 			moduleButtons.forEach(moduleButton -> moduleButton.mouseScrolled(d, e, amount));
 		}
+
+		int scrollOffset = 15;
+
+		if (!isOpen() || !scrollHover || _cbuttonsHeight < panel.height - 40)
+			return;
+
+		if (amount < 0.0D) {
+			this.offset += scrollOffset;
+
+		} else if (amount > 0.0D) {
+			this.offset -= scrollOffset;
+		}
+		
+		int difference = getHeightDifference();
+		if (offset > difference)
+			offset = difference;
+		else if (offset < 0)
+			offset = 0;
+		
 	}
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
@@ -168,6 +174,20 @@ public class CategoryButton {
 		if (isOpen()) {
 			moduleButtons.forEach(ModuleButton::onClose);
 		}
+	}
+
+	public int getButtonsHeight() {
+		int height = 0;
+		for (ModuleButton button : moduleButtons) {
+			if (isOpen())
+				height += (button.getHeight() + 3);
+		}
+		return height;
+	}
+
+	public int getHeightDifference() {
+		double diffHeight = panel.height - 40;
+		return (int) (this.getButtonsHeight() - diffHeight);
 	}
 
 	public String getName() {
@@ -221,5 +241,4 @@ public class CategoryButton {
 	public ArrayList<ModuleButton> getModuleButtons() {
 		return moduleButtons;
 	}
-
 }

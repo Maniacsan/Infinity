@@ -24,6 +24,7 @@ public class BlocksSelectElement extends AbstractElement {
 		int xOffset = 3;
 		int yOffset = 0;
 		for (Block blocks : setting.getRenderBlocks()) {
+			this.height = yOffset;
 			boolean hover = Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19);
 			boolean isAdded = setting.getBlocks().contains(blocks);
 			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y - 2, 21, 19, isAdded
@@ -35,7 +36,6 @@ public class BlocksSelectElement extends AbstractElement {
 			if (xOffset > 140) {
 				xOffset = 3;
 				yOffset += 21;
-				height += 21;
 			}
 		}
 	}
