@@ -4,6 +4,7 @@ import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.StringUtil;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -12,6 +13,11 @@ public class FloatSlider extends SliderElement {
 	public FloatSlider(Setting setting, Panel panel) {
 		super(setting, panel);
 	}
+
+	@Override
+	public void init() {
+		valueField.setText(getRenderValue());
+	}
 	
 	@Override
 	public void tick() {
@@ -19,9 +25,6 @@ public class FloatSlider extends SliderElement {
 
 		float currentPos = (setting.getCurrentValueFloat() - setting.getMinValueFloat())
 				/ (setting.getMaxValueFloat() - setting.getMinValueFloat());
-
-		if (currentPos < 0)
-			currentPos = 0;
 
 		animation = animation + (currentPos - animation) / 4F;
 		stringAnimation = stringAnimation
@@ -41,5 +44,18 @@ public class FloatSlider extends SliderElement {
 		float val = (float) (setting.getMinValueFloat() + percentBar * diff);
 
 		this.setting.setCurrentValueFloat(val);
+		valueField.setText(this.getRenderValue());
+	}
+
+	@Override
+	public void keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (valueField.getText().isEmpty())
+			return;
+		if (valueField.keyPressed(keyCode, scanCode, modifiers) && keyCode == GLFW.GLFW_KEY_ENTER) {
+			try {
+				setting.setCurrentValueFloat(Float.parseFloat(valueField.getText()));
+			} catch (NumberFormatException e) {
+			}
+		}
 	}
 }

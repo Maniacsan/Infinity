@@ -10,7 +10,11 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.main.InfMain;
 import org.infinity.utils.render.RenderUtil;
+import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
@@ -32,6 +36,8 @@ public class CategoryButton {
 	private double width;
 	private double height;
 
+	private double hoverAnim;
+
 	public CategoryButton(String name, List<Module> moduleList, Panel panel) {
 		this.name = name;
 		this.panel = panel;
@@ -45,6 +51,14 @@ public class CategoryButton {
 		}
 
 		enabledRefresh();
+	}
+
+	public void init() {
+		moduleButtons.forEach(ModuleButton::init);
+	}
+
+	public void addChildren(List<Element> children) {
+		moduleButtons.forEach(moduleButton -> moduleButton.addChildren(children));
 	}
 
 	public void enabledRefresh() {
@@ -62,13 +76,25 @@ public class CategoryButton {
 		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 		if (isOpen()) {
 			Render2D.drawRectWH(matrices, x, y, width, height, 0xFF2E375A);
-			Render2D.fillGradient(x, y, x + 2, y + height, 0xFF8CEDEB, 0xFF2D4780);
+			Render2D.fillGradient(x, y, x + 2, Math.max(y + height, -1), 0xFF8CEDEB, 0xFF2D4780);
 		}
 
+		hoverAnim = Render2D.isHovered(mouseX, mouseY, x, y, width, height) ? Math.min(1.3, hoverAnim + 0.11)
+				: Math.max(1, hoverAnim - 0.11);
+
 		// icon
+		GL11.glPushMatrix();
+
+		GlStateManager.enableBlend();
+		GL11.glTranslated(x + 12.5, y + 10.5, 0);
+		GL11.glScaled(hoverAnim, hoverAnim, 1);
+		GL11.glTranslated(-x - 12.5, -y - 10.5, 0);
 		RenderUtil.drawTexture(matrices,
-				new Identifier("infinity", "textures/icons/category/" + this.getName().toLowerCase() + ".png"), x + 6,
-				y + 4, 13, 13);
+				new Identifier("infinity", "textures/icons/category/" + this.getName().toLowerCase() + ".png"), x + 7,
+				y + 5, 11, 11);
+
+		GlStateManager.disableBlend();
+		GL11.glPopMatrix();
 
 		FontUtils.drawString(matrices, getName(), (int) x + 25, (int) y + 7, 0xFFDBDBDB);
 
@@ -84,7 +110,7 @@ public class CategoryButton {
 
 			for (ModuleButton moduleButton : moduleButtons) {
 				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
-				moduleButton.setX(panel.x + 96);
+				moduleButton.setX(panel.x + 94);
 				moduleButton.setY(yMod + panel.y + 34 - offset);
 				moduleButton.setWidth(140);
 				moduleButton.setHeight(25);
@@ -148,13 +174,13 @@ public class CategoryButton {
 		} else if (amount > 0.0D) {
 			this.offset -= scrollOffset;
 		}
-		
+
 		int difference = getHeightDifference();
 		if (offset > difference)
 			offset = difference;
 		else if (offset < 0)
 			offset = 0;
-		
+
 	}
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
@@ -168,6 +194,8 @@ public class CategoryButton {
 	}
 
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (isOpen())
+			moduleButtons.forEach(moduleButton -> moduleButton.keyPressed(keyCode, scanCode, modifiers));
 	}
 
 	public void onClose() {

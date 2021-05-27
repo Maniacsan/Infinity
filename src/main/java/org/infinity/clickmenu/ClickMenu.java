@@ -1,6 +1,7 @@
 package org.infinity.clickmenu;
 
 import org.infinity.clickmenu.components.Panel;
+import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.lwjgl.opengl.GL11;
@@ -17,32 +18,52 @@ import net.minecraft.text.LiteralText;
 public class ClickMenu extends Screen {
 
 	public Panel panel;
+	public double anim;
+	private boolean closeAnim;
 
 	public ClickMenu() {
 		super(new LiteralText("ClickMenu"));
-		panel = new Panel(this, 20, 20, 400, 290);
+
+		panel = new Panel(this, Render2D.getScaledWidth() / 2 - 230, Render2D.getScaledHeight() / 2 - 154, 400, 290);
 	}
 
 	@Override
 	public void init() {
-		panel.init();
+		anim = 0.4;
 
-		children.add(panel.searchField);
-		children.add(panel.configPanel.textField);
+		panel.init();
+		panel.addChildren(children);
+
 		super.init();
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
+
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+
+		anim = anim > 0 ? Math.max(0, anim - 0.18) : 0;
 
 		mouseX /= scale;
 		mouseY /= scale;
 
 		GL11.glPushMatrix();
-		GL11.glScalef(scale, scale, scale);
+
+		if (anim > 0) {
+			GL11.glTranslated(panel.x + 200, panel.y + 145, 0);
+			GL11.glScaled(scale + anim, scale + anim, scale + anim);
+			GL11.glTranslated(-panel.x - 200, -panel.y - 145, 0);
+		}
+
+		GL11.glPushMatrix();
+
+		GL11.glScaled(scale, scale, scale);
+
 		panel.render(matrices, mouseX, mouseY, delta);
+
+		GL11.glPopMatrix();
+
 		GL11.glPopMatrix();
 
 		super.render(matrices, mouseX, mouseY, delta);
@@ -91,6 +112,8 @@ public class ClickMenu extends Screen {
 	@Override
 	public void onClose() {
 		panel.onClose();
+
+		anim = 0.4;
 		super.onClose();
 	}
 
@@ -102,6 +125,8 @@ public class ClickMenu extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		panel.keyPressed(keyCode, scanCode, modifiers);
+		if (keyCode == InfMain.getModuleManager().getModuleByClass(GuiMod.class).getKey())
+			onClose();
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 

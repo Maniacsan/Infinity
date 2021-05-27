@@ -185,10 +185,10 @@ public class RenderUtil {
 		}
 		double dif = Math.max(target, current) - Math.min(target, current);
 		double factor = dif * speed;
-		if (factor < 2) {
-			factor = 2;
+		if (factor < 0.1) {
+			factor = 0.1;
 		}
-		current = larger ? (current += dif) : (current -= dif);
+		current = larger ? (current += factor) : (current -= factor);
 		return current;
 	}
 

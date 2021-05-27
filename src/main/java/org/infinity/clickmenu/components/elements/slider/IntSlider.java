@@ -4,6 +4,7 @@ import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.StringUtil;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -14,14 +15,16 @@ public class IntSlider extends SliderElement {
 	}
 	
 	@Override
+	public void init() {
+		valueField.setText(getRenderValue());
+	}
+
+	@Override
 	public void tick() {
 		super.tick();
 
 		int currentPos = (setting.getCurrentValueInt() - setting.getMinValueInt())
 				/ (setting.getMaxValueInt() - setting.getMinValueInt());
-
-		if (currentPos < 0)
-			currentPos = 0;
 
 		animation = animation + (currentPos - animation) / 4;
 		stringAnimation = stringAnimation
@@ -41,5 +44,18 @@ public class IntSlider extends SliderElement {
 		int val = (int) (setting.getMinValueInt() + percentBar * diff);
 
 		this.setting.setCurrentValueInt(val);
+		valueField.setText(this.getRenderValue());
+	}
+
+	@Override
+	public void keyPressed(int keyCode, int scanCode, int modifiers) {
+		if (valueField.getText().isEmpty())
+			return;
+		if (valueField.keyPressed(keyCode, scanCode, modifiers) && keyCode == GLFW.GLFW_KEY_ENTER) {
+			try {
+				setting.setCurrentValueInt(Integer.parseInt(valueField.getText()));
+			} catch (NumberFormatException e) {
+			}
+		}
 	}
 }

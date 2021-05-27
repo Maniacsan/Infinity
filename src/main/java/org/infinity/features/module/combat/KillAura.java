@@ -197,30 +197,30 @@ public class KillAura extends Module {
 	private void destroyShield() {
 		int slotAxe = InvUtil.findAxe();
 
-		if (destroyShield.isToggle()) {
+		if (!destroyShield.isToggle())
+			return;
 
-			if (target instanceof PlayerEntity) {
-				if (((PlayerEntity) target).isBlocking()) {
-					if (slotAxe != -2) {
-						preSlot = Helper.getPlayer().inventory.selectedSlot;
-						Helper.getPlayer().inventory.selectedSlot = slotAxe;
+		if (target instanceof PlayerEntity) {
+			if (((PlayerEntity) target).isBlocking()) {
+				if (slotAxe == -2)
+					return;
+				preSlot = Helper.getPlayer().inventory.selectedSlot;
+				Helper.getPlayer().inventory.selectedSlot = slotAxe;
 
-						if (preSlot != -2) {
-							(new Thread() {
-								@Override
-								public void run() {
-									try {
-										Thread.sleep(110);
+				if (preSlot == -2)
+					return;
+				(new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(110);
 
-										Helper.getPlayer().inventory.selectedSlot = preSlot;
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-								}
-							}).start();
+							Helper.getPlayer().inventory.selectedSlot = preSlot;
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
 					}
-				}
+				}).start();
 			}
 		}
 	}
@@ -232,12 +232,12 @@ public class KillAura extends Module {
 
 				destroyShield();
 
-				float[] matrix = RotationUtil.lookAtEntity(target);
-
-				matrix[0] = RotationUtil.limitAngleChange(event.getYaw(), matrix[0], speed);
-				matrix[1] = RotationUtil.limitAngleChange(event.getPitch(), matrix[1], speed);
-
 				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
+					float[] matrix = RotationUtil.lookAtEntity(target);
+
+					matrix[0] = RotationUtil.limitAngleChange(event.getYaw(), matrix[0], speed);
+					matrix[1] = RotationUtil.limitAngleChange(event.getPitch(), matrix[1], speed);
+
 					lastYaw = matrix[0];
 					lastPitch = matrix[1];
 					event.setRotation(matrix[0], matrix[1], lockView.isToggle());

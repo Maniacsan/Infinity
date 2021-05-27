@@ -30,12 +30,17 @@ public abstract class AbstractElement {
 	public abstract void mouseReleased(double mouseX, double mouseY, int button);
 
 	public abstract void mouseScrolled(double d, double e, double amount);
+	
+	public abstract void keyPressed(int keyCode, int scanCode, int modifiers);
 
 	public abstract void onClose();
 	
 	public abstract void tick();
 
 	public abstract boolean isVisible();
+	
+	public void init() {
+	}
 	
 	public Setting getSetting() {
 		return setting;

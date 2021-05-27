@@ -1,6 +1,7 @@
 package org.infinity.clickmenu.components;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.components.buttons.CategoryButton;
@@ -13,6 +14,7 @@ import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
@@ -38,8 +40,11 @@ public class Panel {
 	private boolean closeHovered;
 
 	private boolean search;
+
+	// Created here so that when it closes it remembers its state
+	private boolean openSearch;
+
 	private boolean dragging;
-	
 
 	public Panel(ClickMenu clickMenu, double x, double y, double width, double height) {
 		this.clickMenu = clickMenu;
@@ -67,13 +72,22 @@ public class Panel {
 
 	public void init() {
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
-		searchField = new WSearchField(Helper.minecraftClient.textRenderer, (int) this.width / 2 - 80,
+		searchField = new WSearchField(Helper.minecraftClient.textRenderer, this, (int) this.width / 2 - 80,
 				(int) this.height / 2 - 58, 160, 22, new TranslatableText("Search"), false);
 
 		searchField.setMaxLength(40);
 		searchField.setColor(0xFF1D1F30);
 
 		configPanel.init();
+
+		categoryButtons.forEach(CategoryButton::init);
+	}
+
+	public void addChildren(List<Element> children) {
+		children.add(searchField);
+		children.add(configPanel.textField);
+		
+		categoryButtons.forEach(categoryButton -> categoryButton.addChildren(children));
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -126,13 +140,12 @@ public class Panel {
 		searchField.setY((int) y + 8);
 		searchField.setWidth((int) 110);
 		searchField.setHeight((int) 16);
-		searchField.setOpen(searchField.isOpen());
 		searchField.render(matrices, mouseX, mouseY, delta);
-		
+
 		setSearch(!searchField.getText().isEmpty());
 
 		searchPanel.setOpen(isSearch());
-		
+
 		searchPanel.render(matrices, mouseX, mouseY, delta);
 
 		double yOffset = 2;
@@ -164,16 +177,10 @@ public class Panel {
 	public void tick() {
 		categoryButtons.forEach(CategoryButton::tick);
 		configPanel.tick();
+		searchPanel.tick();
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
-		if (this.hovered) {
-			if (button == 0) {
-				this.dragging = true;
-				this.prevX = this.x - mouseX;
-				this.prevY = this.y - mouseY;
-			}
-		}
 		if (closeHovered && button == 0) {
 			this.dragging = false;
 			clickMenu.onClose();
@@ -184,6 +191,14 @@ public class Panel {
 		});
 
 		searchPanel.mouseClicked(mouseX, mouseY, button);
+
+		if (this.hovered) {
+			if (button == 0) {
+				this.dragging = true;
+				this.prevX = this.x - mouseX;
+				this.prevY = this.y - mouseY;
+			}
+		}
 
 	}
 
@@ -238,5 +253,13 @@ public class Panel {
 
 	public void setSearch(boolean search) {
 		this.search = search;
+	}
+
+	public boolean isOpenSearch() {
+		return openSearch;
+	}
+
+	public void setOpenSearch(boolean openSearch) {
+		this.openSearch = openSearch;
 	}
 }

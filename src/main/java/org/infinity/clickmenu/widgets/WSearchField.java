@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
@@ -56,20 +57,22 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	private Consumer<String> changedListener;
 	private Predicate<String> textPredicate;
 	private BiFunction<String, Integer, OrderedText> renderTextProvider;
+	private Panel panel;
 
-	private boolean open;
 	private int position;
 
 	private int color;
 
-	public WSearchField(TextRenderer textRenderer, int x, int y, int width, int height, Text text, boolean obfText) {
-		this(textRenderer, x, y, width, height, (TextFieldWidget) null, text, obfText);
+	public WSearchField(TextRenderer textRenderer, Panel panel, int x, int y, int width, int height, Text text,
+			boolean obfText) {
+		this(textRenderer, panel, x, y, width, height, (TextFieldWidget) null, text, obfText);
 	}
 
-	public WSearchField(TextRenderer textRenderer, int x, int y, int width, int height,
+	public WSearchField(TextRenderer textRenderer, Panel panel, int x, int y, int width, int height,
 			@Nullable TextFieldWidget copyFrom, Text text, boolean obfText) {
 		super(x, y, width, height, text);
 		this.text = "";
+		this.panel = panel;
 		this.maxLength = 32;
 		this.focused = true;
 		this.focusUnlocked = true;
@@ -363,13 +366,13 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-
 		boolean openHover = mouseX >= (double) this.x - 13 + position && mouseX < (double) (this.x + 6 + position)
 				&& mouseY >= (double) this.y && mouseY < (double) (this.y + this.height);
-		if (openHover && button == 0)
-			setOpen(!isOpen());
+		if (openHover && button == 0) {
+			panel.setOpenSearch(!panel.isOpenSearch());
+		}
 
-		if (!this.isVisible() || !isOpen()) {
+		if (!this.isVisible() || !panel.isOpenSearch()) {
 			return false;
 		} else {
 			boolean bl = mouseX >= (double) this.x + 6 && mouseX < (double) (this.x + 6 + this.width)
@@ -399,19 +402,19 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		position = (int) (isOpen() ? Math.max(0, position - 10.5) : Math.min(width - 6, position + 10.5));
+		position = (int) (panel.isOpenSearch() ? RenderUtil.animate(0, position, 0.5) : RenderUtil.animate(width - 6, position, 0.5));
 		if (this.isVisible()) {
 			int j;
 
-			if (this.hasBorder() && position != width - 6) {
+			if (this.hasBorder() && position < width - 8) {
 				j = this.isFocused() ? -1 : 0xFF8F8E8E;
 				fill(matrices, this.x + position - 13, this.y, this.x + this.width, this.y + this.height, color);
 			}
-			
+
 			RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 10 + position,
 					y + 3, 10, 10);
 
-			if (!isOpen())
+			if (!panel.isOpenSearch())
 				return;
 
 			if (!this.isFocused() && getText().isEmpty())
@@ -657,13 +660,5 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 
 	public void setColor(int color) {
 		this.color = color;
-	}
-
-	public boolean isOpen() {
-		return open;
-	}
-
-	public void setOpen(boolean open) {
-		this.open = open;
 	}
 }

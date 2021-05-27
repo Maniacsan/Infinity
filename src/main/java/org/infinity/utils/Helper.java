@@ -1,6 +1,7 @@
 package org.infinity.utils;
 
 import org.infinity.main.InfMain;
+import org.infinity.utils.user.UserRole;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -15,7 +16,6 @@ public class Helper {
 
 	public static MinecraftClient minecraftClient = MinecraftClient.getInstance();
 
-
 	public static ClientPlayerEntity getPlayer() {
 		return minecraftClient.player;
 	}
@@ -23,8 +23,6 @@ public class Helper {
 	public static ClientWorld getWorld() {
 		return minecraftClient.world;
 	}
-
-	//
 
 	public static void sendPacket(Packet<?> packet) {
 		getPlayer().networkHandler.sendPacket(packet);
@@ -44,9 +42,23 @@ public class Helper {
 	}
 
 	public static void openSite(String url) {
-
 		Util.getOperatingSystem().open(url);
+	}
 
+	public static boolean isUser() {
+		return InfMain.getUser().getRole().equals(UserRole.User);
+	}
+
+	public static boolean isPremium() {
+		return InfMain.getUser().getRole().equals(UserRole.Premium);
+	}
+
+	public static boolean isModerator() {
+		return InfMain.getUser().getRole().equals(UserRole.Moderator);
+	}
+
+	public static boolean isAdmin() {
+		return InfMain.getUser().getRole().equals(UserRole.Admin);
 	}
 
 }

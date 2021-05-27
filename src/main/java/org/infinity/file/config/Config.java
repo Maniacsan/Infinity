@@ -92,6 +92,73 @@ public class Config {
 		}
 	}
 
+	public void saveConfig() {
+		try {
+			if (!configFile.exists())
+				configFile.createNewFile();
+			JsonObject json = new JsonObject();
+			JsonObject info = new JsonObject();
+
+			String author = AES.encrypt(InfMain.getUser().getName(), AES.getKey());
+			String date = AES.encrypt(new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()),
+					AES.getKey());
+
+			info.addProperty("Author", author);
+			info.addProperty("Date", date);
+
+			for (Module m : InfMain.getModuleManager().getList()) {
+
+				if (m.getCategory().equals(Category.HIDDEN))
+					continue;
+
+				JsonObject dataJson = new JsonObject();
+				JsonArray jsonArray = new JsonArray();
+				dataJson.addProperty("Enabled", Boolean.valueOf(m.isEnabled()));
+				dataJson.addProperty("Visible", Boolean.valueOf(m.isVisible()));
+				dataJson.addProperty("Key", Integer.valueOf(m.getKey()));
+				saveSettings(m, dataJson, jsonArray);
+
+				json.add("Config", info);
+				json.add(m.getName(), dataJson);
+			}
+			FileUtil.saveJsonObjectToFile(json, configFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void loadConfig(boolean refresh) {
+		if (!configFile.getName().endsWith(".json"))
+			return;
+		name = configFile.getName().replace(".json", "");
+		try {
+			String text = FileUtils.readFileToString(configFile);
+
+			if (text.isEmpty())
+				return;
+
+			JsonObject configurationObject = new GsonBuilder().create().fromJson(text, JsonObject.class);
+
+			if (configurationObject == null)
+				return;
+
+			for (Map.Entry<String, JsonElement> entry : configurationObject.entrySet()) {
+				if (entry.getValue() instanceof JsonObject) {
+
+					JsonObject jsonObject = (JsonObject) entry.getValue();
+
+					if (entry.getKey().equalsIgnoreCase("Config")) {
+						setAuthor(jsonObject.get("Author").isJsonNull() ? ""
+								: AES.decrypt(jsonObject.get("Author").getAsString(), AES.getKey()));
+						setDate(jsonObject.get("Date").isJsonNull() ? ""
+								: AES.decrypt(jsonObject.get("Date").getAsString(), AES.getKey()));
+					}
+				}
+			}
+		} catch (IOException | JsonSyntaxException e) {
+		}
+	}
+
 	private void setSettings(JsonObject jsonObject, Module module) {
 		for (Setting setting : module.getSettings()) {
 			if (!setting.getModule().getName().equalsIgnoreCase(module.getName()))
@@ -168,73 +235,6 @@ public class Config {
 				dataJson.add(setting.getName(), jsonArray);
 				break;
 			}
-		}
-	}
-
-	public void saveConfig() {
-		try {
-			if (!configFile.exists())
-				configFile.createNewFile();
-			JsonObject json = new JsonObject();
-			JsonObject info = new JsonObject();
-
-			String author = AES.encrypt(InfMain.getUser().getName(), AES.getKey());
-			String date = AES.encrypt(new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()),
-					AES.getKey());
-
-			info.addProperty("Author", author);
-			info.addProperty("Date", date);
-
-			for (Module m : InfMain.getModuleManager().getList()) {
-
-				if (m.getCategory().equals(Category.HIDDEN))
-					continue;
-
-				JsonObject dataJson = new JsonObject();
-				JsonArray jsonArray = new JsonArray();
-				dataJson.addProperty("Enabled", Boolean.valueOf(m.isEnabled()));
-				dataJson.addProperty("Visible", Boolean.valueOf(m.isVisible()));
-				dataJson.addProperty("Key", Integer.valueOf(m.getKey()));
-				saveSettings(m, dataJson, jsonArray);
-
-				json.add("Config", info);
-				json.add(m.getName(), dataJson);
-			}
-			FileUtil.saveJsonObjectToFile(json, configFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void loadConfig(boolean refresh) {
-		if (!configFile.getName().endsWith(".json"))
-			return;
-		name = configFile.getName().replace(".json", "");
-		try {
-			String text = FileUtils.readFileToString(configFile);
-
-			if (text.isEmpty())
-				return;
-
-			JsonObject configurationObject = new GsonBuilder().create().fromJson(text, JsonObject.class);
-
-			if (configurationObject == null)
-				return;
-
-			for (Map.Entry<String, JsonElement> entry : configurationObject.entrySet()) {
-				if (entry.getValue() instanceof JsonObject) {
-
-					JsonObject jsonObject = (JsonObject) entry.getValue();
-
-					if (entry.getKey().equalsIgnoreCase("Config")) {
-						setAuthor(jsonObject.get("Author").isJsonNull() ? ""
-								: AES.decrypt(jsonObject.get("Author").getAsString(), AES.getKey()));
-						setDate(jsonObject.get("Date").isJsonNull() ? ""
-								: AES.decrypt(jsonObject.get("Date").getAsString(), AES.getKey()));
-					}
-				}
-			}
-		} catch (IOException | JsonSyntaxException e) {
 		}
 	}
 

@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 
 import org.infinity.utils.Helper;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -55,6 +56,7 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 	private BiFunction<String, Integer, OrderedText> renderTextProvider;
 
 	private int color;
+	private int lineColor;
 
 	public WTextField(TextRenderer textRenderer, int x, int y, int width, int height, Text text, boolean obfText) {
 		this(textRenderer, x, y, width, height, (TextFieldWidget) null, text, obfText);
@@ -80,6 +82,7 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			this.setText(copyFrom.getText());
 		}
 		this.color = 0xFFA5A6A6;
+		this.setLineColor(0xFF0D0D1C);
 	}
 
 	public void setChangedListener(Consumer<String> changedListener) {
@@ -283,10 +286,11 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 				if (this.editable) {
 					this.write("");
 				}
-
 				return true;
 			} else {
 				switch (keyCode) {
+				case GLFW.GLFW_KEY_ENTER:
+					return true;
 				case 259:
 					if (this.editable) {
 						this.selecting = false;
@@ -390,7 +394,7 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			int j;
 			if (this.hasBorder()) {
 				j = this.isFocused() ? -1 : 0xFF8F8E8E;
-				fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, 0xFF0D0D1C);
+				fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, lineColor);
 				fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, color);
 			}
 
@@ -631,5 +635,13 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 	
 	public void setColor(int color) {
 		this.color = color;
+	}
+
+	public int getLineColor() {
+		return lineColor;
+	}
+
+	public void setLineColor(int lineColor) {
+		this.lineColor = lineColor;
 	}
 }

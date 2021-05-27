@@ -28,9 +28,9 @@ public class ConfigPanel {
 
 	// dont permission error
 	private int errorTime;
+	private double toasterAnim;
 
 	private int offset;
-	private double yOffset = 2;
 
 	// calc buttons height
 	private double _cbuttonHeight;
@@ -52,7 +52,7 @@ public class ConfigPanel {
 		textField = new WTextField(Helper.minecraftClient.textRenderer, (int) this.width / 2 - 80,
 				(int) this.height / 2 - 58, 160, 22, new TranslatableText("Text"), false);
 
-		textField.setMaxLength(34);
+		textField.setMaxLength(45);
 		textField.setColor(0xFF0B1427);
 		textField.setText("New Config");
 		textField.setSelected(true);
@@ -63,7 +63,6 @@ public class ConfigPanel {
 		for (Config config : InfMain.getConfigManager().getConfigList()) {
 			configList.add(new ConfigButton(config, this));
 		}
-		yOffset = 2;
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -87,7 +86,7 @@ public class ConfigPanel {
 		double yt = y + 16;
 
 		GlStateManager.enableBlend();
-		GL11.glTranslated(xt + 5, yt + 5, 0.);
+		GL11.glTranslated(xt + 5, yt + 5, 0);
 		GL11.glRotated(refreshHover, 0, 0, 1);
 		GL11.glTranslated(-xt - 5, -yt - 5, 0);
 
@@ -100,16 +99,19 @@ public class ConfigPanel {
 		textField.setWidth(100);
 		textField.setHeight(22);
 		textField.render(matrices, mouseX, mouseY, delta);
-		
-		double yOffset = 2;
-		if (_cbuttonHeight > this.height - 80) {
-		int difference = getHeightDifference();
-		if (offset > difference)
-			offset = difference;
-		else if (offset < 0)
-			offset = 0;
-		}
 
+		double yOffset = 2;
+
+		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7) : Math.max(-35, toasterAnim - 7);
+
+		if (toasterAnim != -35) {
+			Render2D.fillGradient(x + width / 2 - 70, y + toasterAnim, x + width / 2 + 70, y + toasterAnim + 35,
+					0xFF171F40, 0xFF37447D);
+			FontUtils.drawStringWithShadow(matrices, "Configs are limited ", x + width / 2 - 45, y + toasterAnim + 6,
+					-1);
+			FontUtils.drawStringWithShadow(matrices, "Buy " + Formatting.YELLOW + "Premium" + Formatting.RESET + " to unlock ", x + width / 2 - 55, y + toasterAnim + 18,
+					-1);
+		} 
 		Render2D.startMenuScissor(x, y + 43, width - 2, height - 80);
 
 		// scroll
@@ -134,11 +136,20 @@ public class ConfigPanel {
 	}
 
 	public void tick() {
-		// TODO tick action
+		if (errorTime > 0)
+			errorTime--;
+		else if (errorTime < 0)
+			errorTime = 0;
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (Render2D.isHovered(mouseX, mouseY, x + width - 90, y + 11, 60, 18) && button == 0) {
+
+			if (Helper.isUser() && InfMain.getConfigManager().getConfigList().size() >= 7) {
+				errorTime = 60;
+				return;
+			}
+
 			if (!textField.getText().isEmpty()) {
 				if (InfMain.getConfigManager().fromName((textField.getText())) == null) {
 					InfMain.getConfigManager().loadConfig(false);
@@ -177,7 +188,15 @@ public class ConfigPanel {
 		} else if (amount > 0.0D) {
 			this.offset -= scrollOffset;
 		}
-		
+
+		if (_cbuttonHeight > this.height - 80) {
+			int difference = getHeightDifference();
+			if (offset > difference)
+				offset = difference;
+			else if (offset < 0)
+				offset = 0;
+		}
+
 	}
 
 	public int getHeightDifference() {

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import org.infinity.main.InfMain;
+import org.infinity.utils.Helper;
 
 public class ConfigManager {
 
@@ -44,6 +45,9 @@ public class ConfigManager {
 			dir.mkdirs();
 		this.configList.clear();
 		for (File file : (File[]) Objects.<File[]>requireNonNull(dir.listFiles())) {
+			if (Helper.isUser() && configList.size() >= 7)
+				return;
+			
 			if (file.getName().endsWith(".json")) {
 				for (org.infinity.features.Module m : InfMain.getModuleManager().getList())
 					add(new Config(file, m, refresh));

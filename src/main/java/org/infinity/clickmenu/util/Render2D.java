@@ -104,11 +104,7 @@ public class Render2D {
 		float f5 = (float) (col2 >> 16 & 255) / 255.0F;
 		float f6 = (float) (col2 >> 8 & 255) / 255.0F;
 		float f7 = (float) (col2 & 255) / 255.0F;
-		GL11.glPushMatrix();
-		GL11.glPushAttrib(1048575);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		glRenderStart();
 
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
@@ -130,11 +126,63 @@ public class Render2D {
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 		GL11.glShadeModel(GL11.GL_FLAT);
 		GL11.glColor4d(1.0D, 1.0D, 1.0D, 1.0D);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopAttrib();
+		glRenderStop();
+	}
+
+	public static void fillSideGradient(double left, double top, double right, double bottom, int col1, int col2) {
+		float f = (float) (col1 >> 24 & 255) / 255.0F;
+		float f1 = (float) (col1 >> 16 & 255) / 255.0F;
+		float f2 = (float) (col1 >> 8 & 255) / 255.0F;
+		float f3 = (float) (col1 & 255) / 255.0F;
+		float f4 = (float) (col2 >> 24 & 255) / 255.0F;
+		float f5 = (float) (col2 >> 16 & 255) / 255.0F;
+		float f6 = (float) (col2 >> 8 & 255) / 255.0F;
+		float f7 = (float) (col2 & 255) / 255.0F;
+		glRenderStart();
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glShadeModel(GL11.GL_SMOOTH);
+		GL11.glPushMatrix();
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glVertex2d(left, top);
+		GL11.glVertex2d(left, bottom);
+		GL11.glColor4f(f5, f6, f7, f4);
+		GL11.glVertex2d(right, bottom);
+		GL11.glVertex2d(right, top);
+		GL11.glEnd();
 		GL11.glPopMatrix();
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glShadeModel(GL11.GL_FLAT);
+		glRenderStop();
+	}
+
+	public static void drawBorderedRect(MatrixStack matrices, double xPos, double yPos, double width, double height,
+			float lineWidth, int lineColor, int bgColor) {
+		drawRectWH(matrices, xPos, yPos, width, height, bgColor);
+		float f = (float) (lineColor >> 24 & 255) / 255.0F;
+		float f1 = (float) (lineColor >> 16 & 255) / 255.0F;
+		float f2 = (float) (lineColor >> 8 & 255) / 255.0F;
+		float f3 = (float) (lineColor & 255) / 255.0F;
+		glRenderStart();
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glLineWidth(lineWidth);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glBegin(GL11.GL_LINES);
+		GL11.glVertex2d(xPos, yPos);
+		GL11.glVertex2d(xPos + width, yPos);
+		GL11.glVertex2d(xPos + width, yPos);
+		GL11.glVertex2d(xPos + width, yPos + height);
+		GL11.glVertex2d(xPos + width, yPos + height);
+		GL11.glVertex2d(xPos, yPos + height);
+		GL11.glVertex2d(xPos, yPos + height);
+		GL11.glVertex2d(xPos, yPos);
+		GL11.glEnd();
+		glRenderStop();
 	}
 
 	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
@@ -158,45 +206,75 @@ public class Render2D {
 	}
 
 	public static void drawAngleRect(MatrixStack matrices, double x, double y, double width, double height, int color) {
-		drawFullCircle(x + 8, y + height / 2, height / 2, color);
-		drawFullCircle(x + width - 3, y + height / 2, height / 2, color);
-		drawRectWH(matrices, x + 8, y, width - 11, height, color);
-	}
-
-	public static void drawFullCircle(double cx, double cy, double r, int c) {
-		r *= 2.0;
-		cx *= 2;
-		cy *= 2;
-		float f = (float) (c >> 24 & 255) / 255.0f;
-		float f1 = (float) (c >> 16 & 255) / 255.0f;
-		float f2 = (float) (c >> 8 & 255) / 255.0f;
-		float f3 = (float) (c & 255) / 255.0f;
-		GL11.glDisable(2929);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glBlendFunc(770, 771);
-		GL11.glDepthMask(true);
-		GL11.glEnable(2848);
-		GL11.glHint(3154, 4354);
-		GL11.glHint(3155, 4354);
-		GL11.glScalef((float) 0.5f, (float) 0.5f, (float) 0.5f);
-		GL11.glColor4f((float) f1, (float) f2, (float) f3, (float) f);
-		GL11.glBegin((int) 6);
-		int i = 0;
-		while (i <= 360) {
-			double x = Math.sin((double) i * 3.141592653589793 / 180.0) * r;
-			double y = Math.cos((double) i * 3.141592653589793 / 180.0) * r;
-			GL11.glVertex2d((double) ((double) cx + x), (double) ((double) cy + y));
-			++i;
-		}
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float f1 = (float) (color >> 16 & 255) / 255.0F;
+		float f2 = (float) (color >> 8 & 255) / 255.0F;
+		float f3 = (float) (color & 255) / 255.0F;
+		glRenderStart();
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glBegin(GL11.GL_QUADS);
+		GL11.glVertex2d(x, y);
+		GL11.glVertex2d(x + width, y);
+		GL11.glVertex2d(x + width, y + height);
+		GL11.glVertex2d(x, y + height);
 		GL11.glEnd();
-		GL11.glScalef((float) 2.0f, (float) 2.0f, (float) 2.0f);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glEnable(2929);
-		GL11.glDisable(2848);
-		GL11.glHint(3154, 4352);
-		GL11.glHint(3155, 4352);
+		glRenderStop();
+		drawCircle(x, y + height / 2, height / 2, color);
+		drawCircle(x + width, y + height / 2, height / 2, color);
+	}
+	
+    public static void drawBorderedCircle(float x, float y, float radius, int lineWidth, int outsideC, int insideC)
+    {
+        drawCircle(x, y, radius, insideC);
+        drawUnfilledCircle(x, y, radius, (float)lineWidth, outsideC);
+    }
+
+
+	public static void drawCircle(double x, double y, double radius, int color) {
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float f1 = (float) (color >> 16 & 255) / 255.0F;
+		float f2 = (float) (color >> 8 & 255) / 255.0F;
+		float f3 = (float) (color & 255) / 255.0F;
+		boolean flag = GL11.glIsEnabled(GL11.GL_BLEND);
+		boolean flag1 = GL11.glIsEnabled(GL11.GL_LINE_SMOOTH);
+		boolean flag2 = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
+
+		if (!flag) {
+			GL11.glEnable(GL11.GL_BLEND);
+		}
+
+		if (!flag1) {
+			GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		}
+
+		if (flag2) {
+			GL11.glDisable(GL11.GL_TEXTURE_2D);
+		}
+
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glColor4f(f1, f2, f3, f);
+		GL11.glBegin(GL11.GL_POLYGON);
+
+		for (int i = 0; i <= 360; ++i) {
+			GL11.glVertex2d((double) x + Math.sin((double) i * Math.PI / 180.0D) * (double) radius,
+					(double) y + Math.cos((double) i * Math.PI / 180.0D) * (double) radius);
+		}
+
+		GL11.glEnd();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+
+		if (flag2) {
+			GL11.glEnable(GL11.GL_TEXTURE_2D);
+		}
+
+		if (!flag1) {
+			GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		}
+
+		if (!flag) {
+			GL11.glDisable(GL11.GL_BLEND);
+		}
 	}
 
 	public static void fill(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int color) {
@@ -319,6 +397,22 @@ public class Render2D {
 		GL11.glTranslated(-x, -y, 0);
 	}
 
+	public static void glRenderStart() {
+		GL11.glPushMatrix();
+		GL11.glPushAttrib(1048575);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+	}
+
+	public static void glRenderStop() {
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glEnable(GL11.GL_CULL_FACE);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glPopAttrib();
+		GL11.glPopMatrix();
+	}
+
 	public static void startScissor(double x, double y, double width, double height) {
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
@@ -334,7 +428,8 @@ public class Render2D {
 
 	// for clickmenu scale
 	public static void startMenuScissor(double x, double y, double width, double height) {
-		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
+		float scale = (float) (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale()
+				+ InfMain.INSTANCE.init.menu.anim);
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()

@@ -171,4 +171,10 @@ public class ColorPickerElement extends AbstractElement {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void keyPressed(int keyCode, int scanCode, int modifiers) {
+		// TODO Auto-generated method stub
+		
+	}
 }
