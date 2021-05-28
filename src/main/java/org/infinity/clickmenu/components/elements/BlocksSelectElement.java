@@ -27,11 +27,11 @@ public class BlocksSelectElement extends AbstractElement {
 			this.height = yOffset;
 			boolean hover = Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19);
 			boolean isAdded = setting.getBlocks().contains(blocks);
-			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y - 2, 21, 19, isAdded
+			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y + 3, 21, 19, isAdded
 					? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB()
 					: hover ? Color.GRAY.getRGB() : 0x70000000);
 			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
-					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y));
+					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y + 5));
 			xOffset += 23;
 			if (xOffset > 140) {
 				xOffset = 3;

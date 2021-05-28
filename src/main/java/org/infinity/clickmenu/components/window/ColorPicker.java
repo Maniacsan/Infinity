@@ -3,15 +3,19 @@ package org.infinity.clickmenu.components.window;
 import java.awt.Color;
 import java.awt.Rectangle;
 
+import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WCheckBox;
 import org.infinity.clickmenu.widgets.WSlider;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
+import org.infinity.features.module.visual.GuiMod;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -42,6 +46,8 @@ public class ColorPicker extends Screen {
 
 	private Setting setting;
 
+	private double anim;
+
 	public ColorPicker(Screen prev, Setting setting) {
 		super(new LiteralText(""));
 		this.prev = prev;
@@ -55,10 +61,12 @@ public class ColorPicker extends Screen {
 
 		Color color = setting.getColor();
 		this.hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
+		anim = 0.4;
 	}
 
 	@Override
 	public void init() {
+
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
 		colorField = new WTextField(Helper.minecraftClient.textRenderer, xPosition, yPosition, 40, 14,
 				new TranslatableText("#"), false);
@@ -69,7 +77,7 @@ public class ColorPicker extends Screen {
 
 		rainbowSpeed = new WSlider(1, 10, width / 2, height / 2, 160, 20, new LiteralText("Rainbow Speed"),
 				setting.getRainbowSpeed());
-		
+
 		children.add(rainbowSpeed);
 
 		this.rainbowB = new WCheckBox(width / 2, this.yPosition + 98, 150, 20, new LiteralText("Rainbow"),
@@ -88,6 +96,26 @@ public class ColorPicker extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		renderBackground(matrices);
 
+		anim = anim > 0 ? Math.max(0, anim - 0.11) : 0;
+
+		GL11.glPushMatrix();
+
+		if (anim > 0) {
+			GL11.glTranslated(this.xPosition + 97.5, this.yPosition + 135, 0);
+			GL11.glScaled(1 + anim, 1 + anim, 1 + anim);
+			GL11.glTranslated(-this.xPosition - 97.5, -this.yPosition - 135, 0);
+		}
+		
+
+		renderPicker(matrices, mouseX, mouseY, delta);
+
+		
+		GL11.glPopMatrix();
+
+		super.render(matrices, mouseX, mouseY, delta);
+	}
+
+	public void renderPicker(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.xPosition = (width / 2) - 90;
 		this.yPosition = (height / 2) - 122;
 
@@ -141,12 +169,10 @@ public class ColorPicker extends Screen {
 		this.rainbowB.setX(xPosition + 2);
 		this.rainbowB.setY(yPosition + 172);
 		this.rainbowB.render(matrices, mouseX, mouseY, delta);
-		
+
 		this.rainbowSpeed.setX(xPosition + 2);
 		this.rainbowSpeed.setY(yPosition + 199);
 		this.rainbowSpeed.render(matrices, mouseX, mouseY, delta);
-
-		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -189,7 +215,8 @@ public class ColorPicker extends Screen {
 
 	@Override
 	public void onClose() {
-		Helper.openScreen(prev);
+		anim = 0.4;
+		Helper.openScreen(InfMain.INSTANCE.init.menu);
 	}
 
 	@Override

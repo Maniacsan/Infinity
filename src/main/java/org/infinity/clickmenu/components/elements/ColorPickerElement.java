@@ -26,7 +26,7 @@ public class ColorPickerElement extends AbstractElement {
 		Render2D.drawRectWH(matrices, x, y, width, height, 0x90000000);
 
 		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 5, -1);
-		Render2D.drawBorderedRect(matrices, x + width - 25, y + 4, 22, 10, 2, 0xFF070337, setting.getColor().getRGB());
+		Render2D.drawBorderedRect(matrices, x + width - 24, y + 4, 21, 10, 2, 0xFF070337, setting.getColor().getRGB());
 	}
 
 	@Override

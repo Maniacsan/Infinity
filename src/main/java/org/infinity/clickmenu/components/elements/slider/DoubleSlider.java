@@ -16,7 +16,6 @@ public class DoubleSlider extends SliderElement {
 	
 	@Override
 	public void init() {
-		stringAnimation = stringAnimation + (setting.getCurrentValueDouble() - stringAnimation) / 3;
 		valueField.setText(getRenderValue());
 	}
 

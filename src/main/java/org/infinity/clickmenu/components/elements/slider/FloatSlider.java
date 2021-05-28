@@ -3,6 +3,7 @@ package org.infinity.clickmenu.components.elements.slider;
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
+import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -27,13 +28,11 @@ public class FloatSlider extends SliderElement {
 				/ (setting.getMaxValueFloat() - setting.getMinValueFloat());
 
 		animation = animation + (currentPos - animation) / 4F;
-		stringAnimation = stringAnimation
-				+ (Math.round(setting.getCurrentValueFloat() * 100F) / 100F - stringAnimation) / 2F;
 	}
 
 	@Override
 	public String getRenderValue() {
-		float value = Math.round(stringAnimation * 100.0F) / 100.0F;
+		float value = (float) MathAssist.round(setting.getCurrentValueFloat(), 2);
 		return StringUtil.DF(value, 1);
 	}
 
