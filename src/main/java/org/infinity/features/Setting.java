@@ -25,9 +25,10 @@ public class Setting {
 	private ArrayList<String> modes;
 	private String currentMode, defaultMode;
 	private Color color, defaultColor;
-	private float hue;
-	private float saturation;
-	private float brightness;
+
+	private boolean rainbow;
+	private double rainbowSpeed;
+
 	private Category category;
 
 	public enum Category {
@@ -42,6 +43,8 @@ public class Setting {
 		this.defaultToogle = toggle;
 		this.category = Category.BOOLEAN;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// int number
@@ -54,6 +57,8 @@ public class Setting {
 		this.maxValueInt = maxValueInt;
 		this.category = Category.VALUE_INT;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// double number
@@ -67,6 +72,8 @@ public class Setting {
 		this.maxValueDouble = maxValueDouble;
 		this.category = Category.VALUE_DOUBLE;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// float number
@@ -79,6 +86,8 @@ public class Setting {
 		this.maxValueFloat = maxValueFloat;
 		this.category = Category.VALUE_FLOAT;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// String mode
@@ -90,6 +99,8 @@ public class Setting {
 		this.modes = options;
 		this.category = Category.MODE;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// Color
@@ -100,6 +111,8 @@ public class Setting {
 		this.defaultColor = currentColor;
 		this.category = Category.COLOR;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	// Blocks
@@ -111,10 +124,18 @@ public class Setting {
 		this.renderBlocks = renderBlocks;
 		this.category = Category.BLOCKS;
 		this.visible = () -> true;
+		this.rainbow = false;
+		this.rainbowSpeed = 3;
 	}
 
 	public Setting setVisible(Supplier<Boolean> visible) {
 		this.visible = visible;
+		return this;
+	}
+
+	/* Use only on color setting */
+	public Setting setRainbowColor(boolean rainbow) {
+		this.rainbow = rainbow;
 		return this;
 	}
 
@@ -264,57 +285,6 @@ public class Setting {
 		return index;
 	}
 
-	public float getSaturation() {
-		float[] hsb = new float[3];
-		Color clr = getColor();
-		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
-		saturation = hsb[1];
-		return saturation;
-	}
-
-	public void setSaturation(float saturation) {
-		if (saturation < 0.0F || saturation > 1.0F)
-			return;
-		this.saturation = saturation;
-		Color hsb = Color.getHSBColor(this.hue, saturation, this.brightness);
-		Color converted = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 100);
-		this.color = converted;
-	}
-
-	public float getHue() {
-		float[] hsb = new float[3];
-		Color clr = getColor();
-		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
-		hue = hsb[0];
-		return hue;
-	}
-
-	public void setHue(float hue) {
-		if (hue < 0.0F || hue > 1.0F)
-			return;
-		this.hue = hue;
-		Color hsb = Color.getHSBColor(hue, this.saturation, this.brightness);
-		Color converted = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
-		this.color = converted;
-	}
-
-	public float getBrightness() {
-		float[] hsb = new float[3];
-		Color clr = getColor();
-		hsb = Color.RGBtoHSB(clr.getRed(), clr.getGreen(), clr.getBlue(), hsb);
-		brightness = hsb[2];
-		return brightness;
-	}
-
-	public void setBrightness(float brightness) {
-		if (brightness < 0.0F || brightness > 1.0F)
-			return;
-		this.brightness = brightness;
-		Color hsb = Color.getHSBColor(this.hue, this.saturation, brightness);
-		Color converted = new Color(hsb.getRed(), hsb.getGreen(), hsb.getBlue(), 255);
-		this.color = converted;
-	}
-
 	public boolean isBoolean() {
 		return this.category.equals(Category.BOOLEAN);
 	}
@@ -350,6 +320,22 @@ public class Setting {
 
 	public boolean isVisible() {
 		return visible.get().booleanValue();
+	}
+
+	public boolean isRainbow() {
+		return rainbow;
+	}
+
+	public void setRainbow(boolean rainbow) {
+		this.rainbow = rainbow;
+	}
+
+	public double getRainbowSpeed() {
+		return rainbowSpeed;
+	}
+
+	public void setRainbowSpeed(double rainbowSpeed) {
+		this.rainbowSpeed = rainbowSpeed;
 	}
 
 	public boolean isDefaultToogle() {

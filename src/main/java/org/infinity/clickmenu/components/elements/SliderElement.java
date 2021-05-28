@@ -6,8 +6,6 @@ import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
-import org.infinity.features.module.visual.GuiMod;
-import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,6 +19,7 @@ public class SliderElement extends AbstractElement {
 
 	public SliderElement(Setting setting, Panel panel) {
 		super(setting, panel);
+		Helper.minecraftClient.keyboard.setRepeatEvents(true);
 		valueField = new WTextField(Helper.minecraftClient.textRenderer, (int) (x + width - 34), (int) (y + 7), 40, 14,
 				new TranslatableText("Value"), false);
 		valueField.setColor(0xFF0B1427);
@@ -51,7 +50,7 @@ public class SliderElement extends AbstractElement {
 				+ sname.substring(1, sname.length());
 
 		valueField.setX((int) (x + width - 34));
-		valueField.setY((int) (y + 8));
+		valueField.setY((int) (y + 12));
 		valueField.setWidth((int) (40));
 		valueField.setHeight(14);
 
@@ -62,11 +61,11 @@ public class SliderElement extends AbstractElement {
 		else if (animation > 1)
 			animation = 1;
 
-		FontUtils.drawStringWithShadow(matrices, setstrg, x, y, -1);
-		Render2D.drawRectWH(matrices, x, y + 14, width - 45, 1, 0xFF0D1A2C);
-		Render2D.drawRectWH(matrices, x, y + 14, (width - 45) * this.animation, 1, 0xFF30639F);
+		FontUtils.drawStringWithShadow(matrices, setstrg, x + 2, y + 7, -1);
+		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0D1A2C);
+		Render2D.drawRectWH(matrices, x, y + 20, (width - 45) * this.animation, 1, 0xFF30639F);
 
-		Render2D.drawBorderedCircle((float) (x + (width - 45) * animation), (float) (y + 14), 4.5F, 1, 0xFF30639F,
+		Render2D.drawBorderedCircle((float) (x + (width - 45) * animation), (float) (y + 20), 4.5F, 1, 0xFF30639F,
 				0xFFCCD6C8);
 
 		if (!this.dragging)

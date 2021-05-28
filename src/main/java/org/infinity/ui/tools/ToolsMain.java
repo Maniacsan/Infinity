@@ -34,7 +34,7 @@ public class ToolsMain extends Screen {
 					antiFabric.enable();
 					fSpoofWidget.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())));
 				}));
-		
+
 		addButton(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 65, 160, 20,
 				new LiteralText("Menu"), (buttonWidget) -> {
 					Helper.openScreen(new ClickMenu());
@@ -44,6 +44,7 @@ public class ToolsMain extends Screen {
 				(buttonWidget) -> {
 					this.client.openScreen(parent);
 				}));
+
 	}
 
 	@Override

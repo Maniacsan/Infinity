@@ -18,9 +18,6 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
 import org.infinity.utils.render.RenderUtil;
-import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
@@ -145,11 +142,6 @@ public class ModuleButton {
 						panel.height - 40 - getHeightDifference(), 0xFF1F5A96);
 			}
 
-			GL11.glPushMatrix();
-			GlStateManager.enableBlend();
-
-			// opacity open animation (not completed)
-
 			for (AbstractElement element : elements) {
 				if (!element.isVisible())
 					continue;
@@ -163,17 +155,15 @@ public class ModuleButton {
 				element.render(matrices, mouseX, mouseY, delta);
 
 				if (element instanceof SliderElement)
-					yOffset += 24;
+					yOffset += 28;
 				else if (element instanceof ComboBoxElement) {
-					if (((ComboBoxElement)element).isOpen())
-						yOffset += RenderUtil.animate(((ComboBoxElement)element).getSetting().getModes().size() * 20 + 24, delta, yOffset);
-					else 
+					if (((ComboBoxElement) element).isOpen())
+						yOffset += ((ComboBoxElement) element).getSetting().getModes().size() * 20 + 4;
+					else
 						yOffset += 24;
 				} else
-					yOffset += 19;
+					yOffset += 20;
 			}
-			GlStateManager.disableBlend();
-			GL11.glPopMatrix();
 		}
 		Render2D.stopScissor();
 	}
@@ -251,11 +241,11 @@ public class ModuleButton {
 		for (AbstractElement element : elements) {
 			if (isOpen() && element.isVisible()) {
 				if (element instanceof SliderElement)
-					offset = 5;
+					offset = 9;
 				else if (element instanceof ComboBoxElement && ((ComboBoxElement) element).isOpen()) {
-					offset = ((ComboBoxElement)element).getSetting().getModes().size() * 20;
+					offset = (((ComboBoxElement) element).getSetting().getModes().size() - 1) * 20;
 				} else
-					offset = 0;
+					offset = 1;
 
 				elementsHeight += (element.getHeight() + offset);
 			}

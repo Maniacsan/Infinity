@@ -64,7 +64,7 @@ public class ColorUtils {
 			format = Formatting.BLUE;
 			break;
 		}
-		
+
 		return format;
 	}
 
@@ -89,5 +89,4 @@ public class ColorUtils {
 
 		return format;
 	}
-
 }

@@ -7,6 +7,7 @@ import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -45,20 +46,38 @@ public class Render2D {
 	}
 
 	public static void drawUnfilledCircle(double x, double y, float radius, float lineWidth, int color) {
-		float alpha = (color >> 24 & 0xFF) / 255.0F;
-		float red = (color >> 16 & 0xFF) / 255.0F;
-		float green = (color >> 8 & 0xFF) / 255.0F;
-		float blue = (color & 0xFF) / 255.0F;
-		GL11.glColor4f(red, green, blue, alpha);
+		float f = (float) (color >> 16 & 255) / 255.0F;
+		float f1 = (float) (color >> 8 & 255) / 255.0F;
+		float f2 = (float) (color & 255) / 255.0F;
+		float f3 = (float) (color >> 24 & 255) / 255.0F;
+		GL11.glPushMatrix();
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glEnable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		GL11.glDepthMask(true);
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_NICEST);
+		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_NICEST);
+		GlStateManager.enableBlend();
+		GL11.glColor4f(f, f1, f2, f3);
 		GL11.glLineWidth(lineWidth);
-		GL11.glEnable(2848);
-		GL11.glBegin(2);
-		for (int i = 0; i <= 360; i++) {
-			GL11.glVertex2d(x + Math.sin(i * 3.141526D / 180.0D) * radius,
-					y + Math.cos(i * 3.141526D / 180.0D) * radius);
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+
+		for (int i = 0; i <= 360; ++i) {
+			GL11.glVertex2d((double) x + Math.sin((double) i * Math.PI / 180.0D) * (double) radius,
+					(double) y + Math.cos((double) i * Math.PI / 180.0D) * (double) radius);
 		}
+
 		GL11.glEnd();
-		GL11.glDisable(2848);
+		GL11.glScalef(2.0F, 2.0F, 2.0F);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+		GL11.glDisable(GL11.GL_BLEND);
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+		GL11.glHint(GL11.GL_LINE_SMOOTH_HINT, GL11.GL_DONT_CARE);
+		GL11.glHint(GL11.GL_POLYGON_SMOOTH_HINT, GL11.GL_DONT_CARE);
+		GlStateManager.disableBlend();
+		GL11.glPopMatrix();
 	}
 
 	public static void fillGradient(MatrixStack matrices, double xStart, double yStart, double xEnd, double yEnd,
@@ -222,13 +241,11 @@ public class Render2D {
 		drawCircle(x, y + height / 2, height / 2, color);
 		drawCircle(x + width, y + height / 2, height / 2, color);
 	}
-	
-    public static void drawBorderedCircle(float x, float y, float radius, int lineWidth, int outsideC, int insideC)
-    {
-        drawCircle(x, y, radius, insideC);
-        drawUnfilledCircle(x, y, radius, (float)lineWidth, outsideC);
-    }
 
+	public static void drawBorderedCircle(float x, float y, float radius, int lineWidth, int outsideC, int insideC) {
+		drawCircle(x, y, radius, insideC);
+		drawUnfilledCircle(x, y, radius, (float) lineWidth, outsideC);
+	}
 
 	public static void drawCircle(double x, double y, double radius, int color) {
 		float f = (float) (color >> 24 & 255) / 255.0F;

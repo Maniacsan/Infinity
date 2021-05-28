@@ -241,6 +241,7 @@ public class Panel {
 			categoryButton.onClose();
 		});
 		searchPanel.onClose();
+		configPanel.onClose();
 	}
 
 	public ArrayList<CategoryButton> getCategoryButtons() {

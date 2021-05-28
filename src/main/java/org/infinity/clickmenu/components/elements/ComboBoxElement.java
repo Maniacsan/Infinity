@@ -16,6 +16,8 @@ public class ComboBoxElement extends AbstractElement {
 	public double dropY;
 	public double dropX;
 
+	private double anim;
+
 	public ComboBoxElement(Setting setting, Panel panel) {
 		super(setting, panel);
 	}
@@ -27,28 +29,25 @@ public class ComboBoxElement extends AbstractElement {
 		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 4, y + 6, -1);
 		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(),
 				x + width - FontUtils.getStringWidth(setting.getCurrentMode()) - 18, y + 6, -1);
-		
+
 		FontUtils.drawString(matrices, isOpen() ? "<" : ">", (int) (x + width - 10), (int) (y + 7), -1);
 		dropY = y + height;
 
 		if (dropX > 0.4)
-			Render2D.drawRectWH(matrices, (float) (x + 3), (float) (dropY), (float) (width - 6),
-					(float) ((dropX)), 0x40090C13);
+			Render2D.drawRectWH(matrices, (float) (x + 3), (float) (dropY), (float) (width - 6), (float) ((dropX)),
+					0x40090C13);
 
-		if (dropX >= setting.getModes().size() * 18.7) {
+		if (dropX >= (setting.getModes().size() - 1) * 18.7) {
 			double yOffset = 0;
 			for (String mode : this.setting.getModes()) {
-				
 				if (setting.getCurrentMode().equalsIgnoreCase(mode))
-				Render2D.drawRectWH(matrices, x + 6, dropY + yOffset + 1, width - 12, 17, 0xFF70B8C5);
-
+					continue;
 				FontUtils.drawStringWithShadow(matrices, mode, x + 10, dropY + yOffset + 5, -1);
-
 				yOffset += 19;
 			}
 		}
 		if (isOpen())
-			dropX = RenderUtil.animate((this.setting.getModes().size() * 19), dropX, 0.8);
+			dropX = RenderUtil.animate(((this.setting.getModes().size() - 1) * 19), dropX, 0.8);
 		else
 			dropX = RenderUtil.animate(0, dropX, 0.95);
 	}
@@ -63,6 +62,8 @@ public class ComboBoxElement extends AbstractElement {
 
 		double yOffset = 0;
 		for (String mode : setting.getModes()) {
+			if (setting.getCurrentMode().equalsIgnoreCase(mode))
+				continue;
 			if (Render2D.isHovered(mouseX, mouseY, x + 3, dropY + yOffset, width - 6, 19)) {
 				setting.setCurrentMode(mode);
 			}

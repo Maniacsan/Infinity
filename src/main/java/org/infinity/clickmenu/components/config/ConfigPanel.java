@@ -196,7 +196,10 @@ public class ConfigPanel {
 			else if (offset < 0)
 				offset = 0;
 		}
-
+	}
+	
+	public void onClose() {
+		errorTime = 0;
 	}
 
 	public int getHeightDifference() {

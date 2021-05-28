@@ -3,6 +3,7 @@ package org.infinity.clickmenu.components.elements.slider;
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
+import org.infinity.utils.MathAssist;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.util.math.MathHelper;
@@ -15,6 +16,7 @@ public class DoubleSlider extends SliderElement {
 	
 	@Override
 	public void init() {
+		stringAnimation = stringAnimation + (setting.getCurrentValueDouble() - stringAnimation) / 3;
 		valueField.setText(getRenderValue());
 	}
 
@@ -26,12 +28,11 @@ public class DoubleSlider extends SliderElement {
 				/ (setting.getMaxValueDouble() - setting.getMinValueDouble());
 
 		animation = animation + (currentPos - animation) / 4;
-		stringAnimation = stringAnimation + (setting.getCurrentValueDouble() - stringAnimation) / 3;
 	}
 
 	@Override
 	public String getRenderValue() {
-		double value = Math.round(setting.getCurrentValueDouble() * 100) / 100;
+		double value = MathAssist.round(setting.getCurrentValueDouble(), 1);
 		return String.valueOf(value);
 	}
 
