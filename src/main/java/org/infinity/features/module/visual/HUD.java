@@ -13,6 +13,7 @@ import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
+import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,20 +28,23 @@ public class HUD extends Module {
 	private Setting coordinates = new Setting(this, "Coordinates", true);
 
 	private Setting netherCoords = new Setting(this, "Nether Coordinates", false);
+	
+	private double animation;
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-		
+
 		List<String> arrayList = new ArrayList<>();
 
 		InfMain.getModuleManager().getList().forEach(module -> {
 			if (module.isEnabled() && module.isVisible())
-				arrayList.add(Formatting.WHITE + module.getSortedName() + " " + Formatting.RESET + StringUtil.replaceNull(module.getSuffix()));
+				arrayList.add(Formatting.WHITE + module.getSortedName() + " " + Formatting.RESET
+						+ StringUtil.replaceNull(module.getSuffix()));
 		});
 
 		// sort
 		arrayList.sort((a, b) -> Integer.compare(FontUtils.getStringWidth(b), FontUtils.getStringWidth(a)));
-		
+
 		if (Helper.minecraftClient.options.debugEnabled)
 			return;
 
@@ -48,7 +52,9 @@ public class HUD extends Module {
 		if (array.isToggle()) {
 			for (String module : arrayList) {
 				float widthOffset = width - FontUtils.getStringWidth(module);
-				FontUtils.drawStringWithShadow(matrices, module, widthOffset + 1, yOffset, arrayColor.getColor().getRGB());
+				animation = (int) RenderUtil.animate(widthOffset, animation, 1);
+				FontUtils.drawStringWithShadow(matrices, module, animation , yOffset,
+						arrayColor.getColor().getRGB());
 				yOffset += 10;
 			}
 		}
@@ -82,7 +88,9 @@ public class HUD extends Module {
 					+ Formatting.WHITE + ": " + y + Formatting.RED + " z" + Formatting.WHITE + ": " + z;
 			double rWidth = width - FontUtils.getStringWidth(nCoords);
 
-			double y1 = Helper.minecraftClient.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23 : Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? 34 : coordinates.isToggle() ? 22 : 11;
+			double y1 = Helper.minecraftClient.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23
+					: Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? 34
+							: coordinates.isToggle() ? 22 : 11;
 
 			FontUtils.drawStringWithShadow(matrices, nCoords, rWidth - 2, height - y1, 0xFFFFFFFF);
 		}

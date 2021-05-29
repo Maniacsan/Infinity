@@ -24,10 +24,12 @@ import net.minecraft.util.math.BlockPos;
 @ModuleInfo(category = Category.MOVEMENT, desc = "Lets you walk on water", key = -2, name = "Jesus", visible = true)
 public class Jesus extends Module {
 
-	private Setting mode = new Setting(this, "Mode", "Swing", new ArrayList<>(Arrays.asList("Swing", "Matrix 6.0.6")));
+	private Setting mode = new Setting(this, "Mode", "Swing",
+			new ArrayList<>(Arrays.asList("Swing", "Matrix 6.0.6", "Bhop")));
 
 	private Setting speed = new Setting(this, "Speed", 0.32, 0.2, 1)
-			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6"));
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")
+					|| mode.getCurrentMode().equalsIgnoreCase("Bhop"));
 
 	private boolean water;
 
@@ -52,7 +54,9 @@ public class Jesus extends Module {
 			return;
 
 		double offsetY = MathAssist.random(0.01, 0.3);
-		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.0.6")) {
+		double bhopY = MathAssist.random(0.1, 0.34);
+		switch (mode.getCurrentMode()) {
+		case "Matrix 6.0.6":
 			if (BlockUtil.isFluid(new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + offsetY,
 					Helper.getPlayer().getZ()))) {
 
@@ -65,8 +69,8 @@ public class Jesus extends Module {
 				MoveUtil.strafe(MoveUtil.calcMoveYaw(), speed.getCurrentValueDouble());
 				KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), true);
 			}
-
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
+			break;
+		case "Swing":
 			if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
 				if (Helper.getPlayer().age % 3 == 0) {
 					if (Helper.minecraftClient.options.keyForward.isPressed()) {
@@ -89,6 +93,15 @@ public class Jesus extends Module {
 					}
 				}
 			}
+			break;
+		case "Bhop":
+			if (BlockUtil.isFluid(new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() + bhopY,
+					Helper.getPlayer().getZ()))) {
+				MoveUtil.setYVelocity(0.4);
+				MoveUtil.strafe(MoveUtil.calcMoveYaw(), speed.getCurrentValueDouble());
+			}
+
+			break;
 		}
 	}
 

@@ -163,7 +163,7 @@ public class CategoryButton {
 			moduleButtons.forEach(moduleButton -> moduleButton.mouseScrolled(d, e, amount));
 		}
 
-		int scrollOffset = 15;
+		int scrollOffset = 24;
 
 		if (!isOpen() || !scrollHover || _cbuttonsHeight < panel.height - 40)
 			return;

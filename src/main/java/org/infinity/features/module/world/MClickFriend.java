@@ -23,7 +23,7 @@ public class MClickFriend extends Module {
 		if (event.getButton() == 2) {
 			if (Helper.minecraftClient.targetedEntity != null
 					&& Helper.minecraftClient.targetedEntity instanceof PlayerEntity) {
-				InfMain.getFriend().addOrDelate(Helper.minecraftClient.targetedEntity.getDisplayName().getString());
+				InfMain.getFriend().addOrDelate(Helper.minecraftClient.targetedEntity.getName().getString());
 			}
 		}
 	}

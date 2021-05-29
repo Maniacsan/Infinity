@@ -206,10 +206,11 @@ public class ModuleButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		int scrollOffset = 15;
+		int scrollOffset = 23;
+		int difference = getHeightDifference();
 		if (!isOpen() || !scrollHover || _celementHeight < panel.height)
 			return;
-
+	
 		if (amount < 0.0D) {
 			this.offset += scrollOffset;
 
@@ -217,7 +218,6 @@ public class ModuleButton {
 			this.offset -= scrollOffset;
 		}
 
-		int difference = getHeightDifference();
 		if (offset > difference)
 			offset = difference;
 		else if (offset < 0)

@@ -205,7 +205,7 @@ public class Criticals extends Module {
 		// lul
 		if (criticals.isEnabled() && criticals.mode.getCurrentMode().equalsIgnoreCase("Jump")
 				&& criticals.falling.isToggle()) {
-			if (Helper.getPlayer().fallDistance > criticals.fallDistance.getCurrentValueDouble()
+			if (Helper.getPlayer().fallDistance >= criticals.fallDistance.getCurrentValueDouble()
 					&& !Helper.getPlayer().isOnGround() && Helper.getPlayer().fallDistance != 0) {
 				return true;
 			} else {

@@ -31,7 +31,7 @@ public class DoubleSlider extends SliderElement {
 
 	@Override
 	public String getRenderValue() {
-		double value = MathAssist.round(setting.getCurrentValueDouble(), 1);
+		double value = MathAssist.round(setting.getCurrentValueDouble(), 2);
 		return String.valueOf(value);
 	}
 

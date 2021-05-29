@@ -26,9 +26,9 @@ public class IntSlider extends SliderElement {
 		int currentPos = (setting.getCurrentValueInt() - setting.getMinValueInt())
 				/ (setting.getMaxValueInt() - setting.getMinValueInt());
 
-		animation = animation + (currentPos - animation) / 4;
+		animation = animation + (currentPos - animation) / 2;
 		stringAnimation = stringAnimation
-				+ (Math.round(setting.getCurrentValueInt() * 1000) / 1000 - stringAnimation) / 2;
+				+ (Math.round(setting.getCurrentValueInt() * 100) / 100 - stringAnimation) / 2;
 	}
 
 	@Override

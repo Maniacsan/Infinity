@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.infinity.features.module.combat.AntiBot;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.rotation.RotationUtil;
@@ -32,8 +33,6 @@ import net.minecraft.util.math.Vec3d;
 
 public class EntityUtil {
 
-	// Set target -> Entity entity -> to update method -> entity =
-	// EntityUtil.setTarget(values);
 	public static Entity setTarget(double range, double fov, boolean players, boolean friends, boolean invisibles,
 			boolean mobs, boolean animals, boolean throughWalls) {
 		Entity entity = null;
@@ -59,12 +58,6 @@ public class EntityUtil {
 
 	/**
 	 * for render
-	 * 
-	 * @param players
-	 * @param invisibles
-	 * @param mobs
-	 * @param animals
-	 * @return
 	 */
 	public static List<Entity> getRenderTargets(boolean players, boolean friends, boolean invisibles, boolean mobs,
 			boolean animals) {
@@ -73,20 +66,13 @@ public class EntityUtil {
 				.collect(Collectors.toList());
 	}
 
-	/**
-	 * 
-	 * @param entity
-	 * @param fov
-	 * @param players
-	 * @param friends
-	 * @param invisibles
-	 * @param mobs
-	 * @param animals
-	 * @return
-	 */
 	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
 			boolean invisibles, boolean mobs, boolean animals, boolean throughWalls) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
+			return false;
+
+		AntiBot antiBot = ((AntiBot) InfMain.getModuleManager().getModuleByClass(AntiBot.class));
+		if (antiBot.isBot(entity))
 			return false;
 
 		if (!RotationUtil.isInFOV(entity, fov))
@@ -98,7 +84,7 @@ public class EntityUtil {
 		if (!throughWalls && !Helper.getPlayer().canSee(entity))
 			return false;
 
-		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
+		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getName().getString());
 
 		if (!friends && isFriend)
 			return false;
@@ -110,21 +96,12 @@ public class EntityUtil {
 		if (animals && isAnimal(entity))
 			return true;
 
-		// entity dead check
 		if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
 			return false;
 
 		return false;
 	}
 
-	/**
-	 * @param entity
-	 * @param players
-	 * @param invisibles
-	 * @param mobs
-	 * @param animals
-	 * @return
-	 */
 	public static boolean isTarget(Entity entity, boolean players, boolean friends, boolean invisibles, boolean mobs,
 			boolean animals) {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
@@ -156,7 +133,6 @@ public class EntityUtil {
 		return e instanceof Monster;
 	}
 
-	// raycast entity
 	public static void updateTargetRaycast(Entity target, double reachDistance, float yaw, float pitch) {
 		float tickDelta = 1.0F;
 		Entity entity = Helper.minecraftClient.getCameraEntity();

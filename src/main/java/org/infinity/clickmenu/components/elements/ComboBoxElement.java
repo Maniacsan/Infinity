@@ -16,8 +16,6 @@ public class ComboBoxElement extends AbstractElement {
 	public double dropY;
 	public double dropX;
 
-	private double anim;
-
 	public ComboBoxElement(Setting setting, Panel panel) {
 		super(setting, panel);
 	}
@@ -30,7 +28,7 @@ public class ComboBoxElement extends AbstractElement {
 		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(),
 				x + width - FontUtils.getStringWidth(setting.getCurrentMode()) - 18, y + 6, -1);
 
-		FontUtils.drawString(matrices, isOpen() ? "<" : ">", (int) (x + width - 10), (int) (y + 7), -1);
+		Render2D.drawTriangle((int) (x + width - 10), (int) (y + 10), 3, isOpen() ? 0 : 180, -1);
 		dropY = y + height;
 
 		if (dropX > 0.4)

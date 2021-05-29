@@ -15,6 +15,7 @@ import org.infinity.features.module.player.FakeLags;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
+import org.infinity.utils.MathAssist;
 import org.infinity.utils.Timer;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.rotation.RotationUtil;
@@ -150,11 +151,10 @@ public class KillAura extends Module {
 
 		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
 
-		focus[0] = RotationUtil.limitAngleChange(event.getYaw(), focus[0], speed);
-		focus[1] = RotationUtil.limitAngleChange(event.getPitch(), focus[1], speed);
-
-		focus[0] = Math.round(focus[0] * 1000) / 1000;
-		focus[1] = Math.round(focus[1] * 1000) / 1000;
+		focus[0] = RotationUtil.limitAngleChange(event.getYaw(),
+				(float) MathAssist.round(Math.round(focus[0] * 1000) / 1000, 5), speed);
+		focus[1] = RotationUtil.limitAngleChange(event.getPitch(),
+				(float) MathAssist.round(Math.round(focus[1] * 1000) / 1000, 5), speed);
 
 		smash[0] = RotationUtil.limitAngleChange(event.getYaw(), smash[0], speed);
 		smash[1] = RotationUtil.limitAngleChange(event.getPitch(), smash[1], speed);

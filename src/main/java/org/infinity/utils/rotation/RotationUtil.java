@@ -10,14 +10,6 @@ import net.minecraft.util.math.Vec3d;
 
 public class RotationUtil {
 
-	/**
-	 * This rotation with predict for aim from long distance
-	 * 
-	 * @param target
-	 * @param maxYawChange
-	 * @param maxPitchChange
-	 * @return
-	 */
 	public static float[] bowAimRotation(Entity target) {
 		double xPos = target.getX();
 		double zPos = target.getZ();
@@ -39,13 +31,6 @@ public class RotationUtil {
 		return new float[] { lookVec[0], lookVec[1] };
 	}
 
-	/**
-	 * Look to target -> float[] look = RotationUtils.lookAtEntity(values):
-	 * 
-	 * @param targetEntity
-	 * @param maxYawChange
-	 * @param maxPitchChange
-	 */
 	public static float[] lookAtEntity(Entity targetEntity) {
 		double d = targetEntity.getX() - Helper.getPlayer().getX();
 		double e = targetEntity.getZ() - Helper.getPlayer().getZ();
@@ -66,14 +51,6 @@ public class RotationUtil {
 		return new float[] { yaw, pitch };
 	}
 
-	/**
-	 * Look to target with Vec3d component
-	 * 
-	 * @param targetEntity
-	 * @param maxYawChange
-	 * @param maxPitchChange
-	 * @return
-	 */
 	public static float[] lookAtVecPos(Vec3d targetEntity) {
 		double d = targetEntity.getX() + 0.5 - Helper.getPlayer().getX();
 		double g = targetEntity.getY() - Helper.getPlayer().getY();
