@@ -24,7 +24,6 @@ public class TargetStrafe extends Module {
 
 	private Setting mode = new Setting(this, "Mode", "Basic", new ArrayList<>(Arrays.asList("Basic", "Scroll")));
 
-	// targets
 	private Setting players = new Setting(this, "Players", true);
 	private Setting friends = new Setting(this, "Friends", false).setVisible(() -> players.isToggle());
 	private Setting invisibles = new Setting(this, "Invisibles", true);
@@ -39,7 +38,7 @@ public class TargetStrafe extends Module {
 	private Setting scrollSpeed = new Setting(this, "Speed to Entity", 0.26D, 0.0D, 1.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Scroll"));
 
-	private Setting damageBoost = new Setting(this, "Damaget Boost", false);
+	private Setting damageBoost = new Setting(this, "Damage Boost", false);
 	private Setting boost = new Setting(this, "Boost Value", 0.09D, 0.0D, 0.8D)
 			.setVisible(() -> damageBoost.isToggle());
 
@@ -75,25 +74,17 @@ public class TargetStrafe extends Module {
 
 		float yaw = getNormalizeYaw(target);
 
-		Helper.getPlayer().bodyYaw = yaw;
-		Helper.getPlayer().headYaw = yaw;
-
 		if (mode.getCurrentMode().equalsIgnoreCase("Basic")) {
-			if (Helper.getPlayer().distanceTo(target) >= radius.getCurrentValueDouble()) {
+			if (Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble())
 				getBasic(yaw, speed, 1, direction);
-			} else {
+			else
 				getBasic(yaw, speed, 0, direction);
-			}
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll")) {
-			getScroll(target);
-		}
+
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll"))
+			getScroll(target, speed);
 	}
 
-	private void getScroll(Entity target) {
-		double speed = damageBoost.isToggle() && Helper.getPlayer().hurtTime != 0
-				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
-				: this.speed.getCurrentValueDouble();
-
+	private void getScroll(Entity target, double speed) {
 		double c1 = (Helper.getPlayer().getX() - target.getX())
 				/ (Math.sqrt(Math.pow(Helper.getPlayer().getX() - target.getX(), 2)
 						+ Math.pow(Helper.getPlayer().getZ() - target.getZ(), 2)));
@@ -109,10 +100,10 @@ public class TargetStrafe extends Module {
 
 	private void getBasic(float yaw, double speed, double forward, double direction) {
 		if (forward != 0.0D) {
-			if (direction < 0.0D) {
-				yaw += ((forward > 0.0D) ? -50 : 50);
-			} else if (direction > 0.0D) {
-				yaw += ((forward > 0.0D) ? 50 : -50);
+			if (direction > 0.0D) {
+				yaw += (float) (forward > 0.0D ? -45 : 45);
+			} else if (direction < 0.0D) {
+				yaw += (float) (forward > 0.0D ? 45 : -45);
 			}
 			direction = 0.0D;
 			if (forward > 0.0D) {
@@ -121,13 +112,16 @@ public class TargetStrafe extends Module {
 				forward = -1.0D;
 			}
 		}
+		Helper.getPlayer().bodyYaw = yaw;
+		Helper.getPlayer().headYaw = yaw;
 
 		double x = forward * speed * Math.cos(Math.toRadians((yaw + 90.0F)))
-				- direction * speed * Math.sin(Math.toRadians((yaw + 90.0F)));
+				+ direction * speed * Math.sin(Math.toRadians((yaw + 90.0F)));
 		double z = forward * speed * Math.sin(Math.toRadians((yaw + 90.0F)))
-				+ direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
+				- direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 
 		MoveUtil.setHVelocity(x, z);
+		Helper.getPlayer().getVelocity().subtract(0, -0.02, 0);
 	}
 
 	public static float getNormalizeYaw(Entity entity) {

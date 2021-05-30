@@ -22,6 +22,7 @@ public class CategoryButton {
 
 	private ArrayList<ModuleButton> moduleButtons = new ArrayList<>();
 	private List<Module> modules = new ArrayList<>();
+	private List<Module> searchList = new ArrayList<>();
 	private Panel panel;
 	private String name;
 	private boolean open;
@@ -45,11 +46,10 @@ public class CategoryButton {
 
 		if (moduleList != null) {
 			moduleList.forEach(module -> {
-				if (module.getCategory() != Category.ENABLED)
+				if (module.getCategory() != Category.ENABLED || name != panel.SEARCH)
 					moduleButtons.add(new ModuleButton(module, moduleButtons, panel));
 			});
 		}
-
 		enabledRefresh();
 	}
 
@@ -68,35 +68,54 @@ public class CategoryButton {
 			InfMain.getModuleManager().getEnableModules().forEach(module -> {
 				ModuleButton enabledButton = new ModuleButton(module, moduleButtons, panel);
 				moduleButtons.add(enabledButton);
+				addChildren(panel.clickMenu.getChildren());
 			});
 		}
 	}
 
+	public void searchRefresh(List<Module> searchList) {
+		if (!moduleButtons.isEmpty())
+			moduleButtons.clear();
+		searchList.clear();
+		getResult(searchList);
+
+		if (searchList.isEmpty())
+			return;
+
+		searchList.forEach(result -> {
+			moduleButtons.add(new ModuleButton(result, moduleButtons, panel));
+			addChildren(panel.clickMenu.getChildren());
+		});
+	}
+
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
-		if (isOpen()) {
-			Render2D.drawRectWH(matrices, x, y, width, height, 0xFF2E375A);
-			Render2D.fillGradient(x, y, x + 2, Math.max(y + height, -1), 0xFF8CEDEB, 0xFF2D4780);
+
+		if (!name.equalsIgnoreCase(panel.SEARCH)) {
+			if (isOpen()) {
+				Render2D.drawRectWH(matrices, x, y, width, height, 0xFF2E375A);
+				Render2D.fillGradient(x, y, x + 2, Math.max(y + height, -1), 0xFF8CEDEB, 0xFF2D4780);
+			}
+
+			hoverAnim = Render2D.isHovered(mouseX, mouseY, x, y, width, height) ? Math.min(1.3, hoverAnim + 0.11)
+					: Math.max(1, hoverAnim - 0.11);
+
+			// icon
+			GL11.glPushMatrix();
+
+			GlStateManager.enableBlend();
+			GL11.glTranslated(x + 12.5, y + 10.5, 0);
+			GL11.glScaled(hoverAnim, hoverAnim, 1);
+			GL11.glTranslated(-x - 12.5, -y - 10.5, 0);
+			RenderUtil.drawTexture(matrices,
+					new Identifier("infinity", "textures/icons/category/" + this.getName().toLowerCase() + ".png"),
+					x + 7, y + 5, 11, 11);
+
+			GlStateManager.disableBlend();
+			GL11.glPopMatrix();
+
+			FontUtils.drawString(matrices, getName(), (int) x + 25, (int) y + 7, 0xFFDBDBDB);
 		}
-
-		hoverAnim = Render2D.isHovered(mouseX, mouseY, x, y, width, height) ? Math.min(1.3, hoverAnim + 0.11)
-				: Math.max(1, hoverAnim - 0.11);
-
-		// icon
-		GL11.glPushMatrix();
-
-		GlStateManager.enableBlend();
-		GL11.glTranslated(x + 12.5, y + 10.5, 0);
-		GL11.glScaled(hoverAnim, hoverAnim, 1);
-		GL11.glTranslated(-x - 12.5, -y - 10.5, 0);
-		RenderUtil.drawTexture(matrices,
-				new Identifier("infinity", "textures/icons/category/" + this.getName().toLowerCase() + ".png"), x + 7,
-				y + 5, 11, 11);
-
-		GlStateManager.disableBlend();
-		GL11.glPopMatrix();
-
-		FontUtils.drawString(matrices, getName(), (int) x + 25, (int) y + 7, 0xFFDBDBDB);
 
 		double yMod = 2;
 
@@ -130,7 +149,7 @@ public class CategoryButton {
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (Render2D.isHovered(mouseX, mouseY, x, y, width, height)) {
-			if (button != 0)
+			if (button != 0 || name.equalsIgnoreCase(panel.SEARCH))
 				return;
 
 			panel.searchField.setText("");
@@ -196,6 +215,10 @@ public class CategoryButton {
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (isOpen())
 			moduleButtons.forEach(moduleButton -> moduleButton.keyPressed(keyCode, scanCode, modifiers));
+
+		if (name.equalsIgnoreCase(panel.SEARCH)) {
+			searchRefresh(searchList);
+		}
 	}
 
 	public void onClose() {
@@ -216,6 +239,19 @@ public class CategoryButton {
 	public int getHeightDifference() {
 		double diffHeight = panel.height - 40;
 		return (int) (this.getButtonsHeight() - diffHeight);
+	}
+
+	private void getResult(List<Module> list) {
+		if (!panel.searchField.getText().isEmpty()) {
+
+			for (Module m : InfMain.getModuleManager().getList()) {
+				if (m.getCategory().equals(Category.HIDDEN) || m.getCategory().equals(Category.ENABLED))
+					continue;
+
+				if (m.getName().toLowerCase().contains(panel.searchField.getText().toLowerCase().replace(" ", "")))
+					list.add(m);
+			}
+		}
 	}
 
 	public String getName() {

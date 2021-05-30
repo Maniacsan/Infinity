@@ -1,6 +1,8 @@
 package org.infinity.features.module.world;
 
+import org.infinity.event.ClipEvent;
 import org.infinity.event.MotionEvent;
+import org.infinity.event.PlayerInWaterEvent;
 import org.infinity.event.PlayerMoveEvent;
 import org.infinity.event.PushOutBlockEvent;
 import org.infinity.features.Category;
@@ -25,13 +27,26 @@ public class NoClip extends Module {
 		}
 	}
 
+	@Override
+	public void onPlayerTick() {
+	}
+
+	@EventTarget
+	public void onPlayerInWater(PlayerInWaterEvent event) {
+	}
+
 	@EventTarget
 	public void onMove(PlayerMoveEvent event) {
-		Helper.getPlayer().noClip = true;
+
 	}
 
 	@EventTarget
 	public void onPushBlock(PushOutBlockEvent event) {
+		event.cancel();
+	}
+
+	@EventTarget
+	public void onClip(ClipEvent event) {
 		event.cancel();
 	}
 

@@ -23,10 +23,10 @@ public class Panel {
 
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
 	public ConfigPanel configPanel = new ConfigPanel("Config");
-	private Search searchPanel;
+	public String SEARCH = "Search";
 
 	public WSearchField searchField;
-	private ClickMenu clickMenu;
+	public ClickMenu clickMenu;
 
 	public double x;
 	public double y;
@@ -64,10 +64,9 @@ public class Panel {
 				new CategoryButton("Visual", InfMain.getModuleManager().getModulesByCategory(Category.VISUAL), this));
 		categoryButtons.add(
 				new CategoryButton("Enabled", InfMain.getModuleManager().getModulesByCategory(Category.ENABLED), this));
-
 		categoryButtons.add(new CategoryButton(configPanel.getName(), null, this));
+		categoryButtons.add(new CategoryButton(SEARCH, null, this));
 
-		searchPanel = new Search(this);
 	}
 
 	public void init() {
@@ -86,7 +85,7 @@ public class Panel {
 	public void addChildren(List<Element> children) {
 		children.add(searchField);
 		children.add(configPanel.textField);
-		
+
 		categoryButtons.forEach(categoryButton -> categoryButton.addChildren(children));
 	}
 
@@ -133,7 +132,6 @@ public class Panel {
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, width - 92, 1, 0xFF1F1F1F);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, 0.5, 28, 0xFF4A4F65);
-
 		Render2D.fillGradient(this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
 
 		searchField.setX((int) (x + width - 115));
@@ -144,14 +142,13 @@ public class Panel {
 
 		setSearch(!searchField.getText().isEmpty());
 
-		searchPanel.setOpen(isSearch());
-
-		searchPanel.render(matrices, mouseX, mouseY, delta);
-
 		double yOffset = 2;
 		for (CategoryButton categoryButton : categoryButtons) {
 			if (isSearch()) {
-				categoryButton.setOpen(false);
+				if (categoryButton.getName().equalsIgnoreCase(SEARCH))
+					categoryButton.setOpen(true);
+				else
+					categoryButton.setOpen(false);
 			}
 
 			categoryButton.setX(x + 3);
@@ -177,7 +174,6 @@ public class Panel {
 	public void tick() {
 		categoryButtons.forEach(CategoryButton::tick);
 		configPanel.tick();
-		searchPanel.tick();
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -189,8 +185,6 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.mouseClicked(mouseX, mouseY, button);
 		});
-
-		searchPanel.mouseClicked(mouseX, mouseY, button);
 
 		if (this.hovered) {
 			if (button == 0) {
@@ -208,7 +202,6 @@ public class Panel {
 		});
 
 		configPanel.mouseScrolled(d, e, amount);
-		searchPanel.mouseScrolled(d, e, amount);
 	}
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
@@ -218,7 +211,6 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.mouseReleased(mouseX, mouseY, button);
 		});
-		searchPanel.mouseScrolled(mouseX, mouseY, button);
 
 	}
 
@@ -226,21 +218,18 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.charTyped(chr, keyCode);
 		});
-		searchPanel.charTyped(chr, keyCode);
 	}
 
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.keyPressed(keyCode, scanCode, modifiers);
 		});
-		searchPanel.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public void onClose() {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.onClose();
 		});
-		searchPanel.onClose();
 		configPanel.onClose();
 	}
 

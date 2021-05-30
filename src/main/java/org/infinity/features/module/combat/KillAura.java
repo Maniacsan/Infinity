@@ -35,7 +35,7 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Category.COMBAT, desc = "Attack entities on range", key = -2, name = "KillAura", visible = true)
 public class KillAura extends Module {
 
-	public Setting rotation = new Setting(this, "Rotation", "Reset",
+	public Setting rotation = new Setting(this, "Rotation", "Focus",
 			new ArrayList<>(Arrays.asList("Smash", "Focus", "Reset")));
 
 	// targets

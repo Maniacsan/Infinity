@@ -1,11 +1,14 @@
 package org.infinity.clickmenu;
 
+import java.util.List;
+
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.lwjgl.opengl.GL11;
 
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
@@ -29,7 +32,7 @@ public class ClickMenu extends Screen {
 
 	@Override
 	public void init() {
-		anim = 0.4;
+		anim = 0.3;
 
 		panel.init();
 		panel.addChildren(children);
@@ -43,7 +46,7 @@ public class ClickMenu extends Screen {
 
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 
-		anim = anim > 0 ? Math.max(0, anim - 0.18) : 0;
+		anim = anim > 0 ? Math.max(0, anim - 0.17) : 0;
 
 		mouseX /= scale;
 		mouseY /= scale;
@@ -113,7 +116,7 @@ public class ClickMenu extends Screen {
 	public void onClose() {
 		panel.onClose();
 
-		anim = 0.4;
+		anim = Math.min(0.3, anim + 0.17);
 		super.onClose();
 	}
 
@@ -128,6 +131,10 @@ public class ClickMenu extends Screen {
 		if (keyCode == InfMain.getModuleManager().getModuleByClass(GuiMod.class).getKey())
 			onClose();
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	public List<Element> getChildren() {
+		return children;
 	}
 
 }

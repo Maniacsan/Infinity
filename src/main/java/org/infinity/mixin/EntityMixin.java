@@ -1,5 +1,6 @@
 package org.infinity.mixin;
 
+import org.infinity.event.ClipEvent;
 import org.infinity.event.MoveEvent;
 import org.infinity.event.RotationEvent;
 import org.infinity.features.module.combat.HitBoxes;
@@ -27,12 +28,22 @@ import net.minecraft.util.math.Vec3d;
 @Mixin(Entity.class)
 public abstract class EntityMixin {
 
+	private Entity entity = (Entity) ((Object) this);
+
 	@Shadow
 	public abstract void setSwimming(boolean swimming);
 
-	@Inject(method = "move", at = @At("HEAD"))
+	@Inject(method = "move", at = @At("HEAD"), cancellable = true)
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {
-		if ((Object) this != Helper.minecraftClient.player)
+		ClipEvent clipEvent = new ClipEvent(entity);
+		EventManager.call(clipEvent);
+		if (clipEvent.isCancelled()) {
+			entity.setBoundingBox(entity.getBoundingBox().offset(movement));
+			entity.moveToBoundingBoxCenter();
+			info.cancel();
+		}
+
+		if (entity != Helper.minecraftClient.player)
 			return;
 		MoveEvent moveEvent = new MoveEvent(EventType.PRE, type, movement);
 		EventManager.call(moveEvent);
@@ -44,6 +55,16 @@ public abstract class EntityMixin {
 			return;
 		MoveEvent moveEvent = new MoveEvent(EventType.POST, type, movement);
 		EventManager.call(moveEvent);
+	}
+
+	@Inject(method = "isInsideWall", at = @At("HEAD"), cancellable = true)
+	public void isInsideWall(CallbackInfoReturnable<Boolean> cir) {
+		ClipEvent clipEvent = new ClipEvent(entity);
+		EventManager.call(clipEvent);
+		if (clipEvent.isCancelled()) {
+			cir.setReturnValue(false);
+			cir.cancel();
+		}
 	}
 
 	@Inject(method = "getTargetingMargin", at = @At("HEAD"), cancellable = true)

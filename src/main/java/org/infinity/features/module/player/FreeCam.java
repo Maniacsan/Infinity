@@ -66,7 +66,6 @@ public class FreeCam extends Module {
 
 	@EventTarget
 	public void onPushBlock(PushOutBlockEvent event) {
-		// noclip to block fix
 		event.cancel();
 	}
 
@@ -77,7 +76,6 @@ public class FreeCam extends Module {
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
-		// cancelling real player packets
 		PacketUtil.cancelMotionPackets(event);
 		PacketUtil.cancelCommandPackets(event);
 	}

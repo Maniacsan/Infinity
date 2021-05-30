@@ -121,7 +121,7 @@ public class AutoFarm extends Module {
 				for (int z = (int) range; z >= -range; z--) {
 					BlockPos pos = new BlockPos(x, y, z);
 					Vec3d vecPos = new Vec3d(pos.getX(), pos.getY(), pos.getZ());
-					if (BlockUtil.getBlock(new BlockPos(vecPos)) == Blocks.JUNGLE_LOG) {
+					if (BlockUtil.getBlock(new BlockPos(vecPos)) == selectBlock) {
 						bPos.add(pos);
 					}
 

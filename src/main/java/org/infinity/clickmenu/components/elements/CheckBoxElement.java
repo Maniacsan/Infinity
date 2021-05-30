@@ -22,8 +22,6 @@ public class CheckBoxElement extends AbstractElement {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 4);
-		
-		Render2D.drawRectWH(matrices, x, y, width, height, 0x90000000);
 
 		Render2D.drawAngleRect(matrices, x + 8, y + 6, 10, 8, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
 

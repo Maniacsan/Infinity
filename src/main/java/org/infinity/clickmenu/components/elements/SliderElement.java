@@ -43,7 +43,7 @@ public class SliderElement extends AbstractElement {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width - 45, height);
+		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width - 45, height + 8);
 
 		String sname = setting.getName();
 		String setstrg = String.valueOf(String.valueOf(sname.substring(0, 1).toUpperCase()))

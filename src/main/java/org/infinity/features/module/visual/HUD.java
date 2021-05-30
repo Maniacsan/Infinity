@@ -13,7 +13,6 @@ import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
-import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,7 +27,7 @@ public class HUD extends Module {
 	private Setting coordinates = new Setting(this, "Coordinates", true);
 
 	private Setting netherCoords = new Setting(this, "Nether Coordinates", false);
-	
+
 	private double animation;
 
 	@Override
@@ -52,8 +51,7 @@ public class HUD extends Module {
 		if (array.isToggle()) {
 			for (String module : arrayList) {
 				float widthOffset = width - FontUtils.getStringWidth(module);
-				animation = (int) RenderUtil.animate(widthOffset, animation, 1);
-				FontUtils.drawStringWithShadow(matrices, module, animation , yOffset,
+				FontUtils.drawStringWithShadow(matrices, module, widthOffset + 1, yOffset,
 						arrayColor.getColor().getRGB());
 				yOffset += 10;
 			}

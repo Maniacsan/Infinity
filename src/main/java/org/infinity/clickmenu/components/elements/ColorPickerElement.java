@@ -22,11 +22,9 @@ public class ColorPickerElement extends AbstractElement {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
-		
-		Render2D.drawRectWH(matrices, x, y, width, height, 0x90000000);
 
 		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 5, -1);
-		Render2D.drawBorderedRect(matrices, x + width - 24, y + 4, 21, 10, 2, 0xFF070337, setting.getColor().getRGB());
+		Render2D.drawBorderedRect(matrices, x + width - 29, y + 3, 21, 12, 2, 0xFF070337, setting.getColor().getRGB());
 	}
 
 	@Override

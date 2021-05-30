@@ -6,6 +6,7 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.config.Config;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
+import org.infinity.utils.StringUtil;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -40,8 +41,8 @@ public class ConfigButton {
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"), x + width - 110,
 				y + 11, 10, 10);
 
-		String name = config.getName();
-		String author = "Author: " + config.getAuthor();
+		String name = StringUtil.replaceNull(config.getName());
+		String author = "Author: " + StringUtil.replaceNull(config.getAuthor());
 
 		if (name.length() > 23)
 			name = name.substring(0, 23) + "...";
