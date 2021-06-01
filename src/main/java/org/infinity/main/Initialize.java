@@ -56,7 +56,7 @@ public class Initialize {
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
 		friend = new Friend();
-		
+
 		// loads
 		friend.load();
 		accountManager.load();

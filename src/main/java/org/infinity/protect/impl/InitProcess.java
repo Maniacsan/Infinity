@@ -25,6 +25,7 @@ public class InitProcess extends Handler {
 		InfMain.INSTANCE.init.macroManager.load();
 
 		InfMain.INSTANCE.init.menu = new ClickMenu();
+	
 		ConnectUtil.downloadPhoto();
 
 		try {

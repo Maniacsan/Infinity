@@ -44,7 +44,7 @@ public class TargetStrafe extends Module {
 
 	private Entity target;
 
-	private double direction = 1;
+	private int direction = 1;
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
@@ -71,16 +71,13 @@ public class TargetStrafe extends Module {
 		double speed = damageBoost.isToggle() && Helper.getPlayer().hurtTime != 0
 				? this.speed.getCurrentValueDouble() + boost.getCurrentValueDouble()
 				: this.speed.getCurrentValueDouble();
+		double forward = Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble() ? 1 : 0;
 
 		float yaw = getNormalizeYaw(target);
 
-		if (mode.getCurrentMode().equalsIgnoreCase("Basic")) {
-			if (Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble())
-				getBasic(yaw, speed, 1, direction);
-			else
-				getBasic(yaw, speed, 0, direction);
-
-		} else if (mode.getCurrentMode().equalsIgnoreCase("Scroll"))
+		if (mode.getCurrentMode().equalsIgnoreCase("Basic"))
+			getBasic(yaw, speed, forward, direction);
+		else if (mode.getCurrentMode().equalsIgnoreCase("Scroll"))
 			getScroll(target, speed);
 	}
 

@@ -1,9 +1,7 @@
 package org.infinity.ui.util;
 
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.event.protect.ButtonPressEvent;
-
-import com.darkmagician6.eventapi.EventManager;
+import org.infinity.ui.util.font.IFont;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,12 +38,11 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		MinecraftClient minecraftClient = MinecraftClient.getInstance();
 		TextRenderer textRenderer = minecraftClient.textRenderer;
-		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? 0xFF85C0BA :
-				this.active ? 0xFF95D3CD
-								: !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
+		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? 0xFF85C0BA
+				: this.active ? 0xFF95D3CD : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
 		int j = this.active ? 16777215 : 10526880;
-		drawCenteredText(matrices, textRenderer, this.getMessage(), this.x + this.width / 2,
-				this.y + (this.height - 8) / 2, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+		IFont.legacy16.drawCenteredString(this.getMessage().getString(), this.x + this.width / 2,
+				this.y + (this.height - 8) / 2 - 1, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
 
 		if (this.isHovered()) {
 			this.renderToolTip(matrices, mouseX, mouseY);

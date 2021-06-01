@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.infinity.clickmenu.components.Panel;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.opengl.GL11;
 
@@ -113,8 +113,8 @@ public class CategoryButton {
 
 			GlStateManager.disableBlend();
 			GL11.glPopMatrix();
-
-			FontUtils.drawString(matrices, getName(), (int) x + 25, (int) y + 7, 0xFFDBDBDB);
+			
+			IFont.legacy16.drawString(getName(), (int) x + 25, (int) y + 6, 0xFFDBDBDB, false);
 		}
 
 		double yMod = 2;

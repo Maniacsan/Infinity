@@ -5,6 +5,7 @@ import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,11 +25,10 @@ public class ComboBoxElement extends AbstractElement {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		Render2D.drawRectWH(matrices, (float) (x), (float) (y), (float) (width), (float) (height), 0x40090C13);
-		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 4, y + 6, -1);
-		FontUtils.drawStringWithShadow(matrices, setting.getCurrentMode(),
-				x + width - FontUtils.getStringWidth(setting.getCurrentMode()) - 18, y + 6, -1);
+		IFont.legacy15.drawString(setting.getName(), x + 4, y + 6, -1);
+		IFont.legacy15.drawStringWithShadow(setting.getCurrentMode(),
+				x + width - FontUtils.getStringWidth(setting.getCurrentMode()) - 10, y + 6, -1);
 
-		Render2D.drawTriangle((int) (x + width - 10), (int) (y + 10), 3, isOpen() ? 0 : 180, -1);
 		dropY = y + height;
 
 		if (dropX > 0.4)
@@ -40,7 +40,7 @@ public class ComboBoxElement extends AbstractElement {
 			for (String mode : this.setting.getModes()) {
 				if (setting.getCurrentMode().equalsIgnoreCase(mode))
 					continue;
-				FontUtils.drawStringWithShadow(matrices, mode, x + 10, dropY + yOffset + 5, -1);
+				IFont.legacy14.drawStringWithShadow(mode, x + 10, dropY + yOffset + 5, -1);
 				yOffset += 19;
 			}
 		}

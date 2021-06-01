@@ -3,10 +3,10 @@ package org.infinity.clickmenu.components.elements;
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.components.window.ColorPicker;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,8 +23,8 @@ public class ColorPickerElement extends AbstractElement {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 
-		FontUtils.drawStringWithShadow(matrices, setting.getName(), x + 3, y + 5, -1);
-		Render2D.drawBorderedRect(matrices, x + width - 29, y + 3, 21, 12, 2, 0xFF070337, setting.getColor().getRGB());
+		IFont.legacy15.drawString(setting.getName(), x + 24, y + 7, 0xFFFFFFFF);
+		Render2D.drawBorderedRect(matrices, x + 3, y + 4, 16, 14, 1, 0xFF070337, setting.getColor().getRGB());
 	}
 
 	@Override

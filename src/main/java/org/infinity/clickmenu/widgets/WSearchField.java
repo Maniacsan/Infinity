@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.FontUtils;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.jetbrains.annotations.Nullable;
@@ -402,7 +403,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		position = (int) (panel.isOpenSearch() ? RenderUtil.animate(0, position, 0.5) : RenderUtil.animate(width - 6, position, 0.5));
+		position = (int) (panel.isOpenSearch() ? RenderUtil.animate(0, position, 0.4) : RenderUtil.animate(width - 6, position, 0.4));
 		if (this.isVisible()) {
 			int j;
 
@@ -418,7 +419,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 				return;
 
 			if (!this.isFocused() && getText().isEmpty())
-				FontUtils.drawString(matrices, "search..", x + 6, y + 5, 0xFF979797);
+				IFont.legacy15.drawString("search..", x + 6, y + 5, 0xFF979797);
 
 			if (position != 0)
 				return;

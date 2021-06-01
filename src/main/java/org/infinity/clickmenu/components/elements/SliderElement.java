@@ -2,10 +2,10 @@ package org.infinity.clickmenu.components.elements;
 
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -61,11 +61,11 @@ public class SliderElement extends AbstractElement {
 		else if (animation > 1)
 			animation = 1;
 
-		FontUtils.drawStringWithShadow(matrices, setstrg, x + 2, y + 7, -1);
+		IFont.legacy15.drawString(setstrg, x + 1, y + 5, -1);
 		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0D1A2C);
 		Render2D.drawRectWH(matrices, x, y + 20, (width - 45) * this.animation, 1, 0xFF30639F);
 
-		Render2D.drawBorderedCircle((float) (x + (width - 45) * animation), (float) (y + 20), 4.5F, 1, 0xFF30639F,
+		Render2D.drawBorderedCircle((float) (x + (width - 45) * animation), (float) (y + 20), 4.0F, 1, 0xFF30639F,
 				0xFFCCD6C8);
 
 		if (!this.dragging)

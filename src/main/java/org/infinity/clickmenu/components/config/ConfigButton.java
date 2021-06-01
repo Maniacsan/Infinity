@@ -5,6 +5,7 @@ import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.config.Config;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.StringUtil;
 import org.infinity.utils.render.RenderUtil;
@@ -34,7 +35,7 @@ public class ConfigButton {
 
 		Render2D.drawRectWH(matrices, x + width - 80, y + 6, 75, 20,
 				Render2D.isHovered(mouseX, mouseY, x + width - 85, y + 6, 75, 20) ? 0xFF55B9C8 : 0xFF41A5B4);
-		FontUtils.drawStringWithShadow(matrices, "Load", x + width - 50, y + 12, -1);
+		IFont.legacy15.drawString("Load", x + width - 50, y + 11, -1);
 
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), x + width - 95, y + 11,
 				10, 10);
@@ -47,10 +48,10 @@ public class ConfigButton {
 		if (name.length() > 23)
 			name = name.substring(0, 23) + "...";
 
-		FontUtils.drawStringWithShadow(matrices, name, x + 7, y + 5, -1);
-		FontUtils.drawStringWithShadow(matrices, author, x + 5, y + 19, -1);
-		FontUtils.drawStringWithShadow(matrices, "Date: " + config.getDate(), x + FontUtils.getStringWidth(author) + 14,
-				y + 19, -1);
+		IFont.legacy16.drawString(name, x + 4, y + 5, -1);
+		IFont.legacy13.drawString(author, x + 5, y + 19, -1);
+		IFont.legacy13.drawString("Date: " + StringUtil.replaceNull(config.getDate()),
+				x + IFont.legacy13.getStringWidth(author) + 9, y + 19, -1);
 	}
 
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {

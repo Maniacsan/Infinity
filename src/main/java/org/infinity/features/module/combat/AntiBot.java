@@ -28,9 +28,11 @@ public class AntiBot extends Module {
 	private Setting entityID = new Setting(this, "Entity ID", false);
 	private Setting zeroHealth = new Setting(this, "Zero Health", true);
 	private Setting addAction = new Setting(this, "Add Action", true);
+	private Setting swing = new Setting(this, "Swing", true);
 
 	private Setting remove = new Setting(this, "Remove Bots", false);
 
+	private List<Integer> swingBots = new ArrayList<>();
 	private List<Integer> invisibleBots = new ArrayList<>();
 	private List<Integer> idBots = new ArrayList<>();
 	private List<Integer> zeroBots = new ArrayList<>();
@@ -50,30 +52,37 @@ public class AntiBot extends Module {
 				if (e.equals(Helper.getPlayer()))
 					continue;
 
-				if (e.isInvisible() && !invisibleBots.contains(e.getEntityId())) {
+				if (e.isInvisible() && !invisibleBots.contains(e.getEntityId()) && invisible.isToggle()) {
 					invisibleBots.add(e.getEntityId());
-					if (remove.isToggle() && invisible.isToggle()) {
+					message(e.getName().getString());
+					if (remove.isToggle())
 						Helper.getWorld().removeEntity(e.getEntityId());
-						message(e.getName().getString());
-					}
 				}
 
-				if (e.getEntityId() >= 1000000000 && !idBots.contains(e.getEntityId())) {
+				if (e.getEntityId() >= 1000000000 && !idBots.contains(e.getEntityId()) && entityID.isToggle()) {
 					idBots.add(e.getEntityId());
-					if (remove.isToggle() && entityID.isToggle()) {
+					message(e.getName().getString());
+					if (remove.isToggle())
 						Helper.getWorld().removeEntity(e.getEntityId());
-						message(e.getName().getString());
-					}
 				}
 
-				if (((PlayerEntity) e).getHealth() <= 0 && !zeroBots.contains(e.getEntityId())) {
+				if (((PlayerEntity) e).getHealth() <= 0 && !zeroBots.contains(e.getEntityId())
+						&& zeroHealth.isToggle()) {
 					zeroBots.add(e.getEntityId());
-					if (remove.isToggle() && zeroHealth.isToggle()) {
+					message(e.getName().getString());
+					if (remove.isToggle())
 						Helper.getWorld().removeEntity(e.getEntityId());
-						message(e.getName().getString());
-					}
 				}
 
+				if (((PlayerEntity) e).canSee(Helper.getPlayer()) && ((PlayerEntity) e).handSwinging
+						&& ((PlayerEntity) e).getAttacking() == null && ((PlayerEntity) e).canTarget(Helper.getPlayer())
+						&& ((PlayerEntity) e).getLastAttackedTime() == 0 && !((PlayerEntity) e).verticalCollision
+						&& ((PlayerEntity) e).age < 50 && !swingBots.contains(e.getEntityId()) && swing.isToggle()) {
+					swingBots.add(e.getEntityId());
+					message(e.getName().getString());
+					if (remove.isToggle())
+						Helper.getWorld().removeEntity(e.getEntityId());
+				}
 			}
 		}
 	}
@@ -92,7 +101,7 @@ public class AntiBot extends Module {
 				String bot = ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0).getProfile().getName();
 				if (!wasAdded)
 					wasAdded = bot == Helper.getPlayer().getName().getString();
-				 if (wasAdded && !Helper.getPlayer().isSpectator() && !Helper.getPlayer().abilities.allowFlying
+				if (wasAdded && !Helper.getPlayer().isSpectator() && !Helper.getPlayer().abilities.allowFlying
 						&& ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0)
 								.getGameMode() != (GameMode.NOT_SET)
 						&& !bot.equalsIgnoreCase(Helper.getPlayer().getName().getString())) {
@@ -114,6 +123,9 @@ public class AntiBot extends Module {
 			return true;
 
 		if (zeroHealth.isToggle() && zeroBots.contains(entity.getEntityId()))
+			return true;
+
+		if (swing.isToggle() && swingBots.contains(entity.getEntityId()))
 			return true;
 
 		return false;

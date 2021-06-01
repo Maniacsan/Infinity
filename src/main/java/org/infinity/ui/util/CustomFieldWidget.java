@@ -5,7 +5,10 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.infinity.clickmenu.util.Render2D;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.RenderUtil;
 import org.jetbrains.annotations.Nullable;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -30,6 +33,7 @@ import net.minecraft.text.OrderedText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
@@ -54,13 +58,16 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	private Predicate<String> textPredicate;
 	private BiFunction<String, Integer, OrderedText> renderTextProvider;
 
+	private Identifier image;
+	private int imageColor;
+
 	public CustomFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height, Text text,
-			boolean obfText) {
-		this(textRenderer, x, y, width, height, (TextFieldWidget) null, text, obfText);
+			Identifier image, boolean obfText) {
+		this(textRenderer, x, y, width, height, (TextFieldWidget) null, text, image, obfText);
 	}
 
 	public CustomFieldWidget(TextRenderer textRenderer, int x, int y, int width, int height,
-			@Nullable TextFieldWidget copyFrom, Text text, boolean obfText) {
+			@Nullable TextFieldWidget copyFrom, Text text, Identifier image, boolean obfText) {
 		super(x, y, width, height, text);
 		this.text = "";
 		this.maxLength = 32;
@@ -75,6 +82,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			return OrderedText.styledString(string, Style.EMPTY);
 		};
 		this.textRenderer = textRenderer;
+		this.image = image;
 		if (copyFrom != null) {
 			this.setText(copyFrom.getText());
 		}
@@ -370,9 +378,9 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 					i -= 4;
 				}
 
-				String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex),
+				String string = IFont.legacy15.trimStringToWidth(this.text.substring(this.firstCharacterIndex),
 						this.getInnerWidth());
-				this.setCursor(this.textRenderer.trimToWidth(string, i).length() + this.firstCharacterIndex);
+				this.setCursor(IFont.legacy15.trimStringToWidth(string, i).length() + this.firstCharacterIndex);
 				return true;
 			} else {
 				return false;
@@ -388,9 +396,16 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 		if (this.isVisible()) {
 			int j;
 			if (this.hasBorder()) {
-				j = this.isFocused() ? -1 : 0xFF8F8E8E;
-				fill(matrices, this.x - 1, this.y - 1, this.x + this.width + 1, this.y + this.height + 1, j);
-				fill(matrices, this.x, this.y, this.x + this.width, this.y + this.height, 0xFFA5A6A6);
+				j = this.isFocused() ? 0xFFDCDEDE : 0xFFC0C3C3;
+				fill(matrices, image != null ? this.x - 20 : this.x - 1, this.y - 1, this.x + this.width + 1,
+						this.y + this.height + 1, j);
+				fill(matrices, image != null ? this.x - 19 : this.x, this.y, this.x + this.width, this.y + this.height,
+						0xFFA5A6A6);
+			}
+
+			if (image != null) {
+				RenderUtil.drawTexture(matrices, image, x - 16, y + height / 2 - 6, 12, 12);
+				Render2D.drawRectWH(matrices, x - 1, y + 3, 1, height - 6, 0xFFDBDDDD);
 			}
 
 			j = this.editable ? this.editableColor : this.uneditableColor;
@@ -398,7 +413,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			int l = this.selectionEnd - this.firstCharacterIndex;
 			String obfText = this.text.replaceAll("(?s).", "*");
 			String customText = this.obfText ? obfText : this.text;
-			String string = this.textRenderer.trimToWidth(customText.substring(this.firstCharacterIndex),
+			String string = IFont.legacy15.trimStringToWidth(customText.substring(this.firstCharacterIndex),
 					this.getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = this.isFocused() && this.focusedTicks / 6 % 2 == 0 && bl;
@@ -412,9 +427,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			int yAdd = this.obfText ? 2 : 0;
 			if (!string.isEmpty()) {
 				String string2 = bl ? string.substring(0, k) : string;
-				o = this.textRenderer.drawWithShadow(matrices,
-						(OrderedText) this.renderTextProvider.apply(string2, this.firstCharacterIndex), (float) m,
-						(float) n + yAdd, j);
+				o = IFont.legacy15.drawString(string2, (float) m, (float) n + yAdd, 0xFFFFFFFF);
 			}
 
 			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
@@ -427,9 +440,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			}
 
 			if (!string.isEmpty() && bl && k < string.length()) {
-				this.textRenderer.drawWithShadow(matrices,
-						(OrderedText) this.renderTextProvider.apply(string.substring(k), this.selectionStart),
-						(float) o, (float) n, j);
+				IFont.legacy15.drawString(string.substring(k), (float) o, (float) n, j);
 			}
 
 			if (!bl3 && this.suggestion != null) {
@@ -444,19 +455,17 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 					var10002 = n - 1;
 					var10003 = p + 1;
 					var10004 = n + 1;
-					this.textRenderer.getClass();
 					DrawableHelper.fill(matrices, p, var10002, var10003, var10004 + 9, -3092272);
 				} else {
-					this.textRenderer.drawWithShadow(matrices, "_", (float) p, (float) n, j);
+					IFont.legacy15.drawString("_", (float) p, (float) n, j);
 				}
 			}
 
 			if (l != k) {
-				int q = m + this.textRenderer.getWidth(string.substring(0, l));
+				int q = m + IFont.legacy15.getStringWidth(string.substring(0, l));
 				var10002 = n - 1;
 				var10003 = q - 1;
 				var10004 = n + 1;
-				this.textRenderer.getClass();
 				this.drawSelectionHighlight(p, var10002, var10003, var10004 + 9);
 			}
 
@@ -565,16 +574,16 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	public void setSelectionEnd(int i) {
 		int j = this.text.length();
 		this.selectionEnd = MathHelper.clamp(i, 0, j);
-		if (this.textRenderer != null) {
+		if (IFont.legacy15 != null) {
 			if (this.firstCharacterIndex > j) {
 				this.firstCharacterIndex = j;
 			}
 
 			int k = this.getInnerWidth();
-			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), k);
+			String string = IFont.legacy15.trimStringToWidth(this.text.substring(this.firstCharacterIndex), k);
 			int l = string.length() + this.firstCharacterIndex;
 			if (this.selectionEnd == this.firstCharacterIndex) {
-				this.firstCharacterIndex -= this.textRenderer.trimToWidth(this.text, k, true).length();
+				this.firstCharacterIndex -= IFont.legacy15.trimStringToWidth(this.text, k, true).length();
 			}
 
 			if (this.selectionEnd > l) {
@@ -605,10 +614,18 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	}
 
 	public int getCharacterX(int index) {
-		return index > this.text.length() ? this.x : this.x + this.textRenderer.getWidth(this.text.substring(0, index));
+		return index > this.text.length() ? this.x : this.x + IFont.legacy15.getStringWidth(this.text.substring(0, index));
 	}
 
 	public void setX(int x) {
 		this.x = x;
+	}
+
+	public int getImageColor() {
+		return imageColor;
+	}
+
+	public void setImageColor(int imageColor) {
+		this.imageColor = imageColor;
 	}
 }

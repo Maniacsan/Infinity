@@ -13,10 +13,10 @@ import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.clickmenu.components.elements.slider.DoubleSlider;
 import org.infinity.clickmenu.components.elements.slider.FloatSlider;
 import org.infinity.clickmenu.components.elements.slider.IntSlider;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.Element;
@@ -73,6 +73,10 @@ public class ModuleButton {
 
 		for (Setting setting : settings) {
 			switch (setting.getCategory()) {
+			case "Color":
+				this.elements.add(new ColorPickerElement(setting, panel));
+				break;
+
 			case "String":
 				this.elements.add(new ComboBoxElement(setting, panel));
 				break;
@@ -96,10 +100,6 @@ public class ModuleButton {
 			case "Blocks":
 				this.elements.add(new BlocksSelectElement(setting, panel));
 				break;
-
-			case "Color":
-				this.elements.add(new ColorPickerElement(setting, panel));
-				break;
 			}
 
 		}
@@ -121,7 +121,7 @@ public class ModuleButton {
 		// button rect
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width - 3, height - 3, 0xFF242C41);
 
-		FontUtils.drawStringWithShadow(matrices, module.getName(), x + 5, y + 5, module.isEnabled() ? 0xFF1AB41E : -1);
+		IFont.legacy17.drawString(module.getName(), x + 4, y + 5, module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
 
 		if (!module.getSettings().isEmpty()) {
 			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
@@ -150,19 +150,21 @@ public class ModuleButton {
 				element.setX(panel.x + 247);
 				element.setY(yOffset - offset + panel.y + 36);
 				element.setWidth(panel.width - 264);
-				element.setHeight(20);
+				element.setHeight(19);
 
 				element.render(matrices, mouseX, mouseY, delta);
 
 				if (element instanceof SliderElement)
-					yOffset += 28;
-				else if (element instanceof ComboBoxElement) {
-					if (((ComboBoxElement) element).isOpen())
-						yOffset += ((ComboBoxElement) element).getSetting().getModes().size() * 20 + 4;
-					else
-						yOffset += 24;
-				} else
+					yOffset += 25;
+				else if (element instanceof ColorPickerElement) {
 					yOffset += 20;
+				} else if (element instanceof ComboBoxElement) {
+					if (((ComboBoxElement) element).isOpen())
+						yOffset += ((ComboBoxElement) element).getSetting().getModes().size() * 20;
+					else
+						yOffset += 20;
+				} else
+					yOffset += 16;
 			}
 		}
 		Render2D.stopScissor();
@@ -210,7 +212,7 @@ public class ModuleButton {
 		int difference = getHeightDifference();
 		if (!isOpen() || !scrollHover || _celementHeight < panel.height)
 			return;
-	
+
 		if (amount < 0.0D) {
 			this.offset += scrollOffset;
 
@@ -237,15 +239,17 @@ public class ModuleButton {
 
 	public int getElementsHeight() {
 		int elementsHeight = 0;
-		double offset = 0;
+		double offset = -3;
 		for (AbstractElement element : elements) {
 			if (isOpen() && element.isVisible()) {
 				if (element instanceof SliderElement)
-					offset = 9;
-				else if (element instanceof ComboBoxElement && ((ComboBoxElement) element).isOpen()) {
-					offset = (((ComboBoxElement) element).getSetting().getModes().size() - 1) * 20;
-				} else
+					offset = 3;
+				else if (element instanceof ComboBoxElement && ((ComboBoxElement) element).isOpen())
+					offset = (((ComboBoxElement) element).getSetting().getModes().size() - 1) * 18;
+				else if (element instanceof ColorPickerElement)
 					offset = 1;
+				else
+					offset = 0;
 
 				elementsHeight += (element.getHeight() + offset);
 			}

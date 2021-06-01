@@ -59,6 +59,7 @@ dependencies {
 	shadow group: 'org.json', name: 'json', version: '20160212'
 	shadow group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
 	
+	
     modImplementation 'com.github.Vatuu:discord-rpc:1.6.2'
     shadow 'com.github.Vatuu:discord-rpc:1.6.2'
     

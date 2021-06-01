@@ -98,7 +98,7 @@ public class InfMain {
 	public static IHandler getHandler() {
 		return InfMain.INSTANCE.init.handler;
 	}
-
+	
 	public static User getUser() {
 		return InfMain.INSTANCE.init.user;
 	}
