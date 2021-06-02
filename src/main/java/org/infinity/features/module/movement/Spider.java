@@ -1,0 +1,43 @@
+package org.infinity.features.module.movement;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import org.infinity.features.Category;
+import org.infinity.features.Module;
+import org.infinity.features.ModuleInfo;
+import org.infinity.features.Setting;
+import org.infinity.utils.Helper;
+import org.infinity.utils.MoveUtil;
+
+@ModuleInfo(category = Category.MOVEMENT, desc = "Allows you to climb walls ", key = -2, name = "Spider", visible = true)
+public class Spider extends Module {
+
+	private Setting mode = new Setting(this, "Mode", "Matrix 6.1.1",
+			new ArrayList<>(Arrays.asList("Matrix 6.1.1", "Vanilla")));
+
+	@Override
+	public void onPlayerTick() {
+		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
+			if (!Helper.getPlayer().horizontalCollision)
+				return;
+
+			if (Helper.getPlayer().age % 8 == 0) {
+				Helper.getPlayer().setOnGround(true);
+				Helper.getPlayer().velocityDirty = false;
+			} else
+				Helper.getPlayer().setOnGround(false);
+
+			Helper.getPlayer().prevY -= 2E-232D;
+
+			if (Helper.getPlayer().isOnGround())
+				Helper.getPlayer().jump();
+		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
+			if (!Helper.getPlayer().horizontalCollision)
+				return;
+
+			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.1);
+			Helper.getPlayer().velocityDirty = false;
+		}
+	}
+}

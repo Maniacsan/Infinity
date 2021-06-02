@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.infinity.utils.StringUtil;
-
 import com.darkmagician6.eventapi.EventManager;
 
 import net.fabricmc.api.EnvType;
@@ -17,7 +15,6 @@ import net.minecraft.client.util.math.MatrixStack;
 public class Module {
 
 	private Category category;
-	private String sortedName;
 	private String desc;
 	private String name;
 	private String suffix;
@@ -29,7 +26,6 @@ public class Module {
 
 	public Module() {
 		name = this.getClass().getAnnotation(ModuleInfo.class).name();
-		sortedName = name;
 		setKey(this.getClass().getAnnotation(ModuleInfo.class).key());
 		visible = this.getClass().getAnnotation(ModuleInfo.class).visible();
 		setCategory(this.getClass().getAnnotation(ModuleInfo.class).category());
@@ -67,7 +63,7 @@ public class Module {
 	}
 
 	// CCBluex base (defolt sravnenie setting s modulem ne rabotaet)
-	
+
 	public void updateSettings() {
 		for (final Field field : getClass().getDeclaredFields()) {
 			try {
@@ -87,18 +83,14 @@ public class Module {
 		this.updateSettings();
 		return this.settings;
 	}
-	
+
 	public void addSettings(Setting settings) {
-		if(!this.settings.contains(settings))
+		if (!this.settings.contains(settings))
 			this.settings.add(settings);
 	}
 
 	public void addSettings(Collection<Setting> c) {
 		this.settings.addAll(c);
-	}
-	
-	public String toCompare() {
-		return getSortedName() + " " + StringUtil.replaceNull(getSuffix());
 	}
 
 	public String getDesc() {
@@ -152,10 +144,6 @@ public class Module {
 
 	public void setCategory(Category category) {
 		this.category = category;
-	}
-
-	public String getSortedName() {
-		return sortedName;
 	}
 
 	public String getSuffix() {

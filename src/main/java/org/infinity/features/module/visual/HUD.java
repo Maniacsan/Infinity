@@ -42,13 +42,16 @@ public class HUD extends Module {
 						+ StringUtil.replaceNull(module.getSuffix()));
 		});
 
+		arrayList.sort(
+				(a, b) -> Integer.compare(IFont.legacy17.getStringWidth(b), IFont.legacy17.getStringWidth(a)));
+
 		if (Helper.minecraftClient.options.debugEnabled)
 			return;
 
 		float yOffset = 1;
 		if (array.isToggle()) {
 			for (String module : arrayList) {
-				float widthOffset = width - IFont.legacy17.getWidthIgnoreChar(module) + 12;
+				float widthOffset = width - IFont.legacy17.getWidthIgnoreChar(module) + 14;
 				Render2D.drawRectWH(matrices, widthOffset, yOffset, widthOffset - IFont.legacy17.getStringWidth(module),
 						10, 0x90000000);
 				IFont.legacy17.drawString(module, widthOffset, yOffset, arrayColor.getColor().getRGB());

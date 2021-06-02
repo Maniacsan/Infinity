@@ -32,7 +32,7 @@ public class ClickMenu extends Screen {
 
 	@Override
 	public void init() {
-		anim = 0.3;
+		anim = 0.32;
 
 		panel.init();
 		panel.addChildren(children);
@@ -46,7 +46,7 @@ public class ClickMenu extends Screen {
 
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 
-		anim = anim > 0 ? Math.max(0, anim - 0.17) : 0;
+		anim = anim > 0 ? Math.max(0, anim - 0.16) : 0;
 
 		mouseX /= scale;
 		mouseY /= scale;
@@ -116,7 +116,7 @@ public class ClickMenu extends Screen {
 	public void onClose() {
 		panel.onClose();
 
-		anim = Math.min(0.3, anim + 0.17);
+		anim = 0.32;
 		super.onClose();
 	}
 

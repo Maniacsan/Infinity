@@ -50,6 +50,7 @@ public class ModuleManager {
 			new ChatCalculator(),
 			new ESP(), 
 			new Tracers(),
+			new Spider(),
 			new ItemESP(),
 			new AutoLeave(),
 			new InvWalk(),
@@ -78,6 +79,7 @@ public class ModuleManager {
 			new Fly(),
 			new ShulkerView(),
 			new Eagle(),
+			new NoSwim(),
 			new SelfDestruction()
 			);
 

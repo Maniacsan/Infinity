@@ -31,10 +31,10 @@ public class InventoryLogo {
 				&& Helper.minecraftClient.currentScreen instanceof AbstractInventoryScreen ? 8 : 0;
 
 		
-		RenderUtil.drawTexture(matrices, NAME, this.x + 53 + cx, this.y - 30 - cy, 90, 23);
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/inventory/infinity.png"), this.x + 53 + cx, this.y - 30 - cy, 90, 23);
 
 		
-		RenderUtil.drawTexture(matrices, LOGO, this.x + 12 + cx, this.y - 39 - cy, 38, 38);
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/logoneon.png"), this.x + 12 + cx, this.y - 39 - cy, 38, 38);
 	}
 
 }
