@@ -18,8 +18,10 @@ import org.infinity.features.Module;
 import org.infinity.features.Setting;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.render.RenderUtil;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
@@ -33,6 +35,7 @@ public class ModuleButton {
 	private boolean scrollHover;
 	private boolean hovered;
 	private boolean open;
+	private boolean keyOpen;
 
 	private int offset;
 	private int _celementHeight;
@@ -121,7 +124,14 @@ public class ModuleButton {
 		// button rect
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width - 3, height - 3, 0xFF242C41);
 
-		IFont.legacy17.drawString(module.getName(), x + 4, y + 5, module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
+		if (keyOpen) {
+			String key = String.valueOf(InputUtil.fromKeyCode(module.getKey(), module.getKey()))
+					.replace("key.keyboard.", "").toUpperCase();
+			IFont.legacy12.drawString("Press SPACE to remove binds", x + 4, y + 15, 0xFFA6A19A);
+			IFont.legacy15.drawString(module.getKey() == -2 ? "Key: " + "..." : "Key: " + key, x + 4, y + 5,
+					0xFFFFFFFF);
+		} else
+			IFont.legacy17.drawString(module.getName(), x + 4, y + 7, module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
 
 		if (!module.getSettings().isEmpty()) {
 			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
@@ -187,6 +197,11 @@ public class ModuleButton {
 					if (!b.module.getName().equalsIgnoreCase(module.getName()))
 						b.setOpen(false);
 				}
+			} else if (button == 2) {
+				if (keyOpen)
+					keyOpen = false;
+				else
+					keyOpen = true;
 			}
 		}
 		if (!isOpen())
@@ -230,11 +245,20 @@ public class ModuleButton {
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (isOpen())
 			elements.forEach(element -> element.keyPressed(keyCode, scanCode, modifiers));
+
+		if (keyOpen) {
+			if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_SPACE || keyCode == GLFW.GLFW_KEY_BACKSPACE)
+				module.setKey(-2);
+			else
+				module.setKey(keyCode);
+			keyOpen = false;
+		}
 	}
 
 	public void onClose() {
 		elements.forEach(AbstractElement::onClose);
 		resetAnimation();
+		keyOpen = false;
 	}
 
 	public int getElementsHeight() {

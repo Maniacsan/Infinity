@@ -26,8 +26,8 @@ public class ComboBoxElement extends AbstractElement {
 		this.addHovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 		Render2D.drawRectWH(matrices, (float) (x), (float) (y), (float) (width), (float) (height), 0x40090C13);
 		IFont.legacy15.drawString(setting.getName(), x + 4, y + 6, -1);
-		IFont.legacy15.drawStringWithShadow(setting.getCurrentMode(),
-				x + width - FontUtils.getStringWidth(setting.getCurrentMode()) - 10, y + 6, -1);
+		IFont.legacy15.drawString(setting.getCurrentMode(),
+				x + width - 7 - FontUtils.getStringWidth(setting.getCurrentMode()), y + 6, -1);
 
 		dropY = y + height;
 

@@ -251,7 +251,8 @@ public class GlyphPageFontRenderer {
 			i = this.renderString(text, x + 1.0F, y + 1.0F, color, true);
 			i = Math.max(i, this.renderString(text, x, y, color, false));
 		} else {
-			i = this.renderString(text, x, y, color, false);
+			i = this.renderString(text, x, y, color, true);
+			i = Math.max(i, this.renderString(text, x, y, color, false));
 		}
 
 		return i;
@@ -481,6 +482,52 @@ public class GlyphPageFontRenderer {
 
 		return width / 2;
 	}
+	
+	public int getWidthIgnoreChar(String text) {
+		if (text == null) {
+			return 0;
+		}
+		int width = 0;
+
+		GlyphPage currentPage;
+
+		int size = text.length();
+
+		boolean on = false;
+
+		for (int i = 0; i < size; i++) {
+			char character = text.charAt(i);
+
+			 if (on && character >= '0' && character <= 'r') {
+				int colorIndex = "0123456789abcdefklmnor".indexOf(character);
+				if (colorIndex < 16) {
+					boldStyle = false;
+					italicStyle = false;
+				} else if (colorIndex == 17) {
+					boldStyle = true;
+				} else if (colorIndex == 20) {
+					italicStyle = true;
+				} else if (colorIndex == 21) {
+					boldStyle = false;
+					italicStyle = false;
+				}
+				i++;
+				on = false;
+			} else {
+				if (on)
+					i--;
+
+				character = text.charAt(i);
+
+				currentPage = getCurrentGlyphPage();
+
+				width += currentPage.getWidth(character) - 8;
+			}
+		}
+
+		return width / 2;
+	}
+
 
 	/**
 	 * Trims a string to fit a specified Width.

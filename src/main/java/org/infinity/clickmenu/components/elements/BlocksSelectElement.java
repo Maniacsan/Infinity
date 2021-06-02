@@ -6,8 +6,6 @@ import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
-import org.infinity.features.module.visual.GuiMod;
-import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
 import net.minecraft.block.Block;
@@ -27,9 +25,8 @@ public class BlocksSelectElement extends AbstractElement {
 			this.height = yOffset;
 			boolean hover = Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19);
 			boolean isAdded = setting.getBlocks().contains(blocks);
-			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y + 3, 21, 19, isAdded
-					? ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).color.getColor().getRGB()
-					: hover ? Color.GRAY.getRGB() : 0x70000000);
+			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y + 3, 21, 19,
+					isAdded ? 0xFF30639F : hover ? Color.GRAY.getRGB() : 0x70000000);
 			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
 					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y + 5));
 			xOffset += 23;
@@ -48,10 +45,10 @@ public class BlocksSelectElement extends AbstractElement {
 			if (Render2D.isHovered(mouseX, mouseY, xOffset + x, yOffset + y, 21, 19) && button == 0) {
 				if (setting.getBlocks().contains(blocks))
 					setting.getBlocks().remove(blocks);
-					else
+				else
 					setting.getBlocks().add(blocks);
 			}
-			
+
 			xOffset += 23;
 			if (xOffset > 140) {
 				xOffset = 3;
@@ -86,13 +83,13 @@ public class BlocksSelectElement extends AbstractElement {
 	@Override
 	public void tick() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

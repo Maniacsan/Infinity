@@ -4,12 +4,13 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinity.clickmenu.util.FontUtils;
+import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
@@ -37,12 +38,9 @@ public class HUD extends Module {
 
 		InfMain.getModuleManager().getList().forEach(module -> {
 			if (module.isEnabled() && module.isVisible())
-				arrayList.add(Formatting.WHITE + module.getSortedName() + " " + Formatting.RESET
+				arrayList.add(Formatting.WHITE + module.getName() + " " + Formatting.RESET
 						+ StringUtil.replaceNull(module.getSuffix()));
 		});
-
-		// sort
-		arrayList.sort((a, b) -> Integer.compare(FontUtils.getStringWidth(b), FontUtils.getStringWidth(a)));
 
 		if (Helper.minecraftClient.options.debugEnabled)
 			return;
@@ -50,9 +48,10 @@ public class HUD extends Module {
 		float yOffset = 1;
 		if (array.isToggle()) {
 			for (String module : arrayList) {
-				float widthOffset = width - FontUtils.getStringWidth(module);
-				FontUtils.drawStringWithShadow(matrices, module, widthOffset + 1, yOffset,
-						arrayColor.getColor().getRGB());
+				float widthOffset = width - IFont.legacy17.getWidthIgnoreChar(module) + 12;
+				Render2D.drawRectWH(matrices, widthOffset, yOffset, widthOffset - IFont.legacy17.getStringWidth(module),
+						10, 0x90000000);
+				IFont.legacy17.drawString(module, widthOffset, yOffset, arrayColor.getColor().getRGB());
 				yOffset += 10;
 			}
 		}
@@ -68,9 +67,9 @@ public class HUD extends Module {
 
 			String coords = Formatting.BLUE + "x" + Formatting.WHITE + ": " + x + Formatting.BLUE + " y"
 					+ Formatting.WHITE + ": " + y + Formatting.BLUE + " z" + Formatting.WHITE + ": " + z;
-			double rWidth = width - FontUtils.getStringWidth(coords);
+			double rWidth = width - IFont.legacy17.getWidthIgnoreChar(coords);
 			double y2 = Helper.minecraftClient.currentScreen instanceof ChatScreen ? 23 : 11;
-			FontUtils.drawStringWithShadow(matrices, coords, rWidth - 2, height - y2, 0xFFFFFFFF);
+			IFont.legacy17.drawStringWithShadow(coords, rWidth + 44, height - y2, 0xFFFFFFFF);
 		}
 
 		if (netherCoords.isToggle()) {
@@ -84,14 +83,13 @@ public class HUD extends Module {
 
 			String nCoords = Formatting.RED + "x" + Formatting.WHITE + ": " + x + Formatting.RED + " y"
 					+ Formatting.WHITE + ": " + y + Formatting.RED + " z" + Formatting.WHITE + ": " + z;
-			double rWidth = width - FontUtils.getStringWidth(nCoords);
+			double rWidth = width - IFont.legacy17.getWidthIgnoreChar(nCoords);
 
 			double y1 = Helper.minecraftClient.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23
 					: Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? 34
 							: coordinates.isToggle() ? 22 : 11;
 
-			FontUtils.drawStringWithShadow(matrices, nCoords, rWidth - 2, height - y1, 0xFFFFFFFF);
+			IFont.legacy17.drawStringWithShadow(nCoords, rWidth + 43, height - y1, 0xFFFFFFFF);
 		}
-
 	}
 }

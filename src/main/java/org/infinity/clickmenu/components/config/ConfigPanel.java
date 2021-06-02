@@ -9,6 +9,7 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.file.config.Config;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.opengl.GL11;
@@ -27,7 +28,7 @@ public class ConfigPanel {
 	private String name;
 
 	// dont permission error
-	private int errorTime;
+	private int errorTime = -1;
 	private double toasterAnim;
 
 	private int offset;
@@ -44,7 +45,6 @@ public class ConfigPanel {
 
 	public ConfigPanel(String name) {
 		this.name = name;
-		refresh();
 	}
 
 	public void init() {
@@ -56,6 +56,7 @@ public class ConfigPanel {
 		textField.setColor(0xFF0B1427);
 		textField.setText("New Config");
 		textField.setSelected(true);
+		refresh();
 	}
 
 	public void refresh() {
@@ -63,6 +64,7 @@ public class ConfigPanel {
 		for (Config config : InfMain.getConfigManager().getConfigList()) {
 			configList.add(new ConfigButton(config, this));
 		}
+		errorTime = -1;
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -77,9 +79,7 @@ public class ConfigPanel {
 
 		Render2D.drawRectWH(matrices, x + width - 90, y + 11, 60, 18,
 				Render2D.isHovered(mouseX, mouseY, x + width - 90, y + 11, 60, 18) ? 0xFFC9C9C9 : 0xFFE3E3E4);
-		FontUtils.drawStringWithShadow(matrices, "Add", x + width - 60, y + 16, -1);
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "/textures/icons/plus.png"), x + width - 75, y + 16,
-				10, 10);
+		IFont.legacy15.drawStringWithShadow("Add", x + width - 67, y + 15, -1);
 
 		GL11.glPushMatrix();
 		double xt = x + width - 23;
@@ -102,7 +102,7 @@ public class ConfigPanel {
 
 		double yOffset = 2;
 
-		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7) : Math.max(-35, toasterAnim - 7);
+		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7) : errorTime == -1 ? -35 : Math.max(-35, toasterAnim - 7);
 
 		if (toasterAnim != -35) {
 			Render2D.fillGradient(x + width / 2 - 70, y + toasterAnim, x + width / 2 + 70, y + toasterAnim + 35,
@@ -138,8 +138,6 @@ public class ConfigPanel {
 	public void tick() {
 		if (errorTime > 0)
 			errorTime--;
-		else if (errorTime < 0)
-			errorTime = 0;
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {

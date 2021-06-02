@@ -113,7 +113,7 @@ public class CategoryButton {
 
 			GlStateManager.disableBlend();
 			GL11.glPopMatrix();
-			
+
 			IFont.legacy16.drawString(getName(), (int) x + 25, (int) y + 6, 0xFFDBDBDB, false);
 		}
 

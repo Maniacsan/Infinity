@@ -43,15 +43,18 @@ public class ConfigButton {
 				y + 11, 10, 10);
 
 		String name = StringUtil.replaceNull(config.getName());
-		String author = "Author: " + StringUtil.replaceNull(config.getAuthor());
+		String author = StringUtil.replaceNull(config.getAuthor());
 
-		if (name.length() > 23)
-			name = name.substring(0, 23) + "...";
+		if (name.length() > 38)
+			name = name.substring(0, 38) + "...";
+		
+		if (author.length() > 20)
+			author = author.substring(0, 20) + "...";
 
 		IFont.legacy16.drawString(name, x + 4, y + 5, -1);
-		IFont.legacy13.drawString(author, x + 5, y + 19, -1);
+		IFont.legacy13.drawString("Author: " + author, x + 5, y + 19, -1);
 		IFont.legacy13.drawString("Date: " + StringUtil.replaceNull(config.getDate()),
-				x + IFont.legacy13.getStringWidth(author) + 9, y + 19, -1);
+				x + IFont.legacy13.getStringWidth("Author: " + author) + 9, y + 19, -1);
 	}
 
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {

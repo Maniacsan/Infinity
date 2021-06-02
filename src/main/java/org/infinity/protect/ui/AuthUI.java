@@ -41,14 +41,14 @@ public class AuthUI extends Screen {
 	@Override
 	public void init() {
 		this.client.keyboard.setRepeatEvents(true);
-		this.usernameField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 70, this.height / 2 - 58, 160,
+		this.usernameField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 58, 160,
 				22, new TranslatableText("Login"), new Identifier("infinity", "textures/icons/auth/username.png"), false);
 		if (usernameData != null && !usernameData.isEmpty())
 			usernameField.setText(usernameData);
 
 		this.usernameField.setMaxLength(40);
 		this.children.add(usernameField);
-		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 70, this.height / 2 - 26, 160,
+		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 26, 160,
 				22, new TranslatableText("Password"), new Identifier("infinity", "textures/icons/auth/password.png"), true);
 		if (passwordData != null && !passwordData.isEmpty())
 			passwordField.setText(passwordData);

@@ -12,6 +12,7 @@ import org.infinity.clickmenu.widgets.WSearchField;
 import org.infinity.features.Category;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.Element;
@@ -126,7 +127,7 @@ public class Panel {
 
 		// profile info
 		Render2D.drawRectWH(matrices, this.x + 2, this.y + 66.5, 90, 0.5, 0xFF4A4F65);
-		FontUtils.drawHCenteredString(matrices, InfMain.getUser().getName(), x + 94 / 2, y + 50, -1);
+		IFont.legacy14.drawCenteredString(InfMain.getUser().getName(), x + 86 / 2, y + 52, -1);
 
 		// header
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);

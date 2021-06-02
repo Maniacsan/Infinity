@@ -1,6 +1,5 @@
 package org.infinity.features.module.visual;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -17,11 +16,7 @@ import net.minecraft.client.MinecraftClient;
 public class GuiMod extends Module {
 
 	public Setting scale = new Setting(this, "Scale", "60%",
-			new ArrayList<>(Arrays.asList(new String[] { "20%", "40%", "60%", "80%", "100%" })));
-
-	public Setting descriptions = new Setting(this, "Description", true);
-
-	public Setting color = new Setting(this, "Color", new Color(49, 109, 214));
+			new ArrayList<>(Arrays.asList(new String[] { "40%", "60%", "80%", "100%" })));
 
 	@Override
 	public void onEnable() {
@@ -39,8 +34,6 @@ public class GuiMod extends Module {
 			scale1 = 1.0F;
 		} else if (scale.getCurrentMode().equals("40%")) {
 			scale1 = 0.7F;
-		} else if (scale.getCurrentMode().equals("20%")) {
-			scale1 = 0.5F;
 		}
 
 		return scale1;
