@@ -18,8 +18,10 @@ public class Spider extends Module {
 
 	@Override
 	public void onPlayerTick() {
+		setSuffix(mode.getCurrentMode());
+
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
-			if (!Helper.getPlayer().horizontalCollision)
+			if (!isCollision())
 				return;
 
 			if (Helper.getPlayer().age % 8 == 0) {
@@ -33,11 +35,15 @@ public class Spider extends Module {
 			if (Helper.getPlayer().isOnGround())
 				Helper.getPlayer().jump();
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
-			if (!Helper.getPlayer().horizontalCollision)
+			if (!isCollision())
 				return;
 
 			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + 0.1);
 			Helper.getPlayer().velocityDirty = false;
 		}
+	}
+
+	private boolean isCollision() {
+		return Helper.getPlayer().horizontalCollision && !Helper.getPlayer().isTouchingWater();
 	}
 }

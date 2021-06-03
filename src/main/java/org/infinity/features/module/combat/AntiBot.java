@@ -74,10 +74,11 @@ public class AntiBot extends Module {
 						Helper.getWorld().removeEntity(e.getEntityId());
 				}
 
-				if (((PlayerEntity) e).canSee(Helper.getPlayer()) && ((PlayerEntity) e).handSwinging
+				if (Helper.getPlayer().distanceTo(e) > 10
+						&& ((PlayerEntity) e).canSee(Helper.getPlayer()) && ((PlayerEntity) e).handSwinging
 						&& ((PlayerEntity) e).getAttacking() == null && ((PlayerEntity) e).canTarget(Helper.getPlayer())
 						&& ((PlayerEntity) e).getLastAttackedTime() == 0 && !((PlayerEntity) e).verticalCollision
-						&& ((PlayerEntity) e).age < 50 && !swingBots.contains(e.getEntityId()) && swing.isToggle()) {
+						&& ((PlayerEntity) e).age < 40 && !swingBots.contains(e.getEntityId()) && swing.isToggle()) {
 					swingBots.add(e.getEntityId());
 					message(e.getName().getString());
 					if (remove.isToggle())

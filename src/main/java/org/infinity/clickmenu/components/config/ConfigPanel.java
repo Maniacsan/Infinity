@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
@@ -26,6 +27,7 @@ public class ConfigPanel {
 	public ArrayList<ConfigButton> configList = new ArrayList<>();
 	public WTextField textField;
 	private String name;
+	private Panel panel;
 
 	// dont permission error
 	private int errorTime = -1;
@@ -43,8 +45,9 @@ public class ConfigPanel {
 
 	private float refreshHover;
 
-	public ConfigPanel(String name) {
+	public ConfigPanel(String name, Panel panel) {
 		this.name = name;
+		this.panel = panel;
 	}
 
 	public void init() {
@@ -112,7 +115,7 @@ public class ConfigPanel {
 			FontUtils.drawStringWithShadow(matrices, "Buy " + Formatting.YELLOW + "Premium" + Formatting.RESET + " to unlock ", x + width / 2 - 55, y + toasterAnim + 18,
 					-1);
 		} 
-		Render2D.startMenuScissor(x, y + 43, width - 2, height - 80);
+		panel.clickMenu.startScissor(x, y + 43, width - 2, height - 80);
 
 		// scroll
 		if (_cbuttonHeight > this.height - 80) {

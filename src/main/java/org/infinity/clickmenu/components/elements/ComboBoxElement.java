@@ -27,7 +27,7 @@ public class ComboBoxElement extends AbstractElement {
 		Render2D.drawRectWH(matrices, (float) (x), (float) (y), (float) (width), (float) (height), 0x40090C13);
 		IFont.legacy15.drawString(setting.getName(), x + 4, y + 6, -1);
 		IFont.legacy15.drawString(setting.getCurrentMode(),
-				x + width - 7 - FontUtils.getStringWidth(setting.getCurrentMode()), y + 6, -1);
+				x + width - 10 - IFont.legacy15.getStringWidth(setting.getCurrentMode()), y + 6, -1);
 
 		dropY = y + height;
 

@@ -3,15 +3,13 @@ package org.infinity.clickmenu.components.window;
 import java.awt.Color;
 import java.awt.Rectangle;
 
-import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WCheckBox;
 import org.infinity.clickmenu.widgets.WSlider;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
-import org.infinity.features.module.visual.GuiMod;
-import org.infinity.main.InfMain;
+import org.infinity.ui.IScreen;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
@@ -23,7 +21,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-public class ColorPicker extends Screen {
+public class ColorPicker extends IScreen {
 
 	private Screen prev;
 
@@ -49,7 +47,6 @@ public class ColorPicker extends Screen {
 	private double anim;
 
 	public ColorPicker(Screen prev, Setting setting) {
-		super(new LiteralText(""));
 		this.prev = prev;
 		this.setting = setting;
 
@@ -112,7 +109,6 @@ public class ColorPicker extends Screen {
 		
 		GL11.glPopMatrix();
 
-		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	public void renderPicker(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -216,7 +212,7 @@ public class ColorPicker extends Screen {
 	@Override
 	public void onClose() {
 		anim = 0.4;
-		Helper.openScreen(InfMain.INSTANCE.init.menu);
+		Helper.openScreen(prev);
 	}
 
 	@Override

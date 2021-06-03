@@ -2,8 +2,6 @@ package org.infinity.clickmenu.util;
 
 import java.awt.Color;
 
-import org.infinity.features.module.visual.GuiMod;
-import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
@@ -60,8 +58,8 @@ public class Render2D {
 		GL11.glDisable(2848);
 	}
 
-	public static void fillGradient(MatrixStack matrices, double xStart, double yStart, double xEnd, double yEnd,
-			int colorStart, int colorEnd) {
+	public static void fillGradient(MatrixStack matrices, int xStart, int yStart, int xEnd, int yEnd, int colorStart,
+			int colorEnd) {
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.disableAlphaTest();
@@ -78,8 +76,8 @@ public class Render2D {
 		RenderSystem.enableTexture();
 	}
 
-	protected static void fillGradient(Matrix4f matrix, BufferBuilder bufferBuilder, double xStart, double yStart,
-			double xEnd, double yEnd, int z, int colorStart, int colorEnd) {
+	protected static void fillGradient(Matrix4f matrix, BufferBuilder bufferBuilder, int xStart, int yStart, int xEnd,
+			int yEnd, int z, int colorStart, int colorEnd) {
 		float f = (float) (colorStart >> 24 & 255) / 255.0F;
 		float g = (float) (colorStart >> 16 & 255) / 255.0F;
 		float h = (float) (colorStart >> 8 & 255) / 255.0F;
@@ -88,9 +86,9 @@ public class Render2D {
 		float k = (float) (colorEnd >> 16 & 255) / 255.0F;
 		float l = (float) (colorEnd >> 8 & 255) / 255.0F;
 		float m = (float) (colorEnd & 255) / 255.0F;
-		bufferBuilder.vertex(matrix, (float) xEnd, (float) yStart, (float) z).color(0, 0, 0, 255).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yStart, (float) z).color(0, 0, 0, 100).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yEnd, (float) z).color(g, h, i, f).next();
+		bufferBuilder.vertex(matrix, (float) xEnd, (float) yStart, (float) z).color(g, h, i, f).next();
+		bufferBuilder.vertex(matrix, (float) xStart, (float) yStart, (float) z).color(g, h, i, f).next();
+		bufferBuilder.vertex(matrix, (float) xStart, (float) yEnd, (float) z).color(k, l, m, j).next();
 		bufferBuilder.vertex(matrix, (float) xEnd, (float) yEnd, (float) z).color(k, l, m, j).next();
 	}
 
@@ -415,25 +413,6 @@ public class Render2D {
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
 				/ Helper.minecraftClient.getWindow().getScaledHeight();
-
-		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-		GL11.glScissor((int) (x * scaleWidth),
-				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
-				(int) (width * scaleWidth), (int) (height * scaleHeight));
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
-	}
-
-	// for clickmenu scale
-	public static void startMenuScissor(double x, double y, double width, double height) {
-		float scale = (float) (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale()
-				+ InfMain.INSTANCE.init.menu.anim);
-		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
-				/ Helper.minecraftClient.getWindow().getScaledWidth();
-		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
-				/ Helper.minecraftClient.getWindow().getScaledHeight();
-
-		scaleWidth *= scale;
-		scaleHeight *= scale;
 
 		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
 		GL11.glScissor((int) (x * scaleWidth),

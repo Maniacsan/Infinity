@@ -118,7 +118,7 @@ public class TargetStrafe extends Module {
 				- direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 
 		MoveUtil.setHVelocity(x, z);
-		Helper.getPlayer().getVelocity().subtract(0, -0.02, 0);
+		Helper.getPlayer().getVelocity().subtract(0, -0.08, 0);
 	}
 
 	public static float getNormalizeYaw(Entity entity) {

@@ -6,26 +6,25 @@ import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
+import org.infinity.ui.IScreen;
+import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 
 /**
  * 
  * @author spray
  *
  */
-public class ClickMenu extends Screen {
+public class ClickMenu extends IScreen {
 
 	public Panel panel;
 	public double anim;
 	private boolean closeAnim;
 
 	public ClickMenu() {
-		super(new LiteralText("ClickMenu"));
 
 		panel = new Panel(this, Render2D.getScaledWidth() / 2 - 230, Render2D.getScaledHeight() / 2 - 154, 400, 290);
 	}
@@ -46,7 +45,7 @@ public class ClickMenu extends Screen {
 
 		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 
-		anim = anim > 0 ? Math.max(0, anim - 0.16) : 0;
+		anim = anim > 0 ? Math.max(0, anim - 0.14) : 0;
 
 		mouseX /= scale;
 		mouseY /= scale;
@@ -135,6 +134,23 @@ public class ClickMenu extends Screen {
 
 	public List<Element> getChildren() {
 		return children;
+	}
+
+	public void startScissor(double x, double y, double width, double height) {
+		float scale = (float) (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale() + anim);
+		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
+				/ Helper.minecraftClient.getWindow().getScaledWidth();
+		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
+				/ Helper.minecraftClient.getWindow().getScaledHeight();
+
+		scaleWidth *= scale;
+		scaleHeight *= scale;
+
+		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
+		GL11.glScissor((int) (x * scaleWidth),
+				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
+				(int) (width * scaleWidth), (int) (height * scaleHeight));
+		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
 }

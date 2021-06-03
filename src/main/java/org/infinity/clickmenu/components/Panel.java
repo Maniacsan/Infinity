@@ -6,7 +6,6 @@ import java.util.List;
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.components.buttons.CategoryButton;
 import org.infinity.clickmenu.components.config.ConfigPanel;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WSearchField;
 import org.infinity.features.Category;
@@ -23,7 +22,7 @@ import net.minecraft.text.TranslatableText;
 public class Panel {
 
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
-	public ConfigPanel configPanel = new ConfigPanel("Config");
+	public ConfigPanel configPanel = new ConfigPanel("Config", this);
 	public String SEARCH = "Search";
 
 	public WSearchField searchField;

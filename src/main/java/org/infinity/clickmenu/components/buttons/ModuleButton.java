@@ -142,7 +142,7 @@ public class ModuleButton {
 		double yOffset = 2;
 		alpha = alpha < 1 ? Math.min(1, alpha + 1) : 100;
 
-		Render2D.startMenuScissor(panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
+		panel.clickMenu.startScissor(panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
 		if (isOpen()) {
 
 			if (scrollHover && _celementHeight > panel.height) {
