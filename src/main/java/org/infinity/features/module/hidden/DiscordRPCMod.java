@@ -10,6 +10,7 @@ import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventTarget;
 
+import me.protect.utils.PHelper;
 import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;
@@ -36,9 +37,14 @@ public class DiscordRPCMod extends Module {
 	@EventTarget
 	public void onTick(TickEvent event) {
 		if (Helper.getWorld() != null && !InfMain.getHandler().getHandler(TickLogger.class).enabled)
-			me.protect.utils.PHelper.makeCrash();
+			PHelper.makeCrash();
 
 		if (ticks % 40 == 0) {
+			if (InfMain.getUser().getName().isEmpty() || InfMain.getUser().getName() == null) {
+				PHelper.makeCrash();
+				return;
+			}
+			
 			long start = 0L;
 			start = System.currentTimeMillis() - (ticks * 50);
 
@@ -55,8 +61,8 @@ public class DiscordRPCMod extends Module {
 					+ InfMain.getModuleManager().getList().size();
 
 			DiscordRichPresence rich = new DiscordRichPresence.Builder(detail)
-					.setBigImage("infinitycosmoslogo", InfMain.getName() + " - " + InfMain.getVersion())
-					.setDetails(gameStatus).setStartTimestamps(start).build();
+					.setBigImage("rpclogo", InfMain.getName() + " - v" + InfMain.getVersion()).setDetails(gameStatus)
+					.setSmallImage("infinity", InfMain.getUser().getName()).setStartTimestamps(start).build();
 			DiscordRPC.discordUpdatePresence(rich);
 		}
 
