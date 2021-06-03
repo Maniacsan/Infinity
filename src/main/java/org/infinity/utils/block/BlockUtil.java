@@ -105,12 +105,6 @@ public class BlockUtil {
 		return list;
 	}
 
-	/**
-	 * Выполняет задачу чека высоты блоков вокруг игрока, напримере для step чекать
-	 * высоту блока на которую можно залезть
-	 * 
-	 * @return
-	 */
 	public static boolean isTouchWall(Box box) {
 		return !Helper.getWorld().isSpaceEmpty(box.expand(0.01, 0, 0))
 				|| !Helper.getWorld().isSpaceEmpty(box.expand(0, 0, 0.01));
