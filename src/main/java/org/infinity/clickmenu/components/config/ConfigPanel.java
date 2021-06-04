@@ -68,6 +68,7 @@ public class ConfigPanel {
 			configList.add(new ConfigButton(config, this));
 		}
 		errorTime = -1;
+		offset = 0;
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -123,15 +124,7 @@ public class ConfigPanel {
 			Render2D.drawRectWH(matrices, x + width - 5, y + 43 + offset, 2, height - 80 - getHeightDifference(),
 					0xFF1F5A96);
 		}
-		
-		if (_cbuttonHeight > this.height - 80) {
-			int difference = getHeightDifference();
-			if (offset > difference)
-				offset = difference;
-			else if (offset < 0)
-				offset = 0;
-		}
-
+	
 		for (ConfigButton configButton : configList) {
 			_cbuttonHeight = (int) (y + yOffset);
 			configButton.setX(x + 2);
@@ -196,6 +189,14 @@ public class ConfigPanel {
 
 		} else if (amount > 0.0D) {
 			this.offset -= scrollOffset;
+		}
+		
+		if (_cbuttonHeight > this.height - 80) {
+			int difference = getHeightDifference();
+			if (offset > difference)
+				offset = difference;
+			else if (offset < 0)
+				offset = 0;
 		}
 	}
 	

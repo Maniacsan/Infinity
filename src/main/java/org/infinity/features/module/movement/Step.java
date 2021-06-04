@@ -79,7 +79,7 @@ public class Step extends Module {
 			if (hasStep) {
 				InfMain.TIMER = 0.9f + Helper.getPlayer().age % 4 / 20;
 				MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - 0.007);
-				Helper.getPlayer().setBoundingBox(Helper.getPlayer().getBoundingBox().offset(0, 0, 0));	
+				Helper.getPlayer().setBoundingBox(Helper.getPlayer().getBoundingBox().offset(0, 0, 0));
 			}
 
 			if (Helper.getPlayer().isOnGround()) {
@@ -102,6 +102,7 @@ public class Step extends Module {
 				EntityUtil.setStepHeight(0.6f);
 			else
 				EntityUtil.setStepHeight(1.4f);
+
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 			EntityUtil.setStepHeight((float) height.getCurrentValueDouble());
 

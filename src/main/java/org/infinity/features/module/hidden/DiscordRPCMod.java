@@ -57,7 +57,7 @@ public class DiscordRPCMod extends Module {
 			else
 				gameStatus = "Idle";
 
-			String detail = "Enabled features " + InfMain.getModuleManager().getEnableModules().size() + "/"
+			String detail = "Features " + InfMain.getModuleManager().getEnableModules().size() + "/"
 					+ InfMain.getModuleManager().getList().size();
 
 			DiscordRichPresence rich = new DiscordRichPresence.Builder(detail)

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.event.RenderEvent;
 import org.infinity.features.Category;
@@ -68,8 +67,7 @@ public class Tracers extends Module {
 			for (Entity e : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
 					mobs.isToggle(), animals.isToggle())) {
 
-				if (Helper.minecraftClient.currentScreen != null
-						&& !(Helper.minecraftClient.currentScreen instanceof ClickMenu))
+				if (Helper.minecraftClient.currentScreen != null)
 					return;
 
 				float[] toRot = RotationUtil.lookAtEntity(e);

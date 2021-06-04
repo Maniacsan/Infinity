@@ -14,7 +14,6 @@ import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
-import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -29,8 +28,6 @@ public class HUD extends Module {
 	private Setting coordinates = new Setting(this, "Coordinates", true);
 
 	private Setting netherCoords = new Setting(this, "Nether Coordinates", false);
-
-	private double animation;
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {

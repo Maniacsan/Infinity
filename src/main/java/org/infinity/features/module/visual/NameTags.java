@@ -33,20 +33,17 @@ import net.minecraft.util.math.Vec3d;
 @ModuleInfo(category = Category.VISUAL, desc = "Makes name tags convenient", key = -2, name = "NameTags", visible = true)
 public class NameTags extends Module {
 
-	private Setting armor = new Setting(this, "Armor", true);
-
-	// targets
 	private Setting players = new Setting(this, "Players", true);
 	private Setting friends = new Setting(this, "Friends", true).setVisible(() -> players.isToggle());
-
 	private Setting invisibles = new Setting(this, "Invisibles", false);
 	private Setting mobs = new Setting(this, "Mobs", true);
 	private Setting animals = new Setting(this, "Animals", false);
-
 	private Setting items = new Setting(this, "Items", true);
 
 	private Setting scale = new Setting(this, "Scale", 2D, 0.2D, 5D);
-
+	
+	private Setting armor = new Setting(this, "Armor", true);
+	
 	@EventTarget
 	public void onTagRender(EntityTagEvent event) {
 		if (EntityUtil.isTarget(event.getEntity(), players.isToggle(), friends.isToggle(), invisibles.isToggle(),

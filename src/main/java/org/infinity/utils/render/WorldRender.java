@@ -148,10 +148,10 @@ public class WorldRender {
 		BufferBuilder bufferbuilder = tessellator.getBuffer();
 		bufferbuilder.begin(7, VertexFormats.POSITION_COLOR);
 		float f = Helper.minecraftClient.options.getTextBackgroundOpacity(0.7F);
-		bufferbuilder.vertex(matrix.peek().getModel(), -i - 2, -2, 0.0f).color(165F, 165F, 165F, f).next();
-		bufferbuilder.vertex(matrix.peek().getModel(), -i - 2, 10, 0.0f).color(165F, 165F, 165F, f).next();
-		bufferbuilder.vertex(matrix.peek().getModel(), i + 2, 10, 0.0f).color(165F, 165F, 165F, f).next();
-		bufferbuilder.vertex(matrix.peek().getModel(), i + 2, -2, 0.0f).color(165F, 165F, 165F, f).next();
+		bufferbuilder.vertex(matrix.peek().getModel(), -i - 2, -2, 0.0f).color(0, 0F, 0, f).next();
+		bufferbuilder.vertex(matrix.peek().getModel(), -i - 2, 10, 0.0f).color(0, 0, 0, f).next();
+		bufferbuilder.vertex(matrix.peek().getModel(), i + 2, 10, 0.0f).color(0, 0, 0, f).next();
+		bufferbuilder.vertex(matrix.peek().getModel(), i + 2, -2, 0.0f).color(0, 0, 0, f).next();
 		tessellator.draw();
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 

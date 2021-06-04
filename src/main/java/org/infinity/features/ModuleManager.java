@@ -73,6 +73,7 @@ public class ModuleManager {
 			new PingSpoof(),
 			new Step(),
 			new MClickFriend(),
+			new TargetInfo(),
 			new AntiWaterPush(),
 			new AutoShift(),
 			new CrossbowAim(),

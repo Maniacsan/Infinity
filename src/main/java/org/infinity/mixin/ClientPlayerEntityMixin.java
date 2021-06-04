@@ -5,6 +5,7 @@ import org.infinity.event.PlayerInWaterEvent;
 import org.infinity.event.PlayerMoveEvent;
 import org.infinity.event.PushOutBlockEvent;
 import org.infinity.event.SlowDownEvent;
+import org.infinity.event.VelocityEvent;
 import org.infinity.features.module.movement.SafeWalk;
 import org.infinity.features.module.player.Scaffold;
 import org.infinity.main.InfMain;
@@ -226,6 +227,13 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		EventManager.call(inWaterEvent);
 
 		return inWaterEvent.isInWater();
+	}
+
+	@Override
+	public void setVelocityClient(double x, double y, double z) {
+		VelocityEvent event = new VelocityEvent(x, y, z);
+		EventManager.call(event);
+		super.setVelocityClient(event.getX(), event.getY(), event.getZ());
 	}
 
 }

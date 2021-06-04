@@ -116,5 +116,4 @@ public abstract class EntityMixin {
 			ci.cancel();
 		}
 	}
-
 }

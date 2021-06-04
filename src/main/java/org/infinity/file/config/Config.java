@@ -100,7 +100,7 @@ public class Config {
 			JsonObject info = new JsonObject();
 
 			String author = AES.encrypt(InfMain.getUser().getName(), AES.getKey());
-			String date = AES.encrypt(new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime()),
+			String date = AES.encrypt(new SimpleDateFormat("dd/MM/yyyy").format(Calendar.getInstance().getTime()),
 					AES.getKey());
 
 			info.addProperty("Author", author);

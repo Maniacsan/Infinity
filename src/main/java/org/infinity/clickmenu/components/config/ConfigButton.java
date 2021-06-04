@@ -1,7 +1,6 @@
 package org.infinity.clickmenu.components.config;
 
 import org.infinity.clickmenu.ClickMenu;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.config.Config;
 import org.infinity.main.InfMain;
@@ -37,19 +36,27 @@ public class ConfigButton {
 				Render2D.isHovered(mouseX, mouseY, x + width - 85, y + 6, 75, 20) ? 0xFF55B9C8 : 0xFF41A5B4);
 		IFont.legacy15.drawString("Load", x + width - 50, y + 11, -1);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), x + width - 95, y + 11,
-				10, 10);
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"), x + width - 110,
-				y + 11, 10, 10);
+		double anim = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10)
+				? RenderUtil.animate(2, 0, 0.4)
+				: 0;
+		double anim1 = Render2D.isHovered(mouseX, mouseY, x + width - 110, y + 11, 10, 10)
+				? RenderUtil.animate(2, 0, 0.4)
+				: 0;
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), x + width - 95 - anim,
+				y + 11 - anim, 10 + (anim + anim), 10 + (anim + anim));
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"), x + width - 110 - anim1,
+				y + 11 - anim1, 10 + (anim1 + anim1), 10 + (anim1 + anim1));
 
 		String name = StringUtil.replaceNull(config.getName());
 		String author = StringUtil.replaceNull(config.getAuthor());
 
 		if (name.length() > 38)
 			name = name.substring(0, 38) + "...";
-		
-		if (author.length() > 20)
-			author = author.substring(0, 20) + "...";
+
+		if (author.length() > 18)
+			author = author.substring(0, 18) + "...";
 
 		IFont.legacy16.drawString(name, x + 4, y + 5, -1);
 		IFont.legacy13.drawString("Author: " + author, x + 5, y + 19, -1);
