@@ -112,11 +112,11 @@ public class AuthUI extends Screen {
 		this.passwordField.render(matrices, mouseX, mouseY, delta);
 
 		if (!usernameField.isActive() && usernameField.getText().isEmpty())
-			IFont.legacy15.drawString("Username", this.width / 2 - 77,
-					this.height / 2 - 51, 0x70393939);
+			FontUtils.drawString(matrices, "Username", this.width / 2 - 70,
+					this.height / 2 - 50, 0x70393939);
 
 		if (!passwordField.isActive() && passwordField.getText().isEmpty())
-			IFont.legacy15.drawString("********", this.width / 2 - 77, this.height / 2 - 17,
+			FontUtils.drawString(matrices, "********", this.width / 2 - 70, this.height / 2 - 16,
 					0x70393939);
 
 		if (errorTime > 0) {

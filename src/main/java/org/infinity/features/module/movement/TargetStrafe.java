@@ -8,8 +8,6 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
-import org.infinity.features.module.combat.KillAura;
-import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -118,24 +116,15 @@ public class TargetStrafe extends Module {
 				- direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 
 		MoveUtil.setHVelocity(x, z);
-		Helper.getPlayer().getVelocity().subtract(0, -0.08, 0);
+		Helper.getPlayer().getVelocity().subtract(0, -0.1, 0);
 	}
 
 	public static float getNormalizeYaw(Entity entity) {
 		float yaw = RotationUtil.lookAtEntity(entity)[0];
-		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float sens = (float) Helper.minecraftClient.options.mouseSensitivity / 0.005F;
+		float f = 0.005F * sens;
 		float gcd = f * f * f * 1.2F;
-
 		yaw -= yaw % gcd;
-
-		KillAura killAura = ((KillAura) InfMain.getModuleManager().getModuleByClass(KillAura.class));
-		if (killAura.isEnabled() && KillAura.target != null) {
-			if (killAura.rotation.getCurrentMode().equalsIgnoreCase("Focus")) {
-				yaw = killAura.focus[0];
-			} else if (killAura.rotation.getCurrentMode().equalsIgnoreCase("Smash")) {
-				yaw = killAura.smash[0];
-			}
-		}
 
 		return yaw;
 	}

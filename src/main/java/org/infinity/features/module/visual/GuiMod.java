@@ -26,17 +26,20 @@ public class GuiMod extends Module {
 
 	public float getScale() {
 		float scale1 = 1.0F;
-		if (scale.getCurrentMode().equals("100%")) {
+		switch (scale.getCurrentMode()) {
+		case "100%":
 			scale1 = 1.8F;
-		} else if (scale.getCurrentMode().equals("80%")) {
+			break;
+		case "80%":
 			scale1 = 1.5F;
-		} else if (scale.getCurrentMode().equals("60%")) {
+			break;
+		case "60%":
 			scale1 = 1.0F;
-		} else if (scale.getCurrentMode().equals("40%")) {
+			break;
+		case "40%":
 			scale1 = 0.7F;
+			break;
 		}
-
 		return scale1;
 	}
-
 }

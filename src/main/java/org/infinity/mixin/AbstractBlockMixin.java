@@ -18,7 +18,8 @@ public class AbstractBlockMixin {
 	@Inject(method = "getAmbientOcclusionLightLevel", at = @At("HEAD"), cancellable = true)
 	public void getAmbientOcclusionLightLevel(BlockState blockState_1, BlockView blockView_1, BlockPos blockPos_1,
 			CallbackInfoReturnable<Float> callbackInfoReturnable) {
-		if (InfMain.getModuleManager().getModuleByClass(XRay.class).isEnabled()) {
+		if (InfMain.getModuleManager().getModuleByClass(XRay.class).isEnabled()
+				&& ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class)).isNoRender()) {
 			callbackInfoReturnable.setReturnValue(1f);
 		}
 	}

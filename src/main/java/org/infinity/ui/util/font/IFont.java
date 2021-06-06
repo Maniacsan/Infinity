@@ -1,8 +1,13 @@
 package org.infinity.ui.util.font;
 
+import org.jetbrains.annotations.NotNull;
+
 public class IFont {
 
 	private static String LEGACY = "/assets/infinity/font/legacy.ttf";
+	
+	@NotNull
+	private static String COND = "/assets/infinity/font/cond.otf";
 
 	public static GlyphPageFontRenderer legacy9 = GlyphPageFontRenderer.createTTF(LEGACY, 9, false, false, false);
 	public static GlyphPageFontRenderer legacy10 = GlyphPageFontRenderer.createTTF(LEGACY, 10, false, false, false);
@@ -15,5 +20,4 @@ public class IFont {
 	public static GlyphPageFontRenderer legacy18 = GlyphPageFontRenderer.createTTF(LEGACY, 18, false, false, false);
 	public static GlyphPageFontRenderer legacy20 = GlyphPageFontRenderer.createTTF(LEGACY, 20, false, false, false);
 	public static GlyphPageFontRenderer legacy22 = GlyphPageFontRenderer.createTTF(LEGACY, 22, false, false, false);
-
 }

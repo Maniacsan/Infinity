@@ -68,36 +68,42 @@ public class EntityUtil {
 
 	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
 			boolean invisibles, boolean mobs, boolean animals, boolean throughWalls) {
-		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
-			return false;
-
 		AntiBot antiBot = ((AntiBot) InfMain.getModuleManager().getModuleByClass(AntiBot.class));
-		if (antiBot.isBot(entity))
-			return false;
 
-		if (!RotationUtil.isInFOV(entity, fov))
-			return false;
+		if (antiBot.isEnabled() && antiBot.mode.getCurrentMode().equalsIgnoreCase("Need Hit")) {
+			if (antiBot.isHitted(entity))
+				return true;
+		} else {
+			if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
+				return false;
 
-		if (!invisibles && entity.isInvisible())
-			return false;
+			if (antiBot.isBot(entity))
+				return false;
 
-		if (!throughWalls && !Helper.getPlayer().canSee(entity))
-			return false;
+			if (!RotationUtil.isInFOV(entity, fov))
+				return false;
 
-		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getName().getString());
+			if (!invisibles && entity.isInvisible())
+				return false;
 
-		if (!friends && isFriend)
-			return false;
+			if (!throughWalls && !Helper.getPlayer().canSee(entity))
+				return false;
 
-		if (players && entity instanceof PlayerEntity)
-			return true;
-		if (mobs && isMonster(entity))
-			return true;
-		if (animals && isAnimal(entity))
-			return true;
+			boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getName().getString());
 
-		if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
-			return false;
+			if (!friends && isFriend)
+				return false;
+
+			if (players && entity instanceof PlayerEntity)
+				return true;
+			if (mobs && isMonster(entity))
+				return true;
+			if (animals && isAnimal(entity))
+				return true;
+
+			if (entity instanceof LivingEntity && ((LivingEntity) entity).getHealth() <= 0)
+				return false;
+		}
 
 		return false;
 	}

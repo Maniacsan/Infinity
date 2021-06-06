@@ -9,6 +9,7 @@ import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.RenderUtil;
+import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -19,6 +20,8 @@ import net.minecraft.entity.player.PlayerEntity;
 
 @ModuleInfo(category = Category.VISUAL, desc = "Shows information about the enemy ", key = -2, name = "TargetInfo", visible = true)
 public class TargetInfo extends Module {
+
+	public Setting scale = new Setting(this, "Scale", 1.0D, 0.4, 2.0D);
 
 	private Setting friends = new Setting(this, "Friends", false);
 	private Setting invisibles = new Setting(this, "Invisibles", true);
@@ -43,6 +46,14 @@ public class TargetInfo extends Module {
 			double inc = ((player.getHealth() + player.getAbsorptionAmount()) / player.getMaxHealth()) * 161;
 			double end = Math.min(inc, 161);
 
+			double scale = this.scale.getCurrentValueDouble();
+
+			GL11.glPushMatrix();
+
+			GL11.glTranslated(wc + (162 / 2), hc + (60 / 2), 0);
+			GL11.glScaled(scale, scale, scale);
+			GL11.glTranslated(-wc - (162 / 2), -hc - (60 / 2), 0);
+
 			Render2D.drawBorderedRect(matrices, wc, hc, 160, 58, 2, 0xFF060515, 0x9908090F);
 			InventoryScreen.drawEntity(wc + 18, hc + 54, 23, 60, -target.pitch, (LivingEntity) target);
 			int off = 0;
@@ -61,7 +72,8 @@ public class TargetInfo extends Module {
 					"Health: " + MathAssist.round(player.getHealth() + player.getAbsorptionAmount(), 1), wc + 52,
 					hc + 13, 0xFFFFFFFF);
 			Render2D.fillSideGradient(wc, hc + 58, wc - 1 + end, hc + 59, 0xFFF41919, 0xFF1DF420);
+
+			GL11.glPopMatrix();
 		}
 	}
-
 }

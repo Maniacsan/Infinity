@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.jetbrains.annotations.Nullable;
@@ -378,9 +377,9 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 					i -= 4;
 				}
 
-				String string = IFont.legacy15.trimStringToWidth(this.text.substring(this.firstCharacterIndex),
+				String string = textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex),
 						this.getInnerWidth());
-				this.setCursor(IFont.legacy15.trimStringToWidth(string, i).length() + this.firstCharacterIndex);
+				this.setCursor(textRenderer.trimToWidth(string, i).length() + this.firstCharacterIndex);
 				return true;
 			} else {
 				return false;
@@ -413,7 +412,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			int l = this.selectionEnd - this.firstCharacterIndex;
 			String obfText = this.text.replaceAll("(?s).", "*");
 			String customText = this.obfText ? obfText : this.text;
-			String string = IFont.legacy15.trimStringToWidth(customText.substring(this.firstCharacterIndex),
+			String string = textRenderer.trimToWidth(customText.substring(this.firstCharacterIndex),
 					this.getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = this.isFocused() && this.focusedTicks / 6 % 2 == 0 && bl;
@@ -427,7 +426,9 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			int yAdd = this.obfText ? 2 : 0;
 			if (!string.isEmpty()) {
 				String string2 = bl ? string.substring(0, k) : string;
-				o = IFont.legacy15.drawString(string2, (float) m, (float) n + yAdd, 0xFFFFFFFF);
+				o = textRenderer.draw(matrices,
+						(OrderedText) this.renderTextProvider.apply(string2, this.firstCharacterIndex), (float) m,
+						(float) n + yAdd, 0xFFFFFFFF);
 			}
 
 			boolean bl3 = this.selectionStart < this.text.length() || this.text.length() >= this.getMaxLength();
@@ -440,7 +441,9 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 			}
 
 			if (!string.isEmpty() && bl && k < string.length()) {
-				IFont.legacy15.drawString(string.substring(k), (float) o, (float) n, j);
+				textRenderer.draw(matrices,
+						(OrderedText) this.renderTextProvider.apply(string.substring(k), this.selectionStart),
+						(float) o, (float) n, j);
 			}
 
 			if (!bl3 && this.suggestion != null) {
@@ -457,12 +460,12 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 					var10004 = n + 1;
 					DrawableHelper.fill(matrices, p, var10002, var10003, var10004 + 9, -3092272);
 				} else {
-					IFont.legacy15.drawString("_", (float) p, (float) n, j);
+					textRenderer.draw(matrices, "_", (float) p, (float) n, j);
 				}
 			}
 
 			if (l != k) {
-				int q = m + IFont.legacy15.getStringWidth(string.substring(0, l));
+				int q = m + textRenderer.getWidth(string.substring(0, l));
 				var10002 = n - 1;
 				var10003 = q - 1;
 				var10004 = n + 1;
@@ -574,16 +577,16 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	public void setSelectionEnd(int i) {
 		int j = this.text.length();
 		this.selectionEnd = MathHelper.clamp(i, 0, j);
-		if (IFont.legacy15 != null) {
+		if (textRenderer != null) {
 			if (this.firstCharacterIndex > j) {
 				this.firstCharacterIndex = j;
 			}
 
 			int k = this.getInnerWidth();
-			String string = IFont.legacy15.trimStringToWidth(this.text.substring(this.firstCharacterIndex), k);
+			String string = textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), k);
 			int l = string.length() + this.firstCharacterIndex;
 			if (this.selectionEnd == this.firstCharacterIndex) {
-				this.firstCharacterIndex -= IFont.legacy15.trimStringToWidth(this.text, k, true).length();
+				this.firstCharacterIndex -= textRenderer.trimToWidth(this.text, k, true).length();
 			}
 
 			if (this.selectionEnd > l) {
@@ -614,7 +617,8 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	}
 
 	public int getCharacterX(int index) {
-		return index > this.text.length() ? this.x : this.x + IFont.legacy15.getStringWidth(this.text.substring(0, index));
+		return index > this.text.length() ? this.x
+				: this.x + textRenderer.getWidth(this.text.substring(0, index));
 	}
 
 	public void setX(int x) {

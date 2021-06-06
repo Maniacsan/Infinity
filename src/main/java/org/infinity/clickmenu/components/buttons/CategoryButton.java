@@ -121,6 +121,7 @@ public class CategoryButton {
 
 		panel.clickMenu.startScissor(panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 		if (isOpen()) {
+			
 			if (scrollHover && _cbuttonsHeight > panel.height) {
 				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37, 2, panel.height - 40, 0x90000000);
 				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37 + offset, 2,
@@ -128,6 +129,7 @@ public class CategoryButton {
 			}
 
 			for (ModuleButton moduleButton : moduleButtons) {
+				
 				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
 				moduleButton.setX(panel.x + 94);
 				moduleButton.setY(yMod + panel.y + 34 - offset);

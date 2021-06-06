@@ -120,9 +120,10 @@ public class Panel {
 		// panel
 		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, 0xFF181818);
 		Render2D.fillGradient(this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
-
+		
 		// category panel
 		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
+		IFont.legacy13.drawString("v" + InfMain.getVersion(), x + 2, y + height - 12, 0xFF464746);
 
 		// profile info
 		Render2D.drawRectWH(matrices, this.x + 2, this.y + 66.5, 90, 0.5, 0xFF4A4F65);

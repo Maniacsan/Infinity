@@ -8,13 +8,13 @@ import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 @Mixin(ExplosionS2CPacket.class)
 public interface IExplosionS2CPacket {
 	
-	@Accessor("x")
-	void setX(double x);
+	@Accessor("playerVelocityX")
+	void setX(float x);
 	
-	@Accessor("y")
-	void setY(double y);
+	@Accessor("playerVelocityY")
+	void setY(float y);
 	
-	@Accessor("z")
-	void setZ(double z);
+	@Accessor("playerVelocityZ")
+	void setZ(float z);
 
 }

@@ -1,6 +1,7 @@
 package org.infinity.features.module.combat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.infinity.event.PacketEvent;
@@ -15,6 +16,7 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.s2c.play.DifficultyS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket.Action;
@@ -24,18 +26,32 @@ import net.minecraft.world.GameMode;
 @ModuleInfo(category = Category.COMBAT, desc = "Ignore / Remove npc by created anti-cheat ", key = -2, name = "AntiBot", visible = true)
 public class AntiBot extends Module {
 
-	private Setting invisible = new Setting(this, "Invisible", false);
-	private Setting entityID = new Setting(this, "Entity ID", false);
-	private Setting zeroHealth = new Setting(this, "Zero Health", true);
-	private Setting addAction = new Setting(this, "Add Action", true);
-	private Setting swing = new Setting(this, "Swing", true);
+	public Setting mode = new Setting(this, "Mode", "Custom", new ArrayList<>(Arrays.asList("Custom", "Need Hit")));
 
-	private Setting remove = new Setting(this, "Remove Bots", false);
+	// Need Hit
+	private Setting deleteHit = new Setting(this, "Delete on next hit", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Need Hit"));
 
-	private List<Integer> swingBots = new ArrayList<>();
+	// Custom
+	private Setting invisible = new Setting(this, "Invisible", false)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+	private Setting entityID = new Setting(this, "Entity ID", false)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+	private Setting zeroHealth = new Setting(this, "Zero Health", false)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+	private Setting addAction = new Setting(this, "Add Action", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+	private Setting invalidGround = new Setting(this, "Invalid Ground", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+	private Setting remove = new Setting(this, "Remove Bots", false)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
+
 	private List<Integer> invisibleBots = new ArrayList<>();
 	private List<Integer> idBots = new ArrayList<>();
 	private List<Integer> zeroBots = new ArrayList<>();
+	private List<Integer> iGround = new ArrayList<>();
+
+	private List<Integer> needHit = new ArrayList<>();
 	private boolean wasAdded;
 
 	@Override
@@ -43,47 +59,57 @@ public class AntiBot extends Module {
 		invisibleBots.clear();
 		idBots.clear();
 		zeroBots.clear();
+		iGround.clear();
+		;
+		needHit.clear();
 	}
 
 	@Override
 	public void onPlayerTick() {
+		setSuffix(mode.getCurrentMode());
+
+		if (!mode.getCurrentMode().equalsIgnoreCase("Custom"))
+			return;
 		for (Entity e : Helper.getWorld().getEntities()) {
 			if (e instanceof PlayerEntity) {
-				if (e.equals(Helper.getPlayer()))
+				PlayerEntity bot = (PlayerEntity) e;
+				if (bot.equals(Helper.getPlayer()))
 					continue;
 
-				if (e.isInvisible() && !invisibleBots.contains(e.getEntityId()) && invisible.isToggle()) {
-					invisibleBots.add(e.getEntityId());
-					message(e.getName().getString());
+				if (bot.isInvisible() && !invisibleBots.contains(bot.getEntityId()) && invisible.isToggle()) {
+					invisibleBots.add(bot.getEntityId());
+					message(bot.getName().getString());
 					if (remove.isToggle())
-						Helper.getWorld().removeEntity(e.getEntityId());
+						Helper.getWorld().removeEntity(bot.getEntityId());
 				}
 
-				if (e.getEntityId() >= 1000000000 && !idBots.contains(e.getEntityId()) && entityID.isToggle()) {
-					idBots.add(e.getEntityId());
-					message(e.getName().getString());
+				if (bot.getEntityId() >= 1000000000 && !idBots.contains(bot.getEntityId()) && entityID.isToggle()) {
+					idBots.add(bot.getEntityId());
+					message(bot.getName().getString());
 					if (remove.isToggle())
-						Helper.getWorld().removeEntity(e.getEntityId());
+						Helper.getWorld().removeEntity(bot.getEntityId());
 				}
 
-				if (((PlayerEntity) e).getHealth() <= 0 && !zeroBots.contains(e.getEntityId())
-						&& zeroHealth.isToggle()) {
-					zeroBots.add(e.getEntityId());
-					message(e.getName().getString());
+				if (bot.getHealth() <= 0 && !zeroBots.contains(bot.getEntityId()) && zeroHealth.isToggle()) {
+					zeroBots.add(bot.getEntityId());
+					message(bot.getName().getString());
 					if (remove.isToggle())
-						Helper.getWorld().removeEntity(e.getEntityId());
+						Helper.getWorld().removeEntity(bot.getEntityId());
 				}
 
-				if (Helper.getPlayer().distanceTo(e) > 10
-						&& ((PlayerEntity) e).canSee(Helper.getPlayer()) && ((PlayerEntity) e).handSwinging
-						&& ((PlayerEntity) e).getAttacking() == null && ((PlayerEntity) e).canTarget(Helper.getPlayer())
-						&& ((PlayerEntity) e).getLastAttackedTime() == 0 && !((PlayerEntity) e).verticalCollision
-						&& ((PlayerEntity) e).age < 40 && !swingBots.contains(e.getEntityId()) && swing.isToggle()) {
-					swingBots.add(e.getEntityId());
-					message(e.getName().getString());
+				boolean swingContains = Helper.getPlayer().distanceTo(bot) > 15 && bot.canSee(Helper.getPlayer())
+						&& bot.handSwinging && bot.getAttacking() == null && bot.canTarget(Helper.getPlayer())
+						&& bot.getLastAttackedTime() == 0 && bot.age < 50;
+				// From GishCode (Ground value)
+				if (bot.getVelocity().getY() == 0.0 && !bot.verticalCollision && bot.isOnGround()
+						&& bot.getY() % 0.5 != 0.0 && Helper.getPlayer().prevY != Helper.getPlayer().getY()
+						&& swingContains && !iGround.contains(bot.getEntityId()) && invalidGround.isToggle()) {
+					iGround.add(bot.getEntityId());
+					message(bot.getName().getString());
 					if (remove.isToggle())
-						Helper.getWorld().removeEntity(e.getEntityId());
+						Helper.getWorld().removeEntity(bot.getEntityId());
 				}
+
 			}
 		}
 	}
@@ -110,6 +136,25 @@ public class AntiBot extends Module {
 					message(bot);
 				}
 			}
+		} else if (event.getType().equals(EventType.SEND)) {
+			if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+				PlayerInteractEntityC2SPacket pa = (PlayerInteractEntityC2SPacket) event.getPacket();
+				if (pa.getEntity(Helper.getWorld()).equals(Helper.getPlayer())
+						|| !mode.getCurrentMode().equalsIgnoreCase("Need Hit"))
+					return;
+
+				if (!needHit.contains(pa.getEntity(Helper.getWorld()).getEntityId())) {
+					needHit.add(pa.getEntity(Helper.getWorld()).getEntityId());
+					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
+							+ pa.getEntity(Helper.getWorld()).getName().getString() + Formatting.GRAY
+							+ " added to targets");
+				} else if (deleteHit.isToggle() && needHit.contains(pa.getEntity(Helper.getWorld()).getEntityId())) {
+					needHit.remove(pa.getEntity(Helper.getWorld()).getEntityId());
+					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
+							+ pa.getEntity(Helper.getWorld()).getName().getString() + Formatting.GRAY
+							+ " removed from targets");
+				}
+			}
 		}
 	}
 
@@ -126,17 +171,23 @@ public class AntiBot extends Module {
 		if (zeroHealth.isToggle() && zeroBots.contains(entity.getEntityId()))
 			return true;
 
-		if (swing.isToggle() && swingBots.contains(entity.getEntityId()))
+		if (invalidGround.isToggle() && iGround.contains(entity.getEntityId()))
 			return true;
 
 		return false;
 	}
 
+	public boolean isHitted(Entity entity) {
+		return needHit.contains(entity.getEntityId());
+	}
+
 	private void message(String bot) {
 		if (remove.isToggle())
-			Helper.infoMessage("Removed a bot: " + Formatting.BLUE + bot);
+			Helper.infoMessage(
+					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Removed a bot: " + Formatting.BLUE + bot);
 		else
-			Helper.infoMessage("Bot detected: " + Formatting.BLUE + bot);
+			Helper.infoMessage(
+					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Bot detected: " + Formatting.BLUE + bot);
 	}
 
 }

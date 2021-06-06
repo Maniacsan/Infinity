@@ -9,6 +9,7 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.mixin.IEntityVelocityUpdateS2CPacket;
 import org.infinity.mixin.IExplosionS2CPacket;
 import org.infinity.utils.Helper;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,6 +20,7 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 
 @ModuleInfo(name = "Velocity", key = -2, visible = true, desc = "Anti knockback", category = Category.COMBAT)
@@ -45,11 +47,39 @@ public class Velocity extends Module {
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.RECIEVE)) {
 			Packet<?> packet = event.getPacket();
+			if (packet instanceof EntityVelocityUpdateS2CPacket
+					&& ((EntityVelocityUpdateS2CPacket) packet).getId() == Helper.getPlayer().getEntityId()) {
+				EntityVelocityUpdateS2CPacket ep = (EntityVelocityUpdateS2CPacket) packet;
+				double x = ep.getVelocityX() * horizontal.getCurrentValueDouble() / 100;
+				double y = ep.getVelocityY() * vertical.getCurrentValueDouble() / 100;
+				double z = ep.getVelocityZ() * horizontal.getCurrentValueDouble() / 100;
+
+				switch (mode.getCurrentMode()) {
+				case "Packet":
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) x);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) y);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) z);
+					break;
+
+				case "Reverse":
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) -x);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) -y);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) -z);
+					break;
+
+				case "Matrix 6.1.0":
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX(0);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY(0);
+					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ(0);
+					break;
+				}
+			}
+
 			if (packet instanceof ExplosionS2CPacket) {
 				ExplosionS2CPacket es = (ExplosionS2CPacket) packet;
-				double x = es.getX() * horizontal.getCurrentValueDouble() / 100;
-				double y = es.getY() * vertical.getCurrentValueDouble() / 100;
-				double z = es.getZ() * horizontal.getCurrentValueDouble() / 100;
+				float x = (float) (es.getPlayerVelocityX() * horizontal.getCurrentValueDouble() / 100F);
+				float y = (float) (es.getPlayerVelocityY() * vertical.getCurrentValueDouble() / 100F);
+				float z = (float) (es.getPlayerVelocityZ() * horizontal.getCurrentValueDouble() / 100F);
 
 				switch (mode.getCurrentMode()) {
 				case "Packet":
@@ -132,7 +162,7 @@ public class Velocity extends Module {
 		ci.cancel();
 	}
 
-	private static void addPushVelocity(Entity e, ClientPlayerEntity player, double x, double z) {
+	private void addPushVelocity(Entity e, ClientPlayerEntity player, double x, double z) {
 		if (e.equals(player) && !player.isRiding()) {
 			Entity entity = player;
 			entity.setVelocity(entity.getVelocity().getX() + x, entity.getVelocity().getY(),

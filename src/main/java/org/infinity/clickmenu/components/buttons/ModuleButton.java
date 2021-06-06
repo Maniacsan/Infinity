@@ -17,12 +17,14 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
 import org.infinity.ui.util.font.IFont;
+import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 public class ModuleButton {
@@ -247,10 +249,17 @@ public class ModuleButton {
 			elements.forEach(element -> element.keyPressed(keyCode, scanCode, modifiers));
 
 		if (keyOpen) {
-			if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_SPACE || keyCode == GLFW.GLFW_KEY_BACKSPACE)
+			if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_SPACE
+					|| keyCode == GLFW.GLFW_KEY_BACKSPACE) {
 				module.setKey(-2);
-			else
+				Helper.infoMessage(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " removed binds");
+			} else {
 				module.setKey(keyCode);
+				Helper.infoMessage(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName()
+						+ Formatting.GRAY + " binded to " + Formatting.AQUA
+						+ String.valueOf(InputUtil.fromKeyCode(keyCode, keyCode)).replace("key.keyboard.", "")
+								.toUpperCase());
+			}
 			keyOpen = false;
 		}
 	}

@@ -43,8 +43,8 @@ public class KillAura extends Module {
 	private Setting friends = new Setting(this, "Friends", false).setVisible(() -> players.isToggle());
 	private Setting invisibles = new Setting(this, "Invisibles", true);
 	private Setting mobs = new Setting(this, "Mobs", true);
-	private Setting animals = new Setting(this, "Animals", true);
-	private Setting throughWalls = new Setting(this, "Through Walls", false);
+	private Setting animals = new Setting(this, "Animals", false);
+	private Setting throughWalls = new Setting(this, "Through Walls", true);
 
 	private Setting fov = new Setting(this, "FOV", 240D, 0D, 360D);
 

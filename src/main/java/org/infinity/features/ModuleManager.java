@@ -61,6 +61,7 @@ public class ModuleManager {
 			new TargetStrafe(),
 			new StorageESP(),
 			new FullBright(),
+			new XCarry(),
 			new Jesus(), 
 			new Speed(), 
 			new PacketKick(),
@@ -80,8 +81,7 @@ public class ModuleManager {
 			new Fly(),
 			new ShulkerView(),
 			new Eagle(),
-			new NoSwim(),
-			new SelfDestruction()
+			new NoSwim()
 			);
 
 	public List<Module> getList() {

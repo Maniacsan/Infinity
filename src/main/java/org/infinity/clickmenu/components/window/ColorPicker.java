@@ -5,7 +5,6 @@ import java.awt.Rectangle;
 
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.clickmenu.widgets.WCheckBox;
 import org.infinity.clickmenu.widgets.WSlider;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
@@ -28,8 +27,7 @@ public class ColorPicker extends IScreen {
 	public static final Identifier PICKER = new Identifier("infinity", "textures/game/screen/picker.png");
 
 	private WTextField colorField;
-	private WCheckBox rainbowB;
-	private WSlider rainbowSpeed;
+	private WSlider red, green, blue;
 
 	private static final int H = 0, S = 1, B = 2;
 	private float[] hsb;
@@ -49,6 +47,7 @@ public class ColorPicker extends IScreen {
 	public ColorPicker(Screen prev, Setting setting) {
 		this.prev = prev;
 		this.setting = setting;
+		anim = 0.4;
 
 		this.xPosition = (width / 2) - 90;
 		this.yPosition = (height / 2) - 110;
@@ -58,12 +57,10 @@ public class ColorPicker extends IScreen {
 
 		Color color = setting.getColor();
 		this.hsb = Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), null);
-		anim = 0.4;
 	}
 
 	@Override
 	public void init() {
-
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
 		colorField = new WTextField(Helper.minecraftClient.textRenderer, xPosition, yPosition, 40, 14,
 				new TranslatableText("#"), false);
@@ -72,14 +69,15 @@ public class ColorPicker extends IScreen {
 
 		children.add(colorField);
 
-		rainbowSpeed = new WSlider(1, 10, width / 2, height / 2, 160, 20, new LiteralText("Rainbow Speed"),
-				setting.getRainbowSpeed());
+		red = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Red"), setting.getColor().getRed());
+		green = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Green"),
+				setting.getColor().getGreen());
+		blue = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Blue"),
+				setting.getColor().getBlue());
 
-		children.add(rainbowSpeed);
-
-		this.rainbowB = new WCheckBox(width / 2, this.yPosition + 98, 150, 20, new LiteralText("Rainbow"),
-				setting.isRainbow());
-		addButton(rainbowB);
+		children.add(red);
+		children.add(green);
+		children.add(blue);
 
 		this.updateColor();
 	}
@@ -102,39 +100,26 @@ public class ColorPicker extends IScreen {
 			GL11.glScaled(1 + anim, 1 + anim, 1 + anim);
 			GL11.glTranslated(-this.xPosition - 97.5, -this.yPosition - 135, 0);
 		}
-		
 
 		renderPicker(matrices, mouseX, mouseY, delta);
 
-		
 		GL11.glPopMatrix();
 
 	}
 
 	public void renderPicker(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.xPosition = (width / 2) - 90;
-		this.yPosition = (height / 2) - 122;
+		this.xPosition = (width / 2) - 80;
+		this.yPosition = (height / 2) - 95;
 
 		this.rectHSArea = new Rectangle(this.xPosition + 10, this.yPosition + 10, 128, 128);
 		this.rectBArea = new Rectangle(this.xPosition + 148, this.yPosition + 10, 7, 128);
-
-		this.setting.setRainbow(rainbowB.isChecked());
-		this.setting.setRainbowSpeed(rainbowSpeed.getValue());
-
-		if (setting.isRainbow()) {
-			this.hsb[H] += Math.floor(setting.getRainbowSpeed()) / 600;
-
-			if (this.hsb[H] > 1)
-				this.hsb[H] = 0;
-			updateColor();
-		}
 
 		int hPos = this.xPosition + 10 + (int) (128F * this.hsb[H]);
 		int sPos = this.yPosition + 10 + (128 - (int) (128F * this.hsb[S]));
 		int bPos = this.yPosition + 10 + (128 - (int) (128F * this.hsb[B]));
 		int brightness = Color.HSBtoRGB(this.hsb[H], this.hsb[S], 1.0F) | 0xFF000000;
 
-		Render2D.drawBorderedRect(matrices, this.xPosition - 30, this.yPosition - 30, 225, 300, 1, 0xFF080629,
+		Render2D.drawBorderedRect(matrices, this.xPosition - 30, this.yPosition - 30, 224, 230, 1, 0xFF080629,
 				0xFF161621);
 		Render2D.drawBorderedRect(matrices, this.xPosition, this.yPosition, 164, 165, 2, 0xFF131D4C, 0xFF121D39);
 
@@ -158,17 +143,7 @@ public class ColorPicker extends IScreen {
 		colorField.setHeight(14);
 		colorField.render(matrices, mouseX, mouseY, delta);
 
-		Render2D.drawBorderedRect(matrices, this.xPosition, this.yPosition + 168, 165, 70, 2, 0x90131D4C, 0x90141F46);
-
 		Render2D.drawBorderedCircle(hPos, sPos, 4, 1, 0xFFFFFFFF, 0xFF000000 | this.rgb);
-
-		this.rainbowB.setX(xPosition + 2);
-		this.rainbowB.setY(yPosition + 172);
-		this.rainbowB.render(matrices, mouseX, mouseY, delta);
-
-		this.rainbowSpeed.setX(xPosition + 2);
-		this.rainbowSpeed.setY(yPosition + 199);
-		this.rainbowSpeed.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
@@ -218,7 +193,6 @@ public class ColorPicker extends IScreen {
 	@Override
 	public void tick() {
 		super.tick();
-
 	}
 
 	@Override

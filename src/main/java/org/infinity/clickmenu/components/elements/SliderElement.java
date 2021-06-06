@@ -62,10 +62,10 @@ public class SliderElement extends AbstractElement {
 			animation = 1;
 
 		IFont.legacy15.drawString(setstrg, x + 1, y + 5, -1);
-		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0D1A2C);
+		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0C1535);
 		Render2D.drawRectWH(matrices, x, y + 20, (width - 45) * this.animation, 1, 0xFF30639F);
 
-		Render2D.drawBorderedCircle((float) (x + (width - 45) * animation), (float) (y + 20), 4.0F, 1, 0xFF30639F,
+		Render2D.drawCircle((float) (x + (width - 45) * animation), (float) (y + 20), 3.5F,
 				0xFFCCD6C8);
 
 		if (!this.dragging)

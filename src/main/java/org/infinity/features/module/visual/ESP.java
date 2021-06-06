@@ -25,7 +25,7 @@ import net.minecraft.entity.Entity;
 @ModuleInfo(category = Category.VISUAL, desc = "Draw entity esp", key = -2, name = "ESP", visible = true)
 public class ESP extends Module {
 
-	private Setting mode = new Setting(this, "Mode", "Fill", new ArrayList<>(Arrays.asList("Fill", "Box", "Vanilla")));
+	private Setting mode = new Setting(this, "Mode", "Box", new ArrayList<>(Arrays.asList("Fill", "Box", "Vanilla")));
 
 	private Setting width = new Setting(this, "Width", 1.1f, 0.5f, 3.0f)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Box"));

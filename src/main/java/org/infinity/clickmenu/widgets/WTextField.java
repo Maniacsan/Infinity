@@ -5,7 +5,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -404,7 +403,7 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			int l = this.selectionEnd - this.firstCharacterIndex;
 			String obfText = this.text.replaceAll("(?s).", "*");
 			String customText = this.obfText ? obfText : this.text;
-			String string = IFont.legacy15.trimStringToWidth(customText.substring(this.firstCharacterIndex),
+			String string = this.textRenderer.trimToWidth(customText.substring(this.firstCharacterIndex),
 					this.getInnerWidth());
 			boolean bl = k >= 0 && k <= string.length();
 			boolean bl2 = this.isFocused() && this.focusedTicks / 6 % 2 == 0 && bl;
@@ -418,7 +417,8 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			int yAdd = this.obfText ? 2 : 0;
 			if (!string.isEmpty()) {
 				String string2 = bl ? string.substring(0, k) : string;
-				o = this.textRenderer.drawWithShadow(matrices, string.substring(0, k), (float) m,
+				o = this.textRenderer.draw(matrices,
+						(OrderedText) this.renderTextProvider.apply(string2, this.firstCharacterIndex), (float) m,
 						(float) n + yAdd, j);
 			}
 
@@ -432,12 +432,13 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 			}
 
 			if (!string.isEmpty() && bl && k < string.length()) {
-				IFont.legacy15.drawString(string.substring(k),
+				this.textRenderer.draw(matrices,
+						(OrderedText) this.renderTextProvider.apply(string.substring(k), this.selectionStart),
 						(float) o, (float) n, j);
 			}
 
 			if (!bl3 && this.suggestion != null) {
-				IFont.legacy15.drawString(this.suggestion, (float) (p - 1), (float) n, -8355712);
+				this.textRenderer.draw(matrices, this.suggestion, (float) (p - 1), (float) n, j);
 			}
 
 			int var10002;
@@ -451,12 +452,12 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 					this.textRenderer.getClass();
 					DrawableHelper.fill(matrices, p, var10002, var10003, var10004 + 9, -3092272);
 				} else {
-					IFont.legacy15.drawString("_", (float) p, (float) n, j);
+					this.textRenderer.draw(matrices, "_", (float) p, (float) n, j);
 				}
 			}
 
 			if (l != k) {
-				int q = m + IFont.legacy15.getStringWidth(string.substring(0, l));
+				int q = m + textRenderer.getWidth(string.substring(0, l));
 				var10002 = n - 1;
 				var10003 = q - 1;
 				var10004 = n + 1;
@@ -569,14 +570,16 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 	public void setSelectionEnd(int i) {
 		int j = this.text.length();
 		this.selectionEnd = MathHelper.clamp(i, 0, j);
+		if (this.textRenderer != null) {
 			if (this.firstCharacterIndex > j) {
 				this.firstCharacterIndex = j;
+			}
 
 			int k = this.getInnerWidth();
-			String string = IFont.legacy15.trimStringToWidth(this.text.substring(this.firstCharacterIndex), k);
+			String string = this.textRenderer.trimToWidth(this.text.substring(this.firstCharacterIndex), k);
 			int l = string.length() + this.firstCharacterIndex;
 			if (this.selectionEnd == this.firstCharacterIndex) {
-				this.firstCharacterIndex -= IFont.legacy15.trimStringToWidth(this.text, k, true).length();
+				this.firstCharacterIndex -= this.textRenderer.trimToWidth(this.text, k, true).length();
 			}
 
 			if (this.selectionEnd > l) {
@@ -587,7 +590,6 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 
 			this.firstCharacterIndex = MathHelper.clamp(this.firstCharacterIndex, 0, j);
 		}
-
 	}
 
 	public void setFocusUnlocked(boolean focusUnlocked) {
@@ -613,23 +615,23 @@ public class WTextField extends AbstractButtonWidget implements Drawable, Elemen
 	public void setX(int x) {
 		this.x = x;
 	}
-	
+
 	public void setY(int y) {
 		this.y = y;
 	}
-	
+
 	public void setWidth(int width) {
 		this.width = width;
 	}
-	
+
 	public void setHeight(int height) {
 		this.height = height;
 	}
-	
+
 	public int getColor() {
 		return color;
 	}
-	
+
 	public void setColor(int color) {
 		this.color = color;
 	}

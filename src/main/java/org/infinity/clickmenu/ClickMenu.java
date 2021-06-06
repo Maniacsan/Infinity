@@ -3,7 +3,6 @@ package org.infinity.clickmenu;
 import java.util.List;
 
 import org.infinity.clickmenu.components.Panel;
-import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.infinity.ui.IScreen;
@@ -11,6 +10,7 @@ import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -25,8 +25,8 @@ public class ClickMenu extends IScreen {
 	private boolean closeAnim;
 
 	public ClickMenu() {
-
-		panel = new Panel(this, Render2D.getScaledWidth() / 2 - 230, Render2D.getScaledHeight() / 2 - 154, 400, 290);
+		Window w = Helper.minecraftClient.getWindow();
+		panel = new Panel(this, w.getScaledWidth() / 2 - 230, w.getScaledHeight() / 2 - 154, 400, 290);
 	}
 
 	@Override
@@ -127,8 +127,6 @@ public class ClickMenu extends IScreen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		panel.keyPressed(keyCode, scanCode, modifiers);
-		if (keyCode == InfMain.getModuleManager().getModuleByClass(GuiMod.class).getKey())
-			onClose();
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 

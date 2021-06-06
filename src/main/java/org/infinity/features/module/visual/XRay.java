@@ -1,9 +1,11 @@
 package org.infinity.features.module.visual;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.event.MotionEvent;
+import org.infinity.event.PacketEvent;
 import org.infinity.event.RenderEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
@@ -21,7 +23,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
@@ -39,11 +40,14 @@ public class XRay extends Module {
 
 	// orebfuscator
 	private Setting orebfuscator = new Setting(this, "Orebfuscator", false);
+	public Setting noRender = new Setting(this, "No Render", true).setVisible(() -> orebfuscator.isToggle());
 	private Setting radius = new Setting(this, "Radius", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
 	private Setting up = new Setting(this, "Up Distance", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
 	private Setting down = new Setting(this, "Down Distance", 10.0D, 1.0D, 50.0D)
 			.setVisible(() -> orebfuscator.isToggle());
-	private Setting info = new Setting(this, "Info", false).setVisible(() -> orebfuscator.isToggle());
+
+	private Setting color = new Setting(this, "Color", new Color(134, 188, 241))
+			.setVisible(() -> orebfuscator.isToggle());
 
 	public Setting block = new Setting(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
 			Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE, Blocks.IRON_ORE, Blocks.LAPIS_ORE,
@@ -58,18 +62,15 @@ public class XRay extends Module {
 			Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS, Blocks.CRYING_OBSIDIAN)));
 
 	private Timer updater = new Timer();
+	private Timer find = new Timer();
 
 	private BlockPos currentBlock = new BlockPos(-1, -1, -1);
 	private float breakProgress;
-	private boolean hitBlock;
-
-	private int findTimer;
 
 	@Override
 	public void onEnable() {
 		Helper.minecraftClient.worldRenderer.reload();
 
-		findTimer = 0;
 		if (!clickedBlocks.isEmpty())
 			clickedBlocks.clear();
 	}
@@ -79,7 +80,6 @@ public class XRay extends Module {
 		clickedBlocks.clear();
 		oreBlocks.clear();
 		renderBlocks.clear();
-		findTimer = 0;
 
 		progressBlock = null;
 
@@ -93,6 +93,24 @@ public class XRay extends Module {
 			if (Helper.getPlayer().isCreative() || Helper.getPlayer().isSpectator())
 				return;
 
+			if (find.hasReached(3000)) {
+				renderBlocks.clear();
+				for (BlockPos pos : BlockUtil.getAllInBox(
+						(int) (Helper.getPlayer().getPos().x - radius.getCurrentValueDouble()),
+						(int) (Helper.getPlayer().getPos().y - down.getCurrentValueDouble()),
+						(int) (Helper.getPlayer().getPos().z - radius.getCurrentValueDouble()),
+						(int) (Helper.getPlayer().getPos().x + radius.getCurrentValueDouble()),
+						(int) (Helper.getPlayer().getPos().y + up.getCurrentValueDouble()),
+						(int) (Helper.getPlayer().getPos().z + radius.getCurrentValueDouble()))) {
+
+					for (Block valid : block.getBlocks()) {
+						if (BlockUtil.getBlock(pos) == valid && !renderBlocks.contains(pos))
+							renderBlocks.add(pos);
+					}
+				}
+				find.reset();
+			}
+
 			if (oreBlocks.isEmpty()) {
 
 				if (updater.hasReached(3000)) {
@@ -105,41 +123,14 @@ public class XRay extends Module {
 							(int) (Helper.getPlayer().getPos().z + radius.getCurrentValueDouble()))) {
 
 						for (Block valid : block.getBlocks()) {
-							if (BlockUtil.getBlock(pos) == valid && !clickedBlocks.contains(pos)) {
+							if (BlockUtil.getBlock(pos) == valid && !clickedBlocks.contains(pos))
 								oreBlocks.add(pos);
-							}
 						}
 					}
 					updater.reset();
 				}
 			}
 		}
-
-		if (findTimer > 0) {
-			findTimer--;
-			return;
-		}
-
-		if (!clickedBlocks.isEmpty()) {
-			for (BlockPos clicked : clickedBlocks) {
-
-				for (Block valid : block.getBlocks()) {
-					if (BlockUtil.getBlock(clicked) == valid) {
-						if (!renderBlocks.contains(clicked)) {
-
-							if (info.isToggle())
-								Helper.infoMessage("Finded " + Formatting.AQUA + valid.getName().getString()
-										+ Formatting.WHITE + " - x:" + Formatting.GRAY + clicked.getX()
-										+ Formatting.WHITE + " y:" + Formatting.GRAY + clicked.getY() + Formatting.WHITE
-										+ " z:" + Formatting.GRAY + clicked.getZ());
-
-							renderBlocks.add(clicked);
-						}
-					}
-				}
-			}
-		}
-
 	}
 
 	@EventTarget
@@ -147,8 +138,10 @@ public class XRay extends Module {
 		if (event.getType().equals(EventType.PRE)) {
 
 			for (BlockPos pos : oreBlocks) {
-				clickBlock(pos, Helper.getPlayer().getHorizontalFacing());
-				findTimer = 10;
+				if (clickBlock(pos, Helper.getPlayer().getHorizontalFacing())) {
+					if (!clickedBlocks.contains(pos))
+						clickedBlocks.add(pos);
+				}
 			}
 		}
 	}
@@ -156,7 +149,6 @@ public class XRay extends Module {
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
 		if (progressBlock != null) {
-
 			WorldRender.drawBox(progressBlock, 1, 0xFFFFFFFF);
 		}
 
@@ -165,12 +157,17 @@ public class XRay extends Module {
 
 		for (BlockPos renderPos : renderBlocks) {
 
-			WorldRender.drawBox(renderPos, 2, 0xff6BE979);
+			WorldRender.drawBox(renderPos, 1, color.getColor().getRGB());
 		}
 	}
 
-	private boolean clickBlock(BlockPos pos, Direction direction) {
+	@EventTarget
+	public void onPacket(PacketEvent event) {
+		if (!event.getType().equals(EventType.RECIEVE))
+			return;
+	}
 
+	private boolean clickBlock(BlockPos pos, Direction direction) {
 		BlockState blockState2;
 
 		if (Helper.getPlayer().isCreative()) {
@@ -178,9 +175,6 @@ public class XRay extends Module {
 			Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 1.0F);
 			Helper.sendPacket(
 					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
-
-		}
-		if (this.hitBlock) {
 		}
 
 		blockState2 = Helper.getWorld().getBlockState(pos);
@@ -190,21 +184,28 @@ public class XRay extends Module {
 		if (bl && this.breakProgress == 0.0F) {
 			blockState2.onBlockBreakStart(Helper.getWorld(), pos, Helper.getPlayer());
 		}
-		hitBlock = true;
 		breakProgress = 0.0f;
 		this.currentBlock = pos;
 
 		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, this.currentBlock,
 				direction));
 		oreBlocks.remove(pos);
-		clickedBlocks.add(pos);
-		progressBlock = pos;
+
+		if (oreBlocks.isEmpty())
+			progressBlock = null;
+		else
+			progressBlock = pos;
 
 		return true;
 	}
 
 	public boolean isValid(Block block1) {
 		return !isEnabled() || block.getBlocks().contains(block1);
+	}
+
+	public boolean isNoRender() {
+		return orebfuscator.isToggle() && !noRender.isToggle();
+
 	}
 
 }

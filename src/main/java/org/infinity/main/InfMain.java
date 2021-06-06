@@ -1,7 +1,6 @@
 package org.infinity.main;
 
 import java.io.File;
-import java.util.function.Supplier;
 
 import org.infinity.chat.InfChatHud;
 import org.infinity.chat.IRC.IRCClient;
@@ -25,7 +24,6 @@ public class InfMain {
 	private static File direction;
 	public Initialize init;
 
-	public static Supplier<Boolean> selfDestruct;
 	public static boolean firstStart;
 	public static boolean reLogin;
 
