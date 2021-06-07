@@ -38,7 +38,7 @@ public class LoginUtil implements ILogin {
 
 			Protect.CHECK.setResult(() -> result, split[0], split[1], split[2]);
 
-			if (responseJSON.getBoolean("FormSaved")) {
+			if (responseJSON.getBoolean("FormSaved") && response.getStatusText().equalsIgnoreCase("OK")) {
 				return auth = new Auth(AuthType.valueOf("SUCCESS"), username, password);
 			} else
 				return auth = new Auth(AuthType.valueOf("NOLICENSE"), username, password);
@@ -46,7 +46,6 @@ public class LoginUtil implements ILogin {
 		} catch (Exception ex) {
 			return auth = new Auth(AuthType.valueOf("ERROR"), username, password);
 		}
-
 	}
 
 	public Auth getAuth() {

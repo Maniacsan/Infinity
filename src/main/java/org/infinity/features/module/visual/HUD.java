@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
@@ -16,7 +15,6 @@ import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
-import org.infinity.utils.entity.EntityUtil;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.ChatScreen;

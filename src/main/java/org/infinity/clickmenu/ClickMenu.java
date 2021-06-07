@@ -10,7 +10,6 @@ import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.Element;
-import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -22,11 +21,9 @@ public class ClickMenu extends IScreen {
 
 	public Panel panel;
 	public double anim;
-	private boolean closeAnim;
 
 	public ClickMenu() {
-		Window w = Helper.minecraftClient.getWindow();
-		panel = new Panel(this, w.getScaledWidth() / 2 - 230, w.getScaledHeight() / 2 - 154, 400, 290);
+		panel = new Panel(this, 60, 20, 400, 290);
 	}
 
 	@Override

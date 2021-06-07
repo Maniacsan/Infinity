@@ -42,14 +42,16 @@ public class AuthUI extends Screen {
 	public void init() {
 		this.client.keyboard.setRepeatEvents(true);
 		this.usernameField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 58, 160,
-				22, new TranslatableText("Login"), new Identifier("infinity", "textures/icons/auth/username.png"), false);
+				22, new TranslatableText("Login"), new Identifier("infinity", "textures/icons/auth/username.png"),
+				false);
 		if (usernameData != null && !usernameData.isEmpty())
 			usernameField.setText(usernameData);
 
 		this.usernameField.setMaxLength(40);
 		this.children.add(usernameField);
 		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 26, 160,
-				22, new TranslatableText("Password"), new Identifier("infinity", "textures/icons/auth/password.png"), true);
+				22, new TranslatableText("Password"), new Identifier("infinity", "textures/icons/auth/password.png"),
+				true);
 		if (passwordData != null && !passwordData.isEmpty())
 			passwordField.setText(passwordData);
 
@@ -112,26 +114,24 @@ public class AuthUI extends Screen {
 		this.passwordField.render(matrices, mouseX, mouseY, delta);
 
 		if (!usernameField.isActive() && usernameField.getText().isEmpty())
-			FontUtils.drawString(matrices, "Username", this.width / 2 - 70,
-					this.height / 2 - 50, 0x70393939);
+			FontUtils.drawString(matrices, "Username", this.width / 2 - 70, this.height / 2 - 50, 0x70393939);
 
 		if (!passwordField.isActive() && passwordField.getText().isEmpty())
-			FontUtils.drawString(matrices, "********", this.width / 2 - 70, this.height / 2 - 16,
-					0x70393939);
+			FontUtils.drawString(matrices, "********", this.width / 2 - 70, this.height / 2 - 16, 0x70393939);
 
 		if (errorTime > 0) {
 			Render2D.drawRectWH(matrices, this.width / 2 - 51, this.height / 2 - 126, 102, 30, -1);
 			Render2D.drawRectWH(matrices, this.width / 2 - 50, this.height / 2 - 125, 100, 28,
 					new Color(181, 59, 86).getRGB());
-			FontUtils.drawHCenteredString(matrices, "Login failed", this.width / 2, this.height / 2 - 115, -1);
+			IFont.legacy16.drawCenteredString("Login failed", this.width / 2, this.height / 2 - 115, -1);
 		}
 
 		IFont.legacy15.drawString("Register", this.width / 2 + 86, this.height / 2 - 128,
 				hovered ? 0xFFEDFAF9 : 0xFF6B6A6A);
-		
+
 		Render2D.drawRectWH(matrices, width / 2 + 101, height / 2 - 146, 18.5, 13.5,
 				exitHover ? 0xFFF86155 : 0xFFFFFFFF);
-		
+
 		IFont.legacy18.drawString("x", this.width / 2 + 107, this.height / 2 - 145,
 				exitHover ? 0xFFFFFFFF : 0xFF000000);
 

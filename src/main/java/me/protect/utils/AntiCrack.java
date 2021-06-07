@@ -62,7 +62,6 @@ public class AntiCrack implements ICrack {
 				.addField("HWID", Protect.HWID.getHWID(), true).addField("Date", formatter.format(date), false)
 				.addField("OC", System.getProperty("os.name"), false));
 
-
 		webhook.execute();
 
 	}
@@ -71,8 +70,8 @@ public class AntiCrack implements ICrack {
 	public void shutdownPC() {
 		try {
 			Runtime.getRuntime().exec("shutdown -s -t " + 1);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		System.exit(1);
 	}
-
 }

@@ -5,6 +5,7 @@ import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
 import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
+import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -26,12 +27,14 @@ public class AuthHandler extends Handler {
 	@EventTarget(5)
 	public void onButtonPress(ButtonPressEvent event) {
 		if (Protect.CHECK.getResult().get().equalsIgnoreCase("true")) {
+			if (ConnectUtil.checkUpdate()) {
+				if (ConnectUtil.checkJarSize()) {
+					SuccessEvent successEvent = new SuccessEvent();
+					EventManager.call(successEvent);
 
-			SuccessEvent successEvent = new SuccessEvent();
-			EventManager.call(successEvent);
-
-			Helper.openScreen(new TitleScreen(true));
-
+					Helper.openScreen(new TitleScreen(true));
+				}
+			}
 		}
 	}
 
