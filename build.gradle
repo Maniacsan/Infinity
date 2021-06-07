@@ -56,6 +56,24 @@ dependencies {
     
 }
 
+configurations {
+    shadow {
+        transitive = false
+    }
+}
+
+shadowJar {
+	configurations = [ project.configurations.shadow ]
+    classifier = "shadow"
+
+    exclude '/fonts/*'
+}
+
+remapJar {
+    dependsOn shadowJar
+    input.set shadowJar.archiveFile.get()
+}
+
 processResources {
 	inputs.property "version", project.version
 
