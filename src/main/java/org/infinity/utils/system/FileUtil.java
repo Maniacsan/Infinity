@@ -1,6 +1,7 @@
 package org.infinity.utils.system;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -95,16 +96,27 @@ public class FileUtil {
 		}
 	}
 
-	public static void copyFile(File file, String path) {
+	public static void copy(File from, File to) {
 		try {
-			InputStream in = FileUtil.class.getResourceAsStream(path + File.separator + file.getName());
-			OutputStream out = new FileOutputStream(file);
-			byte[] bytes = new byte[256];
-			int read;
-			for (; (read = in.read(bytes)) > 0; out.write(bytes, 0, read))
-				;
-			out.close();
+			InputStream in = new FileInputStream(from);
+			OutputStream out = new FileOutputStream(to);
+
+			copy(in, out);
+
 			in.close();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void copy(InputStream in, OutputStream out) {
+		byte[] bytes = new byte[512];
+		int read;
+
+		try {
+			while ((read = in.read(bytes)) != -1)
+				out.write(bytes, 0, read);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

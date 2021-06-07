@@ -6,6 +6,7 @@ import java.util.List;
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.components.buttons.CategoryButton;
 import org.infinity.clickmenu.components.config.ConfigPanel;
+import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WSearchField;
 import org.infinity.features.Category;
@@ -13,17 +14,21 @@ import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 public class Panel {
 
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
 	public ConfigPanel configPanel = new ConfigPanel("Config", this);
 	public String SEARCH = "Search";
+	private Identifier AVATAR = new Identifier("infinity", "photo.png");
 
 	public WSearchField searchField;
 	public ClickMenu clickMenu;
@@ -120,14 +125,18 @@ public class Panel {
 		// panel
 		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, 0xFF181818);
 		Render2D.fillGradient(this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
-		
+
 		// category panel
 		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
 		IFont.legacy13.drawString("v" + InfMain.getVersion(), x + 2, y + height - 12, 0xFF464746);
 
 		// profile info
 		Render2D.drawRectWH(matrices, this.x + 2, this.y + 66.5, 90, 0.5, 0xFF4A4F65);
-		IFont.legacy14.drawCenteredString(InfMain.getUser().getName(), x + 86 / 2, y + 52, -1);
+		IFont.legacy13.drawCenteredString(InfMain.getUser().getName(), x + 86 / 2, y + 45, -1);
+		IFont.legacy12.drawCenteredString(
+				"License: " + ColorUtils.getUserRoleColor() + "Admin" + Formatting.RESET,
+				x + 83 / 2, y + 57, -1);
+		RenderUtil.drawTexture(matrices, AVATAR, x + 25, y + 6, 38, 38);
 
 		// header
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
@@ -142,6 +151,8 @@ public class Panel {
 		searchField.render(matrices, mouseX, mouseY, delta);
 
 		setSearch(!searchField.getText().isEmpty());
+		if (!isOpenSearch())
+			searchField.setSelected(false);
 
 		double yOffset = 2;
 		for (CategoryButton categoryButton : categoryButtons) {

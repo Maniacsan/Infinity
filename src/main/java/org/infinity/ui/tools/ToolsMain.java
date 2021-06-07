@@ -1,10 +1,8 @@
 package org.infinity.ui.tools;
 
-import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.main.InfMain;
-import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -35,16 +33,10 @@ public class ToolsMain extends Screen {
 					fSpoofWidget.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())));
 				}));
 
-		addButton(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 65, 160, 20,
-				new LiteralText("Menu"), (buttonWidget) -> {
-					Helper.openScreen(new ClickMenu());
-				}));
-
 		addButton(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,
 				(buttonWidget) -> {
 					this.client.openScreen(parent);
 				}));
-
 	}
 
 	@Override

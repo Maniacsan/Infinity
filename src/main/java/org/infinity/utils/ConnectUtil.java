@@ -83,15 +83,16 @@ public class ConnectUtil {
 			String photoUrl = InfMain.getUser().getPhoto().split("/")[2];
 			String pathUrl = InfMain.getUser().getPhoto().split("/")[0] + "/"
 					+ InfMain.getUser().getPhoto().split("/")[1] + "/";
-			File path = new File(InfMain.getDirection() + File.separator + "profile");
+			File path = new File(InfMain.getDirection(), "profile");
 			if (!path.exists())
 				path.mkdirs();
 
 			Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/" + pathUrl + "n" + photoUrl,
-					path + "photo.png");
+					path + File.separator + "photo.png");
 
-			if (!path.exists())
-				FileUtil.copyFile(new File(path + "/photo.png"), "/assets/infinity/photo.png");
+			if (path.exists())
+				FileUtil.copy(new File(path, "photo.png"),
+						new File(ConnectUtil.class.getResource("/assets/infinity/").getFile() + "photo.png"));
 
 		} catch (Exception e) {
 		}

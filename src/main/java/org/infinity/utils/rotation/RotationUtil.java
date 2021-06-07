@@ -65,9 +65,13 @@ public class RotationUtil {
 	}
 
 	public static float[] getLookNeeded(double x, double y, double z) {
-		double d = x + 0.5 - Helper.getPlayer().getX();
-		double g = y - Helper.getPlayer().getY();
-		double e = z + 0.5 - Helper.getPlayer().getZ();
+		return getLookNeeded(Helper.getPlayer(), x, y, z);
+	}
+
+	public static float[] getLookNeeded(Entity entity, double x, double y, double z) {
+		double d = x + 0.5 - entity.getX();
+		double g = y - entity.getY();
+		double e = z + 0.5 - entity.getZ();
 
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
@@ -92,10 +96,13 @@ public class RotationUtil {
 		return oldAngle + f;
 	}
 
-	public static boolean isInFOV(Entity entity, double angle) {
-		double angleDiff = getAngle360(Helper.getPlayer().yaw,
-				getLookNeeded(entity.getX(), entity.getY(), entity.getZ())[0]);
+	public static boolean isInFOV(Entity player, Entity entity, double angle) {
+		double angleDiff = getAngle360(player.yaw, getLookNeeded(player, entity.getX(), entity.getY(), entity.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
+	}
+
+	public static boolean isInFOV(Entity entity, double angle) {
+		return isInFOV(Helper.getPlayer(), entity, angle);
 	}
 
 	public static boolean isInFOVPos(BlockPos pos, double angle) {

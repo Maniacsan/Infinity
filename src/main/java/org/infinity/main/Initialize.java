@@ -55,11 +55,7 @@ public class Initialize {
 		hookManager = new HookManager();
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
-		friend = new Friend();
-
-		// loads
-		friend.load();
-		accountManager.load();
+		friend = new Friend();;
 
 		moduleManager.getModuleByClass(HUD.class).enable();
 		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();

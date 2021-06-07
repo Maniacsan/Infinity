@@ -218,7 +218,7 @@ public class CategoryButton {
 		if (isOpen())
 			moduleButtons.forEach(moduleButton -> moduleButton.keyPressed(keyCode, scanCode, modifiers));
 
-		if (name.equalsIgnoreCase(panel.SEARCH)) {
+		if (name.equalsIgnoreCase(panel.SEARCH) && panel.isOpenSearch()) {
 			searchRefresh(searchList);
 		}
 	}

@@ -10,12 +10,17 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
+import org.infinity.utils.entity.EntityUtil;
+import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.s2c.play.DifficultyS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
@@ -26,7 +31,8 @@ import net.minecraft.world.GameMode;
 @ModuleInfo(category = Category.COMBAT, desc = "Ignore / Remove npc by created anti-cheat ", key = -2, name = "AntiBot", visible = true)
 public class AntiBot extends Module {
 
-	public Setting mode = new Setting(this, "Mode", "Custom", new ArrayList<>(Arrays.asList("Custom", "Need Hit")));
+	public Setting mode = new Setting(this, "Mode", "Matrix 6.1.1",
+			new ArrayList<>(Arrays.asList("Matrix 6.1.1", "Custom", "Need Hit")));
 
 	// Need Hit
 	private Setting deleteHit = new Setting(this, "Delete on next hit", true)
@@ -41,15 +47,12 @@ public class AntiBot extends Module {
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
 	private Setting addAction = new Setting(this, "Add Action", true)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
-	private Setting invalidGround = new Setting(this, "Invalid Ground", true)
-			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
 	private Setting remove = new Setting(this, "Remove Bots", false)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
 
 	private List<Integer> invisibleBots = new ArrayList<>();
 	private List<Integer> idBots = new ArrayList<>();
 	private List<Integer> zeroBots = new ArrayList<>();
-	private List<Integer> iGround = new ArrayList<>();
 
 	private List<Integer> needHit = new ArrayList<>();
 	private boolean wasAdded;
@@ -59,8 +62,6 @@ public class AntiBot extends Module {
 		invisibleBots.clear();
 		idBots.clear();
 		zeroBots.clear();
-		iGround.clear();
-		;
 		needHit.clear();
 	}
 
@@ -68,48 +69,49 @@ public class AntiBot extends Module {
 	public void onPlayerTick() {
 		setSuffix(mode.getCurrentMode());
 
-		if (!mode.getCurrentMode().equalsIgnoreCase("Custom"))
-			return;
 		for (Entity e : Helper.getWorld().getEntities()) {
 			if (e instanceof PlayerEntity) {
 				PlayerEntity bot = (PlayerEntity) e;
 				if (bot.equals(Helper.getPlayer()))
 					continue;
 
-				if (bot.isInvisible() && !invisibleBots.contains(bot.getEntityId()) && invisible.isToggle()) {
-					invisibleBots.add(bot.getEntityId());
-					message(bot.getName().getString());
-					if (remove.isToggle())
-						Helper.getWorld().removeEntity(bot.getEntityId());
-				}
+				if (mode.getCurrentMode().equalsIgnoreCase("Custom")) {
 
-				if (bot.getEntityId() >= 1000000000 && !idBots.contains(bot.getEntityId()) && entityID.isToggle()) {
-					idBots.add(bot.getEntityId());
-					message(bot.getName().getString());
-					if (remove.isToggle())
-						Helper.getWorld().removeEntity(bot.getEntityId());
-				}
+					if (bot.isInvisible() && !invisibleBots.contains(bot.getEntityId()) && invisible.isToggle()) {
+						invisibleBots.add(bot.getEntityId());
+						message(bot.getName().getString());
+						if (remove.isToggle())
+							Helper.getWorld().removeEntity(bot.getEntityId());
+					}
 
-				if (bot.getHealth() <= 0 && !zeroBots.contains(bot.getEntityId()) && zeroHealth.isToggle()) {
-					zeroBots.add(bot.getEntityId());
-					message(bot.getName().getString());
-					if (remove.isToggle())
-						Helper.getWorld().removeEntity(bot.getEntityId());
-				}
+					if (bot.getEntityId() >= 1000000000 && !idBots.contains(bot.getEntityId()) && entityID.isToggle()) {
+						idBots.add(bot.getEntityId());
+						message(bot.getName().getString());
+						if (remove.isToggle())
+							Helper.getWorld().removeEntity(bot.getEntityId());
+					}
 
-				boolean swingContains = Helper.getPlayer().distanceTo(bot) > 15 && bot.canSee(Helper.getPlayer())
-						&& bot.handSwinging && bot.getAttacking() == null && bot.canTarget(Helper.getPlayer())
-						&& bot.getLastAttackedTime() == 0 && bot.age < 50;
-				// From GishCode (Ground value)
-				if (bot.getVelocity().getY() == 0.0 && !bot.verticalCollision && bot.isOnGround()
-						&& bot.getY() % 0.5 != 0.0 && Helper.getPlayer().prevY != Helper.getPlayer().getY()
-						&& swingContains && !iGround.contains(bot.getEntityId()) && invalidGround.isToggle()) {
-					iGround.add(bot.getEntityId());
-					message(bot.getName().getString());
-					if (remove.isToggle())
-						Helper.getWorld().removeEntity(bot.getEntityId());
-				}
+					if (bot.getHealth() <= 0 && !zeroBots.contains(bot.getEntityId()) && zeroHealth.isToggle()) {
+						zeroBots.add(bot.getEntityId());
+						message(bot.getName().getString());
+						if (remove.isToggle())
+							Helper.getWorld().removeEntity(bot.getEntityId());
+					}
+				} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
+					boolean botContains = RotationUtil.isInFOV(bot, Helper.getPlayer(), 60)
+							&& Helper.getPlayer().distanceTo(bot) > 9 && bot.handSwinging && bot.getAttacking() == null
+							&& bot.canTarget(Helper.getPlayer()) && bot.age < 80;
+					boolean speedAnalysis = bot.getStatusEffect(StatusEffects.SPEED) == null
+							&& bot.getStatusEffect(StatusEffects.JUMP_BOOST) == null
+							&& bot.getStatusEffect(StatusEffects.LEVITATION) == null && !bot.isTouchingWater()
+							&& bot.getEquippedStack(EquipmentSlot.CHEST).getItem() != Items.ELYTRA && !bot.hasVehicle()
+							&& EntityUtil.getSpeedBPS(bot) > 13 && !bot.isOnGround() && !bot.velocityDirty;
 
+					if (botContains && speedAnalysis && bot != null) {
+						message(bot.getName().getString());
+						Helper.getWorld().removeEntity(bot.getEntityId());
+					}
+				}
 			}
 		}
 	}
@@ -117,23 +119,22 @@ public class AntiBot extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.RECIEVE)) {
-			if (!addAction.isToggle())
-				return;
+			if (addAction.isToggle()) {
 
-			if (event.getPacket() instanceof DifficultyS2CPacket)
-				wasAdded = false;
+				if (event.getPacket() instanceof DifficultyS2CPacket)
+					wasAdded = false;
 
-			if (event.getPacket() instanceof PlayerListS2CPacket
-					&& ((PlayerListS2CPacket) event.getPacket()).getAction().equals(Action.ADD_PLAYER)) {
-				String bot = ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0).getProfile().getName();
-				if (!wasAdded)
-					wasAdded = bot == Helper.getPlayer().getName().getString();
-				if (wasAdded && !Helper.getPlayer().isSpectator() && !Helper.getPlayer().abilities.allowFlying
-						&& ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0)
-								.getGameMode() != (GameMode.NOT_SET)
-						&& !bot.equalsIgnoreCase(Helper.getPlayer().getName().getString())) {
-					event.cancel();
-					message(bot);
+				if (event.getPacket() instanceof PlayerListS2CPacket
+						&& ((PlayerListS2CPacket) event.getPacket()).getAction().equals(Action.ADD_PLAYER)) {
+					String bot = ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0).getProfile().getName();
+					if (!wasAdded)
+						wasAdded = bot == Helper.getPlayer().getName().getString();
+					if (wasAdded && !Helper.getPlayer().isSpectator() && !Helper.getPlayer().abilities.allowFlying
+							&& ((PlayerListS2CPacket) event.getPacket()).getEntries().get(0)
+									.getGameMode() != (GameMode.NOT_SET)) {
+						event.cancel();
+						message(bot);
+					}
 				}
 			}
 		} else if (event.getType().equals(EventType.SEND)) {
@@ -171,9 +172,6 @@ public class AntiBot extends Module {
 		if (zeroHealth.isToggle() && zeroBots.contains(entity.getEntityId()))
 			return true;
 
-		if (invalidGround.isToggle() && iGround.contains(entity.getEntityId()))
-			return true;
-
 		return false;
 	}
 
@@ -182,7 +180,7 @@ public class AntiBot extends Module {
 	}
 
 	private void message(String bot) {
-		if (remove.isToggle())
+		if (remove.isToggle() && mode.getCurrentMode().equalsIgnoreCase("Custom"))
 			Helper.infoMessage(
 					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Removed a bot: " + Formatting.BLUE + bot);
 		else

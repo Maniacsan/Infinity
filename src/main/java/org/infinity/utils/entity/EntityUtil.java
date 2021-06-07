@@ -264,6 +264,16 @@ public class EntityUtil {
 		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
 		return MathHelper.sqrt(f * f + g * g + h * h);
 	}
+	
+	public static double getSpeedBPS(Entity entity) {
+        double tX = Math.abs(entity.getX() - entity.prevX);
+        double tZ = Math.abs(entity.getZ() - entity.prevZ);
+        double length = Math.sqrt(tX * tX + tZ * tZ);
+        
+        length *= InfMain.TIMER;
+
+		return length * 20;
+	}
 
 	public static void setStepHeight(float height) {
 		Helper.getPlayer().stepHeight = height;

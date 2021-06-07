@@ -13,7 +13,7 @@ import com.darkmagician6.eventapi.EventTarget;
 
 public class InitProcess extends Handler {
 
-	@EventTarget(3)
+	@EventTarget(5)
 	public void onSuccess(SuccessEvent event) {
 		InfMain.getHandler().getHandler(TickLogger.class).enable();
 
@@ -23,6 +23,8 @@ public class InitProcess extends Handler {
 		// loads
 		InfMain.INSTANCE.init.configManager.loadConfig(false);
 		InfMain.INSTANCE.init.macroManager.load();
+		InfMain.INSTANCE.init.friend.load();
+		InfMain.INSTANCE.init.accountManager.load();
 
 		InfMain.INSTANCE.init.menu = new ClickMenu();
 

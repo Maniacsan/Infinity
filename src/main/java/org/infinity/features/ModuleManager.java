@@ -70,6 +70,7 @@ public class ModuleManager {
 			new NameTags(), 
 			new NoClip(),
 			new FakeLags(),
+			new CameraClip(),
 			new AntiAim(), 
 			new PingSpoof(),
 			new Step(),
