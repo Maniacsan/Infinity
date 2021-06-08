@@ -61,7 +61,7 @@ public class ReLoginProcess extends Handler {
 
 			JSONObject responseJSON = new JSONObject(response.getBody());
 
-			if (responseJSON.getBoolean("FormSaved")) {
+			if (responseJSON.getBoolean("FormSaved") && response.getStatusText().equalsIgnoreCase("OK")) {
 				Auth authSuccess = new Auth(AuthType.valueOf("SUCCESS"), username, password);
 
 				Protect.LOGIN.setAuth(authSuccess);

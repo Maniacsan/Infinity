@@ -35,8 +35,9 @@ public class LoginUtil implements ILogin {
 
 			String result = String.valueOf(responseJSON.getBoolean("FormSaved"));
 			String[] split = responseJSON.getString("RedirectUrl").replace(url, "").split(":");
+			String photo = split[2].equalsIgnoreCase("null") ? null : split[2];
 
-			Protect.CHECK.setResult(() -> result, split[0], split[1], split[2]);
+			Protect.CHECK.setResult(() -> result, split[0], split[1], photo);
 
 			if (responseJSON.getBoolean("FormSaved") && response.getStatusText().equalsIgnoreCase("OK")) {
 				return auth = new Auth(AuthType.valueOf("SUCCESS"), username, password);
@@ -44,6 +45,7 @@ public class LoginUtil implements ILogin {
 				return auth = new Auth(AuthType.valueOf("NOLICENSE"), username, password);
 
 		} catch (Exception ex) {
+			System.out.println(ex);
 			return auth = new Auth(AuthType.valueOf("ERROR"), username, password);
 		}
 	}

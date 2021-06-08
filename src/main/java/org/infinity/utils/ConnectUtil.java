@@ -80,15 +80,22 @@ public class ConnectUtil {
 	public static void downloadPhoto() {
 		try {
 			httpsSertificate();
-			String photoUrl = InfMain.getUser().getPhoto().split("/")[2];
-			String pathUrl = InfMain.getUser().getPhoto().split("/")[0] + "/"
-					+ InfMain.getUser().getPhoto().split("/")[1] + "/";
 			File path = new File(InfMain.getDirection(), "profile");
 			if (!path.exists())
 				path.mkdirs();
 
-			Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/" + pathUrl + "n" + photoUrl,
-					path + File.separator + "photo.png");
+			if (InfMain.getUser().getPhoto() == null || InfMain.getUser().getPhoto().isEmpty()) {
+				Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/defaultavatar/nA0AYY34FNHH2.jpg",
+						path + File.separator + "photo.png");
+
+			} else {
+				String photoUrl = InfMain.getUser().getPhoto().split("/")[2];
+				String pathUrl = InfMain.getUser().getPhoto().split("/")[0] + "/"
+						+ InfMain.getUser().getPhoto().split("/")[1] + "/";
+
+				Protect.IMAGE.downloadImage("https://whyuleet.ru/community/uploads/" + pathUrl + "n" + photoUrl,
+						path + File.separator + "photo.png");
+			}
 
 			if (path.exists())
 				FileUtil.copy(new File(path, "photo.png"),
