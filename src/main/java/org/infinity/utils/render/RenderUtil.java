@@ -22,8 +22,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Matrix4f;
 
 public class RenderUtil {
+	
+	private static TextureUtil TEXTURE = new TextureUtil();
 
 	public void setColor(Color color) {
 		GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f,
@@ -190,6 +193,58 @@ public class RenderUtil {
 		}
 		current = larger ? (current += factor) : (current -= factor);
 		return current;
+	}
+
+	public static void drawImage(MatrixStack matrices, double x, double y, double width, double height, String identifier) {
+		drawImage(matrices, x, y, width, height, identifier, Color.WHITE);
+	}
+
+	public static void drawImage(MatrixStack matrices, double x, double y, double width, double height, String identifier,
+			Color color) {
+		TEXTURE.bindTexture(identifier);
+
+		Matrix4f matrix4f = matrices.peek().getModel();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		bufferBuilder.begin(GL11.GL_TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE);
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 0).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) y, 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 0).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 1).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 1).next();
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) (y + height), 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 1).next();
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0)
+				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 0).next();
+		draw(true);
+	}
+
+	private static void draw(boolean texture) {
+		RenderSystem.color4f(1, 1, 1, 1);
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.enableBlend();
+		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		RenderSystem.disableAlphaTest();
+		RenderSystem.disableLighting();
+
+		RenderSystem.disableCull();
+		GL11.glEnable(GL11.GL_LINE_SMOOTH);
+		RenderSystem.shadeModel(GL11.GL_SMOOTH);
+
+		if (texture)
+			RenderSystem.enableTexture();
+		else
+			RenderSystem.disableTexture();
+
+		Tessellator.getInstance().draw();
+
+		RenderSystem.enableAlphaTest();
+		RenderSystem.enableDepthTest();
+		RenderSystem.enableTexture();
+		GL11.glDisable(GL11.GL_LINE_SMOOTH);
 	}
 
 }

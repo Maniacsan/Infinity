@@ -13,7 +13,7 @@ import com.darkmagician6.eventapi.EventTarget;
 
 public class InitProcess extends Handler {
 
-	@EventTarget(5)
+	@EventTarget(3)
 	public void onSuccess(SuccessEvent event) {
 		InfMain.getHandler().getHandler(TickLogger.class).enable();
 

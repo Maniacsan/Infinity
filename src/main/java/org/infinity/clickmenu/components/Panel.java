@@ -1,12 +1,12 @@
 package org.infinity.clickmenu.components;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.components.buttons.CategoryButton;
 import org.infinity.clickmenu.components.config.ConfigPanel;
-import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WSearchField;
 import org.infinity.features.Category;
@@ -20,15 +20,12 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class Panel {
 
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
 	public ConfigPanel configPanel = new ConfigPanel("Config", this);
 	public String SEARCH = "Search";
-	private Identifier AVATAR = new Identifier("infinity", "photo.png");
 
 	public WSearchField searchField;
 	public ClickMenu clickMenu;
@@ -132,11 +129,9 @@ public class Panel {
 
 		// profile info
 		Render2D.drawRectWH(matrices, this.x + 2, this.y + 66.5, 90, 0.5, 0xFF4A4F65);
-		IFont.legacy13.drawCenteredString(InfMain.getUser().getName(), x + 86 / 2, y + 45, -1);
-		IFont.legacy12.drawCenteredString(
-				"License: " + ColorUtils.getUserRoleColor() + "Admin" + Formatting.RESET,
-				x + 83 / 2, y + 57, -1);
-		RenderUtil.drawTexture(matrices, AVATAR, x + 25, y + 6, 38, 38);
+		IFont.legacy14.drawCenteredString(InfMain.getUser().getName(), x + 86 / 2, y + 54, -1);
+		RenderUtil.drawImage(matrices, x + 23, y + 6, 44, 44,
+				InfMain.getDirection() + File.separator + "profile" + File.separator + "photo.png");
 
 		// header
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
