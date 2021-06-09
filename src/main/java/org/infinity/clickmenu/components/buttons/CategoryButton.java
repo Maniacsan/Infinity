@@ -65,11 +65,11 @@ public class CategoryButton {
 		InfMain.getModuleManager().getEnableModules().clear();
 		if (name == Category.ENABLED.name) {
 			moduleButtons.clear();
-			InfMain.getModuleManager().getEnableModules().forEach(module -> {
+			for (Module module : InfMain.getModuleManager().getEnableModules()) {
 				ModuleButton enabledButton = new ModuleButton(module, moduleButtons, panel);
 				moduleButtons.add(enabledButton);
 				addChildren(panel.clickMenu.getChildren());
-			});
+			}
 		}
 	}
 
@@ -82,10 +82,10 @@ public class CategoryButton {
 		if (searchList.isEmpty())
 			return;
 
-		searchList.forEach(result -> {
+		for (Module result : searchList) {
 			moduleButtons.add(new ModuleButton(result, moduleButtons, panel));
 			addChildren(panel.clickMenu.getChildren());
-		});
+		}
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -121,7 +121,7 @@ public class CategoryButton {
 
 		panel.clickMenu.startScissor(panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 		if (isOpen()) {
-			
+
 			if (scrollHover && _cbuttonsHeight > panel.height) {
 				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37, 2, panel.height - 40, 0x90000000);
 				Render2D.drawRectWH(matrices, panel.x + 237, panel.y + 37 + offset, 2,
@@ -129,7 +129,7 @@ public class CategoryButton {
 			}
 
 			for (ModuleButton moduleButton : moduleButtons) {
-				
+
 				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
 				moduleButton.setX(panel.x + 94);
 				moduleButton.setY(yMod + panel.y + 34 - offset);

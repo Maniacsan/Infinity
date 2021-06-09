@@ -112,7 +112,8 @@ public class ConnectUtil {
 					seldDestructionJar();
 				}
 			} catch (Exception e) {
-
+				System.out.println("Update Exception");
+				System.exit(0);
 			}
 		}).start();
 	}
