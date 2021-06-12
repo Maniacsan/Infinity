@@ -9,6 +9,7 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
+import org.infinity.utils.MathAssist;
 import org.infinity.utils.MoveUtil;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.rotation.RotationUtil;
@@ -57,11 +58,10 @@ public class TargetStrafe extends Module {
 		if (Helper.getPlayer().isOnGround())
 			Helper.getPlayer().jump();
 
-		if (Helper.minecraftClient.options.keyLeft.isPressed()) {
+		if (Helper.minecraftClient.options.keyLeft.isPressed())
 			direction = 1;
-		} else if (Helper.minecraftClient.options.keyRight.isPressed()) {
+		else if (Helper.minecraftClient.options.keyRight.isPressed())
 			direction = -1;
-		}
 
 		if (Helper.getPlayer().horizontalCollision)
 			direction = direction == 1 ? -1 : 1;
@@ -72,6 +72,9 @@ public class TargetStrafe extends Module {
 		double forward = Helper.getPlayer().distanceTo(target) > radius.getCurrentValueDouble() ? 1 : 0;
 
 		float yaw = getNormalizeYaw(target);
+		
+		Helper.getPlayer().bodyYaw = yaw;
+		Helper.getPlayer().headYaw = yaw;
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Basic"))
 			getBasic(yaw, speed, forward, direction);
@@ -107,20 +110,17 @@ public class TargetStrafe extends Module {
 				forward = -1.0D;
 			}
 		}
-		Helper.getPlayer().bodyYaw = yaw;
-		Helper.getPlayer().headYaw = yaw;
 
 		double x = forward * speed * Math.cos(Math.toRadians((yaw + 90.0F)))
 				+ direction * speed * Math.sin(Math.toRadians((yaw + 90.0F)));
 		double z = forward * speed * Math.sin(Math.toRadians((yaw + 90.0F)))
 				- direction * speed * Math.cos(Math.toRadians((yaw + 90.0F)));
 
-		MoveUtil.setHVelocity(x, z);
-		Helper.getPlayer().getVelocity().subtract(0, -0.1, 0);
+		Helper.getPlayer().setVelocity(x, Helper.getPlayer().getVelocity().getY() - 0.001, z);
 	}
 
 	public static float getNormalizeYaw(Entity entity) {
-		float yaw = RotationUtil.lookAtEntity(entity)[0];
+		float yaw = (float) (RotationUtil.lookAtEntity(entity)[0] + MathAssist.random(-3D, 3D));
 		float sens = (float) Helper.minecraftClient.options.mouseSensitivity / 0.005F;
 		float f = 0.005F * sens;
 		float gcd = f * f * f * 1.2F;

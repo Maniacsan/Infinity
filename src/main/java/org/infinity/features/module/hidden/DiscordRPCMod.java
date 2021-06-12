@@ -40,11 +40,7 @@ public class DiscordRPCMod extends Module {
 			PHelper.makeCrash();
 
 		if (ticks % 40 == 0) {
-			if (InfMain.getUser().getName().isEmpty() || InfMain.getUser().getName() == null) {
-				PHelper.makeCrash();
-				return;
-			}
-			
+
 			long start = 0L;
 			start = System.currentTimeMillis() - (ticks * 50);
 

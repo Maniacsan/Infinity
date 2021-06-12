@@ -54,6 +54,9 @@ public class NameTags extends Module {
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
 		for (Entity entity : Helper.getWorld().getEntities()) {
+			if (entity == null)
+				continue;
+			
 			List<String> lines = new ArrayList<>();
 			double scale = 0;
 

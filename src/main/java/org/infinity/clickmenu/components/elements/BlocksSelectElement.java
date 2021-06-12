@@ -2,7 +2,6 @@ package org.infinity.clickmenu.components.elements;
 
 import java.awt.Color;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
@@ -13,8 +12,8 @@ import net.minecraft.client.util.math.MatrixStack;
 
 public class BlocksSelectElement extends AbstractElement {
 
-	public BlocksSelectElement(Setting setting, Panel panel) {
-		super(setting, panel);
+	public BlocksSelectElement(Setting setting) {
+		super(setting);
 	}
 
 	@Override

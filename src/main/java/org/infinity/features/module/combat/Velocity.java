@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.infinity.event.PacketEvent;
-import org.infinity.event.VelocityEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
@@ -19,7 +18,6 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntityVelocityUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 
@@ -29,14 +27,8 @@ public class Velocity extends Module {
 	public Setting mode = new Setting(this, "Mode", "Matrix 6.1.0",
 			new ArrayList<>(Arrays.asList("Packet", "Reverse", "Matrix 6.1.0")));
 
-	private Setting vertical = new Setting(this, "Vertical",
-			mode.getCurrentMode().equalsIgnoreCase("Reverse") ? 50D : 0.0D, 0.0D, 100.0D)
-					.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Packet")
-							|| mode.getCurrentMode().equalsIgnoreCase("Reverse"));
-	private Setting horizontal = new Setting(this, "Horizontal",
-			mode.getCurrentMode().equalsIgnoreCase("Reverse") ? 50D : 0.0D, 0.0D, 100.0D)
-					.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Packet")
-							|| mode.getCurrentMode().equalsIgnoreCase("Reverse"));
+	public Setting vertical = new Setting(this, "Vertical", 0.0D, 0.0D, 1.0D);
+	public Setting horizontal = new Setting(this, "Horizontal", 0.0D, 0.0D, 1.0D);
 
 	@Override
 	public void onPlayerTick() {
@@ -46,40 +38,54 @@ public class Velocity extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.RECIEVE)) {
-			Packet<?> packet = event.getPacket();
-			if (packet instanceof EntityVelocityUpdateS2CPacket
-					&& ((EntityVelocityUpdateS2CPacket) packet).getId() == Helper.getPlayer().getEntityId()) {
-				EntityVelocityUpdateS2CPacket ep = (EntityVelocityUpdateS2CPacket) packet;
-				double x = ep.getVelocityX() * horizontal.getCurrentValueDouble() / 100;
-				double y = ep.getVelocityY() * vertical.getCurrentValueDouble() / 100;
-				double z = ep.getVelocityZ() * horizontal.getCurrentValueDouble() / 100;
+			if (event.getPacket() instanceof EntityVelocityUpdateS2CPacket) {
+				EntityVelocityUpdateS2CPacket ep = (EntityVelocityUpdateS2CPacket) event.getPacket();
+				if (ep.getId() == Helper.getPlayer().getEntityId()) {
+					double velX = (ep.getVelocityX() / 8000d - Helper.getPlayer().getVelocity().x)
+							* horizontal.getCurrentValueDouble();
+					double velY = (ep.getVelocityY() / 8000d - Helper.getPlayer().getVelocity().y)
+							* vertical.getCurrentValueDouble();
+					double velZ = (ep.getVelocityZ() / 8000d - Helper.getPlayer().getVelocity().z)
+							* horizontal.getCurrentValueDouble();
 
-				switch (mode.getCurrentMode()) {
-				case "Packet":
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) x);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) y);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) z);
-					break;
+					int x = (int) (velX * 8000 + Helper.getPlayer().getVelocity().x * 8000);
+					int y = (int) (velY * 8000 + Helper.getPlayer().getVelocity().y * 8000);
+					int z = (int) (velZ * 8000 + Helper.getPlayer().getVelocity().z * 8000);
 
-				case "Reverse":
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) -x);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) -y);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) -z);
-					break;
+					switch (mode.getCurrentMode()) {
+					case "Packet":
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) x);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) y);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) z);
+						break;
 
-				case "Matrix 6.1.0":
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityX(0);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityY(0);
-					((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ(0);
-					break;
+					case "Reverse":
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityX((int) -x);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityY((int) -y);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ((int) -z);
+						break;
+
+					case "Matrix 6.1.0":
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityX(x);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityY(y);
+						((IEntityVelocityUpdateS2CPacket) ep).setVelocityZ(z);
+						break;
+					}
 				}
 			}
 
-			if (packet instanceof ExplosionS2CPacket) {
-				ExplosionS2CPacket es = (ExplosionS2CPacket) packet;
-				float x = (float) (es.getPlayerVelocityX() * horizontal.getCurrentValueDouble() / 100F);
-				float y = (float) (es.getPlayerVelocityY() * vertical.getCurrentValueDouble() / 100F);
-				float z = (float) (es.getPlayerVelocityZ() * horizontal.getCurrentValueDouble() / 100F);
+			if (event.getPacket() instanceof ExplosionS2CPacket) {
+				ExplosionS2CPacket es = (ExplosionS2CPacket) event.getPacket();
+				double velX = (es.getPlayerVelocityX() / 8000d - Helper.getPlayer().getVelocity().x)
+						* horizontal.getCurrentValueDouble();
+				double velY = (es.getPlayerVelocityY() / 8000d - Helper.getPlayer().getVelocity().y)
+						* vertical.getCurrentValueDouble();
+				double velZ = (es.getPlayerVelocityZ() / 8000d - Helper.getPlayer().getVelocity().z)
+						* horizontal.getCurrentValueDouble();
+
+				int x = (int) (velX * 8000 + Helper.getPlayer().getVelocity().x * 8000);
+				int y = (int) (velY * 8000 + Helper.getPlayer().getVelocity().y * 8000);
+				int z = (int) (velZ * 8000 + Helper.getPlayer().getVelocity().z * 8000);
 
 				switch (mode.getCurrentMode()) {
 				case "Packet":
@@ -95,38 +101,12 @@ public class Velocity extends Module {
 					break;
 
 				case "Matrix 6.1.0":
-					((IExplosionS2CPacket) es).setX(0);
-					((IExplosionS2CPacket) es).setY(0);
-					((IExplosionS2CPacket) es).setZ(0);
+					((IExplosionS2CPacket) es).setX(x);
+					((IExplosionS2CPacket) es).setY(y);
+					((IExplosionS2CPacket) es).setZ(z);
 					break;
 				}
 			}
-		}
-	}
-
-	@EventTarget
-	public void onSetVelocity(VelocityEvent event) {
-		int x = (int) (event.getDefaultX() * (int) horizontal.getCurrentValueDouble() / 100);
-		int y = (int) (event.getDefaultY() * (int) vertical.getCurrentValueDouble() / 100);
-		int z = (int) (event.getDefaultZ() * (int) horizontal.getCurrentValueDouble() / 100);
-		switch (mode.getCurrentMode()) {
-		case "Packet":
-			event.setX(x);
-			event.setY(y);
-			event.setZ(z);
-			break;
-
-		case "Reverse":
-			event.setX(-x);
-			event.setY(-y);
-			event.setZ(-z);
-			break;
-
-		case "Matrix 6.1.0":
-			event.setX(0);
-			event.setY(0);
-			event.setZ(0);
-			break;
 		}
 	}
 

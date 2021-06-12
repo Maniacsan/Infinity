@@ -1,8 +1,6 @@
 package org.infinity.clickmenu.components.elements;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.ui.util.font.IFont;
@@ -17,8 +15,8 @@ public class ComboBoxElement extends AbstractElement {
 	public double dropY;
 	public double dropX;
 
-	public ComboBoxElement(Setting setting, Panel panel) {
-		super(setting, panel);
+	public ComboBoxElement(Setting setting) {
+		super(setting);
 	}
 
 	@Override

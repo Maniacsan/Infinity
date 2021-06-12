@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.infinity.main.InfMain;
+
 import com.darkmagician6.eventapi.EventManager;
 
 import net.fabricmc.api.EnvType;
@@ -130,12 +132,14 @@ public class Module {
 	}
 
 	public void setEnabled(boolean enabled) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		this.enabled = enabled;
-		if (enabled) {
+		if (enabled)
 			enableHandle();
-		} else {
+		else
 			disableHandle();
-		}
 	}
 
 	public Category getCategory() {

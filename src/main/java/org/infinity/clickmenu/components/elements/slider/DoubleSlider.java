@@ -1,6 +1,5 @@
 package org.infinity.clickmenu.components.elements.slider;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.MathAssist;
@@ -10,8 +9,8 @@ import net.minecraft.util.math.MathHelper;
 
 public class DoubleSlider extends SliderElement {
 
-	public DoubleSlider(Setting setting, Panel panel) {
-		super(setting, panel);
+	public DoubleSlider(Setting setting) {
+		super(setting);
 	}
 	
 	@Override

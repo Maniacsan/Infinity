@@ -327,29 +327,8 @@ public class Setting {
 		return defaultColor;
 	}
 
-	public String getCategory() {
-		if (isBoolean()) {
-			return "Boolean";
-		}
-		if (isValueInt()) {
-			return "Int";
-		}
-		if (isValueDouble()) {
-			return "Double";
-		}
-		if (isValueFloat()) {
-			return "Float";
-		}
-		if (isMode()) {
-			return "String";
-		}
-		if (isColor()) {
-			return "Color";
-		}
-		if (isBlock()) {
-			return "Blocks";
-		}
-		return "";
+	public Category getCategory() {
+		return category;
 	}
 
 }

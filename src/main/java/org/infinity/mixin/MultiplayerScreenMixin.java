@@ -1,5 +1,6 @@
 package org.infinity.mixin;
 
+import org.infinity.main.InfMain;
 import org.infinity.ui.account.GuiAccountManager;
 import org.infinity.ui.tools.ToolsMain;
 import org.infinity.utils.Helper;
@@ -25,6 +26,9 @@ public class MultiplayerScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void onInit(CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		ButtonWidget tools = new ButtonWidget(5, 10,  80, 20, new TranslatableText("Tools"), (buttonWidget) -> {
 			Helper.minecraftClient.openScreen(new ToolsMain(this));
 		});

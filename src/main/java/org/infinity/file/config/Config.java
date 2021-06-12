@@ -170,25 +170,25 @@ public class Config {
 
 			/* The best solution, polymorphism in this case is pointless to use */
 			switch (setting.getCategory()) {
-			case "String":
+			case MODE:
 				setting.setCurrentMode(jsonObject.get(setting.getName()).getAsString());
 				break;
-			case "Boolean":
+			case BOOLEAN:
 				setting.setToggle(jsonObject.get(setting.getName()).getAsBoolean());
 				break;
-			case "Double":
+			case VALUE_DOUBLE:
 				setting.setCurrentValueDouble(jsonObject.get(setting.getName()).getAsDouble());
 				break;
-			case "Float":
+			case VALUE_FLOAT:
 				setting.setCurrentValueFloat(jsonObject.get(setting.getName()).getAsFloat());
 				break;
-			case "Int":
+			case VALUE_INT:
 				setting.setCurrentValueInt(jsonObject.get(setting.getName()).getAsInt());
 				break;
-			case "Color":
+			case COLOR:
 				setting.setColor(jsonObject.get(setting.getName()).getAsInt());
 				break;
-			case "Blocks":
+			case BLOCKS:
 				final JsonElement blockIds = jsonObject.get(setting.getName());
 				JsonArray jsonArray = blockIds.getAsJsonArray();
 				if (jsonArray == null)
@@ -210,25 +210,25 @@ public class Config {
 
 		for (Setting setting : settings) {
 			switch (setting.getCategory()) {
-			case "Boolean":
+			case BOOLEAN:
 				dataJson.addProperty(setting.getName(), setting.isToggle());
 				break;
-			case "Double":
+			case VALUE_DOUBLE:
 				dataJson.addProperty(setting.getName(), setting.getCurrentValueDouble());
 				break;
-			case "Float":
+			case VALUE_FLOAT:
 				dataJson.addProperty(setting.getName(), setting.getCurrentValueFloat());
 				break;
-			case "Int":
+			case VALUE_INT:
 				dataJson.addProperty(setting.getName(), setting.getCurrentValueInt());
 				break;
-			case "String":
+			case MODE:
 				dataJson.addProperty(setting.getName(), setting.getCurrentMode());
 				break;
-			case "Color":
+			case COLOR:
 				dataJson.addProperty(setting.getName(), setting.getColor().getRGB());
 				break;
-			case "Blocks":
+			case BLOCKS:
 				for (Block blocks : setting.getBlocks()) {
 					jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
 				}

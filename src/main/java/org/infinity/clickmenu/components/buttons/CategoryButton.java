@@ -63,7 +63,7 @@ public class CategoryButton {
 
 	public void enabledRefresh() {
 		InfMain.getModuleManager().getEnableModules().clear();
-		if (name == Category.ENABLED.name) {
+		if (name == panel.ENABLED) {
 			moduleButtons.clear();
 			for (Module module : InfMain.getModuleManager().getEnableModules()) {
 				ModuleButton enabledButton = new ModuleButton(module, moduleButtons, panel);
@@ -161,7 +161,7 @@ public class CategoryButton {
 
 			setOpen(!isOpen());
 
-			if (name == Category.ENABLED.name) {
+			if (name == panel.ENABLED) {
 				enabledRefresh();
 			}
 

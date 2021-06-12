@@ -18,6 +18,9 @@ public class GameMenuScreenMixin {
 
 	@Inject(method = "render", at = @At("TAIL"), cancellable = true)
 	private void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		int modKey = InfMain.getModuleManager().getModuleByClass(GuiMod.class).getKey();
 		String key = modKey == 96
 				? Formatting.BLUE + "GRAVE " + Formatting.GRAY + "\"" + Formatting.BLUE + " ` " + Formatting.GRAY

@@ -1,6 +1,5 @@
 package org.infinity.clickmenu.components.elements;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
@@ -17,8 +16,8 @@ public class SliderElement extends AbstractElement {
 	protected boolean dragging;
 	protected boolean hovered;
 
-	public SliderElement(Setting setting, Panel panel) {
-		super(setting, panel);
+	public SliderElement(Setting setting) {
+		super(setting);
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
 		valueField = new WTextField(Helper.minecraftClient.textRenderer, (int) (x + width - 34), (int) (y + 7), 40, 14,
 				new TranslatableText("Value"), false);
@@ -65,8 +64,7 @@ public class SliderElement extends AbstractElement {
 		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0C1535);
 		Render2D.drawRectWH(matrices, x, y + 20, (width - 45) * this.animation, 1, 0xFF30639F);
 
-		Render2D.drawCircle((float) (x + (width - 45) * animation), (float) (y + 20), 3.5F,
-				0xFFCCD6C8);
+		Render2D.drawCircle((float) (x + (width - 45) * animation), (float) (y + 20), 3.5F, 0xFFCCD6C8);
 
 		if (!this.dragging)
 			return;

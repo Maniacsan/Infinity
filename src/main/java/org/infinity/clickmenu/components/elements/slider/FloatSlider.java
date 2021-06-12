@@ -1,6 +1,5 @@
 package org.infinity.clickmenu.components.elements.slider;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.MathAssist;
@@ -11,15 +10,15 @@ import net.minecraft.util.math.MathHelper;
 
 public class FloatSlider extends SliderElement {
 
-	public FloatSlider(Setting setting, Panel panel) {
-		super(setting, panel);
+	public FloatSlider(Setting setting) {
+		super(setting);
 	}
 
 	@Override
 	public void init() {
 		valueField.setText(getRenderValue());
 	}
-	
+
 	@Override
 	public void tick() {
 		super.tick();

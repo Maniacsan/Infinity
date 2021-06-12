@@ -5,10 +5,10 @@ import java.awt.Rectangle;
 
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.clickmenu.widgets.WSlider;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
 import org.infinity.ui.IScreen;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
@@ -16,18 +16,16 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
-public class ColorPicker extends IScreen {
+public class ColorPickerWindow extends IScreen {
 
 	private Screen prev;
 
 	public static final Identifier PICKER = new Identifier("infinity", "textures/game/screen/picker.png");
 
 	private WTextField colorField;
-	private WSlider red, green, blue;
 
 	private static final int H = 0, S = 1, B = 2;
 	private float[] hsb;
@@ -43,8 +41,9 @@ public class ColorPicker extends IScreen {
 	private Setting setting;
 
 	private double anim;
+	private double hover;
 
-	public ColorPicker(Screen prev, Setting setting) {
+	public ColorPickerWindow(Screen prev, Setting setting) {
 		this.prev = prev;
 		this.setting = setting;
 		anim = 0.4;
@@ -69,16 +68,6 @@ public class ColorPicker extends IScreen {
 
 		children.add(colorField);
 
-		red = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Red"), setting.getColor().getRed());
-		green = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Green"),
-				setting.getColor().getGreen());
-		blue = new WSlider(0, 255, width / 2, height / 2, 160, 20, new LiteralText("Blue"),
-				setting.getColor().getBlue());
-
-		children.add(red);
-		children.add(green);
-		children.add(blue);
-
 		this.updateColor();
 	}
 
@@ -89,7 +78,7 @@ public class ColorPicker extends IScreen {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		renderBackground(matrices);
+		prev.render(matrices, -1, -1, delta);
 
 		anim = anim > 0 ? Math.max(0, anim - 0.11) : 0;
 
@@ -119,8 +108,26 @@ public class ColorPicker extends IScreen {
 		int bPos = this.yPosition + 10 + (128 - (int) (128F * this.hsb[B]));
 		int brightness = Color.HSBtoRGB(this.hsb[H], this.hsb[S], 1.0F) | 0xFF000000;
 
-		Render2D.drawBorderedRect(matrices, this.xPosition - 30, this.yPosition - 30, 224, 230, 1, 0xFF080629,
+		Render2D.drawBorderedRect(matrices, this.xPosition - 4, this.yPosition - 15, 172, 185, 1, 0xFF080629,
 				0xFF161621);
+		IFont.legacy14.drawCenteredString(setting.getName(), xPosition + 158 / 2, yPosition - 11, -1);
+
+		hover = Render2D.isHovered(mouseX, mouseY, xPosition + 154, yPosition - 14, 12, 12) ? Math.min(1.2, hover + 0.1)
+				: Math.max(1, hover - 0.1);
+
+		double hw = xPosition + 160;
+		double hh = yPosition - 14 / 2;
+
+		GL11.glPushMatrix();
+		GL11.glTranslated(hw, hh, 0);
+		GL11.glScaled(hover, hover, 1);
+		GL11.glTranslated(-hw, -hh, 0);
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/exit.png"), xPosition + 157,
+				yPosition - 11, 6, 6);
+
+		GL11.glPopMatrix();
+
 		Render2D.drawBorderedRect(matrices, this.xPosition, this.yPosition, 164, 165, 2, 0xFF131D4C, 0xFF121D39);
 
 		fill(matrices, this.xPosition + 9, this.yPosition + 9, this.xPosition + 139, this.yPosition + 139, 0xFF2E4354);
@@ -164,6 +171,9 @@ public class ColorPicker extends IScreen {
 
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
+		if (Render2D.isHovered(mouseX, mouseY, xPosition + 154, yPosition - 14, 12, 12))
+			onClose();
+
 		if (this.rectHSArea.contains(mouseX, mouseY))
 			this.draggingHS = true;
 

@@ -18,6 +18,7 @@
   "KeyboardMixin",
   "ICloseHandledScreenC2SPacket",
   "InGameHudMixin",
+  "LivingEntityMixin",
   "EntityMixin",
   "GameRendererMixin",
   "MultiplayerScreenMixin",

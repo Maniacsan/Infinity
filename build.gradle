@@ -64,9 +64,6 @@ configurations {
 
 shadowJar {
 	configurations = [ project.configurations.shadow ]
-    classifier = "shadow"
-
-    exclude '/fonts/*'
 }
 
 remapJar {

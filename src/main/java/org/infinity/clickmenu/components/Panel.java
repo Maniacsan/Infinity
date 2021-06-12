@@ -46,7 +46,7 @@ public class Panel {
 
 	private boolean hovered;
 	private boolean closeHovered;
-	
+
 	private boolean logoAnimate;
 	private double _lanim;
 	private double _lhover;
@@ -102,7 +102,7 @@ public class Panel {
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.hovered = Render2D.isHovered(mouseX, mouseY, this.x + 92, this.y, this.width - 92, 29);
+		this.hovered = Render2D.isHovered(mouseX, mouseY, this.x + 92, this.y, (searchField.x - 92) - 50, 29);
 		this.closeHovered = Render2D.isHovered(mouseX, mouseY, this.x + width - 20, this.y - 11, 20, 11);
 		if (this.dragging) {
 			this.x = this.prevX + mouseX;
@@ -160,16 +160,16 @@ public class Panel {
 				_lanim = 0;
 		} else
 			_lanim = 0;
-		
-		_lhover = Render2D.isHovered(mouseX, mouseY, x + 1, y + 1, 90, 62) ? Math.min(1.07, _lhover + 0.02)
-				: Math.max(1, _lhover - 0.02);
-		
+
+		_lhover = Render2D.isHovered(mouseX, mouseY, x + 1, y + 1, 90, 62) ? Math.min(1.05, _lhover + 0.03)
+				: Math.max(1, _lhover - 0.03);
+
 		// logo
 		Render2D.fillGradient(x + 1, y + 1, x + 1 + 90, y + 1 + 62, 0xFF0B0D1B, 0xFF161621);
-		
-		double lx  = (x + 24) + 43 / 2;
-		double ly = (y + 4) + 43 / 2;
-		
+
+		double lx = (x + 26) + 39 / 2;
+		double ly = (y + 6) + 39 / 2;
+
 		GL11.glPushMatrix();
 
 		GlStateManager.enableBlend();
@@ -177,13 +177,14 @@ public class Panel {
 		GL11.glScaled(_lhover, _lhover, 1);
 		GL11.glRotated(_lanim, 0, 0, 1);
 		GL11.glTranslated(-lx, -ly, 0);
-		
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/logoneon.png"), x + 24, y + 4, 43,
-				43);
-		
+
+		RenderUtil.drawTexture(matrices,
+				new Identifier("infinity", _lhover > 1 ? "textures/game/logoblur.png" : "textures/game/logoneon.png"),
+				x + 26, y + 6, 39, 39);
+
 		GlStateManager.disableBlend();
 		GL11.glPopMatrix();
-		
+
 		IFont.legacy20.drawString(InfMain.getName().toUpperCase(), x + 22, y + 48, -1);
 		Render2D.drawRectWH(matrices, x + 6, y + 64.5, 80, 0.5, 0xFF4A4F65);
 
@@ -236,19 +237,18 @@ public class Panel {
 			this.dragging = false;
 			clickMenu.onClose();
 		}
-		
-		if (Render2D.isHovered(mouseX, mouseY, x + 1, y + 1, 90, 62) && button == 0) {
+
+		if (Render2D.isHovered(mouseX, mouseY, x + 1, y + 1, 90, 62) && button == 0)
 			logoAnimate = !logoAnimate;
-		}
 
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.mouseClicked(mouseX, mouseY, button);
 		});
 
 		if (this.hovered && button == 0) {
-				this.dragging = true;
-				this.prevX = this.x - mouseX;
-				this.prevY = this.y - mouseY;
+			this.dragging = true;
+			this.prevX = this.x - mouseX;
+			this.prevY = this.y - mouseY;
 		}
 
 	}
@@ -288,6 +288,7 @@ public class Panel {
 			categoryButton.onClose();
 		});
 		configPanel.onClose();
+		dragging = false;
 	}
 
 	public ArrayList<CategoryButton> getCategoryButtons() {

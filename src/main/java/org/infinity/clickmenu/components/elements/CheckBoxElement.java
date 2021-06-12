@@ -1,6 +1,5 @@
 package org.infinity.clickmenu.components.elements;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
@@ -13,8 +12,8 @@ public class CheckBoxElement extends AbstractElement {
 	private boolean hovered;
 	private double move;
 
-	public CheckBoxElement(Setting setting, Panel panel) {
-		super(setting, panel);
+	public CheckBoxElement(Setting setting) {
+		super(setting);
 	}
 
 	@Override
@@ -76,6 +75,6 @@ public class CheckBoxElement extends AbstractElement {
 	@Override
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

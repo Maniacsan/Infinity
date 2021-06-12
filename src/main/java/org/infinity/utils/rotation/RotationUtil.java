@@ -46,9 +46,7 @@ public class RotationUtil {
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
-		float yaw = updateAngle(Helper.getPlayer().yaw, i);
-		float pitch = updateAngle(Helper.getPlayer().pitch, j);
-		return new float[] { yaw, pitch };
+		return new float[] { i, j };
 	}
 
 	public static float[] lookAtVecPos(Vec3d targetEntity) {
@@ -59,9 +57,7 @@ public class RotationUtil {
 		double h = (double) Math.sqrt(d * d + e * e);
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
-		float yaw = updateAngle(Helper.getPlayer().yaw, i);
-		float pitch = updateAngle(Helper.getPlayer().pitch, j);
-		return new float[] { yaw, pitch };
+		return new float[] { i, j };
 	}
 
 	public static float[] getLookNeeded(double x, double y, double z) {

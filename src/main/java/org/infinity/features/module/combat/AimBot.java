@@ -39,7 +39,6 @@ public class AimBot extends Module {
 	private Setting range = new Setting(this, "Range", 3.5D, 0D, 6D);
 
 	private Setting fov = new Setting(this, "FOV", 120D, 0D, 360D);
-	private Setting sens = new Setting(this, "Sensitivity", 45f, 10f, 200f);
 
 	private Setting maxSpeed = new Setting(this, "Max Speed %", 60D, 0D, 100D);
 	private Setting minSpeed = new Setting(this, "Min Speed %", 20D, 0D, 100D);
@@ -62,10 +61,8 @@ public class AimBot extends Module {
 		if (onMoving.isToggle() && !MoveUtil.isMoving())
 			return;
 
-		if (!Float.isNaN(look[0]) || !Float.isNaN(look[1]) || look[1] < 90 || look[1] > -90) {
-			Helper.getPlayer().yaw = RotationUtil.limitAngleChange(Helper.getPlayer().yaw, look[0], speed);
-			Helper.getPlayer().pitch = RotationUtil.limitAngleChange(Helper.getPlayer().pitch, look[1], speed);
-		}
+		event.setRotation(RotationUtil.limitAngleChange(Helper.getPlayer().yaw, look[0], speed),
+				RotationUtil.limitAngleChange(Helper.getPlayer().pitch, look[1], speed), true);
 
 	}
 
@@ -95,15 +92,6 @@ public class AimBot extends Module {
 		float i = (float) (Math.atan2(e, d) * 180.0D / Math.PI) - 90.0F;
 		float j = (float) (-(Math.atan2(g, h) * 180.0D / Math.PI));
 
-		float pitch = j;
-		float yaw = i;
-
-		float m = 0.005f * sens.getCurrentValueFloat();
-		float gcd = m * m * m * 1.2f;
-
-		yaw -= yaw % gcd;
-		pitch -= pitch % gcd;
-
-		return new float[] { yaw, pitch };
+		return new float[] { i, j };
 	}
 }

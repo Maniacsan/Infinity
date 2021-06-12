@@ -27,7 +27,7 @@ public class HandledScreenMixin extends Screen {
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-		InventoryLogo logo = new InventoryLogo(width, height, x, y);
+		InventoryLogo logo = new InventoryLogo(x, y);
 		logo.onRender(matrices);
 	}
 

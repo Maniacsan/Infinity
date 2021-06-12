@@ -1,6 +1,5 @@
 package org.infinity.clickmenu.components.base;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.features.Setting;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -8,21 +7,19 @@ import net.minecraft.client.util.math.MatrixStack;
 public abstract class AbstractElement {
 
 	protected Setting setting;
-	protected Panel panel;
-	
+
 	protected double animation;
 	protected double stringAnimation;
-	
+
 	protected double x;
 	protected double y;
 	protected double width;
 	protected double height;
 
-	public AbstractElement(Setting setting, Panel panel) {
+	public AbstractElement(Setting setting) {
 		this.setting = setting;
-		this.panel = panel;
 	}
-	
+
 	public abstract void render(MatrixStack matrices, int mouseX, int mouseY, float delta);
 
 	public abstract void mouseClicked(double mouseX, double mouseY, int button);
@@ -30,18 +27,18 @@ public abstract class AbstractElement {
 	public abstract void mouseReleased(double mouseX, double mouseY, int button);
 
 	public abstract void mouseScrolled(double d, double e, double amount);
-	
+
 	public abstract void keyPressed(int keyCode, int scanCode, int modifiers);
 
 	public abstract void onClose();
-	
+
 	public abstract void tick();
 
 	public abstract boolean isVisible();
-	
+
 	public void init() {
 	}
-	
+
 	public Setting getSetting() {
 		return setting;
 	}

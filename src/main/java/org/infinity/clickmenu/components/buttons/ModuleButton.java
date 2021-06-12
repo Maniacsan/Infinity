@@ -16,6 +16,7 @@ import org.infinity.clickmenu.components.elements.slider.IntSlider;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
+import org.infinity.features.Setting.Category;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
@@ -77,36 +78,35 @@ public class ModuleButton {
 			return;
 
 		for (Setting setting : settings) {
-			switch (setting.getCategory()) {
-			case "Color":
-				this.elements.add(new ColorPickerElement(setting, panel));
+			switch ((Category) setting.getCategory()) {
+			case COLOR:
+				this.elements.add(new ColorPickerElement(setting));
 				break;
 
-			case "String":
-				this.elements.add(new ComboBoxElement(setting, panel));
+			case MODE:
+				this.elements.add(new ComboBoxElement(setting));
 				break;
 
-			case "Boolean":
-				this.elements.add(new CheckBoxElement(setting, panel));
+			case BOOLEAN:
+				this.elements.add(new CheckBoxElement(setting));
 				break;
 
-			case "Double":
-				this.elements.add(new DoubleSlider(setting, panel));
+			case VALUE_DOUBLE:
+				this.elements.add(new DoubleSlider(setting));
 				break;
 
-			case "Float":
-				this.elements.add(new FloatSlider(setting, panel));
+			case VALUE_FLOAT:
+				this.elements.add(new FloatSlider(setting));
 				break;
 
-			case "Int":
-				this.elements.add(new IntSlider(setting, panel));
+			case VALUE_INT:
+				this.elements.add(new IntSlider(setting));
 				break;
 
-			case "Blocks":
-				this.elements.add(new BlocksSelectElement(setting, panel));
+			case BLOCKS:
+				this.elements.add(new BlocksSelectElement(setting));
 				break;
 			}
-
 		}
 	}
 
@@ -252,7 +252,8 @@ public class ModuleButton {
 			if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_SPACE
 					|| keyCode == GLFW.GLFW_KEY_BACKSPACE) {
 				module.setKey(-2);
-				Helper.infoMessage(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " removed binds");
+				Helper.infoMessage(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName()
+						+ Formatting.GRAY + " removed binds");
 			} else {
 				module.setKey(keyCode);
 				Helper.infoMessage(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName()

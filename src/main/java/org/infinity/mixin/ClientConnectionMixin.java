@@ -51,13 +51,13 @@ public class ClientConnectionMixin {
 				if (irc != null && irc.isActive()) {
 					irc.runIRC(chatPacket.getChatMessage());
 				}
-				
+
 				callback.cancel();
 			}
-			
+
 			// commands
 			if (chatPacket.getChatMessage().startsWith(Command.prefix)
-					&& InfMain.getChatHud().currentChat != InfMain.getChatHud().infChat) {
+					&& InfMain.getChatHud().currentChat != InfMain.getChatHud().infChat && !InfMain.INSTANCE.self) {
 				InfMain.getCommandManager().callCommand(chatPacket.getChatMessage().substring(Command.prefix.length()));
 				callback.cancel();
 			}

@@ -6,9 +6,11 @@ import org.infinity.event.PlayerMoveEvent;
 import org.infinity.event.PushOutBlockEvent;
 import org.infinity.event.SlowDownEvent;
 import org.infinity.event.VelocityEvent;
+import org.infinity.features.module.movement.NoSwim;
 import org.infinity.features.module.movement.SafeWalk;
 import org.infinity.features.module.player.Scaffold;
 import org.infinity.main.InfMain;
+import org.infinity.utils.Helper;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -216,6 +218,14 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 		PushOutBlockEvent pushEvent = new PushOutBlockEvent();
 		EventManager.call(pushEvent);
 		if (pushEvent.isCancelled()) {
+			ci.cancel();
+		}
+	}
+
+	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
+	public void onSetSprinting(CallbackInfo ci) {
+		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled()
+				&& Helper.getPlayer().isTouchingWater()) {
 			ci.cancel();
 		}
 	}

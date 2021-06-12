@@ -50,7 +50,7 @@ public class HUD extends Module {
 
 			InfMain.getModuleManager().getList().forEach(module -> {
 				if (module.isEnabled() && module.isVisible())
-					arrayList.add(Formatting.WHITE + module.getName() + " " + Formatting.RESET
+					arrayList.add(module.getName() + " " + Formatting.WHITE
 							+ StringUtil.replaceNull(module.getSuffix()));
 			});
 
@@ -62,10 +62,10 @@ public class HUD extends Module {
 			int count[] = { 0 };
 
 			for (String module : arrayList) {
-				float widthOffset = width - IFont.legacy15.getWidthIgnoreChar(module) + 13;
+				float widthOffset = width - IFont.legacy15.getWidthIgnoreChar(module) + 6;
 
-				Render2D.fillSideGradient(width, yOffset, width - IFont.legacy15.getWidthIgnoreChar(module) + 10,
-						yOffset + 9, new Color(0, 0, 0, 150).getRGB(), 0x10000000);
+				Render2D.drawRectWH(matrices, widthOffset, yOffset, width,
+						9, new Color(0, 0, 0, 150).getRGB());
 				IFont.legacy15.drawString(module, widthOffset, yOffset, rainbow(count[0] * 160));
 
 				yOffset += 9;
@@ -148,6 +148,6 @@ public class HUD extends Module {
 	public static int rainbow(int delay) {
 		double rainbow = Math.ceil((System.currentTimeMillis() + delay) / 20.0D);
 		rainbow %= 360.0D;
-		return Color.getHSBColor((float) -((rainbow / 360.0F)), 0.7F, 0.7F).getRGB();
+		return Color.getHSBColor((float) -((rainbow / 360.0F)), 0.7F, 0.9F).getRGB();
 	}
 }

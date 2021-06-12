@@ -6,7 +6,6 @@ import org.infinity.event.RotationEvent;
 import org.infinity.features.module.combat.HitBoxes;
 import org.infinity.features.module.combat.Velocity;
 import org.infinity.features.module.movement.AntiWaterPush;
-import org.infinity.features.module.movement.NoSwim;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.objectweb.asm.Opcodes;
@@ -66,12 +65,6 @@ public abstract class EntityMixin {
 			cir.setReturnValue(false);
 			cir.cancel();
 		}
-	}
-
-	@Inject(method = "updateSwimming", at = @At("HEAD"), cancellable = true)
-	public void updateSwimming(CallbackInfo ci) {
-		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled())
-			ci.cancel();
 	}
 
 	@Inject(method = "getTargetingMargin", at = @At("HEAD"), cancellable = true)

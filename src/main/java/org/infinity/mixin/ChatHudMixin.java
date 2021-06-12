@@ -30,50 +30,73 @@ public abstract class ChatHudMixin extends DrawableHelper {
 
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void onRender(MatrixStack matrices, int tickDelta, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.render(matrices, tickDelta);
 		ci.cancel();
 	}
 
 	@Inject(method = "clear", at = @At("HEAD"), cancellable = true)
 	private void onClear(boolean clearHistory, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.clear(clearHistory);
 		ci.cancel();
 	}
 
 	@Inject(at = @At("HEAD"), method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", cancellable = true)
 	private void onAddMessage(Text message, int messageId, int timestamp, boolean bl, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.addMessage(message, messageId, timestamp, bl);
 		ci.cancel();
 	}
 
 	@Inject(method = "reset", at = @At("HEAD"), cancellable = true)
 	private void onReset(CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.reset();
 		ci.cancel();
 	}
 
 	@Inject(method = "scroll", at = @At("HEAD"), cancellable = true)
 	private void onScroll(double amount, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.scroll(amount);
 		ci.cancel();
 	}
 
 	@Inject(method = "getText", at = @At("HEAD"), cancellable = true)
 	private void getText(double x, double y, CallbackInfoReturnable<Style> ci) {
-
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		ci.setReturnValue(infChat.getText(x, y));
 		ci.cancel();
 	}
 
 	@Inject(method = "removeMessage", at = @At("HEAD"), cancellable = true)
 	private void onRemoveMessage(int messageId, CallbackInfo ci) {
+		if (InfMain.INSTANCE.self)
+			return;
+		
 		infChat.removeMessage(messageId);
 		ci.cancel();
 	}
 
 	@Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
 	public void mouseClicked(double mouseX, double mouseY, CallbackInfoReturnable<Boolean> ci) {
-		ci.setReturnValue(infChat.mouseClicked(mouseX, mouseY));
+		if (InfMain.INSTANCE.self)
+			return;
+		
+		infChat.mouseClicked(mouseX, mouseY);
 	}
 
 }

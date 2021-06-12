@@ -22,25 +22,24 @@ public class ReLoginProcess extends Handler {
 
 	@EventTarget
 	public void onTick(TickEvent event) {
-		if (Helper.getWorld() != null) {
-			if (InfMain.reLogin) {
-				if (ConnectUtil.checkJarSize()) {
-					if (Protect.LOGIN.getAuth().getUsername() == null
-							|| Protect.LOGIN.getAuth().getPassword() == null) {
-						me.protect.utils.PHelper.makeCrash();
-						return;
-					}
+		if (Helper.getWorld() == null)
+			return;
+		if (InfMain.reLogin) {
+			if (ConnectUtil.checkJarSize()) {
+				if (Protect.LOGIN.getAuth().getUsername() == null || Protect.LOGIN.getAuth().getPassword() == null) {
+					me.protect.utils.PHelper.makeCrash();
+					return;
+				}
 
-					if (login(Protect.LOGIN.getAuth().getUsername(), Protect.LOGIN.getAuth().getPassword()) != null) {
+				if (login(Protect.LOGIN.getAuth().getUsername(), Protect.LOGIN.getAuth().getPassword()) != null) {
 
-						if (Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
-							InfMain.reLogin = false;
-							setInit(false);
-						} else
-							me.protect.utils.PHelper.makeCrash();
-					} else {
+					if (Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
+						InfMain.reLogin = false;
+						setInit(false);
+					} else
 						me.protect.utils.PHelper.makeCrash();
-					}
+				} else {
+					me.protect.utils.PHelper.makeCrash();
 				}
 			}
 		}

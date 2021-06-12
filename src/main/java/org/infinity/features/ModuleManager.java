@@ -82,7 +82,8 @@ public class ModuleManager {
 			new Fly(),
 			new ShulkerView(),
 			new Eagle(),
-			new NoSwim()
+			new NoSwim(),
+			new SelfDestruct()
 			);
 
 	public List<Module> getList() {

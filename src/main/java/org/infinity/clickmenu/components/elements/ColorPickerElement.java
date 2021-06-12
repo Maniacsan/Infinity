@@ -1,11 +1,9 @@
 package org.infinity.clickmenu.components.elements;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.components.base.AbstractElement;
-import org.infinity.clickmenu.components.window.ColorPicker;
+import org.infinity.clickmenu.components.window.ColorPickerWindow;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
-import org.infinity.main.InfMain;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 
@@ -15,8 +13,8 @@ public class ColorPickerElement extends AbstractElement {
 
 	private boolean hovered;
 
-	public ColorPickerElement(Setting setting, Panel panel) {
-		super(setting, panel);
+	public ColorPickerElement(Setting setting) {
+		super(setting);
 	}
 
 	@Override
@@ -30,7 +28,7 @@ public class ColorPickerElement extends AbstractElement {
 	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (hovered)
-			Helper.openScreen(new ColorPicker(InfMain.INSTANCE.init.menu, setting));
+			Helper.openScreen(new ColorPickerWindow(Helper.minecraftClient.currentScreen, setting));
 	}
 
 	@Override

@@ -167,7 +167,7 @@ public class GlyphPage {
 		Glyph glyph = glyphCharacterMap.get(ch);
 
 		if (glyph == null)
-			throw new IllegalArgumentException("'" + ch + "' wasn't found");
+			return 0;
 
 		float pageX = glyph.x / (float) imgSize;
 		float pageY = glyph.y / (float) imgSize;

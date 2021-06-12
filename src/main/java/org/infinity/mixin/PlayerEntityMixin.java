@@ -1,5 +1,6 @@
 package org.infinity.mixin;
 
+import org.infinity.features.module.movement.NoSwim;
 import org.infinity.features.module.player.FastBreak;
 import org.infinity.main.InfMain;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +20,12 @@ public class PlayerEntityMixin {
 		if (fastBreak.isEnabled()) {
 			cir.setReturnValue((float) (cir.getReturnValue() * fastBreak.speed.getCurrentValueDouble()));
 		}
+	}
+
+	@Inject(method = "isSwimming", at = @At("HEAD"), cancellable = true)
+	public void isOnSwimming(CallbackInfoReturnable<Boolean> ci) {
+		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled())
+			ci.setReturnValue(false);
 	}
 
 }

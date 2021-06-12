@@ -46,7 +46,7 @@ public class ConfigManager {
 		this.configList.clear();
 		for (File file : (File[]) Objects.<File[]>requireNonNull(dir.listFiles())) {
 			if (Helper.isUser() && configList.size() >= 7)
-				return;
+				continue;
 			
 			if (file.getName().endsWith(".json")) {
 				for (org.infinity.features.Module m : InfMain.getModuleManager().getList())

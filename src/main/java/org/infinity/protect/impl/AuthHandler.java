@@ -27,13 +27,12 @@ public class AuthHandler extends Handler {
 	@EventTarget(5)
 	public void onButtonPress(ButtonPressEvent event) {
 		if (Protect.CHECK.getResult().get().equalsIgnoreCase("true")) {
-			if (ConnectUtil.checkUpdate()) {
-				if (ConnectUtil.checkJarSize()) {
-					SuccessEvent successEvent = new SuccessEvent();
-					EventManager.call(successEvent);
+			SuccessEvent successEvent = new SuccessEvent();
+			EventManager.call(successEvent);
 
-					Helper.openScreen(new TitleScreen(true));
-				}
+			if (ConnectUtil.checkUpdate()) {
+				if (ConnectUtil.checkJarSize())
+				Helper.openScreen(new TitleScreen(true));
 			}
 		}
 

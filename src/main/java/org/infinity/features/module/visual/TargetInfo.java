@@ -6,6 +6,7 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.ui.util.font.IFont;
+import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.RenderUtil;
@@ -35,7 +36,7 @@ public class TargetInfo extends Module {
 		target = EntityUtil.setTarget(range.getCurrentValueDouble(), 360, true, friends.isToggle(),
 				invisibles.isToggle(), false, false, true);
 
-		if (target == null)
+		if (target == null || target == Helper.getPlayer())
 			return;
 
 		int wc = w / 2 - (162 / 2);

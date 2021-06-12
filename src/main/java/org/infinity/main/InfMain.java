@@ -19,13 +19,14 @@ public class InfMain {
 
 	public static InfMain INSTANCE = new InfMain();
 	private static String NAME = "Infinity";
-	private static String VERSION = "1.0.2";
+	private static String VERSION = "1.0.4";
 
 	private static File direction;
 	public Initialize init;
 
 	public static boolean firstStart;
 	public static boolean reLogin;
+	public boolean self;
 
 	/* Minecraft timer */
 	public static float TIMER = 1.0f;
@@ -37,6 +38,7 @@ public class InfMain {
 		if (!direction.exists()) {
 			firstStart = true;
 		}
+		self = false;
 		reLogin = true;
 
 	}

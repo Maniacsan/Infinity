@@ -5,8 +5,6 @@ import org.infinity.ui.util.font.IFont;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
@@ -19,6 +17,9 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	protected final CustomButtonWidget.PressAction onPress;
 	protected final CustomButtonWidget.TooltipSupplier tooltipSupplier;
 
+	private int color;
+	private int hcolor;
+
 	public CustomButtonWidget(int x, int y, int width, int height, Text message,
 			CustomButtonWidget.PressAction onPress) {
 		this(x, y, width, height, message, onPress, EMPTY);
@@ -29,6 +30,8 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 		super(x, y, width, height, message);
 		this.onPress = onPress;
 		this.tooltipSupplier = tooltipSupplier;
+		this.hcolor = 0xFF85C0BA;
+		this.color = 0xFF95D3CD;
 	}
 
 	public void onPress() {
@@ -36,10 +39,8 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		MinecraftClient minecraftClient = MinecraftClient.getInstance();
-		TextRenderer textRenderer = minecraftClient.textRenderer;
-		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? 0xFF85C0BA
-				: this.active ? 0xFF95D3CD : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
+		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? hcolor
+				: this.active ? color : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
 		int j = this.active ? 16777215 : 10526880;
 		IFont.legacy16.drawCenteredString(this.getMessage().getString(), this.x + this.width / 2,
 				this.y + (this.height - 8) / 2 - 1, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
