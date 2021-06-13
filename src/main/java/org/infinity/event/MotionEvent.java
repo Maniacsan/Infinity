@@ -43,8 +43,7 @@ public class MotionEvent extends EventCancellable {
 		if (Float.isNaN(yaw) || Float.isNaN(pitch) || pitch > 90 || pitch < -90)
 			return;
 
-		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005);
-		float f = 0.005f * sens;
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 
 		yaw -= yaw % gcd;
@@ -85,8 +84,7 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setYaw(float yaw) {
-		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005);
-		float f = 0.005f * sens;
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 		yaw -= yaw % gcd;
 
@@ -102,8 +100,7 @@ public class MotionEvent extends EventCancellable {
 	}
 
 	public void setPitch(float pitch) {
-		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity / 0.005);
-		float f = 0.005f * sens;
+		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 		pitch -= pitch % gcd;
 

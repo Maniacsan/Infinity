@@ -75,8 +75,6 @@ public class ReLoginProcess extends Handler {
 
 		} catch (Exception ex) {
 			Auth error = new Auth(AuthType.valueOf("ERROR"), username, password);
-			Protect.LOGIN.setAuth(error);
-
 			return error;
 		}
 

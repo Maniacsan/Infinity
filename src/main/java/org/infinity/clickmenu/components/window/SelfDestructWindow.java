@@ -1,7 +1,7 @@
 package org.infinity.clickmenu.components.window;
 
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.features.module.world.SelfDestruct;
+import org.infinity.features.module.misc.SelfDestruct;
 import org.infinity.main.InfMain;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.font.IFont;
@@ -53,7 +53,7 @@ public class SelfDestructWindow extends Screen {
 		Render2D.drawBorderedRect(matrices, (width / 2) - 100, height / 2 - 65, 210, 105, 1, 0xFF080629, 0xFF161621);
 
 		IFont.legacy16.drawCenteredString(
-				"Do you really want to " + Formatting.BLUE + "self-destruct" + Formatting.WHITE + "?", width / 2,
+				"Do you really want to " + Formatting.BLUE + "self-destruct" + Formatting.WHITE + "?", width / 2 + 10,
 				height / 2 - 45, -1);
 
 		hover = Render2D.isHovered(mouseX, mouseY, (width / 2) + 95, height / 2 - 60, 10, 10)

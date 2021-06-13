@@ -195,25 +195,25 @@ public class KillAura extends Module {
 
 		if (target instanceof PlayerEntity) {
 			if (((PlayerEntity) target).isBlocking()) {
-				if (slotAxe == -2)
-					return;
-				preSlot = Helper.getPlayer().inventory.selectedSlot;
-				Helper.getPlayer().inventory.selectedSlot = slotAxe;
+				if (slotAxe != -2) {
+					preSlot = Helper.getPlayer().inventory.selectedSlot;
+					Helper.getPlayer().inventory.selectedSlot = slotAxe;
 
-				if (preSlot == -2)
-					return;
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(110);
+					if (preSlot != -2) {
+						(new Thread() {
+							@Override
+							public void run() {
+								try {
+									Thread.sleep(150);
 
-							Helper.getPlayer().inventory.selectedSlot = preSlot;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+									Helper.getPlayer().inventory.selectedSlot = preSlot;
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+							}
+						}).start();
 					}
-				}).start();
+				}
 			}
 		}
 	}

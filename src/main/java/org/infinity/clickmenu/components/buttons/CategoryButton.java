@@ -68,8 +68,8 @@ public class CategoryButton {
 			for (Module module : InfMain.getModuleManager().getEnableModules()) {
 				ModuleButton enabledButton = new ModuleButton(module, moduleButtons, panel);
 				moduleButtons.add(enabledButton);
-				addChildren(panel.clickMenu.getChildren());
 			}
+			moduleButtons.forEach(moduleButton -> moduleButton.addChildren(panel.clickMenu.getChildren()));
 		}
 	}
 
@@ -84,8 +84,9 @@ public class CategoryButton {
 
 		for (Module result : searchList) {
 			moduleButtons.add(new ModuleButton(result, moduleButtons, panel));
-			addChildren(panel.clickMenu.getChildren());
 		}
+		
+		moduleButtons.forEach(moduleButton -> moduleButton.addChildren(panel.clickMenu.getChildren()));
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {

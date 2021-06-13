@@ -88,14 +88,6 @@ public class FileUtil {
 		}
 	}
 
-	public static boolean renameFile(File file, File renameFile) {
-		if (file.renameTo(renameFile)) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	public static void copy(File from, File to) {
 		try {
 			InputStream in = new FileInputStream(from);

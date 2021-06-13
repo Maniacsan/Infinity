@@ -32,10 +32,9 @@ public class AuthHandler extends Handler {
 
 			if (ConnectUtil.checkUpdate()) {
 				if (ConnectUtil.checkJarSize())
-				Helper.openScreen(new TitleScreen(true));
+					Helper.openScreen(new TitleScreen(true));
 			}
 		}
-
 	}
 
 }

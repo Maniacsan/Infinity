@@ -71,7 +71,7 @@ public class AutoTool extends Module {
 								@Override
 								public void run() {
 									try {
-										Thread.sleep(110);
+										Thread.sleep(150);
 
 										Helper.getPlayer().inventory.selectedSlot = preSlot;
 									} catch (Exception e) {

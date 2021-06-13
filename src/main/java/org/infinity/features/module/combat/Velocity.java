@@ -112,7 +112,7 @@ public class Velocity extends Module {
 
 	/* EntityMixin action */
 	public void pushAway(Entity e, Entity e2, CallbackInfo ci) {
-		if (e != Helper.getPlayer() && e2 != Helper.getPlayer())
+		if (e != Helper.getPlayer() && e2 != Helper.getPlayer() || !mode.getCurrentMode().equals("Matrix 6.1.0"))
 			return;
 
 		double x = e2.getX() - e.getX();

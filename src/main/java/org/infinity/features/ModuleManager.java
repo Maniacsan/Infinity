@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.infinity.features.module.combat.*;
 import org.infinity.features.module.hidden.*;
+import org.infinity.features.module.misc.DiscordRPCMod;
+import org.infinity.features.module.misc.SelfDestruct;
 import org.infinity.features.module.movement.*;
 import org.infinity.features.module.player.*;
 import org.infinity.features.module.visual.*;
@@ -83,7 +85,9 @@ public class ModuleManager {
 			new ShulkerView(),
 			new Eagle(),
 			new NoSwim(),
-			new SelfDestruct()
+			new SelfDestruct(),
+			new NoHurtCam(),
+			new NoServerRotation()
 			);
 
 	public List<Module> getList() {

@@ -6,6 +6,7 @@ public enum Category {
 	WORLD("World"),
 	PLAYER("Player"),
 	VISUAL("Visual"),
+	MISC("Misc"),
 	HIDDEN("Hidden"),
 	ENABLED("Enabled");
 	

@@ -24,19 +24,21 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
 
-	@Inject(at = @At("HEAD"), method = "channelRead0")
-	protected void channelRead0(ChannelHandlerContext channelHandlerContext, Packet<?> packet, CallbackInfo call) {
+	@Inject(method = "handlePacket", at = @At("HEAD"), cancellable = true)
+	private static <T extends PacketListener> void onHandlePacket(Packet<T> packet, PacketListener listener,
+			CallbackInfo info) {
 		PacketEvent event = new PacketEvent(EventType.RECIEVE, packet);
 		EventManager.call(event);
 
 		if (event.isCancelled()) {
-			call.cancel();
+			info.cancel();
 		}
 	}
 

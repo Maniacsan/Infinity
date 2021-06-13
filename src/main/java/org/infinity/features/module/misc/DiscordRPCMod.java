@@ -1,4 +1,4 @@
-package org.infinity.features.module.hidden;
+package org.infinity.features.module.misc;
 
 import org.infinity.event.TickEvent;
 import org.infinity.features.Category;
@@ -15,7 +15,7 @@ import net.arikia.dev.drpc.DiscordEventHandlers;
 import net.arikia.dev.drpc.DiscordRPC;
 import net.arikia.dev.drpc.DiscordRichPresence;
 
-@ModuleInfo(category = Category.HIDDEN, desc = "", key = -2, name = "DiscordRPC", visible = false)
+@ModuleInfo(category = Category.MISC, desc = "", key = -2, name = "DiscordRPC", visible = false)
 public class DiscordRPCMod extends Module {
 
 	private int ticks = 0;

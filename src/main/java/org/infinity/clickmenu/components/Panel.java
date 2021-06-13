@@ -74,6 +74,8 @@ public class Panel {
 				new CategoryButton("Player", InfMain.getModuleManager().getModulesByCategory(Category.PLAYER), this));
 		categoryButtons.add(
 				new CategoryButton("Visual", InfMain.getModuleManager().getModulesByCategory(Category.VISUAL), this));
+		categoryButtons
+				.add(new CategoryButton("Misc", InfMain.getModuleManager().getModulesByCategory(Category.MISC), this));
 		categoryButtons.add(
 				new CategoryButton(ENABLED, InfMain.getModuleManager().getModulesByCategory(Category.ENABLED), this));
 		categoryButtons.add(new CategoryButton(configPanel.getName(), null, this));

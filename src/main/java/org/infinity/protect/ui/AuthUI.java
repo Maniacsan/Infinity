@@ -147,7 +147,6 @@ public class AuthUI extends Screen {
 	}
 
 	private void login() {
-
 		if (Protect.LOGIN.login(usernameField.getText(), passwordField.getText()) != null) {
 			if (!Protect.LOGIN.getAuth().getType().equals(AuthType.SUCCESS)) {
 				errorTime = 45;

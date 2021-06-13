@@ -41,7 +41,7 @@ public class TargetStrafe extends Module {
 	private Setting boost = new Setting(this, "Boost Value", 0.09D, 0.0D, 0.8D)
 			.setVisible(() -> damageBoost.isToggle());
 
-	private Entity target;
+	public static Entity target;
 
 	private int direction = 1;
 

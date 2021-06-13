@@ -32,10 +32,6 @@ public class AntiBot extends Module {
 	public Setting mode = new Setting(this, "Mode", "Matrix 6.1.1",
 			new ArrayList<>(Arrays.asList("Matrix 6.1.1", "Custom", "Need Hit")));
 
-	// Need Hit
-	private Setting deleteHit = new Setting(this, "Delete on next hit", true)
-			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Need Hit"));
-
 	// Custom
 	private Setting invisible = new Setting(this, "Invisible", false)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
@@ -69,10 +65,11 @@ public class AntiBot extends Module {
 					PlayerEntity bot = (PlayerEntity) entity;
 					if (mode.getCurrentMode().equalsIgnoreCase("Custom")) {
 						if (containsBot(bot)) {
+							message(bot.getName().getString());
+
 							if (remove.isToggle())
 								Helper.getWorld().removeEntity(bot.getEntityId());
-							
-							message(bot.getName().getString());
+							bots.add(bot.getEntityId());
 						}
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
 						boolean botContains = RotationUtil.isInFOV(bot, Helper.getPlayer(), 60)
@@ -87,7 +84,7 @@ public class AntiBot extends Module {
 
 						if (botContains && speedAnalysis) {
 							Helper.getWorld().removeEntity(bot.getEntityId());
-							
+
 							message(bot.getName().getString());
 						}
 					}
@@ -112,11 +109,6 @@ public class AntiBot extends Module {
 					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
 							+ pa.getEntity(Helper.getWorld()).getName().getString() + Formatting.GRAY
 							+ " added to targets");
-				} else if (deleteHit.isToggle() && needHit.contains(pa.getEntity(Helper.getWorld()).getEntityId())) {
-					needHit.remove(pa.getEntity(Helper.getWorld()).getEntityId());
-					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
-							+ pa.getEntity(Helper.getWorld()).getName().getString() + Formatting.GRAY
-							+ " removed from targets");
 				}
 			}
 		}
