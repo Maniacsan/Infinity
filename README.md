@@ -1,5 +1,7 @@
 Infinity Modification (Fabric)
 
+Only with java 1.16 or kotlin
+
 //~ using for Eclipse:
 
 Write to PowerSheel
