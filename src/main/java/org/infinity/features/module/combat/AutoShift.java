@@ -9,11 +9,13 @@ import org.infinity.features.Setting;
 import org.infinity.main.InfMain;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
+import org.infinity.utils.PacketUtil;
+import org.infinity.utils.PacketUtil.InteractType;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 
 @ModuleInfo(category = Category.COMBAT, desc = "Sneaking on attack or hit", key = -2, name = "AutoShift", visible = true)
@@ -37,11 +39,12 @@ public class AutoShift extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
-			if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
-					&& ((PlayerInteractEntityC2SPacket) event.getPacket())
-							.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-				if (onlyAttack.isToggle()) {
-					shift();
+			if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+				PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
+				if (PacketUtil.getInteractType(packet) == InteractType.INTERACT_AT) {
+
+					if (onlyAttack.isToggle())
+						shift();
 				}
 			}
 		}

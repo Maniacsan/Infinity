@@ -39,11 +39,11 @@ public class MoveUtil {
 	}
 
 	public static float getYaw() {
-		return getYaw(Helper.getPlayer().yaw);
+		return getYaw(Helper.getPlayer().getYaw());
 	}
 
 	public static double calcMoveYaw() {
-		return calcMoveYaw(Helper.getPlayer().yaw);
+		return calcMoveYaw(Helper.getPlayer().getYaw());
 	}
 	
 	public static double calcMoveYaw(float targetYaw) {
@@ -133,7 +133,7 @@ public class MoveUtil {
 	}
 
 	public static void hClip(double off) {
-		double yaw = Math.toRadians(Helper.getPlayer().yaw);
+		double yaw = Math.toRadians(Helper.getPlayer().getYaw());
 		Helper.getPlayer().updatePosition(Helper.getPlayer().getPos().x + (-Math.sin(yaw) * off), Helper.getPlayer().getPos().y,
 				Helper.getPlayer().getPos().z + (Math.cos(yaw) * off));
 	}

@@ -3,10 +3,10 @@ package org.infinity.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
-@Mixin(AbstractButtonWidget.class)
-public interface IAbstractButtonWidget {
+@Mixin(ClickableWidget.class)
+public interface IClickableWidget {
 	
 	@Accessor("focused")
 	void setCustomFocused(boolean focused);

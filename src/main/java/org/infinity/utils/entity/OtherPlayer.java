@@ -3,6 +3,7 @@ package org.infinity.utils.entity;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.network.OtherClientPlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 
 public class OtherPlayer extends OtherClientPlayerEntity {
@@ -18,21 +19,21 @@ public class OtherPlayer extends OtherClientPlayerEntity {
 	public OtherPlayer(PlayerEntity player, double x, double y, double z) {
 		super(Helper.getWorld(), player.getGameProfile());
 		copyPositionAndRotation(player);
-		yaw = headYaw = bodyYaw = player.yaw;
-		inventory.main.set(inventory.selectedSlot, player.getMainHandStack());
-		inventory.offHand.set(0, player.getOffHandStack());
-		inventory.armor.set(0, player.inventory.armor.get(0));
-		inventory.armor.set(1, player.inventory.armor.get(1));
-		inventory.armor.set(2, player.inventory.armor.get(2));
-		inventory.armor.set(3, player.inventory.armor.get(3));
+		setYaw(headYaw = bodyYaw = player.getYaw());
+		getInventory().main.set(getInventory().selectedSlot, player.getMainHandStack());
+		getInventory().offHand.set(0, player.getOffHandStack());
+		getInventory().armor.set(0, player.getInventory().armor.get(0));
+		getInventory().armor.set(1, player.getInventory().armor.get(1));
+		getInventory().armor.set(2, player.getInventory().armor.get(2));
+		getInventory().armor.set(3, player.getInventory().armor.get(3));
 	}
 
 	public void spawn() {
-		Helper.getWorld().addEntity(this.getEntityId(), this);
+		Helper.getWorld().addEntity(this.getId(), this);
 	}
 
 	public void despawn() {
-		Helper.getWorld().removeEntity(this.getEntityId());
+		Helper.getWorld().removeEntity(this.getId(), Entity.RemovalReason.DISCARDED);
 	}
 
 }

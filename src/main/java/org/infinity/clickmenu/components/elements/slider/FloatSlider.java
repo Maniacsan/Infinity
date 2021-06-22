@@ -4,7 +4,6 @@ import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -27,6 +26,16 @@ public class FloatSlider extends SliderElement {
 				/ (setting.getMaxValueFloat() - setting.getMinValueFloat());
 
 		animation = animation + (currentPos - animation) / 4F;
+
+		if (!valueField.getText().isEmpty()) {
+			if (Float.parseFloat(valueField.getText()) == setting.getCurrentValueFloat())
+				return;
+			try {
+				setting.setCurrentValueFloat(Float.parseFloat(valueField.getText()));
+
+			} catch (NumberFormatException e) {
+			}
+		}
 	}
 
 	@Override
@@ -47,13 +56,6 @@ public class FloatSlider extends SliderElement {
 
 	@Override
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (valueField.getText().isEmpty())
-			return;
-		if (valueField.keyPressed(keyCode, scanCode, modifiers) && keyCode == GLFW.GLFW_KEY_ENTER) {
-			try {
-				setting.setCurrentValueFloat(Float.parseFloat(valueField.getText()));
-			} catch (NumberFormatException e) {
-			}
-		}
+		super.keyPressed(keyCode, scanCode, modifiers);
 	}
 }

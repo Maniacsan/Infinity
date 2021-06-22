@@ -29,6 +29,7 @@ public class PingSpoof extends Module {
 	private List<Packet<?>> packetList = new ArrayList<>();
 	private Timer timer = new Timer();
 
+	private int force;
 	private long id;
 
 	@Override
@@ -67,7 +68,8 @@ public class PingSpoof extends Module {
 					&& ((KeepAliveC2SPacket) event.getPacket()).getId() != id) {
 
 				if (idSpoof.isToggle()) {
-					((IKeepAliveC2SPacket) event.getPacket()).setID(RandomUtils.nextInt(1000, 239812));
+					((IKeepAliveC2SPacket) event.getPacket()).setID(
+							((KeepAliveC2SPacket) event.getPacket()).getId() - RandomUtils.nextInt(1000, 2147483647));
 				}
 				event.cancel();
 				packetList.add(((KeepAliveC2SPacket) event.getPacket()));

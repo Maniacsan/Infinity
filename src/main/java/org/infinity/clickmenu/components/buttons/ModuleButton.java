@@ -66,9 +66,6 @@ public class ModuleButton {
 
 	public void addChildren(List<Element> children) {
 		elements.forEach(element -> {
-			if (element instanceof SliderElement) {
-				children.add(((SliderElement) element).getValueField());
-			}
 		});
 	}
 
@@ -119,9 +116,10 @@ public class ModuleButton {
 
 		// shadow
 		Render2D.drawRectWH(matrices, x + width - 3, y + 1, 2, height - 6, 0x700E1015);
-		Render2D.fillGradient(x + width - 3, y + height - 5, x + width - 1, y + height + hoverAnim, 0x900E1015,
+		Render2D.verticalGradient(matrices, x + width - 3, y + height - 5, x + width - 1, y + height + hoverAnim,
+				0x900E1015, 0x00000000);
+		Render2D.verticalGradient(matrices, x + 1, y + height - 5, x + width - 3, y + height + hoverAnim, 0xFF0E1015,
 				0x00000000);
-		Render2D.fillGradient(x + 1, y + height - 5, x + width - 3, y + height + hoverAnim, 0xFF0E1015, 0x00000000);
 
 		// button rect
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width - 3, height - 3, 0xFF242C41);
@@ -129,28 +127,27 @@ public class ModuleButton {
 		if (keyOpen) {
 			String key = String.valueOf(InputUtil.fromKeyCode(module.getKey(), module.getKey()))
 					.replace("key.keyboard.", "").toUpperCase();
-			IFont.legacy12.drawString("Press SPACE to remove binds", x + 4, y + 15, 0xFFA6A19A);
-			IFont.legacy15.drawString(module.getKey() == -2 ? "Key: " + "..." : "Key: " + key, x + 4, y + 5,
+			IFont.legacy12.drawString(matrices, "Press SPACE to remove binds", x + 4, y + 15, 0xFFA6A19A);
+			IFont.legacy15.drawString(matrices, module.getKey() == -2 ? "Key: " + "..." : "Key: " + key, x + 4, y + 5,
 					0xFFFFFFFF);
 		} else
-			IFont.legacy17.drawString(module.getName(), x + 4, y + 7, module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
+			IFont.legacy17.drawString(matrices, module.getName(), x + 4, y + 7,
+					module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
 
 		if (!module.getSettings().isEmpty()) {
 			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
-			RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/dots.png"), x + width - 14,
-					y + 3, 20, 20);
 		}
 
 		double yOffset = 2;
 		alpha = alpha < 1 ? Math.min(1, alpha + 1) : 100;
 
-		panel.clickMenu.startScissor(panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
+		panel.clickMenu.startScissor(matrices, panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
 		if (isOpen()) {
 
 			if (scrollHover && _celementHeight > panel.height) {
-				Render2D.drawRectWH(matrices, panel.x + panel.width - 6, panel.y + 37, 2, panel.height - 40,
+				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37, 1, panel.height - 40,
 						0x90000000);
-				Render2D.drawRectWH(matrices, panel.x + panel.width - 6, panel.y + 37 + offset, 2,
+				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37 + offset, 1,
 						panel.height - 40 - getHeightDifference(), 0xFF1F5A96);
 			}
 
@@ -159,7 +156,7 @@ public class ModuleButton {
 					continue;
 
 				_celementHeight = (int) (panel.y + 36 + yOffset);
-				element.setX(panel.x + 247);
+				element.setX(panel.x + 241);
 				element.setY(yOffset - offset + panel.y + 36);
 				element.setWidth(panel.width - 264);
 				element.setHeight(19);
@@ -167,7 +164,7 @@ public class ModuleButton {
 				element.render(matrices, mouseX, mouseY, delta);
 
 				if (element instanceof SliderElement)
-					yOffset += 25;
+					yOffset += 18;
 				else if (element instanceof ColorPickerElement) {
 					yOffset += 20;
 				} else if (element instanceof ComboBoxElement) {
@@ -176,10 +173,10 @@ public class ModuleButton {
 					else
 						yOffset += 20;
 				} else
-					yOffset += 16;
+					yOffset += 17;
 			}
 		}
-		Render2D.stopScissor();
+		Render2D.stopScissor(matrices);
 	}
 
 	public void tick() {
@@ -265,6 +262,10 @@ public class ModuleButton {
 		}
 	}
 
+	public void charTyped(char chr, int keyCode) {
+		elements.forEach(element -> element.charTyped(chr, keyCode));
+	}
+
 	public void onClose() {
 		elements.forEach(AbstractElement::onClose);
 		resetAnimation();
@@ -276,9 +277,7 @@ public class ModuleButton {
 		double offset = -3;
 		for (AbstractElement element : elements) {
 			if (isOpen() && element.isVisible()) {
-				if (element instanceof SliderElement)
-					offset = 3;
-				else if (element instanceof ComboBoxElement && ((ComboBoxElement) element).isOpen())
+				if (element instanceof ComboBoxElement && ((ComboBoxElement) element).isOpen())
 					offset = (((ComboBoxElement) element).getSetting().getModes().size() - 1) * 18;
 				else if (element instanceof ColorPickerElement)
 					offset = 1;

@@ -96,8 +96,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(method = "sendMovementPackets", at = @At("HEAD"), cancellable = true)
 	public void sendMovementPackets(CallbackInfo ci) {
-		MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.yaw, this.pitch, this.getX(), this.getY(),
-				this.getZ(), this.onGround);
+		MotionEvent motionEvent = new MotionEvent(EventType.PRE, this.getYaw(), this.getPitch(), this.getX(),
+				this.getY(), this.getZ(), this.onGround);
 		EventManager.call(motionEvent);
 
 		if (motionEvent.isCancelled()) {
@@ -138,16 +138,16 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 				if (this.hasVehicle()) {
 					Vec3d vec3d = this.getVelocity();
 					this.networkHandler
-							.sendPacket(new PlayerMoveC2SPacket.Both(vec3d.x, -999.0D, vec3d.z, yaw, pitch, onGround));
+							.sendPacket(new PlayerMoveC2SPacket.Full(vec3d.x, -999.0D, vec3d.z, yaw, pitch, onGround));
 					bl3 = false;
 				} else if (bl3 && bl4) {
-					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Both(x, y, z, yaw, pitch, onGround));
+					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(x, y, z, yaw, pitch, onGround));
 				} else if (bl3) {
-					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionOnly(x, y, z, onGround));
+					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, onGround));
 				} else if (bl4) {
-					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookOnly(yaw, pitch, onGround));
+					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(yaw, pitch, onGround));
 				} else if (this.lastOnGround != onGround) {
-					this.networkHandler.sendPacket(new PlayerMoveC2SPacket(onGround));
+					this.networkHandler.sendPacket(new PlayerMoveC2SPacket.OnGroundOnly(onGround));
 				}
 
 				if (bl3) {
@@ -173,8 +173,8 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(method = "sendMovementPackets", at = @At("TAIL"), cancellable = true)
 	public void sendPostMovementPackets(CallbackInfo ci) {
-		MotionEvent motionEvent = new MotionEvent(EventType.POST, this.yaw, this.pitch, this.getX(), this.getY(),
-				this.getZ(), this.onGround);
+		MotionEvent motionEvent = new MotionEvent(EventType.POST, this.getYaw(), this.getPitch(), this.getX(),
+				this.getY(), this.getZ(), this.onGround);
 		EventManager.call(motionEvent);
 	}
 

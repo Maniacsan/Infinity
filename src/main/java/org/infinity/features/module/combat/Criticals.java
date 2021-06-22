@@ -13,6 +13,8 @@ import org.infinity.features.Setting;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
+import org.infinity.utils.PacketUtil;
+import org.infinity.utils.PacketUtil.InteractType;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
@@ -103,44 +105,49 @@ public class Criticals extends Module {
 			if (mode.getCurrentMode().equalsIgnoreCase("Spoof")
 					|| mode.getCurrentMode().equalsIgnoreCase("Jump") && !falling.isToggle()
 					|| mode.getCurrentMode().equalsIgnoreCase("Mini Jump")) {
-				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
-						&& ((PlayerInteractEntityC2SPacket) event.getPacket())
-								.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-					if (skipCrit() || attackCount > 0)
-						return;
+				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+					PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
+					if (PacketUtil.getInteractType(packet) == InteractType.INTERACT_AT) {
 
-					attackCount++;
-					doJumpMode(event);
-				} else if (event.getPacket() instanceof HandSwingC2SPacket) {
-					if (skipCrit())
-						return;
-					doJumpModeSwing(event);
+						if (skipCrit() || attackCount > 0)
+							return;
+
+						attackCount++;
+						doJumpMode(event);
+					} else if (event.getPacket() instanceof HandSwingC2SPacket) {
+						if (skipCrit())
+							return;
+						doJumpModeSwing(event);
+					}
 				}
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Packet")) {
-				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
-						&& ((PlayerInteractEntityC2SPacket) event.getPacket())
-								.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-					if (!Helper.getPlayer().isOnGround())
-						return;
+				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+					PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
+					if (PacketUtil.getInteractType(packet) == InteractType.INTERACT_AT) {
 
-					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 0.0645, Helper.getPlayer().getZ(), false));
-					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+						if (!Helper.getPlayer().isOnGround())
+							return;
+
+						Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
+								Helper.getPlayer().getY() + 0.0645, Helper.getPlayer().getZ(), false));
+						Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
+								Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+					}
 				}
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Sentiel")) {
-				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
-						&& ((PlayerInteractEntityC2SPacket) event.getPacket())
-								.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-					if (!Helper.getPlayer().isOnGround())
-						return;
+				if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+					PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
+					if (PacketUtil.getInteractType(packet) == InteractType.INTERACT_AT) {
+						if (!Helper.getPlayer().isOnGround())
+							return;
 
-					MoveUtil.setYVelocity(-1e-2);
-					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY() + 1.28E-9D, Helper.getPlayer().getZ(), true));
-					Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
-							Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+						MoveUtil.setYVelocity(-1e-2);
+						Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
+								Helper.getPlayer().getY() + 1.28E-9D, Helper.getPlayer().getZ(), true));
+						Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
+								Helper.getPlayer().getY(), Helper.getPlayer().getZ(), false));
+					}
 				}
 			}
 		}

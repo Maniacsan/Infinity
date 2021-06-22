@@ -9,6 +9,7 @@ import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.PacketUtil;
+import org.infinity.utils.PacketUtil.InteractType;
 import org.infinity.utils.entity.EntityUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
@@ -36,25 +37,25 @@ public class Reach extends Module {
 		reach = MathAssist.random(minReach.getCurrentValueDouble(), maxReach.getCurrentValueDouble());
 
 		if (lastReach != 0)
-		setSuffix(String.valueOf(MathAssist.round(lastReach, 1)));
+			setSuffix(String.valueOf(MathAssist.round(lastReach, 1)));
 	}
 
 	@EventTarget
 	public void onClick(ClickEvent event) {
-		EntityUtil.updateTargetRaycast(Helper.minecraftClient.targetedEntity, reach, Helper.getPlayer().yaw,
-				Helper.getPlayer().pitch);
+		EntityUtil.updateTargetRaycast(Helper.minecraftClient.targetedEntity, reach, Helper.getPlayer().getYaw(),
+				Helper.getPlayer().getPitch());
 
 	}
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
-		if (event.getPacket() instanceof PlayerInteractEntityC2SPacket
-				&& ((PlayerInteractEntityC2SPacket) event.getPacket())
-						.getType() == PlayerInteractEntityC2SPacket.InteractionType.ATTACK) {
-			lastReach = Helper.getPlayer()
-					.distanceTo(((PlayerInteractEntityC2SPacket) event.getPacket()).getEntity(Helper.getWorld()));
-			if (packetSpoof.isToggle()) {
-				PacketUtil.cancelKeepAlive(event);
+		if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
+			PlayerInteractEntityC2SPacket packet = (PlayerInteractEntityC2SPacket) event.getPacket();
+			if (PacketUtil.getInteractType(packet) == InteractType.INTERACT_AT) {
+
+				lastReach = Helper.getPlayer().distanceTo(PacketUtil.getEntity(packet));
+				if (packetSpoof.isToggle())
+					PacketUtil.cancelKeepAlive(event);
 			}
 		}
 	}

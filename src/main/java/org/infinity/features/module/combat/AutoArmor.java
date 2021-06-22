@@ -26,29 +26,27 @@ public class AutoArmor extends Module {
 	private Setting delay = new Setting(this, "Delay", 1.0D, 0D, 20.0D);
 
 	private int currentProt, currentBlast, currentFire, currentProj, currentArmour, currentUnbreaking;
-	private float currentToughness = 0;
 	private int tickDelay = 0;
-	
+
 	@Override
 	public void onEnable() {
 		tickDelay = (int) delay.getCurrentValueDouble();
 	}
 
 	@Override
-	public void onPlayerTick() {	
+	public void onPlayerTick() {
 
 		if (onInv.isToggle() && !(Helper.minecraftClient.currentScreen instanceof HandledScreen))
 			return;
 
 		ItemStack itemStack;
 		for (int a = 0; a < 4; a++) {
-			itemStack = Helper.getPlayer().inventory.getArmorStack(a);
+			itemStack = Helper.getPlayer().getInventory().getArmorStack(a);
 			currentProt = 0;
 			currentBlast = 0;
 			currentFire = 0;
 			currentProj = 0;
 			currentArmour = 0;
-			currentToughness = 0;
 			currentUnbreaking = 0;
 			if (EnchantmentHelper.hasBindingCurse(itemStack))
 				continue;
@@ -59,7 +57,7 @@ public class AutoArmor extends Module {
 			int bestSlot = -1;
 			int bestScore = 0;
 			for (int i = 0; i < 36; i++) {
-				ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+				ItemStack stack = Helper.getPlayer().getInventory().getStack(i);
 				if (stack.getItem() instanceof ArmorItem
 						&& (((ArmorItem) stack.getItem()).getSlotType().getEntitySlotId() == a)) {
 					int temp = getItemScore(stack);
@@ -69,12 +67,12 @@ public class AutoArmor extends Module {
 					}
 				}
 			}
-			
+
 			if (tickDelay > 0) {
 				tickDelay--;
 				return;
 			}
-			
+
 			if (bestSlot > -1) {
 				InvUtil.quickItem(8 - a);
 				InvUtil.quickItem(InvUtil.indexSlot(bestSlot));
@@ -90,7 +88,6 @@ public class AutoArmor extends Module {
 		score += 2 * (EnchantmentHelper.getLevel(Enchantments.FIRE_PROTECTION, itemStack) - currentFire);
 		score += 2 * (EnchantmentHelper.getLevel(Enchantments.PROJECTILE_PROTECTION, itemStack) - currentProj);
 		score += 2 * (((ArmorItem) itemStack.getItem()).getProtection() - currentArmour);
-		score += 2 * (((ArmorItem) itemStack.getItem()).method_26353() - currentToughness);
 		score += EnchantmentHelper.getLevel(Enchantments.UNBREAKING, itemStack) - currentUnbreaking;
 		return score;
 	}
@@ -101,7 +98,6 @@ public class AutoArmor extends Module {
 		currentFire = EnchantmentHelper.getLevel(Enchantments.FIRE_PROTECTION, itemStack);
 		currentProj = EnchantmentHelper.getLevel(Enchantments.PROJECTILE_PROTECTION, itemStack);
 		currentArmour = ((ArmorItem) itemStack.getItem()).getProtection();
-		currentToughness = ((ArmorItem) itemStack.getItem()).method_26353();
 		currentUnbreaking = EnchantmentHelper.getLevel(Enchantments.UNBREAKING, itemStack);
 	}
 }

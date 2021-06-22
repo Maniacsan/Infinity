@@ -11,12 +11,9 @@ import org.infinity.ui.IScreen;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class ColorPickerWindow extends IScreen {
@@ -61,12 +58,8 @@ public class ColorPickerWindow extends IScreen {
 	@Override
 	public void init() {
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
-		colorField = new WTextField(Helper.minecraftClient.textRenderer, xPosition, yPosition, 40, 14,
-				new TranslatableText("#"), false);
-		colorField.setColor(0xFF0B1427);
+		colorField = new WTextField(0xFF0B1427, false);
 		colorField.setMaxLength(6);
-
-		children.add(colorField);
 
 		this.updateColor();
 	}
@@ -82,17 +75,17 @@ public class ColorPickerWindow extends IScreen {
 
 		anim = anim > 0 ? Math.max(0, anim - 0.11) : 0;
 
-		GL11.glPushMatrix();
+		matrices.push();
 
 		if (anim > 0) {
-			GL11.glTranslated(this.xPosition + 97.5, this.yPosition + 135, 0);
-			GL11.glScaled(1 + anim, 1 + anim, 1 + anim);
-			GL11.glTranslated(-this.xPosition - 97.5, -this.yPosition - 135, 0);
+			matrices.translate(this.xPosition + 97.5, this.yPosition + 135, 0);
+			matrices.scale((float) (1f + anim), (float) (1f + anim), 1f);
+			matrices.translate(-this.xPosition - 97.5, -this.yPosition - 135, 0);
 		}
 
 		renderPicker(matrices, mouseX, mouseY, delta);
 
-		GL11.glPopMatrix();
+		matrices.pop();
 
 	}
 
@@ -110,7 +103,7 @@ public class ColorPickerWindow extends IScreen {
 
 		Render2D.drawBorderedRect(matrices, this.xPosition - 4, this.yPosition - 15, 172, 185, 1, 0xFF080629,
 				0xFF161621);
-		IFont.legacy14.drawCenteredString(setting.getName(), xPosition + 158 / 2, yPosition - 11, -1);
+		IFont.legacy14.drawCenteredString(matrices, setting.getName(), xPosition + 158 / 2, yPosition - 11, -1);
 
 		hover = Render2D.isHovered(mouseX, mouseY, xPosition + 154, yPosition - 14, 12, 12) ? Math.min(1.2, hover + 0.1)
 				: Math.max(1, hover - 0.1);
@@ -118,15 +111,15 @@ public class ColorPickerWindow extends IScreen {
 		double hw = xPosition + 160;
 		double hh = yPosition - 14 / 2;
 
-		GL11.glPushMatrix();
-		GL11.glTranslated(hw, hh, 0);
-		GL11.glScaled(hover, hover, 1);
-		GL11.glTranslated(-hw, -hh, 0);
+		matrices.push();
+		matrices.translate(hw, hh, 0);
+		matrices.scale((float) hover, (float) hover, 1f);
+		matrices.translate(-hw, -hh, 0);
 
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/exit.png"), xPosition + 157,
 				yPosition - 11, 6, 6);
 
-		GL11.glPopMatrix();
+		matrices.pop();
 
 		Render2D.drawBorderedRect(matrices, this.xPosition, this.yPosition, 164, 165, 2, 0xFF131D4C, 0xFF121D39);
 
@@ -151,6 +144,11 @@ public class ColorPickerWindow extends IScreen {
 		colorField.render(matrices, mouseX, mouseY, delta);
 
 		Render2D.drawBorderedCircle(hPos, sPos, 4, 1, 0xFFFFFFFF, 0xFF000000 | this.rgb);
+
+		this.rgb = (0xFFFFFF & Color.HSBtoRGB(this.hsb[H], this.hsb[S], this.hsb[B]));
+		String hex = String.format("%06x", 0xFFFFFF & Color.HSBtoRGB(this.hsb[H], this.hsb[S], this.hsb[B]));
+		if (colorField.getText() != hex)
+			updateColorFromTextEntry();
 	}
 
 	@Override
@@ -179,6 +177,8 @@ public class ColorPickerWindow extends IScreen {
 
 		if (this.rectBArea.contains(mouseX, mouseY))
 			this.draggingB = true;
+
+		colorField.mouseClicked(mouseX, mouseY, button);
 		return super.mouseClicked(mouseX, mouseY, button);
 	}
 
@@ -207,11 +207,14 @@ public class ColorPickerWindow extends IScreen {
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (colorField.keyPressed(keyCode, scanCode, modifiers) && keyCode == GLFW.GLFW_KEY_ENTER) {
-			updateColorFromTextEntry();
-			return true;
-		}
+		colorField.keyPressed(keyCode, scanCode, modifiers);
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char chr, int keyCode) {
+		colorField.charTyped(chr, keyCode);
+		return super.charTyped(chr, keyCode);
 	}
 
 	protected void updateColor() {
@@ -235,8 +238,12 @@ public class ColorPickerWindow extends IScreen {
 		currentGreen = Integer.valueOf(hex.substring(3, 5), 16);
 		currentBlue = Integer.valueOf(hex.substring(5, 7), 16);
 
-		this.hsb = Color.RGBtoHSB(currentRed, currentGreen, currentBlue, null);
-		this.updateColor();
+		try {
+			this.hsb = Color.RGBtoHSB(currentRed, currentGreen, currentBlue, null);
+			this.updateColor();
+		} catch (Exception e) {
+
+		}
 	}
 
 	public static float clamp(float value, float min, float max) {

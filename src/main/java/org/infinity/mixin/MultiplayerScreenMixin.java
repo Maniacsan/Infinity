@@ -38,8 +38,8 @@ public class MultiplayerScreenMixin extends Screen {
 				buttonWidget -> Helper.minecraftClient.openScreen(new GuiAccountManager(this)),
 				new TranslatableText("Account"));
 
-		addButton(tools);
-		addButton(accButton);
+		addDrawableChild(tools);
+		addDrawableChild(accButton);
 	}
 
 }

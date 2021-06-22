@@ -13,14 +13,13 @@ import org.infinity.main.InfMain;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 
 public class ConfigPanel {
 
@@ -52,13 +51,10 @@ public class ConfigPanel {
 
 	public void init() {
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
-		textField = new WTextField(Helper.minecraftClient.textRenderer, (int) this.width / 2 - 80,
-				(int) this.height / 2 - 58, 160, 22, new TranslatableText("Text"), false);
+		textField = new WTextField(0xFF0B1427, false);
 
 		textField.setMaxLength(45);
-		textField.setColor(0xFF0B1427);
 		textField.setText("New Config");
-		textField.setSelected(true);
 		refresh();
 	}
 
@@ -83,20 +79,20 @@ public class ConfigPanel {
 
 		Render2D.drawRectWH(matrices, x + width - 90, y + 11, 60, 18,
 				Render2D.isHovered(mouseX, mouseY, x + width - 90, y + 11, 60, 18) ? 0xFFC9C9C9 : 0xFFE3E3E4);
-		IFont.legacy15.drawStringWithShadow("Add", x + width - 67, y + 15, -1);
+		IFont.legacy15.drawStringWithShadow(matrices, "Add", x + width - 67, y + 15, -1);
 
-		GL11.glPushMatrix();
+		matrices.push();
 		double xt = x + width - 23;
 		double yt = y + 16;
 
-		GlStateManager.enableBlend();
-		GL11.glTranslated(xt + 5, yt + 5, 0);
-		GL11.glRotated(refreshHover, 0, 0, 1);
-		GL11.glTranslated(-xt - 5, -yt - 5, 0);
+		GlStateManager._enableBlend();
+		matrices.translate(xt + 5, yt + 5, 0);
+		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) refreshHover));
+		matrices.translate(-xt - 5, -yt - 5, 0);
 
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "/textures/icons/refresh.png"), xt, yt, 10, 10);
-		GlStateManager.disableBlend();
-		GL11.glPopMatrix();
+		GlStateManager._disableBlend();
+		matrices.pop();
 
 		textField.setX((int) (x + 12));
 		textField.setY((int) (y + 10));
@@ -106,17 +102,19 @@ public class ConfigPanel {
 
 		double yOffset = 2;
 
-		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7) : errorTime == -1 ? -35 : Math.max(-35, toasterAnim - 7);
+		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7)
+				: errorTime == -1 ? -35 : Math.max(-35, toasterAnim - 7);
 
 		if (toasterAnim != -35) {
-			Render2D.fillGradient(x + width / 2 - 70, y + toasterAnim, x + width / 2 + 70, y + toasterAnim + 35,
-					0xFF171F40, 0xFF37447D);
+			Render2D.verticalGradient(matrices, x + width / 2 - 70, y + toasterAnim, x + width / 2 + 70,
+					y + toasterAnim + 35, 0xFF171F40, 0xFF37447D);
 			FontUtils.drawStringWithShadow(matrices, "Configs are limited ", x + width / 2 - 45, y + toasterAnim + 6,
 					-1);
-			FontUtils.drawStringWithShadow(matrices, "Buy " + Formatting.YELLOW + "Premium" + Formatting.RESET + " to unlock ", x + width / 2 - 55, y + toasterAnim + 18,
-					-1);
-		} 
-		panel.clickMenu.startScissor(x, y + 43, width - 2, height - 80);
+			FontUtils.drawStringWithShadow(matrices,
+					"Buy " + Formatting.YELLOW + "Premium" + Formatting.RESET + " to unlock ", x + width / 2 - 55,
+					y + toasterAnim + 18, -1);
+		}
+		panel.clickMenu.startScissor(matrices, x, y + 43, width - 2, height - 80);
 
 		// scroll
 		if (_cbuttonHeight > this.height - 80) {
@@ -124,7 +122,7 @@ public class ConfigPanel {
 			Render2D.drawRectWH(matrices, x + width - 5, y + 43 + offset, 2, height - 80 - getHeightDifference(),
 					0xFF1F5A96);
 		}
-	
+
 		for (ConfigButton configButton : configList) {
 			_cbuttonHeight = (int) (y + yOffset);
 			configButton.setX(x + 2);
@@ -136,7 +134,7 @@ public class ConfigPanel {
 
 			configButton.render(matrices, mouseX, mouseY);
 		}
-		Render2D.stopScissor();
+		Render2D.stopScissor(matrices);
 	}
 
 	public void tick() {
@@ -177,6 +175,8 @@ public class ConfigPanel {
 			}
 		});
 
+		textField.mouseClicked(mouseX, mouseY, button);
+
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
@@ -190,7 +190,7 @@ public class ConfigPanel {
 		} else if (amount > 0.0D) {
 			this.offset -= scrollOffset;
 		}
-		
+
 		if (_cbuttonHeight > this.height - 80) {
 			int difference = getHeightDifference();
 			if (offset > difference)
@@ -199,9 +199,18 @@ public class ConfigPanel {
 				offset = 0;
 		}
 	}
-	
+
+	public void charTyped(char chr, int keyCode) {
+		textField.charTyped(chr, keyCode);
+	}
+
+	public void keyPressed(int keyCode, int scanCode, int modifiers) {
+		textField.keyPressed(keyCode, scanCode, modifiers);
+	}
+
 	public void onClose() {
 		errorTime = 0;
+		textField.onClose();
 	}
 
 	public int getHeightDifference() {

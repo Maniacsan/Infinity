@@ -1,20 +1,4 @@
-/*
- * Copyright (c) 2018 superblaubeere27
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 package org.infinity.ui.util.font;
-
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glVertex2f;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -34,10 +18,18 @@ import javax.imageio.ImageIO;
 import org.lwjgl.BufferUtils;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.NativeImageBackedTexture;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class GlyphPage {
 	private int imgSize;
@@ -84,7 +76,7 @@ public class GlyphPage {
 
 		bufferedImage = new BufferedImage(imgSize, imgSize, BufferedImage.TYPE_INT_ARGB);
 
-		Graphics2D g = (Graphics2D) bufferedImage.getGraphics();
+		Graphics2D g = bufferedImage.createGraphics();
 
 		g.setFont(font);
 		// Set Color to Transparent
@@ -156,14 +148,15 @@ public class GlyphPage {
 	}
 
 	public void bindTexture() {
-		GlStateManager.bindTexture(loadedTexture.getGlId());
+		GlStateManager._bindTexture(loadedTexture.getGlId());
+		RenderSystem.setShaderTexture(0, loadedTexture.getGlId());
 	}
 
 	public void unbindTexture() {
-		GlStateManager.bindTexture(0);
+		GlStateManager._bindTexture(0);
 	}
 
-	public float drawChar(char ch, float x, float y) {
+	public float drawChar(MatrixStack stack, char ch, float x, float y) {
 		Glyph glyph = glyphCharacterMap.get(ch);
 
 		if (glyph == null)
@@ -178,27 +171,24 @@ public class GlyphPage {
 		float width = glyph.width;
 		float height = glyph.height;
 
-		glBegin(GL_TRIANGLES);
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
-		glTexCoord2f(pageX + pageWidth, pageY);
-		glVertex2f(x + width, y);
+		bufferBuilder.vertex(stack.peek().getModel(), x, y + height, 0).texture(pageX, pageY + pageHeight).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x + width, y + height, 0)
+				.texture(pageX + pageWidth, pageY + pageHeight).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x + width, y, 0).texture(pageX + pageWidth, pageY).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x, y, 0).texture(pageX, pageY).next();
+		bufferBuilder.end();
 
-		glTexCoord2f(pageX, pageY);
-		glVertex2f(x, y);
+		RenderSystem.enableBlend();
+		RenderSystem.enableTexture();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
-		glTexCoord2f(pageX, pageY + pageHeight);
-		glVertex2f(x, y + height);
+		BufferRenderer.draw(bufferBuilder);
 
-		glTexCoord2f(pageX, pageY + pageHeight);
-		glVertex2f(x, y + height);
-
-		glTexCoord2f(pageX + pageWidth, pageY + pageHeight);
-		glVertex2f(x + width, y + height);
-
-		glTexCoord2f(pageX + pageWidth, pageY);
-		glVertex2f(x + width, y);
-
-		glEnd();
+		RenderSystem.disableBlend();
+		RenderSystem.enableTexture();
 
 		return width - 8;
 	}

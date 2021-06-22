@@ -28,27 +28,27 @@ public class GuiAddAccount extends Screen {
 		this.client.keyboard.setRepeatEvents(true);
 		this.accountName = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 66, 200, 20,
 				new TranslatableText("Login"));
-		this.accountName.setSelected(true);
+		this.accountName.setTextFieldFocused(true);
 		this.accountName.setMaxLength(30);
-		this.children.add(accountName);
+		this.addSelectableChild(accountName);
 		this.password = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 106, 200, 20,
 				new TranslatableText("Password"));
-		this.password.setSelected(true);
+		this.password.setTextFieldFocused(true);
 		this.password.setMaxLength(128);
-		this.children.add(password);
+		this.addSelectableChild(password);
 
-		this.buttonAdd = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 96, 200,
-				20, new TranslatableText("Add"), (buttonWidget) -> {
+		this.buttonAdd = (ButtonWidget) this.addDrawableChild(new ButtonWidget(this.width / 2 - 100,
+				this.height / 4 + 96, 200, 20, new TranslatableText("Add"), (buttonWidget) -> {
 					if (!accountName.getText().isEmpty()) {
 						AddThread addThread = new AddThread(this.accountName.getText(), this.password.getText());
 						addThread.start();
 					}
-					// prev.prev 
+					// prev.prev
 					Helper.minecraftClient.openScreen(new GuiAccountManager(prev.prev));
 				}));
 
-		this.addButton(new ButtonWidget(this.width / 2 - 100,
-				this.height / 4 + 96 + 28, 200, 20, new TranslatableText("Cancel"), (buttonWidget) -> {
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 96 + 28, 200, 20,
+				new TranslatableText("Cancel"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 					prev.refresh();
 				}));

@@ -5,13 +5,15 @@ import org.infinity.ui.util.font.IFont;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.widget.PressableWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.text.TranslatableText;
 
 @Environment(EnvType.CLIENT)
-public class CustomButtonWidget extends AbstractPressableButtonWidget {
+public class CustomButtonWidget extends PressableWidget {
 	public static final CustomButtonWidget.TooltipSupplier EMPTY = (button, matrices, mouseX, mouseY) -> {
 	};
 	protected final CustomButtonWidget.PressAction onPress;
@@ -41,9 +43,8 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? hcolor
 				: this.active ? color : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
-		int j = this.active ? 16777215 : 10526880;
-		IFont.legacy16.drawCenteredString(this.getMessage().getString(), this.x + this.width / 2,
-				this.y + (this.height - 8) / 2 - 1, j | MathHelper.ceil(this.alpha * 255.0F) << 24);
+		IFont.legacy15.drawCenteredString(matrices, this.getMessage().getString(), this.x + this.width / 2,
+				this.y + (this.height - 8) / 2 - 1, -1);
 
 		if (this.isHovered()) {
 			this.renderToolTip(matrices, mouseX, mouseY);
@@ -63,5 +64,17 @@ public class CustomButtonWidget extends AbstractPressableButtonWidget {
 	@Environment(EnvType.CLIENT)
 	public interface PressAction {
 		void onPress(CustomButtonWidget button);
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		builder.put(NarrationPart.TITLE, (Text) this.getNarrationMessage());
+		if (this.active) {
+			if (this.isFocused()) {
+				builder.put(NarrationPart.USAGE, (Text) (new TranslatableText("narration.checkbox.usage.focused")));
+			} else {
+				builder.put(NarrationPart.USAGE, (Text) (new TranslatableText("narration.checkbox.usage.hovered")));
+			}
+		}
 	}
 }

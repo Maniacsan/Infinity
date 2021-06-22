@@ -33,15 +33,15 @@ public class FreeCam extends Module {
 		x = Helper.getPlayer().getX();
 		y = Helper.getPlayer().getY();
 		z = Helper.getPlayer().getZ();
-		yaw = Helper.getPlayer().yaw;
-		pitch = Helper.getPlayer().pitch;
+		yaw = Helper.getPlayer().getYaw();
+		pitch = Helper.getPlayer().getPitch();
 
 		spawnPlayer = new OtherPlayer(Helper.getPlayer());
 		spawnPlayer.setBoundingBox(spawnPlayer.getBoundingBox().expand(0.1));
 		spawnPlayer.spawn();
 
-		prevFly = Helper.getPlayer().abilities.flying;
-		prevFlySpeed = Helper.getPlayer().abilities.getFlySpeed();
+		prevFly = Helper.getPlayer().getAbilities().flying;
+		prevFlySpeed = Helper.getPlayer().getAbilities().getFlySpeed();
 	}
 
 	@Override
@@ -50,8 +50,8 @@ public class FreeCam extends Module {
 			spawnPlayer.despawn();
 		spawnPlayer = null;
 
-		Helper.getPlayer().abilities.flying = prevFly;
-		Helper.getPlayer().abilities.setFlySpeed(prevFlySpeed);
+		Helper.getPlayer().getAbilities().flying = prevFly;
+		Helper.getPlayer().getAbilities().setFlySpeed(prevFlySpeed);
 
 		Helper.getPlayer().refreshPositionAndAngles(x, y, z, yaw, pitch);
 		Helper.getPlayer().setVelocity(Vec3d.ZERO);
@@ -60,8 +60,8 @@ public class FreeCam extends Module {
 	@Override
 	public void onPlayerTick() {
 		Helper.getPlayer().setOnGround(false);
-		Helper.getPlayer().abilities.setFlySpeed((float) (speed.getCurrentValueDouble() / 5));
-		Helper.getPlayer().abilities.flying = true;
+		Helper.getPlayer().getAbilities().setFlySpeed((float) (speed.getCurrentValueDouble() / 5));
+		Helper.getPlayer().getAbilities().flying = true;
 	}
 
 	@EventTarget

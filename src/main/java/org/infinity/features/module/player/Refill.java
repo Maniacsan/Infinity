@@ -36,7 +36,7 @@ public class Refill extends Module {
 	@Override
 	public void onPlayerTick() {
 		int find = InvUtil.findPotionInternalInv(StatusEffects.INSTANT_HEALTH, false);
-		int freeSlots = Helper.getPlayer().inventory.getEmptySlot();
+		int freeSlots = Helper.getPlayer().getInventory().getEmptySlot();
 
 		if (mode.getCurrentMode().equalsIgnoreCase("FreeSlots")) {
 			if (find != -2 && freeSlots != -1 && freeSlots < 9)
@@ -54,7 +54,7 @@ public class Refill extends Module {
 	}
 
 	private void switchPotion(int from, int slot) {
-		if (Helper.getPlayer().inventory.getStack(slot).getItem() != Items.SPLASH_POTION)
+		if (Helper.getPlayer().getInventory().getStack(slot).getItem() != Items.SPLASH_POTION)
 			InvUtil.swapItem(from, slot);
 	}
 

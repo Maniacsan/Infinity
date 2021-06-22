@@ -3,6 +3,8 @@ package org.infinity.ui.tools;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.main.InfMain;
+import org.infinity.ui.FirstStartUI;
+import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -27,13 +29,18 @@ public class ToolsMain extends Screen {
 		// height / 2 - lastY - 15;
 
 		AntiFabric antiFabric = ((AntiFabric) InfMain.getModuleManager().getModuleByClass(AntiFabric.class));
-		addButton(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 90, 160, 20,
+		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 90, 160, 20,
 				new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())), (buttonWidget) -> {
 					antiFabric.enable();
 					fSpoofWidget.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())));
 				}));
 
-		addButton(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,
+		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 60, 160, 20,
+				new LiteralText("Menu"), (buttonWidget) -> {
+					Helper.openScreen(InfMain.INSTANCE.init.menu);
+				}));
+
+		addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,
 				(buttonWidget) -> {
 					this.client.openScreen(parent);
 				}));

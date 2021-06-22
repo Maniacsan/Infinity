@@ -37,13 +37,13 @@ public abstract class EntityMixin {
 	private void onMove(MovementType type, Vec3d movement, CallbackInfo info) {
 		ClipEvent clipEvent = new ClipEvent(entity);
 		EventManager.call(clipEvent);
-		if (clipEvent.isCancelled()) {
+		if (clipEvent.isCancelled() && entity == Helper.getPlayer()) {
 			entity.setBoundingBox(entity.getBoundingBox().offset(movement));
-			entity.moveToBoundingBoxCenter();
+			entity.setPosition(entity.getX() + movement.x, entity.getY() + movement.y, entity.getZ() + movement.z);
 			info.cancel();
 		}
 
-		if (entity != Helper.minecraftClient.player)
+		if (entity != Helper.getPlayer())
 			return;
 		MoveEvent moveEvent = new MoveEvent(EventType.PRE, type, movement);
 		EventManager.call(moveEvent);

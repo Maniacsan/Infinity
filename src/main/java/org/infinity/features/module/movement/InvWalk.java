@@ -6,7 +6,7 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 @ModuleInfo(category = Category.MOVEMENT, desc = "Allows you to walk with an open inventory", key = -2, name = "InvWalk", visible = true)

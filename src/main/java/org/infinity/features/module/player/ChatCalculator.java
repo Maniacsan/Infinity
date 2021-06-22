@@ -96,7 +96,7 @@ public class ChatCalculator extends Module {
 			if (split.contains(Helper.getPlayer().getEntityName()))
 				return;
 
-			serverMessage = message.contains("Решите пример:") ? message.replace("Решите пример:", "")
+			serverMessage = message.contains("ГђГҐГёГЁГІГҐ ГЇГ°ГЁГ¬ГҐГ°:") ? message.replace("ГђГҐГёГЁГІГҐ ГЇГ°ГЁГ¬ГҐГ°:", "")
 					: message.replace(split + ":", "");
 
 			Optional<String> postfix = TermSolver.transformInfixToPostfix(serverMessage);
@@ -141,8 +141,8 @@ public class ChatCalculator extends Module {
 				if (InfMain.getChatHud().currentChat == InfMain.getChatHud().infChat)
 					return;
 
-				String chatMessage = cms.getChatMessage().contains("Решите пример:")
-						? cms.getChatMessage().replace("Решите пример:", "")
+				String chatMessage = cms.getChatMessage().contains("ГђГҐГёГЁГІГҐ ГЇГ°ГЁГ¬ГҐГ°:")
+						? cms.getChatMessage().replace("ГђГҐГёГЁГІГҐ ГЇГ°ГЁГ¬ГҐГ°:", "")
 						: cms.getChatMessage().replace("!", "");
 
 				Optional<String> postfix = TermSolver.transformInfixToPostfix(chatMessage);

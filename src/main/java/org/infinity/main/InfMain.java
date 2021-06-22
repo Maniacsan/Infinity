@@ -19,7 +19,7 @@ public class InfMain {
 
 	public static InfMain INSTANCE = new InfMain();
 	private static String NAME = "Infinity";
-	private static String VERSION = "1.0.5";
+	private static String VERSION = "1.0.6";
 
 	private static File direction;
 	public Initialize init;

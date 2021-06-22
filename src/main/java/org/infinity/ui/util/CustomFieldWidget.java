@@ -21,10 +21,12 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
@@ -37,7 +39,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class CustomFieldWidget extends AbstractButtonWidget implements Drawable, Element {
+public class CustomFieldWidget extends ClickableWidget implements Drawable, Element {
 	private final TextRenderer textRenderer;
 	private String text;
 	private int maxLength;
@@ -78,7 +80,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 		this.textPredicate = Objects::nonNull;
 		this.obfText = obfText;
 		this.renderTextProvider = (string, integer) -> {
-			return OrderedText.styledString(string, Style.EMPTY);
+			return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
 		};
 		this.textRenderer = textRenderer;
 		this.image = image;
@@ -157,8 +159,6 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 		if (this.changedListener != null) {
 			this.changedListener.accept(newText);
 		}
-
-		this.nextNarration = Util.getMeasuringTimeMs() + 500L;
 	}
 
 	private void erase(int offset) {
@@ -499,11 +499,11 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.setShaderColor(0.0F, 0.0F, 255.0F, 255.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferBuilder.begin(7, VertexFormats.POSITION);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 		bufferBuilder.vertex((double) x1, (double) y2, 0.0D).next();
 		bufferBuilder.vertex((double) x2, (double) y2, 0.0D).next();
 		bufferBuilder.vertex((double) x2, (double) y1, 0.0D).next();
@@ -617,8 +617,7 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 	}
 
 	public int getCharacterX(int index) {
-		return index > this.text.length() ? this.x
-				: this.x + textRenderer.getWidth(this.text.substring(0, index));
+		return index > this.text.length() ? this.x : this.x + textRenderer.getWidth(this.text.substring(0, index));
 	}
 
 	public void setX(int x) {
@@ -631,5 +630,11 @@ public class CustomFieldWidget extends AbstractButtonWidget implements Drawable,
 
 	public void setImageColor(int imageColor) {
 		this.imageColor = imageColor;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
+
 	}
 }

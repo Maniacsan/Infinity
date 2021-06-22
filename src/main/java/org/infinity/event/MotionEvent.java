@@ -50,8 +50,8 @@ public class MotionEvent extends EventCancellable {
 		pitch -= pitch % gcd;
 
 		if (clientRotation) {
-			Helper.getPlayer().yaw = yaw;
-			Helper.getPlayer().pitch = pitch;
+			Helper.getPlayer().setYaw(yaw);
+			Helper.getPlayer().setPitch(pitch);
 		}
 		Helper.getPlayer().bodyYaw = yaw;
 		Helper.getPlayer().headYaw = yaw;

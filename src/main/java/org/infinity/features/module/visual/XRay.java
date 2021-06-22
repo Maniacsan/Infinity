@@ -172,13 +172,13 @@ public class XRay extends Module {
 
 		if (Helper.getPlayer().isCreative()) {
 			blockState2 = Helper.getWorld().getBlockState(pos);
-			Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 1.0F);
+			Helper.minecraftClient.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 1.0F);
 			Helper.sendPacket(
 					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 		}
 
 		blockState2 = Helper.getWorld().getBlockState(pos);
-		Helper.minecraftClient.getTutorialManager().onBlockAttacked(Helper.getWorld(), pos, blockState2, 0.0F);
+		Helper.minecraftClient.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 0.0F);
 		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 		boolean bl = !blockState2.isAir();
 		if (bl && this.breakProgress == 0.0F) {

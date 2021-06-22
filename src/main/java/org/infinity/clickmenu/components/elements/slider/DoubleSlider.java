@@ -3,7 +3,6 @@ package org.infinity.clickmenu.components.elements.slider;
 import org.infinity.clickmenu.components.elements.SliderElement;
 import org.infinity.features.Setting;
 import org.infinity.utils.MathAssist;
-import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.util.math.MathHelper;
 
@@ -12,7 +11,7 @@ public class DoubleSlider extends SliderElement {
 	public DoubleSlider(Setting setting) {
 		super(setting);
 	}
-	
+
 	@Override
 	public void init() {
 		valueField.setText(getRenderValue());
@@ -26,6 +25,15 @@ public class DoubleSlider extends SliderElement {
 				/ (setting.getMaxValueDouble() - setting.getMinValueDouble());
 
 		animation = animation + (currentPos - animation) / 4;
+
+		if (!valueField.getText().isEmpty()) {
+			if (Double.parseDouble(valueField.getText()) == setting.getCurrentValueDouble())
+				return;
+			try {
+				setting.setCurrentValueDouble(Double.parseDouble(valueField.getText()));
+			} catch (NumberFormatException e) {
+			}
+		}
 	}
 
 	@Override
@@ -46,15 +54,6 @@ public class DoubleSlider extends SliderElement {
 
 	@Override
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (valueField.getText().isEmpty())
-			return;
-
-		if (valueField.keyPressed(keyCode, scanCode, modifiers) && keyCode == GLFW.GLFW_KEY_ENTER) {
-			try {
-				setting.setCurrentValueDouble(Double.parseDouble(valueField.getText()));
-				
-			} catch (NumberFormatException e) {
-			}
-		}
+		super.keyPressed(keyCode, scanCode, modifiers);
 	}
 }

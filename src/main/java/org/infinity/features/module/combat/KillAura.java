@@ -196,8 +196,8 @@ public class KillAura extends Module {
 		if (target instanceof PlayerEntity) {
 			if (((PlayerEntity) target).isBlocking()) {
 				if (slotAxe != -2) {
-					preSlot = Helper.getPlayer().inventory.selectedSlot;
-					Helper.getPlayer().inventory.selectedSlot = slotAxe;
+					preSlot = Helper.getPlayer().getInventory().selectedSlot;
+					Helper.getPlayer().getInventory().selectedSlot = slotAxe;
 
 					if (preSlot != -2) {
 						(new Thread() {
@@ -206,7 +206,7 @@ public class KillAura extends Module {
 								try {
 									Thread.sleep(150);
 
-									Helper.getPlayer().inventory.selectedSlot = preSlot;
+									Helper.getPlayer().getInventory().selectedSlot = preSlot;
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -243,7 +243,7 @@ public class KillAura extends Module {
 				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())
 					((FakeLags) InfMain.getModuleManager().getModuleByClass(FakeLags.class)).sendPackets();
 
-				Helper.sendPacket(new PlayerInteractEntityC2SPacket(target, Helper.getPlayer().isSneaking()));
+				Helper.sendPacket(PlayerInteractEntityC2SPacket.attack(target, Helper.getPlayer().isSneaking()));
 				EntityUtil.swing(!noSwing.isToggle());
 
 				if (keepSprint.isToggle()) {
@@ -282,7 +282,7 @@ public class KillAura extends Module {
 	}
 
 	private float[] rotation(Entity entity, double sensitivy, float speed) {
-		float yaw = Helper.getPlayer().yaw, pitch = Helper.getPlayer().pitch;
+		float yaw = Helper.getPlayer().getYaw(), pitch = Helper.getPlayer().getPitch();
 		Box bb = entity.getBoundingBox();
 		float lx = 0, ly = 0, lz = 0;
 		lx = RotationUtil.limitAngleChange(lx, (float) x1, speed);

@@ -18,8 +18,8 @@ import net.minecraft.world.BlockView;
 public class BlockMixin {
 
 	@Inject(method = "shouldDrawSide", at = @At("HEAD"), cancellable = true)
-	private static void shouldDrawSide(BlockState state, BlockView world, BlockPos pos, Direction facing,
-			CallbackInfoReturnable<Boolean> callback) {
+	private static void shouldDrawSide(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos blockPos,
+									   CallbackInfoReturnable<Boolean> callback) {
 		XRay xray = ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class));
 		if (xray.isEnabled() && xray.isNoRender()) {
 			callback.setReturnValue(xray.isValid(state.getBlock()));

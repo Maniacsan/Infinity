@@ -19,7 +19,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.ChatHudLine;
 import net.minecraft.client.gui.screen.ChatScreen;
-import net.minecraft.client.options.ChatVisibility;
+import net.minecraft.client.option.ChatVisibility;
 import net.minecraft.client.util.ChatMessages;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.OrderedText;
@@ -69,11 +69,11 @@ public class InfChatHud extends DrawableHelper {
 					bl = true;
 				}
 
-				double d = this.getChatScale();
+				float d = (float) this.getChatScale();
 				int k = MathHelper.ceil((double) this.getWidth() / d);
-				RenderSystem.pushMatrix();
-				RenderSystem.translatef(2.0F, 8.0F, 0.0F);
-				RenderSystem.scaled(d, d, 1.0D);
+	            matrices.push();
+	            matrices.translate(4.0D, 8.0D, 0.0D);
+	            matrices.scale(d, d, 1.0F);
 
 				double e = this.client.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
 				double f = this.client.options.textBackgroundOpacity;
@@ -108,7 +108,6 @@ public class InfChatHud extends DrawableHelper {
 									this.client.textRenderer.drawWithShadow(matrices,
 											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
 											16777215 + (aa << 24));
-									RenderSystem.disableAlphaTest();
 									RenderSystem.disableBlend();
 									matrices.pop();
 								}
@@ -137,7 +136,6 @@ public class InfChatHud extends DrawableHelper {
 									this.client.textRenderer.drawWithShadow(matrices,
 											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
 											16777215 + (aa << 24));
-									RenderSystem.disableAlphaTest();
 									RenderSystem.disableBlend();
 									matrices.pop();
 								}
@@ -159,14 +157,11 @@ public class InfChatHud extends DrawableHelper {
 							(Text) (new TranslatableText("chat.queue", new Object[] { this.messageQueue.size() })),
 							0.0F, 1.0F, 16777215 + (m << 24));
 					matrices.pop();
-					RenderSystem.disableAlphaTest();
 					RenderSystem.disableBlend();
 				}
 
 				if (bl) {
-					this.client.textRenderer.getClass();
 					int v = 9;
-					RenderSystem.translatef(-3.0F, 0.0F, 0.0F);
 					w = j * v + j;
 					x = l * v + l;
 					int y = currentChat == mcChat ? this.scrolledLines * x / j : this.iscrolledLines * x / j;
@@ -199,9 +194,7 @@ public class InfChatHud extends DrawableHelper {
 
 					topY -= 16;
 				}
-
-				RenderSystem.popMatrix();
-
+	            matrices.pop();
 			}
 		}
 	}

@@ -37,8 +37,8 @@ public class HitBoxes extends Module {
 				players.isToggle(), false, invisibles.isToggle(), mobs.isToggle(), animals.isToggle()))
 			return;
 
-		event.setYaw(Helper.getPlayer().yaw);
-		event.setPitch(Helper.getPlayer().pitch);
+		event.setYaw(Helper.getPlayer().getYaw());
+		event.setPitch(Helper.getPlayer().getPitch());
 		event.cancel();
 
 	}

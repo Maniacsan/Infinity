@@ -16,7 +16,6 @@ import org.infinity.main.InfMain;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
-import org.lwjgl.opengl.GL11;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 
@@ -25,6 +24,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Vec3f;
 
 public class Panel {
 
@@ -50,6 +50,8 @@ public class Panel {
 	private boolean logoAnimate;
 	private double _lanim;
 	private double _lhover;
+	
+	private double fadeAlpha;
 
 	private boolean search;
 
@@ -98,7 +100,6 @@ public class Panel {
 
 	public void addChildren(List<Element> children) {
 		children.add(searchField);
-		children.add(configPanel.textField);
 
 		categoryButtons.forEach(categoryButton -> categoryButton.addChildren(children));
 	}
@@ -133,25 +134,25 @@ public class Panel {
 
 		// panel
 		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, 0xFF181818);
-		Render2D.fillGradient(this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
+		Render2D.verticalGradient(matrices, this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
 
 		// category panel
 		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
-		IFont.legacy13.drawString("v" + InfMain.getVersion(), x + 2, y + height - 12, 0xFF464746);
+		IFont.legacy13.drawString(matrices, "v" + InfMain.getVersion(), x + 2, y + height - 12, 0xFF464746);
 
 		// header
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, width - 92, 1, 0xFF1F1F1F);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, 0.5, 28, 0xFF4A4F65);
-		Render2D.fillGradient(this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
+		Render2D.verticalGradient(matrices, this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
 
 		// profile info
 		String profileName = InfMain.getUser().getName();
 		if (profileName.length() > 18)
 			profileName = profileName.substring(0, 18) + "...";
 
-		IFont.legacy16.drawString(profileName, x + 119, y + 5, -1);
-		IFont.legacy14.drawString("License: " + ColorUtils.getUserRoleColor() + InfMain.getUser().getRole().name(),
+		IFont.legacy16.drawString(matrices, profileName, x + 119, y + 5, -1);
+		IFont.legacy14.drawString(matrices, "License: " + ColorUtils.getUserRoleColor() + InfMain.getUser().getRole().name(),
 				x + 119, y + 17, -1);
 		RenderUtil.drawImage(matrices, x + 95, y + 5, 20, 20,
 				InfMain.getDirection() + File.separator + "profile" + File.separator + "photo.png");
@@ -167,27 +168,27 @@ public class Panel {
 				: Math.max(1, _lhover - 0.03);
 
 		// logo
-		Render2D.fillGradient(x + 1, y + 1, x + 1 + 90, y + 1 + 62, 0xFF0B0D1B, 0xFF161621);
+		Render2D.verticalGradient(matrices, x + 1, y + 1, x + 1 + 90, y + 1 + 62, 0xFF0B0D1B, 0xFF161621);
 
-		double lx = (x + 26) + 39 / 2;
-		double ly = (y + 6) + 39 / 2;
+		double lx = (x + 26) + (39 / 2);
+		double ly = (y + 6) + (39 / 2);
 
-		GL11.glPushMatrix();
+		matrices.push();
 
-		GlStateManager.enableBlend();
-		GL11.glTranslated(lx, ly, 0);
-		GL11.glScaled(_lhover, _lhover, 1);
-		GL11.glRotated(_lanim, 0, 0, 1);
-		GL11.glTranslated(-lx, -ly, 0);
+		GlStateManager._enableBlend();
+		matrices.translate(lx, ly, 0);
+		matrices.scale((float) _lhover, (float) _lhover, 1f);
+		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) _lanim));
+		matrices.translate(-lx, -ly, 0);
 
 		RenderUtil.drawTexture(matrices,
 				new Identifier("infinity", _lhover > 1 ? "textures/game/logoblur.png" : "textures/game/logoneon.png"),
 				x + 26, y + 6, 39, 39);
 
-		GlStateManager.disableBlend();
-		GL11.glPopMatrix();
+		GlStateManager._disableBlend();
+		matrices.pop();
 
-		IFont.legacy20.drawString(InfMain.getName().toUpperCase(), x + 22, y + 48, -1);
+		IFont.legacy20.drawString(matrices, InfMain.getName().toUpperCase(), x + 22, y + 48, -1);
 		Render2D.drawRectWH(matrices, x + 6, y + 64.5, 80, 0.5, 0xFF4A4F65);
 
 		searchField.setX((int) (x + width - 115));
@@ -252,7 +253,6 @@ public class Panel {
 			this.prevX = this.x - mouseX;
 			this.prevY = this.y - mouseY;
 		}
-
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {

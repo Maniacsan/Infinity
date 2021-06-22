@@ -54,7 +54,7 @@ public class AntiAim extends Module {
 			} else if (pitchMode.getCurrentMode().equalsIgnoreCase("Up")) {
 				pitch = -90f;
 			} else if (pitchMode.getCurrentMode().equalsIgnoreCase("None")) {
-				pitch = Helper.getPlayer().pitch;
+				pitch = Helper.getPlayer().getPitch();
 			} else if (pitchMode.getCurrentMode().equalsIgnoreCase("Random")) {
 				pitch = (float) MathAssist.random(-90, 90);
 			}

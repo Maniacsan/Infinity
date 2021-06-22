@@ -19,7 +19,6 @@ public class ModuleManager {
 
 	private static List<Module> list = Arrays.asList(
 			// hidden
-			new DiscordRPCMod(),
 			new AntiFabric(),
 
 			new KillAura(),
@@ -87,7 +86,8 @@ public class ModuleManager {
 			new NoSwim(),
 			new SelfDestruct(),
 			new NoHurtCam(),
-			new NoServerRotation()
+			new NoServerRotation(),
+			new NoFall()
 			);
 
 	public List<Module> getList() {

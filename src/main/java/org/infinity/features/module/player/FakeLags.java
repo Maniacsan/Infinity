@@ -40,7 +40,7 @@ public class FakeLags extends Module {
 	private double pulseTicks;
 
 	// always
-	private PlayerMoveC2SPacket.Both bothPacket;
+	private PlayerMoveC2SPacket.Full bothPacket;
 	private double sendTimer;
 	private boolean sendPackets;
 	private double ticks;
@@ -126,7 +126,7 @@ public class FakeLags extends Module {
 				}
 
 			} else if (mode.getCurrentMode().equalsIgnoreCase("Always")) {
-				if (event.getPacket() instanceof PlayerMoveC2SPacket.Both) {
+				if (event.getPacket() instanceof PlayerMoveC2SPacket.Full) {
 
 					if (ticks > 0)
 						return;
@@ -157,7 +157,7 @@ public class FakeLags extends Module {
 		if (!sendPackets) {
 			sendPackets = true;
 			sendTimer = this.delay.getCurrentValueDouble();
-			bothPacket = (PlayerMoveC2SPacket.Both) event.getPacket();
+			bothPacket = (PlayerMoveC2SPacket.Full) event.getPacket();
 
 			event.cancel();
 		}

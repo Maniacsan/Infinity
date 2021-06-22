@@ -11,9 +11,6 @@ import org.infinity.utils.Helper;
 import com.darkmagician6.eventapi.EventTarget;
 
 import me.protect.utils.PHelper;
-import net.arikia.dev.drpc.DiscordEventHandlers;
-import net.arikia.dev.drpc.DiscordRPC;
-import net.arikia.dev.drpc.DiscordRichPresence;
 
 @ModuleInfo(category = Category.MISC, desc = "", key = -2, name = "DiscordRPC", visible = false)
 public class DiscordRPCMod extends Module {
@@ -23,16 +20,10 @@ public class DiscordRPCMod extends Module {
 	@Override
 	public void onEnable() {
 		ticks = 0;
-		DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().setReadyEventHandler((user) -> {
-			System.out.println("Welcome " + user.username + "#" + user.discriminator);
-		}).build();
-		DiscordRPC.discordInitialize("827576969478537226", handlers, true);
 	}
 
 	@Override
-	public void onDisable() {
-		DiscordRPC.discordShutdown();
-	}
+	public void onDisable() { }
 
 	@EventTarget
 	public void onTick(TickEvent event) {
@@ -55,15 +46,10 @@ public class DiscordRPCMod extends Module {
 
 			String detail = "Features " + InfMain.getModuleManager().getEnableModules().size() + "/"
 					+ InfMain.getModuleManager().getList().size();
-
-			DiscordRichPresence rich = new DiscordRichPresence.Builder(detail)
-					.setBigImage("rpclogo", InfMain.getName() + " - v" + InfMain.getVersion()).setDetails(gameStatus)
-					.setSmallImage("infinity", InfMain.getUser().getName()).setStartTimestamps(start).build();
-			DiscordRPC.discordUpdatePresence(rich);
 		}
 
 		if (ticks % 200 == 0) {
-			DiscordRPC.discordRunCallbacks();
+
 		}
 
 		ticks++;

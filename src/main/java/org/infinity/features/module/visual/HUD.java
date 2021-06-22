@@ -15,7 +15,6 @@ import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -39,10 +38,10 @@ public class HUD extends Module {
 
 		double scale = getScale();
 
-		GL11.glPushMatrix();
-		GL11.glTranslated(width, 0, 0);
-		GL11.glScaled(scale, scale, scale);
-		GL11.glTranslated(-width, 0, 0);
+		matrices.push();
+		matrices.translate(width, 0, 0);
+		matrices.scale((float) scale, (float) scale, (float) scale);
+		matrices.translate(-width, 0, 0);
 
 		if (array.isToggle()) {
 
@@ -50,8 +49,8 @@ public class HUD extends Module {
 
 			InfMain.getModuleManager().getList().forEach(module -> {
 				if (module.isEnabled() && module.isVisible())
-					arrayList.add(module.getName() + " " + Formatting.WHITE
-							+ StringUtil.replaceNull(module.getSuffix()));
+					arrayList.add(
+							module.getName() + " " + Formatting.WHITE + StringUtil.replaceNull(module.getSuffix()));
 			});
 
 			arrayList.sort((a, b) -> Integer.compare(IFont.legacy15.getWidthIgnoreChar(b),
@@ -64,21 +63,20 @@ public class HUD extends Module {
 			for (String module : arrayList) {
 				float widthOffset = width - IFont.legacy15.getWidthIgnoreChar(module) + 6;
 
-				Render2D.drawRectWH(matrices, widthOffset, yOffset, width,
-						9, new Color(0, 0, 0, 150).getRGB());
-				IFont.legacy15.drawString(module, widthOffset, yOffset, rainbow(count[0] * 160));
+				Render2D.drawRectWH(matrices, widthOffset, yOffset, width, 9, new Color(0, 0, 0, 150).getRGB());
+				IFont.legacy15.drawString(matrices, module, widthOffset, yOffset, rainbow(count[0] * 160));
 
 				yOffset += 9;
 				count[0]++;
 			}
 		}
-		GL11.glPopMatrix();
+		matrices.pop();
 
-		GL11.glPushMatrix();
+		matrices.push();
 
-		GL11.glTranslated(width, height, 0);
-		GL11.glScaled(scale, scale, scale);
-		GL11.glTranslated(-width, -height, 0);
+		matrices.translate(width, height, 0);
+		matrices.scale((float) scale, (float) scale, (float) scale);
+		matrices.translate(-width, -height, 0);
 
 		if (coordinates.isToggle()) {
 			double x = Helper.getPlayer().getX();
@@ -97,7 +95,7 @@ public class HUD extends Module {
 							: this.scale.getCurrentMode().equalsIgnoreCase("40%") ? 29 : 23;
 			double y2 = Helper.minecraftClient.currentScreen instanceof ChatScreen ? upY : 11;
 
-			IFont.legacy17.drawStringWithShadow(coords, rWidth + 44, height - y2, 0xFFFFFFFF);
+			IFont.legacy17.drawStringWithShadow(matrices, coords, rWidth + 44, height - y2, 0xFFFFFFFF);
 		}
 
 		if (netherCoords.isToggle()) {
@@ -120,10 +118,10 @@ public class HUD extends Module {
 					: Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? upY
 							: coordinates.isToggle() ? 22 : 11;
 
-			IFont.legacy17.drawStringWithShadow(nCoords, rWidth + 43, height - y1, 0xFFFFFFFF);
+			IFont.legacy17.drawStringWithShadow(matrices, nCoords, rWidth + 43, height - y1, 0xFFFFFFFF);
 		}
 
-		GL11.glPopMatrix();
+		matrices.pop();
 	}
 
 	public double getScale() {

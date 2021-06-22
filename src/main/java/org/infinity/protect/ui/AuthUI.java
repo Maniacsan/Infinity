@@ -6,7 +6,7 @@ import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.AuthInfo;
 import org.infinity.main.InfMain;
-import org.infinity.mixin.IAbstractButtonWidget;
+import org.infinity.mixin.IClickableWidget;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
 import org.infinity.ui.util.font.IFont;
@@ -48,7 +48,7 @@ public class AuthUI extends Screen {
 			usernameField.setText(usernameData);
 
 		this.usernameField.setMaxLength(40);
-		this.children.add(usernameField);
+		this.addSelectableChild(usernameField);
 		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 26, 160,
 				22, new TranslatableText("Password"), new Identifier("infinity", "textures/icons/auth/password.png"),
 				true);
@@ -56,9 +56,9 @@ public class AuthUI extends Screen {
 			passwordField.setText(passwordData);
 
 		this.passwordField.setMaxLength(128);
-		this.children.add(passwordField);
+		this.addSelectableChild(passwordField);
 
-		this.loginButton = (CustomButtonWidget) this.addButton(new CustomButtonWidget(this.width / 2 - 50,
+		this.loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 50,
 				this.height / 2 + 15, 100, 20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!usernameField.getText().isEmpty()) {
 						login();
@@ -87,7 +87,7 @@ public class AuthUI extends Screen {
 		loginButton.active = !usernameField.getText().isEmpty() && !passwordField.getText().isEmpty();
 
 		if (usernameField.isFocused())
-			((IAbstractButtonWidget) passwordField).setCustomFocused(false);
+			((IClickableWidget) passwordField).setCustomFocused(false);
 
 		if (errorTime > 0) {
 			errorTime--;
@@ -123,16 +123,16 @@ public class AuthUI extends Screen {
 			Render2D.drawRectWH(matrices, this.width / 2 - 51, this.height / 2 - 126, 102, 30, -1);
 			Render2D.drawRectWH(matrices, this.width / 2 - 50, this.height / 2 - 125, 100, 28,
 					new Color(181, 59, 86).getRGB());
-			IFont.legacy16.drawCenteredString("Login failed", this.width / 2, this.height / 2 - 115, -1);
+			IFont.legacy16.drawCenteredString(matrices, "Login failed", this.width / 2, this.height / 2 - 115, -1);
 		}
 
-		IFont.legacy15.drawString("Register", this.width / 2 + 86, this.height / 2 - 128,
+		IFont.legacy15.drawString(matrices, "Register", this.width / 2 + 86, this.height / 2 - 128,
 				hovered ? 0xFFEDFAF9 : 0xFF6B6A6A);
 
 		Render2D.drawRectWH(matrices, width / 2 + 101, height / 2 - 146, 18.5, 13.5,
 				exitHover ? 0xFFF86155 : 0xFFFFFFFF);
 
-		IFont.legacy18.drawString("x", this.width / 2 + 107, this.height / 2 - 145,
+		IFont.legacy18.drawString(matrices, "x", this.width / 2 + 107, this.height / 2 - 145,
 				exitHover ? 0xFFFFFFFF : 0xFF000000);
 
 		super.render(matrices, mouseX, mouseY, delta);

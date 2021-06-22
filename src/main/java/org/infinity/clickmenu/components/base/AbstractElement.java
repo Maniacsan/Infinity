@@ -39,6 +39,9 @@ public abstract class AbstractElement {
 	public void init() {
 	}
 
+	public void charTyped(char chr, int keyCode) {
+	}
+
 	public Setting getSetting() {
 		return setting;
 	}

@@ -44,7 +44,7 @@ public class AutoPotion extends Module {
 
 	@Override
 	public void onDisable() {
-		Helper.sendPacket(new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, Helper.getPlayer().pitch,
+		Helper.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch(),
 				Helper.getPlayer().isOnGround()));
 	}
 
@@ -80,11 +80,11 @@ public class AutoPotion extends Module {
 	}
 
 	private synchronized void baff(int slot) {
-		int preSlot = Helper.getPlayer().inventory.selectedSlot;
+		int preSlot = Helper.getPlayer().getInventory().selectedSlot;
 		Helper.sendPacket(
-				new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, 90, Helper.getPlayer().isOnGround()));
+				new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), 90, Helper.getPlayer().isOnGround()));
 
-			Helper.getPlayer().inventory.selectedSlot = slot;
+			Helper.getPlayer().getInventory().selectedSlot = slot;
 			Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
 					Hand.MAIN_HAND);
 
@@ -92,8 +92,8 @@ public class AutoPotion extends Module {
 			timer = (int) delay.getCurrentValueDouble();
 
 		// reset
-		Helper.getPlayer().inventory.selectedSlot = preSlot;
-		Helper.sendPacket(new PlayerMoveC2SPacket.LookOnly(Helper.getPlayer().yaw, Helper.getPlayer().pitch,
+		Helper.getPlayer().getInventory().selectedSlot = preSlot;
+		Helper.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch(),
 				Helper.getPlayer().isOnGround()));
 	}
 

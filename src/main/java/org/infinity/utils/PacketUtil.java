@@ -6,8 +6,13 @@ import org.infinity.mixin.IPlayerPositionLookS2CPacket;
 
 import com.darkmagician6.eventapi.types.EventType;
 
+import io.netty.buffer.Unpooled;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.KeepAliveC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.s2c.play.KeepAliveS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -43,8 +48,8 @@ public class PacketUtil {
 		if (event.getType().equals(EventType.RECIEVE)) {
 			if (event.getPacket() instanceof PlayerPositionLookS2CPacket) {
 				PlayerPositionLookS2CPacket serverLook = (PlayerPositionLookS2CPacket) event.getPacket();
-				((IPlayerPositionLookS2CPacket) serverLook).setYaw(Helper.getPlayer().yaw);
-				((IPlayerPositionLookS2CPacket) serverLook).setPitch(Helper.getPlayer().pitch);
+				((IPlayerPositionLookS2CPacket) serverLook).setYaw(Helper.getPlayer().getYaw());
+				((IPlayerPositionLookS2CPacket) serverLook).setPitch(Helper.getPlayer().getPitch());
 			}
 		}
 	}
@@ -92,19 +97,6 @@ public class PacketUtil {
 		}
 	}
 
-	public static void fixSensitive(PacketEvent event) {
-		if (event.getType().equals(EventType.SEND)) {
-			if (event.getPacket() instanceof PlayerMoveC2SPacket.LookOnly) {
-				PlayerMoveC2SPacket.LookOnly cp = (PlayerMoveC2SPacket.LookOnly) event.getPacket();
-				double sens = Helper.minecraftClient.options.mouseSensitivity / 0.005;
-				double m = 0.005 * sens;
-				double gcd = m * m * m * 1.2;
-				((IPlayerMoveC2SPacket) cp).setYaw((float) (cp.getYaw(0) - cp.getYaw(0) % gcd));
-				((IPlayerMoveC2SPacket) cp).setPitch((float) (cp.getPitch(0) - cp.getPitch(0) % gcd));
-			}
-		}
-	}
-
 	public static void cancelMotionPackets(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
 			if (event.getPacket() instanceof PlayerMoveC2SPacket) {
@@ -135,6 +127,27 @@ public class PacketUtil {
 				event.cancel();
 			}
 		}
+	}
+	
+	public static Entity getEntity(PlayerInteractEntityC2SPacket packet) {
+		PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
+		packet.write(packetBuf);
+
+		return Helper.getWorld().getEntityById(packetBuf.readVarInt());
+	}
+	
+	public static InteractType getInteractType(PlayerInteractEntityC2SPacket packet) {
+		PacketByteBuf packetBuf = new PacketByteBuf(Unpooled.buffer());
+		packet.write(packetBuf	);
+
+		packetBuf.readVarInt();
+		return packetBuf.readEnumConstant(InteractType.class);
+	}
+
+	public static enum InteractType {
+		INTERACT,
+		ATTACK,
+		INTERACT_AT
 	}
 
 }

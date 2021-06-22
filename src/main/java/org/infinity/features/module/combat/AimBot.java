@@ -61,8 +61,8 @@ public class AimBot extends Module {
 		if (onMoving.isToggle() && !MoveUtil.isMoving())
 			return;
 
-		event.setRotation(RotationUtil.limitAngleChange(Helper.getPlayer().yaw, look[0], speed),
-				RotationUtil.limitAngleChange(Helper.getPlayer().pitch, look[1], speed), true);
+		event.setRotation(RotationUtil.limitAngleChange(event.getYaw(), look[0], speed),
+				RotationUtil.limitAngleChange(event.getPitch(), look[1], speed), true);
 
 	}
 

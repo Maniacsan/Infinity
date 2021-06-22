@@ -11,8 +11,8 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.screen.slot.SlotActionType;
 
@@ -21,7 +21,7 @@ public class InvUtil {
 	public static int findItem(Item item, int index, int slots) {
 		int find = -2;
 		for (int i = index; i <= slots; i++)
-			if (Helper.getPlayer().inventory.getStack(i).getItem() == item)
+			if (Helper.getPlayer().getInventory().getStack(i).getItem() == item)
 				find = i;
 		return find;
 	}
@@ -44,7 +44,7 @@ public class InvUtil {
 	// Find item only internal inv potion , no hotbar
 	public static int findPotionInternalInv(StatusEffect effect, boolean splash) {
 		for (int i = 9; i <= 44; i++) {
-			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+			ItemStack stack = Helper.getPlayer().getInventory().getStack(i);
 			if (stack.getItem() == Items.SPLASH_POTION && !splash)
 				continue;
 			if (hasEffect(stack, effect))
@@ -57,7 +57,7 @@ public class InvUtil {
 	// Find item from hotbar potion
 	public static int findPotionHotbar(StatusEffect effect, boolean splash) {
 		for (int i = 0; i < 9; i++) {
-			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+			ItemStack stack = Helper.getPlayer().getInventory().getStack(i);
 			if (stack.getItem() == Items.SPLASH_POTION && !splash)
 				continue;
 			if (hasEffect(stack, effect))
@@ -69,13 +69,13 @@ public class InvUtil {
 	public static int findAxe() {
 		int find = -2;
 		for (int i = 0; i <= 8; i++)
-			if (Helper.getPlayer().inventory.getStack(i).getItem() instanceof AxeItem)
+			if (Helper.getPlayer().getInventory().getStack(i).getItem() instanceof AxeItem)
 				find = i;
 		return find;
 	}
 
 	public static boolean checkArmorEmpty(EquipmentSlot slot) {
-		return Helper.getPlayer().inventory.getArmorStack(slot.getEntitySlotId()).isEmpty();
+		return Helper.getPlayer().getInventory().getArmorStack(slot.getEntitySlotId()).isEmpty();
 	}
 
 	public static boolean hasEffect(ItemStack stack, StatusEffect effect) {
@@ -111,14 +111,14 @@ public class InvUtil {
 
 	public static List<ItemStack> getContainerItems(ItemStack item) {
 		List<ItemStack> items = new ArrayList<>(Collections.nCopies(27, new ItemStack(Items.AIR)));
-		CompoundTag nbt = item.getTag();
+		NbtCompound nbt = item.getTag();
 
 		if (nbt != null && nbt.contains("BlockEntityTag")) {
-			CompoundTag nbt2 = nbt.getCompound("BlockEntityTag");
+			NbtCompound nbt2 = nbt.getCompound("BlockEntityTag");
 			if (nbt2.contains("Items")) {
-				ListTag nbt3 = (ListTag) nbt2.get("Items");
+				NbtList nbt3 = (NbtList) nbt2.get("Items");
 				for (int i = 0; i < nbt3.size(); i++) {
-					items.set(nbt3.getCompound(i).getByte("Slot"), ItemStack.fromTag(nbt3.getCompound(i)));
+					items.set(nbt3.getCompound(i).getByte("Slot"), ItemStack.fromNbt(nbt3.getCompound(i)));
 				}
 			}
 		}

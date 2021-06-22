@@ -18,7 +18,7 @@ import org.infinity.utils.block.BlockUtil;
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
 
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.util.math.BlockPos;
 
 @ModuleInfo(category = Category.MOVEMENT, desc = "Lets you walk on water", key = -2, name = "Jesus", visible = true)
@@ -74,19 +74,19 @@ public class Jesus extends Module {
 			if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
 				if (Helper.getPlayer().age % 3 == 0) {
 					if (Helper.minecraftClient.options.keyForward.isPressed()) {
-						dir = Math.toRadians(Helper.getPlayer().yaw);
+						dir = Math.toRadians(Helper.getPlayer().getYaw());
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.7), 0.2, Math.cos(dir) * 0.7);
 
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.4), 0.2, Math.cos(dir) * 0.4);
 					}
 					if (Helper.minecraftClient.options.keyLeft.isPressed()) {
-						dir = Math.toRadians(Helper.getPlayer().yaw - 90);
+						dir = Math.toRadians(Helper.getPlayer().getYaw() - 90);
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.6), 0.2, Math.cos(dir) * 0.6);
 
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.3), 0.2, Math.cos(dir) * 0.3);
 					}
 					if (Helper.minecraftClient.options.keyRight.isPressed()) {
-						dir = Math.toRadians(Helper.getPlayer().yaw + 90);
+						dir = Math.toRadians(Helper.getPlayer().getYaw() + 90);
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.6), 0.2, Math.cos(dir) * 0.6);
 
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.3), 0.2, Math.cos(dir) * 0.3);
@@ -107,11 +107,10 @@ public class Jesus extends Module {
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
+		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+			return;
+		
 		if (event.getType().equals(EventType.PRE)) {
-
-			if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
-				return;
-
 			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
@@ -125,9 +124,6 @@ public class Jesus extends Module {
 				}
 			}
 		} else if (event.getType().equals(EventType.POST)) {
-			if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
-				return;
-
 			water = Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava();
 			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava()) {

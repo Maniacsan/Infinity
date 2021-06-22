@@ -71,7 +71,7 @@ public class Tracers extends Module {
 					return;
 
 				float[] toRot = RotationUtil.lookAtEntity(e);
-				float yaw = RotationUtil.getYaw(e) + Helper.getPlayer().yaw;
+				float yaw = RotationUtil.getYaw(e) + Helper.getPlayer().getYaw();
 
 				// normalize
 				yaw = (float) Math.toRadians(yaw);
@@ -81,7 +81,7 @@ public class Tracers extends Module {
 						animalsColor.getColor().getRGB());
 
 				Render2D.drawTriangle((width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
-						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().yaw), color);
+						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().getYaw()), color);
 			}
 		}
 	}
@@ -96,8 +96,8 @@ public class Tracers extends Module {
 				Vec3d pos = e.getPos();
 
 				Vec3d eyeVector = new Vec3d(0.0, 0.0, 75)
-						.rotateX((float) (-Math.toRadians(Helper.minecraftClient.cameraEntity.pitch)))
-						.rotateY((float) (-Math.toRadians(Helper.minecraftClient.cameraEntity.yaw)))
+						.rotateX((float) (-Math.toRadians(Helper.minecraftClient.cameraEntity.getPitch())))
+						.rotateY((float) (-Math.toRadians(Helper.minecraftClient.cameraEntity.getYaw())))
 						.add(Helper.minecraftClient.cameraEntity.getPos().add(0, Helper.minecraftClient.cameraEntity
 								.getEyeHeight(Helper.minecraftClient.cameraEntity.getPose()), 0));
 

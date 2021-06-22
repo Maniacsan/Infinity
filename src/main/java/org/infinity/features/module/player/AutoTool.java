@@ -42,9 +42,9 @@ public class AutoTool extends Module {
 
 					int slot = getBestSlot(p.getPos());
 
-					if (slot != Helper.getPlayer().inventory.selectedSlot) {
+					if (slot != Helper.getPlayer().getInventory().selectedSlot) {
 						if (slot < 9) {
-							Helper.getPlayer().inventory.selectedSlot = slot;
+							Helper.getPlayer().getInventory().selectedSlot = slot;
 							Helper.getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(slot));
 						}
 					}
@@ -63,8 +63,8 @@ public class AutoTool extends Module {
 			if (target instanceof PlayerEntity) {
 				if (((PlayerEntity) target).isBlocking()) {
 					if (slotAxe != -2) {
-						preSlot = Helper.getPlayer().inventory.selectedSlot;
-						Helper.getPlayer().inventory.selectedSlot = slotAxe;
+						preSlot = Helper.getPlayer().getInventory().selectedSlot;
+						Helper.getPlayer().getInventory().selectedSlot = slotAxe;
 
 						if (preSlot != -2) {
 							(new Thread() {
@@ -73,7 +73,7 @@ public class AutoTool extends Module {
 									try {
 										Thread.sleep(150);
 
-										Helper.getPlayer().inventory.selectedSlot = preSlot;
+										Helper.getPlayer().getInventory().selectedSlot = preSlot;
 									} catch (Exception e) {
 										e.printStackTrace();
 									}
@@ -94,18 +94,18 @@ public class AutoTool extends Module {
 	private int getBestSlot(BlockPos pos) {
 		BlockState state = Helper.getWorld().getBlockState(pos);
 
-		int bestSlot = Helper.getPlayer().inventory.selectedSlot;
+		int bestSlot = Helper.getPlayer().getInventory().selectedSlot;
 
 		if (state.isAir())
-			return Helper.getPlayer().inventory.selectedSlot;
+			return Helper.getPlayer().getInventory().selectedSlot;
 
-		float bestSpeed = getMiningSpeed(Helper.getPlayer().inventory.getStack(bestSlot), state);
+		float bestSpeed = getMiningSpeed(Helper.getPlayer().getInventory().getStack(bestSlot), state);
 
 		for (int slot = 0; slot < 36; slot++) {
-			if (slot == Helper.getPlayer().inventory.selectedSlot || slot == bestSlot)
+			if (slot == Helper.getPlayer().getInventory().selectedSlot || slot == bestSlot)
 				continue;
 
-			ItemStack stack = Helper.getPlayer().inventory.getStack(slot);
+			ItemStack stack = Helper.getPlayer().getInventory().getStack(slot);
 
 			float speed = getMiningSpeed(stack, state);
 			if (speed > bestSpeed) {

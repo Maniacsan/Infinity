@@ -7,7 +7,6 @@ import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,12 +27,12 @@ public class SelfDestructWindow extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		addButton(new CustomButtonWidget(this.width / 2 - 85, height / 2 + 10, 80, 20, new LiteralText("Yes"),
+		addDrawableChild(new CustomButtonWidget(this.width / 2 - 85, height / 2 + 10, 80, 20, new LiteralText("Yes"),
 				buttonWidget -> {
 					((SelfDestruct) InfMain.getModuleManager().getModuleByClass(SelfDestruct.class)).destruct();
 				}));
-		addButton(new CustomButtonWidget(this.width / 2 - 85 + 100, height / 2 + 10, 80, 20, new LiteralText("Cancel"),
-				buttonWidget -> {
+		addDrawableChild(new CustomButtonWidget(this.width / 2 - 85 + 100, height / 2 + 10, 80, 20,
+				new LiteralText("Cancel"), buttonWidget -> {
 					InfMain.getModuleManager().getModuleByClass(SelfDestruct.class).setEnabled(false);
 					onClose();
 				}));
@@ -52,7 +51,7 @@ public class SelfDestructWindow extends Screen {
 
 		Render2D.drawBorderedRect(matrices, (width / 2) - 100, height / 2 - 65, 210, 105, 1, 0xFF080629, 0xFF161621);
 
-		IFont.legacy16.drawCenteredString(
+		IFont.legacy16.drawCenteredString(matrices,
 				"Do you really want to " + Formatting.BLUE + "self-destruct" + Formatting.WHITE + "?", width / 2 + 10,
 				height / 2 - 45, -1);
 
@@ -63,15 +62,15 @@ public class SelfDestructWindow extends Screen {
 		double hw = (width / 2) + 99;
 		double hh = height / 2 - 56;
 
-		GL11.glPushMatrix();
-		GL11.glTranslated(hw, hh, 0);
-		GL11.glScaled(hover, hover, 1);
-		GL11.glTranslated(-hw, -hh, 0);
+		matrices.push();
+		matrices.translate(hw, hh, 0);
+		matrices.scale((float) hover, (float) hover, 1f);
+		matrices.translate(-hw, -hh, 0);
 
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/exit.png"), (width / 2) + 95,
 				height / 2 - 60, 8, 8);
 
-		GL11.glPopMatrix();
+		matrices.pop();
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 

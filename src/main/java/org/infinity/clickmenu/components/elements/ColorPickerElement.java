@@ -21,7 +21,7 @@ public class ColorPickerElement extends AbstractElement {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 
-		IFont.legacy15.drawString(setting.getName(), x + 24, y + 7, 0xFFFFFFFF);
+		IFont.legacy15.drawString(matrices, setting.getName(), x + 24, y + 7, 0xFFFFFFFF);
 		Render2D.drawBorderedRect(matrices, x + 3, y + 4, 16, 14, 1, 0xFF070337, setting.getColor().getRGB());
 	}
 

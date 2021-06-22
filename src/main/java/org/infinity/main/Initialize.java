@@ -11,7 +11,6 @@ import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
 import org.infinity.features.component.friends.Friend;
 import org.infinity.features.component.macro.MacroManager;
-import org.infinity.features.module.misc.DiscordRPCMod;
 import org.infinity.features.module.visual.HUD;
 import org.infinity.file.config.ConfigManager;
 import org.infinity.protect.HandlerManager;
@@ -58,7 +57,6 @@ public class Initialize {
 		friend = new Friend();;
 
 		moduleManager.getModuleByClass(HUD.class).enable();
-		moduleManager.getModuleByClass(DiscordRPCMod.class).enable();
 	}
 
 	public void shutDown() {

@@ -1,15 +1,14 @@
 package org.infinity.clickmenu;
 
-import java.util.List;
-
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.features.module.visual.GuiMod;
 import org.infinity.main.InfMain;
 import org.infinity.ui.IScreen;
 import org.infinity.utils.Helper;
-import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gui.Element;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.util.math.MatrixStack;
 
 /**
@@ -31,7 +30,6 @@ public class ClickMenu extends IScreen {
 		anim = 0.32;
 
 		panel.init();
-		panel.addChildren(children);
 
 		super.init();
 	}
@@ -47,23 +45,23 @@ public class ClickMenu extends IScreen {
 		mouseX /= scale;
 		mouseY /= scale;
 
-		GL11.glPushMatrix();
+		matrices.push();
 
 		if (anim > 0) {
-			GL11.glTranslated(panel.x + 200, panel.y + 145, 0);
-			GL11.glScaled(scale + anim, scale + anim, scale + anim);
-			GL11.glTranslated(-panel.x - 200, -panel.y - 145, 0);
+			matrices.translate(panel.x + 200, panel.y + 145, 0);
+			matrices.scale((float) (scale + anim), (float) (scale + anim), (float) (scale + anim));
+			matrices.translate(-panel.x - 200, -panel.y - 145, 0);
 		}
 
-		GL11.glPushMatrix();
+		matrices.push();
 
-		GL11.glScaled(scale, scale, scale);
+		matrices.scale(scale, scale, scale);
 
 		panel.render(matrices, mouseX, mouseY, delta);
 
-		GL11.glPopMatrix();
+		matrices.pop();
 
-		GL11.glPopMatrix();
+		matrices.pop();
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
@@ -127,11 +125,7 @@ public class ClickMenu extends IScreen {
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-	public List<Element> getChildren() {
-		return children;
-	}
-
-	public void startScissor(double x, double y, double width, double height) {
+	public void startScissor(MatrixStack matrices, double x, double y, double width, double height) {
 		float scale = (float) (((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale() + anim);
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
@@ -141,11 +135,9 @@ public class ClickMenu extends IScreen {
 		scaleWidth *= scale;
 		scaleHeight *= scale;
 
-		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-		GL11.glScissor((int) (x * scaleWidth),
+		RenderSystem.enableScissor((int) (x * scaleWidth),
 				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
 }

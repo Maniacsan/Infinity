@@ -93,7 +93,7 @@ public class RotationUtil {
 	}
 
 	public static boolean isInFOV(Entity player, Entity entity, double angle) {
-		double angleDiff = getAngle360(player.yaw, getLookNeeded(player, entity.getX(), entity.getY(), entity.getZ())[0]);
+		double angleDiff = getAngle360(player.getYaw(), getLookNeeded(player, entity.getX(), entity.getY(), entity.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
 	}
 
@@ -102,7 +102,7 @@ public class RotationUtil {
 	}
 
 	public static boolean isInFOVPos(BlockPos pos, double angle) {
-		double angleDiff = getAngle360(Helper.getPlayer().yaw, getLookNeeded(pos.getX(), pos.getY(), pos.getZ())[0]);
+		double angleDiff = getAngle360(Helper.getPlayer().getYaw(), getLookNeeded(pos.getX(), pos.getY(), pos.getZ())[0]);
 		return angleDiff > 0.0 && angleDiff < (angle *= 0.5) || -angle < angleDiff && angleDiff < 0.0;
 	}
 

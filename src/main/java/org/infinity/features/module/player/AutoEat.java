@@ -7,7 +7,7 @@ import org.infinity.features.Setting;
 import org.infinity.mixin.IKeyBinding;
 import org.infinity.utils.Helper;
 
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -23,11 +23,11 @@ public class AutoEat extends Module {
 
 	@Override
 	public void onPlayerTick() {
-		if (Helper.getPlayer().abilities.creativeMode)
+		if (Helper.getPlayer().getAbilities().creativeMode)
 			return;
 		if (eating && !Helper.getPlayer().isUsingItem()) {
 			if (lastSlot != -1) {
-				Helper.getPlayer().inventory.selectedSlot = lastSlot;
+				Helper.getPlayer().getInventory().selectedSlot = lastSlot;
 				lastSlot = -1;
 			}
 			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyUse).getBoundKey(), false);
@@ -53,8 +53,8 @@ public class AutoEat extends Module {
 				} else {
 
 					if (foodSlot != -2) {
-						lastSlot = Helper.getPlayer().inventory.selectedSlot;
-						Helper.getPlayer().inventory.selectedSlot = foodSlot;
+						lastSlot = Helper.getPlayer().getInventory().selectedSlot;
+						Helper.getPlayer().getInventory().selectedSlot = foodSlot;
 						if (Helper.getPlayer().getMainHandStack().getItem().getGroup() == ItemGroup.FOOD) {
 							eating = true;
 							use();
@@ -73,7 +73,7 @@ public class AutoEat extends Module {
 
 	private int findFood() {
 		for (int i = 0; i <= 8; i++) {
-			ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+			ItemStack stack = Helper.getPlayer().getInventory().getStack(i);
 			if (hasFood(stack))
 				return i;
 		}

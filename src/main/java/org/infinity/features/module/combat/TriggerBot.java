@@ -39,7 +39,7 @@ public class TriggerBot extends Module {
 	public void onPlayerTick() {
 		// update target
 		EntityUtil.updateTargetRaycast(Helper.minecraftClient.targetedEntity, range.getCurrentValueDouble(),
-				Helper.getPlayer().yaw, Helper.getPlayer().pitch);
+				Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch());
 
 		if (EntityUtil.isTarget(Helper.minecraftClient.targetedEntity, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle())) {
@@ -69,8 +69,8 @@ public class TriggerBot extends Module {
 			if (target instanceof PlayerEntity) {
 				if (((PlayerEntity) target).isBlocking()) {
 					if (slotAxe != -2) {
-						preSlot = Helper.getPlayer().inventory.selectedSlot;
-						Helper.getPlayer().inventory.selectedSlot = slotAxe;
+						preSlot = Helper.getPlayer().getInventory().selectedSlot;
+						Helper.getPlayer().getInventory().selectedSlot = slotAxe;
 
 						if (preSlot != -2) {
 							(new Thread() {
@@ -79,7 +79,7 @@ public class TriggerBot extends Module {
 									try {
 										Thread.sleep(150);
 
-										Helper.getPlayer().inventory.selectedSlot = preSlot;
+										Helper.getPlayer().getInventory().selectedSlot = preSlot;
 									} catch (Exception e) {
 										e.printStackTrace();
 									}

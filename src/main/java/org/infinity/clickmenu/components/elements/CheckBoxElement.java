@@ -20,12 +20,12 @@ public class CheckBoxElement extends AbstractElement {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 4);
 
-		IFont.legacy14.drawString(this.setting.getName(), x + 22, y + 6, -1);
+		IFont.legacy14.drawString(matrices, this.setting.getName(), x + 1, y + 6, setting.isToggle() ? 0xFFFFFFFF : 0xFFC4BFBF);
 
 		move = setting.isToggle() ? Math.min(10, move + 2) : Math.max(0, move - 2);
-		Render2D.drawAngleRect(matrices, x + 4, y + 6, 10, 8, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
+		Render2D.drawAngleRect(matrices, x + width - 9, y + 6, 10, 8, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
 
-		Render2D.drawCircle(x + 4 + move, y + 10, 5, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
+		Render2D.drawCircle(x + width - 9 + move, y + 10, 5, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
 	}
 
 	@Override

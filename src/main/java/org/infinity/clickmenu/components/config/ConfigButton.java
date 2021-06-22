@@ -34,7 +34,7 @@ public class ConfigButton {
 
 		Render2D.drawRectWH(matrices, x + width - 80, y + 6, 75, 20,
 				Render2D.isHovered(mouseX, mouseY, x + width - 85, y + 6, 75, 20) ? 0xFF55B9C8 : 0xFF41A5B4);
-		IFont.legacy15.drawString("Load", x + width - 50, y + 11, -1);
+		IFont.legacy15.drawString(matrices, "Load", x + width - 50, y + 11, -1);
 
 		double anim = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10)
 				? RenderUtil.animate(2, 0, 0.4)
@@ -58,9 +58,9 @@ public class ConfigButton {
 		if (author.length() > 18)
 			author = author.substring(0, 18) + "...";
 
-		IFont.legacy16.drawString(name, x + 4, y + 5, -1);
-		IFont.legacy13.drawString("Author: " + author, x + 5, y + 19, -1);
-		IFont.legacy13.drawString("Date: " + StringUtil.replaceNull(config.getDate()),
+		IFont.legacy16.drawString(matrices, name, x + 4, y + 5, -1);
+		IFont.legacy13.drawString(matrices, "Author: " + author, x + 5, y + 19, -1);
+		IFont.legacy13.drawString(matrices, "Date: " + StringUtil.replaceNull(config.getDate()),
 				x + IFont.legacy13.getStringWidth("Author: " + author) + 9, y + 19, -1);
 	}
 

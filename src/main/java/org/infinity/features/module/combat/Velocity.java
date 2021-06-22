@@ -40,7 +40,7 @@ public class Velocity extends Module {
 		if (event.getType().equals(EventType.RECIEVE)) {
 			if (event.getPacket() instanceof EntityVelocityUpdateS2CPacket) {
 				EntityVelocityUpdateS2CPacket ep = (EntityVelocityUpdateS2CPacket) event.getPacket();
-				if (ep.getId() == Helper.getPlayer().getEntityId()) {
+				if (ep.getId() == Helper.getPlayer().getId()) {
 					double velX = (ep.getVelocityX() / 8000d - Helper.getPlayer().getVelocity().x)
 							* horizontal.getCurrentValueDouble();
 					double velY = (ep.getVelocityY() / 8000d - Helper.getPlayer().getVelocity().y)
@@ -131,7 +131,7 @@ public class Velocity extends Module {
 			multiplier = 1.0D;
 		}
 
-		double collisionReduction = 1.0f - e.pushSpeedReduction;
+		double collisionReduction = 0.05000000074505806D;
 
 		x *= multiplier * 0.05 * collisionReduction;
 		z *= multiplier * 0.05 * collisionReduction;

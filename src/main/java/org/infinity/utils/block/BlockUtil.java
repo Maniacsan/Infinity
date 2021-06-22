@@ -27,6 +27,7 @@ import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.chunk.WorldChunk;
 
 public class BlockUtil {
 
@@ -38,9 +39,35 @@ public class BlockUtil {
 		return getState(pos).getBlock();
 	}
 
+	public static List<WorldChunk> getLoadedChunks() {
+		List<WorldChunk> chunks = new ArrayList<>();
+
+		int viewDist = Helper.minecraftClient.options.viewDistance;
+
+		for (int x = -viewDist; x <= viewDist; x++) {
+			for (int z = -viewDist; z <= viewDist; z++) {
+				WorldChunk chunk = Helper.getWorld().getChunkManager().getWorldChunk(
+						(int) Helper.getPlayer().getX() / 16 + x, (int) Helper.getPlayer().getZ() / 16 + z);
+
+				if (chunk != null) {
+					chunks.add(chunk);
+				}
+			}
+		}
+
+		return chunks;
+	}
+
+	public static List<BlockEntity> getBlockEntities() {
+		List<BlockEntity> list = new ArrayList<>();
+		getLoadedChunks().forEach(c -> list.addAll(c.getBlockEntities().values()));
+
+		return list;
+	}
+
 	public static List<BlockEntity> getRenderBlocks(boolean chest, boolean enderChest, boolean spawners,
 			boolean shulkers) {
-		return StreamSupport.stream(Helper.minecraftClient.world.blockEntities.spliterator(), false)
+		return StreamSupport.stream(getBlockEntities().spliterator(), false)
 				.filter(entity -> isBlockValid(entity, chest, enderChest, spawners, shulkers))
 				.collect(Collectors.toList());
 	}

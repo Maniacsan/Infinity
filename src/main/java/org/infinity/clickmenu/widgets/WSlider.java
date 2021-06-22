@@ -8,7 +8,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.screen.narration.NarrationPart;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
@@ -17,7 +19,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class WSlider extends AbstractButtonWidget {
+public class WSlider extends ClickableWidget {
 	protected double value;
 	private double min;
 	private double max;
@@ -38,16 +40,16 @@ public class WSlider extends AbstractButtonWidget {
 	}
 
 	protected void renderBg(MatrixStack matrices, MinecraftClient client, int mouseX, int mouseY) {
-
-		client.getTextureManager().bindTexture(WIDGETS_LOCATION);
-		RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int i = (this.isHovered() ? 2 : 1) * 20;
-		
+
 		this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)), this.y, 0, 46 + i, 4, 20);
 		this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, 196, 46 + i, 4,
 				20);
-		
-		FontUtils.drawStringWithShadow(matrices, String.valueOf(MathAssist.round(getValue(), 2)), x + 4 + (value * width - 8), y + 24, -1);
+
+		FontUtils.drawStringWithShadow(matrices, String.valueOf(MathAssist.round(getValue(), 2)),
+				x + 4 + (value * width - 8), y + 24, -1);
 	}
 
 	public void onClick(double mouseX, double mouseY) {
@@ -114,6 +116,18 @@ public class WSlider extends AbstractButtonWidget {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		builder.put(NarrationPart.TITLE, (Text) this.getNarrationMessage());
+		if (this.active) {
+			if (this.isFocused()) {
+				builder.put(NarrationPart.USAGE, (Text) (new TranslatableText("narration.slider.usage.focused")));
+			} else {
+				builder.put(NarrationPart.USAGE, (Text) (new TranslatableText("narration.slider.usage.hovered")));
+			}
+		}
 	}
 
 }

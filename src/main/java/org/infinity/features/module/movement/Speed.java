@@ -74,7 +74,7 @@ public class Speed extends Module {
 
 				Helper.getPlayer().velocityDirty = false;
 
-				Helper.getPlayer().abilities.allowFlying = false;
+				Helper.getPlayer().getAbilities().allowFlying = false;
 
 				MoveUtil.setHVelocity(0, 0);
 				MoveUtil.strafe(MoveUtil.calcMoveYaw(), 0.4);

@@ -5,13 +5,15 @@ import java.awt.Color;
 import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
@@ -27,7 +29,7 @@ public class Render2D {
 	}
 
 	public static void drawRect(MatrixStack matrices, int x1, int y1, int x2, int y2, int color) {
-		DrawableHelper.fill(matrices, x1, y1, x2, y2, color);
+		fill(matrices.peek().getModel(), x1, y1, x2, y2, color);
 	}
 
 	public static void drawRect(MatrixStack matrices, double x1, double y1, double x2, double y2, int color) {
@@ -35,7 +37,7 @@ public class Render2D {
 	}
 
 	public static void drawRectWH(MatrixStack matrices, int x, int y, int width, int height, int color) {
-		DrawableHelper.fill(matrices, x, y, x + width, y + height, color);
+		fill(matrices.peek().getModel(), x, y, x + width, y + height, color);
 	}
 
 	public static void drawRectWH(MatrixStack matrices, double x, double y, double width, double height, int color) {
@@ -47,115 +49,60 @@ public class Render2D {
 		float red = (color >> 16 & 0xFF) / 255.0F;
 		float green = (color >> 8 & 0xFF) / 255.0F;
 		float blue = (color & 0xFF) / 255.0F;
-		GL11.glColor4f(red, green, blue, alpha);
-		GL11.glLineWidth(lineWidth);
-		GL11.glEnable(2848);
-		GL11.glBegin(2);
-		for (int i = 0; i <= 360; i++)
-			GL11.glVertex2d(x + Math.sin(i * 3.141526D / 180.0D) * radius,
-					y + Math.cos(i * 3.141526D / 180.0D) * radius);
-		GL11.glEnd();
-		GL11.glDisable(2848);
+
 	}
 
-	public static void fillGradient(MatrixStack matrices, int xStart, int yStart, int xEnd, int yEnd, int colorStart,
-			int colorEnd) {
+	public static void verticalGradient(MatrixStack matrix, double x1, double y1, double x2, double y2, int color1,
+			int color2) {
+		float alpha1 = (color1 >> 24 & 255) / 255.0F;
+		float red1 = (color1 >> 16 & 255) / 255.0F;
+		float green1 = (color1 >> 8 & 255) / 255.0F;
+		float blue1 = (color1 & 255) / 255.0F;
+		float alpha2 = (color2 >> 24 & 255) / 255.0F;
+		float red2 = (color2 >> 16 & 255) / 255.0F;
+		float green2 = (color2 >> 8 & 255) / 255.0F;
+		float blue2 = (color2 & 255) / 255.0F;
 		RenderSystem.disableTexture();
 		RenderSystem.enableBlend();
-		RenderSystem.disableAlphaTest();
 		RenderSystem.defaultBlendFunc();
-		RenderSystem.shadeModel(7425);
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
-		fillGradient(matrices.peek().getModel(), bufferBuilder, xStart, yStart, xEnd, yEnd, 0, colorStart, colorEnd);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(x2, y1, 0).color(red1, green1, blue1, alpha1).next();
+		bufferBuilder.vertex(x1, y1, 0).color(red1, green1, blue1, alpha1).next();
+		bufferBuilder.vertex(x1, y2, 0).color(red2, green2, blue2, alpha2).next();
+		bufferBuilder.vertex(x2, y2, 0).color(red2, green2, blue2, alpha2).next();
 		tessellator.draw();
-		RenderSystem.shadeModel(7424);
 		RenderSystem.disableBlend();
-		RenderSystem.enableAlphaTest();
 		RenderSystem.enableTexture();
 	}
 
-	protected static void fillGradient(Matrix4f matrix, BufferBuilder bufferBuilder, int xStart, int yStart, int xEnd,
-			int yEnd, int z, int colorStart, int colorEnd) {
-		float f = (float) (colorStart >> 24 & 255) / 255.0F;
-		float g = (float) (colorStart >> 16 & 255) / 255.0F;
-		float h = (float) (colorStart >> 8 & 255) / 255.0F;
-		float i = (float) (colorStart & 255) / 255.0F;
-		float j = (float) (colorEnd >> 24 & 255) / 255.0F;
-		float k = (float) (colorEnd >> 16 & 255) / 255.0F;
-		float l = (float) (colorEnd >> 8 & 255) / 255.0F;
-		float m = (float) (colorEnd & 255) / 255.0F;
-		bufferBuilder.vertex(matrix, (float) xEnd, (float) yStart, (float) z).color(g, h, i, f).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yStart, (float) z).color(g, h, i, f).next();
-		bufferBuilder.vertex(matrix, (float) xStart, (float) yEnd, (float) z).color(k, l, m, j).next();
-		bufferBuilder.vertex(matrix, (float) xEnd, (float) yEnd, (float) z).color(k, l, m, j).next();
-	}
+	public static void horizontalGradient(MatrixStack matrix, double x1, double y1, double x2, double y2, int color1,
+			int color2) {
+		float alpha1 = (color1 >> 24 & 255) / 255.0F;
+		float red1 = (color1 >> 16 & 255) / 255.0F;
+		float green1 = (color1 >> 8 & 255) / 255.0F;
+		float blue1 = (color1 & 255) / 255.0F;
+		float alpha2 = (color2 >> 24 & 255) / 255.0F;
+		float red2 = (color2 >> 16 & 255) / 255.0F;
+		float green2 = (color2 >> 8 & 255) / 255.0F;
+		float blue2 = (color2 & 255) / 255.0F;
+		RenderSystem.disableTexture();
+		RenderSystem.enableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		Tessellator tessellator = Tessellator.getInstance();
+		BufferBuilder bufferBuilder = tessellator.getBuffer();
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+		bufferBuilder.vertex(x1, y1, 0).color(red1, green1, blue1, alpha1).next();
+		bufferBuilder.vertex(x1, y2, 0).color(red1, green1, blue1, alpha1).next();
+		bufferBuilder.vertex(x2, y2, 0).color(red2, green2, blue2, alpha2).next();
+		bufferBuilder.vertex(x2, y1, 0).color(red2, green2, blue2, alpha2).next();
+		tessellator.draw();
+		RenderSystem.disableBlend();
+		RenderSystem.enableTexture();
 
-	public static void fillGradient(double x, double y, double x2, double y2, int col1, int col2) {
-		float f = (float) (col1 >> 24 & 255) / 255.0F;
-		float f1 = (float) (col1 >> 16 & 255) / 255.0F;
-		float f2 = (float) (col1 >> 8 & 255) / 255.0F;
-		float f3 = (float) (col1 & 255) / 255.0F;
-		float f4 = (float) (col2 >> 24 & 255) / 255.0F;
-		float f5 = (float) (col2 >> 16 & 255) / 255.0F;
-		float f6 = (float) (col2 >> 8 & 255) / 255.0F;
-		float f7 = (float) (col2 & 255) / 255.0F;
-		glRenderStart();
-
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glPushMatrix();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glVertex2d(x2, y);
-		GL11.glVertex2d(x, y);
-		GL11.glColor4f(f5, f6, f7, f4);
-		GL11.glVertex2d(x, y2);
-		GL11.glVertex2d(x2, y2);
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		GL11.glColor4d(1.0D, 1.0D, 1.0D, 1.0D);
-		glRenderStop();
-	}
-
-	public static void fillSideGradient(double left, double top, double right, double bottom, int col1, int col2) {
-		float f = (float) (col1 >> 24 & 255) / 255.0F;
-		float f1 = (float) (col1 >> 16 & 255) / 255.0F;
-		float f2 = (float) (col1 >> 8 & 255) / 255.0F;
-		float f3 = (float) (col1 & 255) / 255.0F;
-		float f4 = (float) (col2 >> 24 & 255) / 255.0F;
-		float f5 = (float) (col2 >> 16 & 255) / 255.0F;
-		float f6 = (float) (col2 >> 8 & 255) / 255.0F;
-		float f7 = (float) (col2 & 255) / 255.0F;
-		glRenderStart();
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glShadeModel(GL11.GL_SMOOTH);
-		GL11.glPushMatrix();
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glVertex2d(left, top);
-		GL11.glVertex2d(left, bottom);
-		GL11.glColor4f(f5, f6, f7, f4);
-		GL11.glVertex2d(right, bottom);
-		GL11.glVertex2d(right, top);
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		GL11.glShadeModel(GL11.GL_FLAT);
-		glRenderStop();
 	}
 
 	public static void drawBorderedRect(MatrixStack matrices, double xPos, double yPos, double width, double height,
@@ -165,21 +112,7 @@ public class Render2D {
 		float f1 = (float) (lineColor >> 16 & 255) / 255.0F;
 		float f2 = (float) (lineColor >> 8 & 255) / 255.0F;
 		float f3 = (float) (lineColor & 255) / 255.0F;
-		glRenderStart();
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glLineWidth(lineWidth);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glBegin(GL11.GL_LINES);
-		GL11.glVertex2d(xPos, yPos);
-		GL11.glVertex2d(xPos + width, yPos);
-		GL11.glVertex2d(xPos + width, yPos);
-		GL11.glVertex2d(xPos + width, yPos + height);
-		GL11.glVertex2d(xPos + width, yPos + height);
-		GL11.glVertex2d(xPos, yPos + height);
-		GL11.glVertex2d(xPos, yPos + height);
-		GL11.glVertex2d(xPos, yPos);
-		GL11.glEnd();
-		glRenderStop();
+
 	}
 
 	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
@@ -207,17 +140,28 @@ public class Render2D {
 		float f1 = (float) (color >> 16 & 255) / 255.0F;
 		float f2 = (float) (color >> 8 & 255) / 255.0F;
 		float f3 = (float) (color & 255) / 255.0F;
-		glRenderStart();
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glBegin(GL11.GL_QUADS);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d(x + width, y);
-		GL11.glVertex2d(x + width, y + height);
-		GL11.glVertex2d(x, y + height);
-		GL11.glEnd();
-		glRenderStop();
-		drawCircle(x, y + height / 2, height / 2, color);
-		drawCircle(x + width, y + height / 2, height / 2, color);
+
+	}
+
+	public static void drawOutline(MatrixStack matrixStack, double x1, double x2, double y1, double y2, int color) {
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float f1 = (float) (color >> 16 & 255) / 255.0F;
+		float f2 = (float) (color >> 8 & 255) / 255.0F;
+		float f3 = (float) (color & 255) / 255.0F;
+
+		Matrix4f matrix = matrixStack.peek().getModel();
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+
+		RenderSystem.setShaderColor(f1, f2, f3, f);
+
+		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
+		bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0F).next();
+		bufferBuilder.vertex(matrix, (float) x1, (float) y2, 0F).next();
+		bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0F).next();
+		bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0F).next();
+		bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0F).next();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 
 	public static void drawBorderedCircle(float x, float y, float radius, int lineWidth, int outsideC, int insideC) {
@@ -230,46 +174,7 @@ public class Render2D {
 		float f1 = (float) (color >> 16 & 255) / 255.0F;
 		float f2 = (float) (color >> 8 & 255) / 255.0F;
 		float f3 = (float) (color & 255) / 255.0F;
-		boolean flag = GL11.glIsEnabled(GL11.GL_BLEND);
-		boolean flag1 = GL11.glIsEnabled(GL11.GL_LINE_SMOOTH);
-		boolean flag2 = GL11.glIsEnabled(GL11.GL_TEXTURE_2D);
 
-		if (!flag) {
-			GL11.glEnable(GL11.GL_BLEND);
-		}
-
-		if (!flag1) {
-			GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		}
-
-		if (flag2) {
-			GL11.glDisable(GL11.GL_TEXTURE_2D);
-		}
-
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glBegin(GL11.GL_POLYGON);
-
-		for (int i = 0; i <= 360; ++i) {
-			GL11.glVertex2d((double) x + Math.sin((double) i * Math.PI / 180.0D) * (double) radius,
-					(double) y + Math.cos((double) i * Math.PI / 180.0D) * (double) radius);
-		}
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-
-		if (flag2) {
-			GL11.glEnable(GL11.GL_TEXTURE_2D);
-		}
-
-		if (!flag1) {
-			GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		}
-
-		if (!flag) {
-			GL11.glDisable(GL11.GL_BLEND);
-		}
 	}
 
 	public static void fill(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int color) {
@@ -294,7 +199,8 @@ public class Render2D {
 		RenderSystem.enableBlend();
 		RenderSystem.disableTexture();
 		RenderSystem.defaultBlendFunc();
-		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR);
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		bufferBuilder.vertex(matrix4f, (float) x1, (float) y2, 0.0F).color(g, h, k, f).next();
 		bufferBuilder.vertex(matrix4f, (float) x2, (float) y2, 0.0F).color(g, h, k, f).next();
 		bufferBuilder.vertex(matrix4f, (float) x2, (float) y1, 0.0F).color(g, h, k, f).next();
@@ -310,22 +216,6 @@ public class Render2D {
 		float f1 = (color >> 16 & 0xFF) / 255.0F;
 		float f2 = (color >> 8 & 0xFF) / 255.0F;
 		float f3 = (color & 0xFF) / 255.0F;
-		GL11.glPushMatrix();
-		GL11.glColor4f(f1, f2, f3, f);
-		GL11.glEnable(3042);
-		GL11.glDisable(3553);
-		GL11.glEnable(2848);
-		GL11.glBlendFunc(770, 771);
-		GL11.glBegin(4);
-		GL11.glVertex2d(x, y);
-		GL11.glVertex2d((x - size), (y - size));
-		GL11.glVertex2d((x - size), (y + size));
-		GL11.glEnd();
-		GL11.glDisable(2848);
-		GL11.glEnable(3553);
-		GL11.glDisable(3042);
-		GL11.glRotatef(-180.0F, 0.0F, 0.0F, 1.0F);
-		GL11.glPopMatrix();
 	}
 
 	public static void setColor(Color color) {
@@ -364,65 +254,21 @@ public class Render2D {
 	}
 
 	public static void drawTriangle(int x, int y, int size, int rotation, int color) {
-		GL11.glTranslated(x, y, 0);
-		GL11.glRotatef(180 + rotation, 0F, 0F, 1.0F);
 
-		float alpha = (float) (color >> 24 & 255) / 255.0F;
-		float red = (float) (color >> 16 & 255) / 255.0F;
-		float green = (float) (color >> 8 & 255) / 255.0F;
-		float blue = (float) (color & 255) / 255.0F;
-
-		GL11.glColor4f(red, green, blue, alpha);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glLineWidth(1);
-		GL11.glBegin(GL11.GL_TRIANGLE_FAN);
-
-		GL11.glVertex2d(0, (1.0F * size));
-		GL11.glVertex2d((1 * size), -(1.0F * size));
-		GL11.glVertex2d(-(1 * size), -(1.0F * size));
-
-		GL11.glEnd();
-		GL11.glDisable(GL11.GL_LINE_SMOOTH);
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glRotatef(-180 - rotation, 0F, 0F, 1.0F);
-		GL11.glTranslated(-x, -y, 0);
 	}
 
-	public static void glRenderStart() {
-		GL11.glPushMatrix();
-		GL11.glPushAttrib(1048575);
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glDisable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-	}
-
-	public static void glRenderStop() {
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		GL11.glEnable(GL11.GL_CULL_FACE);
-		GL11.glDisable(GL11.GL_BLEND);
-		GL11.glPopAttrib();
-		GL11.glPopMatrix();
-	}
-
-	public static void startScissor(double x, double y, double width, double height) {
+	public static void startScissor(MatrixStack matrices, double x, double y, double width, double height) {
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
 				/ Helper.minecraftClient.getWindow().getScaledHeight();
 
-		GL11.glPushAttrib(GL11.GL_SCISSOR_BIT);
-		GL11.glScissor((int) (x * scaleWidth),
+		RenderSystem.enableScissor((int) (x * scaleWidth),
 				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
-		GL11.glEnable(GL11.GL_SCISSOR_TEST);
 	}
 
-	public static void stopScissor() {
-		GL11.glDisable(GL11.GL_SCISSOR_TEST);
-		GL11.glPopAttrib();
+	public static void stopScissor(MatrixStack matrices) {
+		RenderSystem.disableScissor();
 	}
 }

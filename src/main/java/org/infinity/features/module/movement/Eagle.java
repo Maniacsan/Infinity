@@ -22,7 +22,7 @@ public class Eagle extends Module {
 		BlockPos eaglePos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1,
 				Helper.getPlayer().getZ());
 		
-		if (Helper.getPlayer().abilities.flying)
+		if (Helper.getPlayer().getAbilities().flying)
 			return;
 
 		if (Helper.minecraftClient.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {

@@ -39,7 +39,7 @@
   "ChatHudMixin",
   "IExplosionS2CPacket",
   "GameMenuScreenMixin",
-  "IAbstractButtonWidget"
+  "IClickableWidget"
   ],
     "injectors": {
     "defaultRequire": 1

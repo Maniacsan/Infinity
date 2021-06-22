@@ -6,9 +6,9 @@ import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
 import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 
 public class SliderElement extends AbstractElement {
 
@@ -19,9 +19,7 @@ public class SliderElement extends AbstractElement {
 	public SliderElement(Setting setting) {
 		super(setting);
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
-		valueField = new WTextField(Helper.minecraftClient.textRenderer, (int) (x + width - 34), (int) (y + 7), 40, 14,
-				new TranslatableText("Value"), false);
-		valueField.setColor(0xFF0B1427);
+		valueField = new WTextField(0xFF0B1427, true);
 		valueField.setMaxLength(12);
 	}
 
@@ -34,7 +32,6 @@ public class SliderElement extends AbstractElement {
 	}
 
 	public void tick() {
-		valueField.tick();
 	}
 
 	public void setValue(int mouseX, double x, double width) {
@@ -42,15 +39,15 @@ public class SliderElement extends AbstractElement {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width - 45, height + 8);
+		this.hovered = Render2D.isHovered(mouseX, mouseY, x + 55, y, width - 75, height);
 
 		String sname = setting.getName();
 		String setstrg = String.valueOf(String.valueOf(sname.substring(0, 1).toUpperCase()))
 				+ sname.substring(1, sname.length());
 
-		valueField.setX((int) (x + width - 34));
-		valueField.setY((int) (y + 12));
-		valueField.setWidth((int) (40));
+		valueField.setX((int) (x + width - 15));
+		valueField.setY((int) (y + 4));
+		valueField.setWidth((int) (30));
 		valueField.setHeight(14);
 
 		valueField.render(matrices, mouseX, mouseY, delta);
@@ -59,16 +56,18 @@ public class SliderElement extends AbstractElement {
 			animation = 0;
 		else if (animation > 1)
 			animation = 1;
+		
+		float hover = (float) (hovered ? RenderUtil.animate(3, 4, 0.1) : 3);
 
-		IFont.legacy15.drawString(setstrg, x + 1, y + 5, -1);
-		Render2D.drawRectWH(matrices, x, y + 20, width - 45, 1, 0xFF0C1535);
-		Render2D.drawRectWH(matrices, x, y + 20, (width - 45) * this.animation, 1, 0xFF30639F);
+		IFont.legacy14.drawString(matrices, setstrg, x + 1, y + 6, -1);
+		Render2D.drawRectWH(matrices, x + 55, y + 10, width - 75, 1, 0xFF0C1535);
+		Render2D.drawRectWH(matrices, x + 55, y + 10, (width - 75) * this.animation, 1, 0xFF30639F);
 
-		Render2D.drawCircle((float) (x + (width - 45) * animation), (float) (y + 20), 3.5F, 0xFFCCD6C8);
+		Render2D.drawBorderedCircle((float) (x + 55 + (width - 75) * animation), (float) (y + 10), hover, 2, 0xFF5574E5, 0xFFCCD6C8);
 
 		if (!this.dragging)
 			return;
-		this.setValue(mouseX, x, width - 45);
+		this.setValue(mouseX, x + 55, width - 75);
 	}
 
 	@Override
@@ -76,11 +75,18 @@ public class SliderElement extends AbstractElement {
 		if (button == 0 && hovered) {
 			this.dragging = true;
 		}
+		valueField.mouseClicked(mouseX, mouseY, button);
 	}
 
 	@Override
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		this.dragging = false;
+	}
+	
+	@Override
+	public void charTyped(char chr, int keyCode) {
+		valueField.charTyped(chr, keyCode);
+		super.charTyped(chr, keyCode);
 	}
 
 	@Override
@@ -95,12 +101,12 @@ public class SliderElement extends AbstractElement {
 	@Override
 	public void onClose() {
 		this.dragging = false;
+		valueField.onClose();
 	}
 
 	@Override
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
-		// TODO Auto-generated method stub
-
+		valueField.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public WTextField getValueField() {

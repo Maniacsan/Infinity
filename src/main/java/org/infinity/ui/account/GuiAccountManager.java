@@ -39,11 +39,11 @@ public class GuiAccountManager extends Screen {
 	@Override
 	public void init() {
 		listGui = new ListGui(client, this, getListAccount());
-		this.addButton(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
 				new TranslatableText("Add"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiAddAccount(this));
 				}));
-		buttonDelete = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 50, this.height - 52, 100, 20,
+		buttonDelete = (ButtonWidget) this.addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height - 52, 100, 20,
 				new TranslatableText("Delete"), (buttonWidget) -> {
 					Account selectAccount = listGui.getSelectedAlt();
 					if (accountThread != null)
@@ -53,7 +53,7 @@ public class GuiAccountManager extends Screen {
 					refresh();
 				}));
 		// this.width / 2 + 4 + 50, this.height - 52, 100, 20,
-		buttonLogin = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 52, 100, 20,
+		buttonLogin = (ButtonWidget) this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 52, 100, 20,
 				new TranslatableText("Login"), (buttonWidget) -> {
 					Account acc = listGui.getSelectedAlt();
 					if (acc == null) {
@@ -64,23 +64,23 @@ public class GuiAccountManager extends Screen {
 					refresh();
 				}));
 
-		buttonEdit = (ButtonWidget) this.addButton(new ButtonWidget(this.width / 2 - 154, this.height - 28, 70, 20,
+		buttonEdit = (ButtonWidget) this.addDrawableChild(new ButtonWidget(this.width / 2 - 154, this.height - 28, 70, 20,
 				new TranslatableText("Edit"), (buttonWidget) -> {
 					Account selectAccount = listGui.getSelectedAlt();
 					if (selectAccount != null)
 						Helper.minecraftClient.openScreen(new GuiEdit(this, selectAccount));
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
 				new TranslatableText("Direct"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(new GuiDirect(this));
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
 				new TranslatableText("Refresh"), (buttonWidget) -> {
 					refresh();
 				}));
-		this.addButton(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
 				new TranslatableText("Back"), (buttonWidget) -> {
 					Helper.minecraftClient.openScreen(prev);
 				}));

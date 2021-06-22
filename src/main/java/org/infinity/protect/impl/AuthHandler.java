@@ -30,10 +30,8 @@ public class AuthHandler extends Handler {
 			SuccessEvent successEvent = new SuccessEvent();
 			EventManager.call(successEvent);
 
-			if (ConnectUtil.checkUpdate()) {
-				if (ConnectUtil.checkJarSize())
 					Helper.openScreen(new TitleScreen(true));
-			}
+
 		}
 	}
 

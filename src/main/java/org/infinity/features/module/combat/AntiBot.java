@@ -10,6 +10,7 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
+import org.infinity.utils.PacketUtil;
 import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.rotation.RotationUtil;
 
@@ -43,10 +44,13 @@ public class AntiBot extends Module {
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
 
 	private List<Integer> bots = new ArrayList<>();
+	private List<Integer> matrixBots = new ArrayList<>();
 	private List<Integer> needHit = new ArrayList<>();
 
 	@Override
 	public void onDisable() {
+		matrixBots.clear();
+		needHit.clear();
 		bots.clear();
 	}
 
@@ -66,10 +70,10 @@ public class AntiBot extends Module {
 					if (mode.getCurrentMode().equalsIgnoreCase("Custom")) {
 						if (containsBot(bot)) {
 							message(bot.getName().getString());
+							bots.add(bot.getId());
 
 							if (remove.isToggle())
-								Helper.getWorld().removeEntity(bot.getEntityId());
-							bots.add(bot.getEntityId());
+								Helper.getWorld().removeEntity(bot.getId(), Entity.RemovalReason.DISCARDED);
 						}
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
 						boolean botContains = RotationUtil.isInFOV(bot, Helper.getPlayer(), 60)
@@ -83,8 +87,7 @@ public class AntiBot extends Module {
 								&& !bot.velocityDirty;
 
 						if (botContains && speedAnalysis) {
-							Helper.getWorld().removeEntity(bot.getEntityId());
-
+							matrixBots.add(bot.getId());
 							message(bot.getName().getString());
 						}
 					}
@@ -101,13 +104,14 @@ public class AntiBot extends Module {
 
 			if (event.getPacket() instanceof PlayerInteractEntityC2SPacket) {
 				PlayerInteractEntityC2SPacket pa = (PlayerInteractEntityC2SPacket) event.getPacket();
-				if (pa.getEntity(Helper.getWorld()).equals(Helper.getPlayer()))
+				if (PacketUtil.getEntity(pa).equals(Helper.getPlayer())
+						|| !(PacketUtil.getEntity(pa) instanceof PlayerEntity))
 					return;
 
-				if (!needHit.contains(pa.getEntity(Helper.getWorld()).getEntityId())) {
-					needHit.add(pa.getEntity(Helper.getWorld()).getEntityId());
+				if (!needHit.contains(PacketUtil.getEntity(pa).getId())) {
+					needHit.add(PacketUtil.getEntity(pa).getId());
 					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
-							+ pa.getEntity(Helper.getWorld()).getName().getString() + Formatting.GRAY
+							+ PacketUtil.getEntity(pa).getName().getString() + Formatting.GRAY
 							+ " added to targets");
 				}
 			}
@@ -118,27 +122,32 @@ public class AntiBot extends Module {
 		if (!isEnabled())
 			return false;
 
-		if (bots.contains(entity.getEntityId()))
+		if (bots.contains(entity.getId()))
 			return true;
+
+		if (matrixBots.contains(entity.getId()) && entity != null) {
+			Helper.getWorld().removeEntity(entity.getId(), Entity.RemovalReason.DISCARDED);
+			return true;
+		}
 
 		return false;
 	}
 
 	private boolean containsBot(PlayerEntity bot) {
-		if (invisible.isToggle() && bot.isInvisible() && !bots.contains(bot.getEntityId()))
+		if (invisible.isToggle() && bot.isInvisible() && !bots.contains(bot.getId()))
 			return true;
 
-		if (entityID.isToggle() && bot.getEntityId() >= 1000000000 && !bots.contains(bot.getEntityId()))
+		if (entityID.isToggle() && bot.getId() >= 1000000000 && !bots.contains(bot.getId()))
 			return true;
 
-		if (zeroHealth.isToggle() && bot.getHealth() <= 0 && !bots.contains(bot.getEntityId()))
+		if (zeroHealth.isToggle() && bot.getHealth() <= 0 && !bots.contains(bot.getId()))
 			return true;
 
 		return false;
 	}
 
 	public boolean isHitted(Entity entity) {
-		return needHit.contains(entity.getEntityId());
+		return needHit.contains(entity.getId());
 	}
 
 	private void message(String bot) {

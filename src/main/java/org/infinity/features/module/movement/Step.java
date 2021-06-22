@@ -111,10 +111,10 @@ public class Step extends Module {
 		} else if (mode.getCurrentMode().equalsIgnoreCase("NCP")) {
 			if (Helper.getPlayer().horizontalCollision) {
 				cancelSomePackets = true;
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
 						Helper.getPlayer().getY() + (.41999998688698 * (1 + Helper.getPlayer().stepHeight)),
 						Helper.getPlayer().getZ(), Helper.getPlayer().isOnGround()));
-				Helper.sendPacket(new PlayerMoveC2SPacket.PositionOnly(Helper.getPlayer().getX(),
+				Helper.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(Helper.getPlayer().getX(),
 						Helper.getPlayer().getY() + (.7531999805212 * (1 + Helper.getPlayer().stepHeight)),
 						Helper.getPlayer().getZ(), Helper.getPlayer().isOnGround()));
 			} else {
@@ -145,7 +145,7 @@ public class Step extends Module {
 
 				if (yDist > 0.5 && yDist < 1.05 && hDistSq < 1 && cancelStage == 0) {
 					Helper.sendPacket(
-							new PlayerMoveC2SPacket.PositionOnly(previousX, previousY + 0.42, previousZ, false));
+							new PlayerMoveC2SPacket.PositionAndOnGround(previousX, previousY + 0.42, previousZ, false));
 					offsetX = previousX - Helper.getPlayer().getX();
 					offsetY = 0.755 - yDist;
 					offsetZ = previousZ - Helper.getPlayer().getZ();

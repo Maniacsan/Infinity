@@ -22,10 +22,13 @@ import net.minecraft.client.gui.Drawable;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.MutableText;
@@ -38,7 +41,7 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
-public class WSearchField extends AbstractButtonWidget implements Drawable, Element {
+public class WSearchField extends ClickableWidget implements Drawable, Element {
 	private final TextRenderer textRenderer;
 	private String text;
 	private int maxLength;
@@ -82,7 +85,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 		this.textPredicate = Objects::nonNull;
 		this.obfText = obfText;
 		this.renderTextProvider = (string, integer) -> {
-			return OrderedText.styledString(string, Style.EMPTY);
+			return OrderedText.styledForwardsVisitedString(string, Style.EMPTY);
 		};
 		this.textRenderer = textRenderer;
 		if (copyFrom != null) {
@@ -161,8 +164,6 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 		if (this.changedListener != null) {
 			this.changedListener.accept(newText);
 		}
-
-		this.nextNarration = Util.getMeasuringTimeMs() + 500L;
 	}
 
 	private void erase(int offset) {
@@ -402,7 +403,8 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		position = (int) (panel.isOpenSearch() ? RenderUtil.animate(0, position, 0.4) : RenderUtil.animate(width - 6, position, 0.4));
+		position = (int) (panel.isOpenSearch() ? RenderUtil.animate(0, position, 0.4)
+				: RenderUtil.animate(width - 6, position, 0.4));
 		if (this.isVisible()) {
 			int j;
 
@@ -418,7 +420,7 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 				return;
 
 			if (!this.isFocused() && getText().isEmpty())
-				IFont.legacy15.drawString("search..", x + 6, y + 5, 0xFF979797);
+				IFont.legacy15.drawString(matrices, "search..", x + 6, y + 5, 0xFF979797);
 
 			if (position != 0)
 				return;
@@ -517,16 +519,18 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder bufferBuilder = tessellator.getBuffer();
-		RenderSystem.color4f(0.0F, 0.0F, 255.0F, 255.0F);
+		RenderSystem.setShader(GameRenderer::getPositionShader);
+		RenderSystem.setShaderColor(0.0F, 0.0F, 1.0F, 1.0F);
 		RenderSystem.disableTexture();
 		RenderSystem.enableColorLogicOp();
 		RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
-		bufferBuilder.begin(7, VertexFormats.POSITION);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
 		bufferBuilder.vertex((double) x1, (double) y2, 0.0D).next();
 		bufferBuilder.vertex((double) x2, (double) y2, 0.0D).next();
 		bufferBuilder.vertex((double) x2, (double) y1, 0.0D).next();
 		bufferBuilder.vertex((double) x1, (double) y1, 0.0D).next();
 		tessellator.draw();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.disableColorLogicOp();
 		RenderSystem.enableTexture();
 	}
@@ -660,5 +664,11 @@ public class WSearchField extends AbstractButtonWidget implements Drawable, Elem
 
 	public void setColor(int color) {
 		this.color = color;
+	}
+
+	@Override
+	public void appendNarrations(NarrationMessageBuilder builder) {
+		// TODO Auto-generated method stub
+
 	}
 }

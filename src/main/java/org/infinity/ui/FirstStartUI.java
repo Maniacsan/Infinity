@@ -1,8 +1,11 @@
 package org.infinity.ui;
 
+import java.awt.Color;
+
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.command.Command;
 import org.infinity.main.InfMain;
+import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;
@@ -22,8 +25,7 @@ public class FirstStartUI extends Screen {
 
 	@Override
 	public void init() {
-
-		addButton(new ButtonWidget(width - 100, height - 30, 70, 20, new TranslatableText("Continue"), (continueButton) -> {
+		addDrawableChild(new ButtonWidget(width - 100, height - 30, 70, 20, new TranslatableText("Continue"), (continueButton) -> {
 			Helper.getPlayer().closeScreen();
 			InfMain.firstStart = false;
 		}));
@@ -35,7 +37,7 @@ public class FirstStartUI extends Screen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		renderBackground(matrices);
 
-		FontUtils.drawHCenteredString(matrices, "Hi, you entered the " + Formatting.BLUE + "Infinity", width / 2, 35,
+		IFont.legacy18.drawCenteredString(matrices, "Hi, you entered the " + Formatting.BLUE + "Infinity", width / 2, 35,
 				-1);
 		FontUtils.drawHCenteredString(matrices,
 				"I will only leave here a short information that will be useful to you!", width / 2, 60, -1);

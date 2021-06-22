@@ -134,7 +134,7 @@ public class Scaffold extends Module {
 			// slot calculate
 			int blockSlot = -2;
 			for (int i = 0; i < 9; i++) {
-				ItemStack stack = Helper.getPlayer().inventory.getStack(i);
+				ItemStack stack = Helper.getPlayer().getInventory().getStack(i);
 				if (isBlock(stack.getItem())) {
 					blockSlot = i;
 				}
@@ -154,13 +154,13 @@ public class Scaffold extends Module {
 						return;
 					}
 
-					int selectedSlot = Helper.getPlayer().inventory.selectedSlot;
-					Helper.getPlayer().inventory.selectedSlot = blockSlot;
+					int selectedSlot = Helper.getPlayer().getInventory().selectedSlot;
+					Helper.getPlayer().getInventory().selectedSlot = blockSlot;
 
 					if (EntityUtil.placeBlock(Hand.MAIN_HAND, pos, airPlace.isToggle())) {
 						pos = null;
 						if (blockTake.getCurrentMode().equalsIgnoreCase("Switch"))
-							Helper.getPlayer().inventory.selectedSlot = selectedSlot;
+							Helper.getPlayer().getInventory().selectedSlot = selectedSlot;
 					}
 					timer.reset();
 				}

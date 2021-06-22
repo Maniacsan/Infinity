@@ -59,8 +59,8 @@ public class ClickAura extends Module {
 		float[] rotate = RotationUtil.lookAtEntity(target);
 
 		if (rotation.isToggle() && look.isToggle()) {
-			Helper.getPlayer().yaw = rotate[0];
-			Helper.getPlayer().pitch = rotate[1];
+			Helper.getPlayer().setYaw(rotate[0]);
+			Helper.getPlayer().setPitch(rotate[1]);
 		}
 		Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
 		EntityUtil.swing(true);
