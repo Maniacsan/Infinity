@@ -19,12 +19,15 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 
 public class TextureUtil extends HashMap<String, AbstractTexture> {
 
-	public void bindTexture(String resourceLocation) {
+	public void bindTexture(String resourceLocation, boolean localDirectory) {
 		if (!containsKey(resourceLocation)) {
 			BufferedImage bufferedImage;
 			AbstractTexture texture = null;
 			try {
-				bufferedImage = ImageIO.read(new File(resourceLocation));
+				if (localDirectory)
+					bufferedImage = ImageIO.read(TextureUtil.class.getResourceAsStream(resourceLocation));
+				else
+					bufferedImage = ImageIO.read(new File(resourceLocation));
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				ImageIO.write(bufferedImage, "png", baos);
@@ -41,7 +44,7 @@ public class TextureUtil extends HashMap<String, AbstractTexture> {
 			put(resourceLocation, texture);
 		}
 
-		RenderSystem.bindTexture(get(resourceLocation).getGlId());
+		RenderSystem.setShaderTexture(0, get(resourceLocation).getGlId());
 	}
 
 }

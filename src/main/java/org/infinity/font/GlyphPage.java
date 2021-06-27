@@ -1,4 +1,4 @@
-package org.infinity.ui.util.font;
+package org.infinity.font;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -156,7 +156,7 @@ public class GlyphPage {
 		GlStateManager._bindTexture(0);
 	}
 
-	public float drawChar(MatrixStack stack, char ch, float x, float y) {
+	public float drawChar(MatrixStack stack, char ch, float x, float y, int color) {
 		Glyph glyph = glyphCharacterMap.get(ch);
 
 		if (glyph == null)
@@ -172,6 +172,8 @@ public class GlyphPage {
 		float height = glyph.height;
 
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
 		bufferBuilder.vertex(stack.peek().getModel(), x, y + height, 0).texture(pageX, pageY + pageHeight).next();
@@ -181,14 +183,7 @@ public class GlyphPage {
 		bufferBuilder.vertex(stack.peek().getModel(), x, y, 0).texture(pageX, pageY).next();
 		bufferBuilder.end();
 
-		RenderSystem.enableBlend();
-		RenderSystem.enableTexture();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
 		BufferRenderer.draw(bufferBuilder);
-
-		RenderSystem.disableBlend();
-		RenderSystem.enableTexture();
 
 		return width - 8;
 	}

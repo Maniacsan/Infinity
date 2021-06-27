@@ -4,17 +4,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.file.config.Config;
+import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
@@ -26,13 +26,13 @@ public class ConfigPanel {
 	public ArrayList<ConfigButton> configList = new ArrayList<>();
 	public WTextField textField;
 	private String name;
-	private Panel panel;
 
 	// dont permission error
 	private int errorTime = -1;
 	private double toasterAnim;
 
 	private int offset;
+	public float fade;
 
 	// calc buttons height
 	private double _cbuttonHeight;
@@ -44,9 +44,8 @@ public class ConfigPanel {
 
 	private float refreshHover;
 
-	public ConfigPanel(String name, Panel panel) {
+	public ConfigPanel(String name) {
 		this.name = name;
-		this.panel = panel;
 	}
 
 	public void init() {
@@ -114,7 +113,7 @@ public class ConfigPanel {
 					"Buy " + Formatting.YELLOW + "Premium" + Formatting.RESET + " to unlock ", x + width / 2 - 55,
 					y + toasterAnim + 18, -1);
 		}
-		panel.clickMenu.startScissor(matrices, x, y + 43, width - 2, height - 80);
+		Render2D.startScissor(x, y + 43, width - 2, height - 80);
 
 		// scroll
 		if (_cbuttonHeight > this.height - 80) {
@@ -132,9 +131,10 @@ public class ConfigPanel {
 
 			yOffset += 35;
 
+			RenderSystem.setShaderColor(1f, 1f, 1f, fade);
 			configButton.render(matrices, mouseX, mouseY);
 		}
-		Render2D.stopScissor(matrices);
+		Render2D.stopScissor();
 	}
 
 	public void tick() {
@@ -210,6 +210,7 @@ public class ConfigPanel {
 
 	public void onClose() {
 		errorTime = 0;
+		fade = -0.3f;
 		textField.onClose();
 	}
 

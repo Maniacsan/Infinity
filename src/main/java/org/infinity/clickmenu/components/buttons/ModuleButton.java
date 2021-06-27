@@ -17,16 +17,17 @@ import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
 import org.infinity.features.Setting.Category;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
 
 public class ModuleButton {
 
@@ -51,6 +52,8 @@ public class ModuleButton {
 	private double height;
 
 	private double hoverAnim;
+
+	private float fadeAlpha;
 
 	public ModuleButton(Module module, ArrayList<ModuleButton> buttons, Panel panel) {
 		this.module = module;
@@ -112,6 +115,7 @@ public class ModuleButton {
 		this.scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 244, panel.y + 37, panel.width,
 				panel.height - 40);
 
+		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.1) : 0);
 		hoverAnim = hovered ? Math.min(2.7, hoverAnim + 0.18) : Math.max(1, hoverAnim - 0.15);
 
 		// shadow
@@ -123,6 +127,12 @@ public class ModuleButton {
 
 		// button rect
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width - 3, height - 3, 0xFF242C41);
+		
+		if (!module.getSettings().isEmpty()) {
+			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
+			RenderUtil.drawImage(matrices, true, x + width - 15, y + 3, 20, 20,
+					"/assets/infinity/textures/icons/dots.png", 0xFFD4D4D4);
+		}
 
 		if (keyOpen) {
 			String key = String.valueOf(InputUtil.fromKeyCode(module.getKey(), module.getKey()))
@@ -134,15 +144,12 @@ public class ModuleButton {
 			IFont.legacy17.drawString(matrices, module.getName(), x + 4, y + 7,
 					module.isEnabled() ? 0xFF3F80FB : 0xFFFFFFFF);
 
-		if (!module.getSettings().isEmpty()) {
-			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
-		}
-
 		double yOffset = 2;
 		alpha = alpha < 1 ? Math.min(1, alpha + 1) : 100;
 
-		panel.clickMenu.startScissor(matrices, panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
 		if (isOpen()) {
+			Render2D.startScissor(panel.x + 224, panel.y + 37, panel.width, panel.height - 40);
+			RenderSystem.setShaderColor(1f, 1f, 1f, fadeAlpha);
 
 			if (scrollHover && _celementHeight > panel.height) {
 				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37, 1, panel.height - 40,
@@ -175,8 +182,8 @@ public class ModuleButton {
 				} else
 					yOffset += 17;
 			}
+			Render2D.stopScissor();
 		}
-		Render2D.stopScissor(matrices);
 	}
 
 	public void tick() {
@@ -298,6 +305,7 @@ public class ModuleButton {
 		elements.forEach(element -> {
 			element.setAnimation(0);
 			element.setStringAnimation(0);
+			fadeAlpha = -0.3f;
 
 			if (element instanceof CheckBoxElement)
 				((CheckBoxElement) element).setMove(0);

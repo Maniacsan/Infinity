@@ -3,8 +3,8 @@ package org.infinity.clickmenu.components.config;
 import org.infinity.clickmenu.ClickMenu;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.config.Config;
+import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.StringUtil;
 import org.infinity.utils.render.RenderUtil;
@@ -36,8 +36,7 @@ public class ConfigButton {
 				Render2D.isHovered(mouseX, mouseY, x + width - 85, y + 6, 75, 20) ? 0xFF55B9C8 : 0xFF41A5B4);
 		IFont.legacy15.drawString(matrices, "Load", x + width - 50, y + 11, -1);
 
-		double anim = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10)
-				? RenderUtil.animate(2, 0, 0.4)
+		double anim = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10) ? RenderUtil.animate(2, 0, 0.4)
 				: 0;
 		double anim1 = Render2D.isHovered(mouseX, mouseY, x + width - 110, y + 11, 10, 10)
 				? RenderUtil.animate(2, 0, 0.4)
@@ -46,8 +45,8 @@ public class ConfigButton {
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), x + width - 95 - anim,
 				y + 11 - anim, 10 + (anim + anim), 10 + (anim + anim));
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"), x + width - 110 - anim1,
-				y + 11 - anim1, 10 + (anim1 + anim1), 10 + (anim1 + anim1));
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"),
+				x + width - 110 - anim1, y + 11 - anim1, 10 + (anim1 + anim1), 10 + (anim1 + anim1));
 
 		String name = StringUtil.replaceNull(config.getName());
 		String author = StringUtil.replaceNull(config.getAuthor());
@@ -59,8 +58,8 @@ public class ConfigButton {
 			author = author.substring(0, 18) + "...";
 
 		IFont.legacy16.drawString(matrices, name, x + 4, y + 5, -1);
-		IFont.legacy13.drawString(matrices, "Author: " + author, x + 5, y + 19, -1);
-		IFont.legacy13.drawString(matrices, "Date: " + StringUtil.replaceNull(config.getDate()),
+		IFont.legacy13.drawString(matrices, "Author: " + Formatting.BLUE + author, x + 5, y + 19, -1);
+		IFont.legacy13.drawString(matrices, "Date: " + Formatting.BLUE + StringUtil.replaceNull(config.getDate()),
 				x + IFont.legacy13.getStringWidth("Author: " + author) + 9, y + 19, -1);
 	}
 

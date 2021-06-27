@@ -7,11 +7,12 @@ import org.infinity.clickmenu.components.Panel;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
+import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,6 +38,8 @@ public class CategoryButton {
 	private double height;
 
 	private double hoverAnim;
+
+	private float fadeAlpha;
 
 	public CategoryButton(String name, List<Module> moduleList, Panel panel) {
 		this.name = name;
@@ -88,6 +91,8 @@ public class CategoryButton {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 
+		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.1) : 0);
+
 		if (!name.equalsIgnoreCase(panel.SEARCH)) {
 			if (isOpen()) {
 				Render2D.drawRectWH(matrices, x, y, width, height, 0xFF2E375A);
@@ -124,7 +129,7 @@ public class CategoryButton {
 			}
 
 			for (ModuleButton moduleButton : moduleButtons) {
-				panel.clickMenu.startScissor(matrices, panel.x + 90, panel.y + 39, 150, panel.height - 40);
+				Render2D.startScissor(panel.x + 90, panel.y + 39, 150, panel.height - 40);
 				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
 				moduleButton.setX(panel.x + 94);
 				moduleButton.setY(yMod + panel.y + 34 - offset);
@@ -132,10 +137,11 @@ public class CategoryButton {
 				moduleButton.setHeight(25);
 
 				yMod += 28;
-
-				moduleButton.render(matrices, mouseX, mouseY, delta);
 				
-				Render2D.stopScissor(matrices);
+				RenderSystem.setShaderColor(1f, 1f, 1f, fadeAlpha);
+				moduleButton.render(matrices, mouseX, mouseY, delta);
+
+				Render2D.stopScissor();
 			}
 		}
 	}
@@ -154,6 +160,8 @@ public class CategoryButton {
 			panel.setSearch(false);
 
 			moduleButtons.forEach(ModuleButton::resetAnimation);
+			fadeAlpha = -0.3f;
+			panel.configPanel.fade = -0.3f;
 
 			setOpen(!isOpen());
 
@@ -180,7 +188,7 @@ public class CategoryButton {
 			moduleButtons.forEach(moduleButton -> moduleButton.mouseScrolled(d, e, amount));
 		}
 
-		int scrollOffset = 24;
+		double scrollOffset = 24;
 
 		if (!isOpen() || !scrollHover || _cbuttonsHeight < panel.height - 40)
 			return;
@@ -235,6 +243,7 @@ public class CategoryButton {
 			else
 				moduleButtons.forEach(ModuleButton::onClose);
 		}
+		fadeAlpha = -0.3f;
 	}
 
 	public int getButtonsHeight() {

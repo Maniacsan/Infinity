@@ -11,9 +11,8 @@ import org.infinity.clickmenu.util.ColorUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WSearchField;
 import org.infinity.features.Category;
-import org.infinity.features.module.visual.GuiMod;
+import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 
@@ -22,14 +21,13 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 
 public class Panel {
 
 	public ArrayList<CategoryButton> categoryButtons = new ArrayList<>();
-	public ConfigPanel configPanel = new ConfigPanel("Config", this);
+	public ConfigPanel configPanel = new ConfigPanel("Config");
 	public String SEARCH = "Search";
 	public String ENABLED = "Enabled";
 
@@ -50,8 +48,6 @@ public class Panel {
 	private boolean logoAnimate;
 	private double _lanim;
 	private double _lhover;
-	
-	private double fadeAlpha;
 
 	private boolean search;
 
@@ -87,10 +83,9 @@ public class Panel {
 
 	public void init() {
 		Helper.minecraftClient.keyboard.setRepeatEvents(true);
-		searchField = new WSearchField(Helper.minecraftClient.textRenderer, this, (int) this.width / 2 - 80,
-				(int) this.height / 2 - 58, 160, 22, new TranslatableText("Search"), false);
+		searchField = new WSearchField(this);
 
-		searchField.setMaxLength(40);
+		searchField.setMaxLength(60);
 		searchField.setColor(0xFF1D1F30);
 
 		configPanel.init();
@@ -99,13 +94,11 @@ public class Panel {
 	}
 
 	public void addChildren(List<Element> children) {
-		children.add(searchField);
-
 		categoryButtons.forEach(categoryButton -> categoryButton.addChildren(children));
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		this.hovered = Render2D.isHovered(mouseX, mouseY, this.x + 92, this.y, (searchField.x - 92) - 50, 29);
+		this.hovered = Render2D.isHovered(mouseX, mouseY, this.x + 92, this.y, (searchField.getX() - 92) - 50, 29);
 		this.closeHovered = Render2D.isHovered(mouseX, mouseY, this.x + width - 20, this.y - 11, 20, 11);
 		if (this.dragging) {
 			this.x = this.prevX + mouseX;
@@ -113,12 +106,9 @@ public class Panel {
 		}
 
 		// drag borders
-		float scale = ((GuiMod) InfMain.getModuleManager().getModuleByClass(GuiMod.class)).getScale();
 		Window window = Helper.minecraftClient.getWindow();
 		double scaleWidth = window.getScaledWidth();
 		double scaleHeight = window.getScaledHeight();
-		scaleWidth /= scale;
-		scaleHeight /= scale;
 		if (x < 0) {
 			x = 0;
 		}
@@ -134,7 +124,8 @@ public class Panel {
 
 		// panel
 		Render2D.drawRectWH(matrices, x, y + 1, width, height - 1, 0xFF181818);
-		Render2D.verticalGradient(matrices, this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2, 0xFF20202F, 0xFF243670);
+		Render2D.verticalGradient(matrices, this.x + 92, this.y + 1, x + this.width - 2, y + this.height - 2,
+				0xFF20202F, 0xFF243670);
 
 		// category panel
 		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
@@ -144,7 +135,8 @@ public class Panel {
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, width - 92, 1, 0xFF1F1F1F);
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 2, 0.5, 28, 0xFF4A4F65);
-		Render2D.verticalGradient(matrices, this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0, 0xFF2E3349);
+		Render2D.verticalGradient(matrices, this.x + 92, this.y + 28, this.x + width - 1, this.y + 33, 0xFF8EA8E0,
+				0xFF2E3349);
 
 		// profile info
 		String profileName = InfMain.getUser().getName();
@@ -152,9 +144,9 @@ public class Panel {
 			profileName = profileName.substring(0, 18) + "...";
 
 		IFont.legacy16.drawString(matrices, profileName, x + 119, y + 5, -1);
-		IFont.legacy14.drawString(matrices, "License: " + ColorUtils.getUserRoleColor() + InfMain.getUser().getRole().name(),
-				x + 119, y + 17, -1);
-		RenderUtil.drawImage(matrices, x + 95, y + 5, 20, 20,
+		IFont.legacy14.drawString(matrices,
+				"License: " + ColorUtils.getUserRoleColor() + InfMain.getUser().getRole().name(), x + 119, y + 17, -1);
+		RenderUtil.drawImage(matrices, false, x + 95, y + 5, 20, 20,
 				InfMain.getDirection() + File.separator + "profile" + File.separator + "photo.png");
 
 		if (logoAnimate) {
@@ -199,7 +191,7 @@ public class Panel {
 
 		setSearch(!searchField.getText().isEmpty());
 		if (!isOpenSearch())
-			searchField.setSelected(false);
+			searchField.setFocused(false);
 
 		double yOffset = 2;
 		for (CategoryButton categoryButton : categoryButtons) {
@@ -221,6 +213,7 @@ public class Panel {
 
 			if (categoryButton.isOpen() && !isSearch()
 					&& categoryButton.getName().equalsIgnoreCase(configPanel.getName())) {
+				configPanel.fade = (float) Math.min(1, configPanel.fade + 0.11);
 				configPanel.setX(x + 92);
 				configPanel.setY(y + 34);
 				configPanel.setWidth(width - 92);
@@ -253,6 +246,7 @@ public class Panel {
 			this.prevX = this.x - mouseX;
 			this.prevY = this.y - mouseY;
 		}
+		searchField.mouseClicked(mouseX, mouseY, button);
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
@@ -277,12 +271,14 @@ public class Panel {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.charTyped(chr, keyCode);
 		});
+		searchField.charTyped(chr, keyCode);
 	}
 
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
 		categoryButtons.forEach(categoryButton -> {
 			categoryButton.keyPressed(keyCode, scanCode, modifiers);
 		});
+		searchField.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	public void onClose() {
@@ -291,6 +287,8 @@ public class Panel {
 		});
 		configPanel.onClose();
 		dragging = false;
+
+		searchField.onClose();
 	}
 
 	public ArrayList<CategoryButton> getCategoryButtons() {

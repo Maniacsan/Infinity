@@ -2,9 +2,9 @@ package org.infinity.clickmenu.components.window;
 
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.module.misc.SelfDestruct;
+import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.ui.util.CustomButtonWidget;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 

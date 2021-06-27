@@ -1,4 +1,4 @@
-package org.infinity.ui.util.font;
+package org.infinity.font;
 
 import static org.lwjgl.opengl.GL11.GL_LINEAR;
 import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
@@ -51,6 +51,8 @@ public class GlyphPageFontRenderer {
 	 * Used to speify new alpha value for the current color.
 	 */
 	private float alpha;
+	
+	private int color;
 	/**
 	 * Set if the "l" style (bold) is active in currently rendering string
 	 */
@@ -262,15 +264,18 @@ public class GlyphPageFontRenderer {
 			if (dropShadow) {
 				color = (color & 16579836) >> 2 | color & -16777216;
 			}
-
+			
+			this.color = color;
 			this.red = (float) (color >> 16 & 255) / 255.0F;
 			this.blue = (float) (color >> 8 & 255) / 255.0F;
 			this.green = (float) (color & 255) / 255.0F;
 			this.alpha = (float) (color >> 24 & 255) / 255.0F;
-			RenderSystem.setShaderColor(this.red, this.blue, this.green, this.alpha);
+			RenderSystem.setShaderColor(red, blue, green, alpha);
 			this.posX = x * 2.0f;
 			this.posY = y * 2.0f;
 			this.renderStringAtPos(matrices, text, dropShadow);
+			// Reset color
+			RenderSystem.setShaderColor(1, 1, 1, 1);
 			return (int) (this.posX / 4.0f);
 		}
 	}
@@ -341,7 +346,7 @@ public class GlyphPageFontRenderer {
 
 				glyphPage.bindTexture();
 
-				float f = glyphPage.drawChar(matrices, c0, posX, posY);
+				float f = glyphPage.drawChar(matrices, c0, posX, posY, color);
 
 				doDraw(f, glyphPage);
 			}

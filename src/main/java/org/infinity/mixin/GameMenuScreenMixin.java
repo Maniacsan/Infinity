@@ -1,7 +1,7 @@
 package org.infinity.mixin;
 
 import org.infinity.clickmenu.util.FontUtils;
-import org.infinity.features.module.visual.GuiMod;
+import org.infinity.features.module.hidden.Menu;
 import org.infinity.main.InfMain;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,7 +21,7 @@ public class GameMenuScreenMixin {
 		if (InfMain.INSTANCE.self)
 			return;
 		
-		int modKey = InfMain.getModuleManager().getModuleByClass(GuiMod.class).getKey();
+		int modKey = InfMain.getModuleManager().getModuleByClass(Menu.class).getKey();
 		String key = modKey == 96
 				? Formatting.BLUE + "GRAVE " + Formatting.GRAY + "\"" + Formatting.BLUE + " ` " + Formatting.GRAY
 						+ "\" "

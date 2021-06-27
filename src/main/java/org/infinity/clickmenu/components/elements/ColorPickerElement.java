@@ -4,7 +4,7 @@ import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.components.window.ColorPickerWindow;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -22,7 +22,7 @@ public class ColorPickerElement extends AbstractElement {
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 
 		IFont.legacy15.drawString(matrices, setting.getName(), x + 24, y + 7, 0xFFFFFFFF);
-		Render2D.drawBorderedRect(matrices, x + 3, y + 4, 16, 14, 1, 0xFF070337, setting.getColor().getRGB());
+		Render2D.drawBorderedRect(matrices, x + 3, y + 4, 16, 14, 1f, 0xFF070337, setting.getColor().getRGB());
 	}
 
 	@Override

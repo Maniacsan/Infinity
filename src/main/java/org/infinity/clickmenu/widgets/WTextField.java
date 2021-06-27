@@ -3,7 +3,7 @@ package org.infinity.clickmenu.widgets;
 import java.awt.Color;
 
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 import org.infinity.utils.Helper;
 import org.lwjgl.glfw.GLFW;
 

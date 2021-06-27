@@ -2,9 +2,9 @@ package org.infinity.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.infinity.main.InfMain;
 import org.infinity.utils.system.FileUtil;
 
@@ -21,7 +21,7 @@ public class FriendsFile {
 
 	public void loadFriends() {
 		try {
-			String text = FileUtils.readFileToString(friendFile);
+			String text = FileUtil.readFile(friendFile.getAbsolutePath(), StandardCharsets.UTF_8);
 
 			if (text.isEmpty())
 				return;

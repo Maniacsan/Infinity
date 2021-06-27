@@ -2,12 +2,12 @@ package org.infinity.file.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.Setting;
@@ -53,7 +53,7 @@ public class Config {
 
 	public void load() {
 		try {
-			String text = FileUtils.readFileToString(configFile);
+			String text = FileUtil.readFile(configFile.getAbsolutePath(), StandardCharsets.UTF_8);
 
 			if (text.isEmpty())
 				return;
@@ -132,7 +132,7 @@ public class Config {
 			return;
 		name = configFile.getName().replace(".json", "");
 		try {
-			String text = FileUtils.readFileToString(configFile);
+			String text = FileUtil.readFile(configFile.getAbsolutePath(), StandardCharsets.UTF_8);
 
 			if (text.isEmpty())
 				return;

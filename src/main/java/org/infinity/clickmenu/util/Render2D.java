@@ -1,11 +1,8 @@
 package org.infinity.clickmenu.util;
 
-import java.awt.Color;
-
 import org.infinity.utils.Helper;
-import org.lwjgl.opengl.GL11;
+import org.infinity.utils.render.RenderUtil;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
@@ -17,6 +14,7 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 
 public class Render2D {
 
@@ -42,14 +40,6 @@ public class Render2D {
 
 	public static void drawRectWH(MatrixStack matrices, double x, double y, double width, double height, int color) {
 		fill(matrices.peek().getModel(), x, y, x + width, y + height, color);
-	}
-
-	public static void drawUnfilledCircle(double x, double y, float radius, float lineWidth, int color) {
-		float alpha = (color >> 24 & 0xFF) / 255.0F;
-		float red = (color >> 16 & 0xFF) / 255.0F;
-		float green = (color >> 8 & 0xFF) / 255.0F;
-		float blue = (color & 0xFF) / 255.0F;
-
 	}
 
 	public static void verticalGradient(MatrixStack matrix, double x1, double y1, double x2, double y2, int color1,
@@ -107,74 +97,41 @@ public class Render2D {
 
 	public static void drawBorderedRect(MatrixStack matrices, double xPos, double yPos, double width, double height,
 			float lineWidth, int lineColor, int bgColor) {
+		drawRectWH(matrices, xPos - lineWidth, yPos - lineWidth, width + lineWidth, lineWidth, lineColor);
+		drawRectWH(matrices, xPos - lineWidth, yPos, lineWidth, height + lineWidth, lineColor);
+		drawRectWH(matrices, xPos, yPos + height, width + lineWidth, lineWidth, lineColor);
+		drawRectWH(matrices, xPos + width, yPos - lineWidth, lineWidth, height + lineWidth, lineColor);
 		drawRectWH(matrices, xPos, yPos, width, height, bgColor);
-		float f = (float) (lineColor >> 24 & 255) / 255.0F;
-		float f1 = (float) (lineColor >> 16 & 255) / 255.0F;
-		float f2 = (float) (lineColor >> 8 & 255) / 255.0F;
-		float f3 = (float) (lineColor & 255) / 255.0F;
 
 	}
 
-	public static void drawHorizontalLine(MatrixStack matrices, int i, int j, int k, int l) {
-		if (j < i) {
-			int m = i;
-			i = j;
-			j = m;
-		}
-
-		drawRect(matrices, i, k, j + 1, k + 1, l);
+	public static void drawRoundedRect(MatrixStack matrices, double x, double y, double width, double height,
+			int color) {
+		RenderUtil.drawImage(matrices, true, x, y, width, height,
+				"/assets/infinity/textures/icons/element/roundedrect.png", color);
 	}
 
-	public static void drawVerticalLine(MatrixStack matrices, int i, int j, int k, int l) {
-		if (k < j) {
-			int m = j;
-			j = k;
-			k = m;
-		}
-
-		drawRect(matrices, i, j + 1, i + 1, k, l);
+	public static void drawBorderedCircle(MatrixStack matrices, float x, float y, float radius, int lineWidth,
+			int outsideC, int insideC) {
+		drawCircle(matrices, x, y, radius + lineWidth, outsideC);
+		drawCircle(matrices, x, y, radius, insideC);
 	}
 
-	public static void drawAngleRect(MatrixStack matrices, double x, double y, double width, double height, int color) {
-		float f = (float) (color >> 24 & 255) / 255.0F;
-		float f1 = (float) (color >> 16 & 255) / 255.0F;
-		float f2 = (float) (color >> 8 & 255) / 255.0F;
-		float f3 = (float) (color & 255) / 255.0F;
-
+	public static void drawCircle(MatrixStack matrices, double x, double y, double radius, int color) {
+		RenderUtil.drawImage(matrices, true, x - (radius / 2), y - (radius / 2), radius, radius,
+				"/assets/infinity/textures/icons/element/circle.png", color);
 	}
 
-	public static void drawOutline(MatrixStack matrixStack, double x1, double x2, double y1, double y2, int color) {
-		float f = (float) (color >> 24 & 255) / 255.0F;
-		float f1 = (float) (color >> 16 & 255) / 255.0F;
-		float f2 = (float) (color >> 8 & 255) / 255.0F;
-		float f3 = (float) (color & 255) / 255.0F;
+	public static void drawTriangle(MatrixStack matrices, double x, double y, float radius, float rotation, int color) {
+		matrices.push();
+		matrices.translate(x, y, 0);
+		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(rotation));
+		matrices.translate(-x, -y, 0);
 
-		Matrix4f matrix = matrixStack.peek().getModel();
-		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		RenderUtil.drawImage(matrices, true, x - (radius / 2), y - (radius / 2), radius, radius,
+				"/assets/infinity/textures/icons/element/triangle.png", color);
 
-		RenderSystem.setShaderColor(f1, f2, f3, f);
-
-		bufferBuilder.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION);
-		bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0F).next();
-		bufferBuilder.vertex(matrix, (float) x1, (float) y2, 0F).next();
-		bufferBuilder.vertex(matrix, (float) x2, (float) y2, 0F).next();
-		bufferBuilder.vertex(matrix, (float) x2, (float) y1, 0F).next();
-		bufferBuilder.vertex(matrix, (float) x1, (float) y1, 0F).next();
-		bufferBuilder.end();
-		BufferRenderer.draw(bufferBuilder);
-	}
-
-	public static void drawBorderedCircle(float x, float y, float radius, int lineWidth, int outsideC, int insideC) {
-		drawCircle(x, y, radius, insideC);
-		drawUnfilledCircle(x, y, radius, (float) lineWidth, outsideC);
-	}
-
-	public static void drawCircle(double x, double y, double radius, int color) {
-		float f = (float) (color >> 24 & 255) / 255.0F;
-		float f1 = (float) (color >> 16 & 255) / 255.0F;
-		float f2 = (float) (color >> 8 & 255) / 255.0F;
-		float f3 = (float) (color & 255) / 255.0F;
-
+		matrices.pop();
 	}
 
 	public static void fill(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int color) {
@@ -211,30 +168,6 @@ public class Render2D {
 		RenderSystem.disableBlend();
 	}
 
-	public static void drawRightTriangle(int x, int y, int size, int color) {
-		float f = (color >> 24 & 0xFF) / 255.0F;
-		float f1 = (color >> 16 & 0xFF) / 255.0F;
-		float f2 = (color >> 8 & 0xFF) / 255.0F;
-		float f3 = (color & 0xFF) / 255.0F;
-	}
-
-	public static void setColor(Color color) {
-		GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f,
-				color.getAlpha() / 255.0f);
-	}
-
-	public static void setColor(int rgba) {
-		int r = rgba & 0xFF;
-		int g = rgba >> 8 & 0xFF;
-		int b = rgba >> 16 & 0xFF;
-		int a = rgba >> 24 & 0xFF;
-		GL11.glColor4b((byte) r, (byte) g, (byte) b, (byte) a);
-	}
-
-	public static int toRGBA(Color c) {
-		return c.getRed() | c.getGreen() << 8 | c.getBlue() << 16 | c.getAlpha() << 24;
-	}
-
 	public static boolean isHovered(int mouseX, int mouseY, int x, int y, int width, int height) {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
@@ -253,11 +186,7 @@ public class Render2D {
 		return mouseX >= x && mouseX - width <= x && mouseY >= y && mouseY - height <= y;
 	}
 
-	public static void drawTriangle(int x, int y, int size, int rotation, int color) {
-
-	}
-
-	public static void startScissor(MatrixStack matrices, double x, double y, double width, double height) {
+	public static void startScissor(double x, double y, double width, double height) {
 		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
 				/ Helper.minecraftClient.getWindow().getScaledWidth();
 		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
@@ -268,7 +197,7 @@ public class Render2D {
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
 	}
 
-	public static void stopScissor(MatrixStack matrices) {
+	public static void stopScissor() {
 		RenderSystem.disableScissor();
 	}
 }

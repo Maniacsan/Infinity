@@ -3,7 +3,7 @@ package org.infinity.clickmenu.components.elements;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -19,13 +19,14 @@ public class CheckBoxElement extends AbstractElement {
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 4);
+		
+		move = setting.isToggle() ? Math.min(10, move + 2) : Math.max(0, move - 2);
+		Render2D.drawRoundedRect(matrices, x + width - 13, y + 2, 18, 17, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
+
+		Render2D.drawCircle(matrices, x + width - 9 + move, y + 10, 10, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
+
 
 		IFont.legacy14.drawString(matrices, this.setting.getName(), x + 1, y + 6, setting.isToggle() ? 0xFFFFFFFF : 0xFFC4BFBF);
-
-		move = setting.isToggle() ? Math.min(10, move + 2) : Math.max(0, move - 2);
-		Render2D.drawAngleRect(matrices, x + width - 9, y + 6, 10, 8, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
-
-		Render2D.drawCircle(x + width - 9 + move, y + 10, 5, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
 	}
 
 	@Override

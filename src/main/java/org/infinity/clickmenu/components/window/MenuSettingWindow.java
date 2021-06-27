@@ -14,7 +14,7 @@ import org.infinity.clickmenu.components.elements.slider.IntSlider;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
 import org.infinity.features.Setting.Category;
-import org.infinity.features.module.visual.GuiMod;
+import org.infinity.features.module.hidden.Menu;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 
@@ -41,7 +41,7 @@ public class MenuSettingWindow extends Screen {
 
 	@Override
 	public void init() {
-		for (Setting setting : InfMain.getModuleManager().getModuleByClass(GuiMod.class).getSettings()) {
+		for (Setting setting : InfMain.getModuleManager().getModuleByClass(Menu.class).getSettings()) {
 			if (setting == null)
 				continue;
 

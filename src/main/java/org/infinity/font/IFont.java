@@ -1,4 +1,4 @@
-package org.infinity.ui.util.font;
+package org.infinity.font;
 
 import org.infinity.FontRenderer;
 import org.jetbrains.annotations.NotNull;

@@ -4,9 +4,8 @@ import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 import org.infinity.utils.Helper;
-import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;
 
@@ -45,6 +44,17 @@ public class SliderElement extends AbstractElement {
 		String setstrg = String.valueOf(String.valueOf(sname.substring(0, 1).toUpperCase()))
 				+ sname.substring(1, sname.length());
 
+		if (animation < 0)
+			animation = 0;
+		else if (animation > 1)
+			animation = 1;
+		
+		Render2D.drawRectWH(matrices, x + 55, y + 10, width - 75, 1, 0xFF0C1535);
+		Render2D.horizontalGradient(matrices, x + 55, y + 10, x + 55 + ((width - 75) * this.animation), y + 11,
+				0xFF6612E2, 0xFF6A9CD3);
+
+		Render2D.drawCircle(matrices, (float) (x + 55 + (width - 75) * animation), (float) (y + 10), 7, 0xFFCCD6C8);
+
 		valueField.setX((int) (x + width - 15));
 		valueField.setY((int) (y + 4));
 		valueField.setWidth((int) (30));
@@ -52,21 +62,10 @@ public class SliderElement extends AbstractElement {
 
 		valueField.render(matrices, mouseX, mouseY, delta);
 
-		if (animation < 0)
-			animation = 0;
-		else if (animation > 1)
-			animation = 1;
 		
-		float hover = (float) (hovered ? RenderUtil.animate(3, 4, 0.1) : 3);
-
 		IFont.legacy14.drawString(matrices, setstrg, x + 1, y + 6, -1);
-		Render2D.drawRectWH(matrices, x + 55, y + 10, width - 75, 1, 0xFF0C1535);
-		Render2D.drawRectWH(matrices, x + 55, y + 10, (width - 75) * this.animation, 1, 0xFF30639F);
-
-		Render2D.drawBorderedCircle((float) (x + 55 + (width - 75) * animation), (float) (y + 10), hover, 2, 0xFF5574E5, 0xFFCCD6C8);
-
-		if (!this.dragging)
-			return;
+		
+		if (this.dragging)
 		this.setValue(mouseX, x + 55, width - 75);
 	}
 
@@ -82,7 +81,7 @@ public class SliderElement extends AbstractElement {
 	public void mouseReleased(double mouseX, double mouseY, int button) {
 		this.dragging = false;
 	}
-	
+
 	@Override
 	public void charTyped(char chr, int keyCode) {
 		valueField.charTyped(chr, keyCode);

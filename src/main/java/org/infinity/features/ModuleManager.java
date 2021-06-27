@@ -24,7 +24,7 @@ public class ModuleManager {
 			new KillAura(),
 			new HUD(),
 			new Sprint(),
-			new GuiMod(),
+			new Menu(),
 			new Criticals(),
 			new BowAim(),
 			new XRay(),

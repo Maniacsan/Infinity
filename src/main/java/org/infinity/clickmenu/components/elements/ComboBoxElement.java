@@ -3,7 +3,7 @@ package org.infinity.clickmenu.components.elements;
 import org.infinity.clickmenu.components.base.AbstractElement;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Setting;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;

@@ -2,9 +2,9 @@ package org.infinity.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.infinity.main.InfMain;
 import org.infinity.ui.account.main.AddThread;
 import org.infinity.utils.system.FileUtil;
@@ -23,7 +23,7 @@ public class AccountsFile {
 
 	public void loadAccounts() {
 		try {
-			String text = FileUtils.readFileToString(accountFile);
+			String text = FileUtil.readFile(accountFile.getAbsolutePath(), StandardCharsets.UTF_8);
 			if (text.isEmpty())
 				return;
 
@@ -33,32 +33,26 @@ public class AccountsFile {
 				return;
 
 			for (Map.Entry<String, JsonElement> entry : jsonReader.entrySet()) {
-					String mask = "";
-					String password = "";
-					JsonArray jsonArray = entry.getValue().getAsJsonArray();
+				String password = "";
+				JsonArray jsonArray = entry.getValue().getAsJsonArray();
 
-					if (jsonArray != null) {
-						if (jsonArray.size() > 0) {
-							if (jsonArray.get(0).isJsonNull()) {
-								mask = "";
-							} else {
-								mask = jsonArray.get(0).getAsString();
-							}
-							if (jsonArray.get(1).isJsonNull()) {
+				if (jsonArray != null) {
+					if (jsonArray.size() > 0) {
+						if (jsonArray.get(1).isJsonNull()) {
+							password = "";
+						} else {
+							String decryptedPassword = AES.decrypt(jsonArray.get(1).getAsString(), AES.getKey());
+							if (decryptedPassword == null)
 								password = "";
-							} else {
-								String decryptedPassword = AES.decrypt(jsonArray.get(1).getAsString(), AES.getKey());
-								if(decryptedPassword == null)
-									password = "";
-								password = decryptedPassword;
-							}
+							password = decryptedPassword;
 						}
 					}
-					//System.out.println("do syuda dowel");
-					String username = entry.getKey();
-					AddThread addThread = new AddThread(username, password);
-					addThread.start();
 				}
+				// System.out.println("do syuda dowel");
+				String username = entry.getKey();
+				AddThread addThread = new AddThread(username, password);
+				addThread.start();
+			}
 		} catch (IOException | JsonSyntaxException e) {
 		}
 	}
@@ -72,9 +66,9 @@ public class AccountsFile {
 			JsonArray array = new JsonArray();
 			array.add(account.getMask());
 			String password = "";
-			if(account.getPassword() != null) {
+			if (account.getPassword() != null) {
 				String encryptedPassword = AES.encrypt(account.getPassword(), AES.getKey());
-				if(encryptedPassword != null)
+				if (encryptedPassword != null)
 					password = encryptedPassword;
 			}
 			array.add(password);

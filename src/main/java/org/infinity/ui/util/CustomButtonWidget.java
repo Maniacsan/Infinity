@@ -1,7 +1,7 @@
 package org.infinity.ui.util;
 
 import org.infinity.clickmenu.util.Render2D;
-import org.infinity.ui.util.font.IFont;
+import org.infinity.font.IFont;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -2,9 +2,9 @@ package org.infinity.file;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.infinity.features.component.macro.Macro;
 import org.infinity.main.InfMain;
 import org.infinity.utils.system.FileUtil;
@@ -21,8 +21,7 @@ public class MacrosFile {
 
 	public void loadMacro() {
 		try {
-			String text = FileUtils.readFileToString(macroFile);
-
+			String text = FileUtil.readFile(macroFile.getAbsolutePath(), StandardCharsets.UTF_8);
 			if (text.isEmpty())
 				return;
 

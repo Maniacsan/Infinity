@@ -8,12 +8,12 @@ import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 
 import com.mojang.authlib.GameProfile;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.BufferRenderer;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -87,10 +87,15 @@ public class RenderUtil {
 
 	public static void drawTexture(MatrixStack matrices, Identifier ident, double x, double y, double width,
 			double height) {
-		Helper.minecraftClient.getTextureManager().bindTexture(ident);
 		RenderSystem.setShaderTexture(0, ident);
 		DrawableHelper.drawTexture(matrices, (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width,
 				(int) height);
+	}
+
+	public static void drawTexture(MatrixStack matrices, Identifier ident, double x, double y, double width,
+			double height, int color) {
+		RenderSystem.setShaderTexture(0, ident);
+		drawTexture(matrices, (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width, (int) height, color);
 	}
 
 	public static double animate(double target, double current, double speed) {
@@ -109,54 +114,77 @@ public class RenderUtil {
 		return current;
 	}
 
-	public static void drawImage(MatrixStack matrices, double x, double y, double width, double height,
+	public static void drawImage(MatrixStack matrices, boolean local, double x, double y, double width, double height,
 			String identifier) {
-		drawImage(matrices, x, y, width, height, identifier, Color.WHITE);
+		drawImage(matrices, local, x, y, width, height, identifier, -1);
 	}
 
-	public static void drawImage(MatrixStack matrices, double x, double y, double width, double height,
-			String identifier, Color color) {
-		TEXTURE.bindTexture(identifier);
+	public static void drawImage(MatrixStack matrices, boolean local, double x, double y, double width, double height,
+			String identifier, int color) {
+		TEXTURE.bindTexture(identifier, local);
+
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float g = (float) (color >> 16 & 255) / 255.0F;
+		float h = (float) (color >> 8 & 255) / 255.0F;
+		float k = (float) (color & 255) / 255.0F;
 
 		Matrix4f matrix4f = matrices.peek().getModel();
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 		bufferBuilder.begin(VertexFormat.DrawMode.TRIANGLES, VertexFormats.POSITION_COLOR_TEXTURE);
-		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 0).next();
-		bufferBuilder.vertex(matrix4f, (float) x, (float) y, 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 0).next();
-		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 1).next();
-		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(0, 1).next();
-		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) (y + height), 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 1).next();
-		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0)
-				.color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()).texture(1, 0).next();
-		draw(true);
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0).color(g, h, k, f).texture(1, 0).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) y, 0).color(g, h, k, f).texture(0, 0).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0).color(g, h, k, f).texture(0, 1).next();
+		bufferBuilder.vertex(matrix4f, (float) x, (float) (y + height), 0).color(g, h, k, f).texture(0, 1).next();
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) (y + height), 0).color(g, h, k, f).texture(1, 1)
+				.next();
+		bufferBuilder.vertex(matrix4f, (float) (x + width), (float) y, 0).color(g, h, k, f).texture(1, 0).next();
+		draw();
 	}
 
-	private static void draw(boolean texture) {
-		RenderSystem.setShaderColor(1, 1, 1, 1);
-
+	private static void draw() {
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 		RenderSystem.disableCull();
 		GL11.glEnable(GL11.GL_LINE_SMOOTH);
-		RenderSystem.setShader(GameRenderer::getRenderTypeEntitySmoothCutoutShader);
-
-		if (texture)
-			RenderSystem.enableTexture();
-		else
-			RenderSystem.disableTexture();
+		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+		RenderSystem.enableTexture();
 
 		Tessellator.getInstance().draw();
 
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableTexture();
 		GL11.glDisable(GL11.GL_LINE_SMOOTH);
+	}
+
+	public static void drawTexture(MatrixStack matrices, int x, int y, int width, int height, float u, float v,
+			int textureWidth, int textureHeight, int color) {
+		drawTexture(matrices, x, x + width, y, y + height, 0, width, height, u, v, textureWidth, textureHeight, color);
+	}
+
+	public static void drawTexture(MatrixStack matrices, int x0, int y0, int x1, int y1, int z, int regionWidth,
+			int regionHeight, float u, float v, int textureWidth, int textureHeight, int color) {
+		drawTexturedQuad(matrices.peek().getModel(), x0, y0, x1, y1, z, (u + 0.0F) / (float) textureWidth,
+				(u + (float) regionWidth) / (float) textureWidth, (v + 0.0F) / (float) textureHeight,
+				(v + (float) regionHeight) / (float) textureHeight, color);
+	}
+
+	private static void drawTexturedQuad(Matrix4f matrices, int x0, int x1, int y0, int y1, int z, float u0, float u1,
+			float v0, float v1, int color) {
+		float f = (float) (color >> 24 & 255) / 255.0F;
+		float g = (float) (color >> 16 & 255) / 255.0F;
+		float h = (float) (color >> 8 & 255) / 255.0F;
+		float k = (float) (color & 255) / 255.0F;
+
+		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
+		bufferBuilder.vertex(matrices, (float) x0, (float) y1, (float) z).color(g, h, k, f).texture(u0, v1).next();
+		bufferBuilder.vertex(matrices, (float) x1, (float) y1, (float) z).color(g, h, k, f).texture(u1, v1).next();
+		bufferBuilder.vertex(matrices, (float) x1, (float) y0, (float) z).color(g, h, k, f).texture(u1, v0).next();
+		bufferBuilder.vertex(matrices, (float) x0, (float) y0, (float) z).color(g, h, k, f).texture(u0, v0).next();
+		bufferBuilder.end();
+		BufferRenderer.draw(bufferBuilder);
 	}
 
 	public static void drawItem(ItemStack itemStack, int x, int y, boolean overlay) {

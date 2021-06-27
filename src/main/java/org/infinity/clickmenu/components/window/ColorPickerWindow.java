@@ -7,8 +7,8 @@ import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.clickmenu.util.Render2D;
 import org.infinity.clickmenu.widgets.WTextField;
 import org.infinity.features.Setting;
+import org.infinity.font.IFont;
 import org.infinity.ui.IScreen;
-import org.infinity.ui.util.font.IFont;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 
@@ -129,8 +129,8 @@ public class ColorPickerWindow extends IScreen {
 		fillGradient(matrices, this.xPosition + 148, this.yPosition + 10, this.xPosition + 155, this.yPosition + 138,
 				brightness, 0xFF000000);
 
-		Render2D.drawTriangle(xPosition + 146, bPos, 2, 90, 0xFFE4E4E4);
-		Render2D.drawTriangle(xPosition + 157, bPos, 2, -90, 0xFFE4E4E4);
+		Render2D.drawTriangle(matrices, xPosition + 146, bPos, 5, 90, 0xFFE4E4E4);
+		Render2D.drawTriangle(matrices, xPosition + 157, bPos, 5, -90, 0xFFE4E4E4);
 
 		fill(matrices, this.xPosition + 10, this.yPosition + 143, this.xPosition + 50, this.yPosition + 157,
 				0xFF000000 | this.rgb);
@@ -143,7 +143,7 @@ public class ColorPickerWindow extends IScreen {
 		colorField.setHeight(14);
 		colorField.render(matrices, mouseX, mouseY, delta);
 
-		Render2D.drawBorderedCircle(hPos, sPos, 4, 1, 0xFFFFFFFF, 0xFF000000 | this.rgb);
+		Render2D.drawBorderedCircle(matrices, hPos, sPos, 7, 2, 0xFFFFFFFF, 0xFF000000 | this.rgb);
 
 		this.rgb = (0xFFFFFF & Color.HSBtoRGB(this.hsb[H], this.hsb[S], this.hsb[B]));
 		String hex = String.format("%06x", 0xFFFFFF & Color.HSBtoRGB(this.hsb[H], this.hsb[S], this.hsb[B]));

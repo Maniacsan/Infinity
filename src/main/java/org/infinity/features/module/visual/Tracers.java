@@ -72,15 +72,13 @@ public class Tracers extends Module {
 
 				float[] toRot = RotationUtil.lookAtEntity(e);
 				float yaw = RotationUtil.getYaw(e) + Helper.getPlayer().getYaw();
-
-				// normalize
 				yaw = (float) Math.toRadians(yaw);
 
 				int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),
 						friendsColor.getColor().getRGB(), mobsColor.getColor().getRGB(),
 						animalsColor.getColor().getRGB());
 
-				Render2D.drawTriangle((width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
+				Render2D.drawTriangle(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
 						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().getYaw()), color);
 			}
 		}
