@@ -19,6 +19,7 @@ import org.infinity.features.Setting;
 import org.infinity.features.Setting.Category;
 import org.infinity.font.IFont;
 import org.infinity.utils.Helper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 
@@ -33,6 +34,8 @@ public class ModuleButton {
 
 	private ArrayList<AbstractElement> elements = new ArrayList<>();
 	private ArrayList<ModuleButton> buttons;
+	private Timer scrollTimer = new Timer();
+
 	private Panel panel;
 	private Module module;
 
@@ -41,7 +44,9 @@ public class ModuleButton {
 	private boolean open;
 	private boolean keyOpen;
 
-	private int offset;
+	private double scrollSpeed;
+	private double prevScrollProgress;
+	private double scrollProgress;
 	private int _celementHeight;
 
 	private int alpha;
@@ -54,6 +59,7 @@ public class ModuleButton {
 	private double hoverAnim;
 
 	private float fadeAlpha;
+	private float fadeScroll;
 
 	public ModuleButton(Module module, ArrayList<ModuleButton> buttons, Panel panel) {
 		this.module = module;
@@ -127,7 +133,7 @@ public class ModuleButton {
 
 		// button rect
 		Render2D.drawRectWH(matrices, x + 1, y + 1, width - 3, height - 3, 0xFF242C41);
-		
+
 		if (!module.getSettings().isEmpty()) {
 			Render2D.drawRectWH(matrices, x + width - 10, y + 1, 8, height - 3, 0xFF1F273B);
 			RenderUtil.drawImage(matrices, true, x + width - 15, y + 3, 20, 20,
@@ -154,7 +160,7 @@ public class ModuleButton {
 			if (scrollHover && _celementHeight > panel.height) {
 				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37, 1, panel.height - 40,
 						0x90000000);
-				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37 + offset, 1,
+				Render2D.drawRectWH(matrices, panel.x + panel.width - 3, panel.y + 37 + getScrollProgress(), 1,
 						panel.height - 40 - getHeightDifference(), 0xFF1F5A96);
 			}
 
@@ -164,7 +170,7 @@ public class ModuleButton {
 
 				_celementHeight = (int) (panel.y + 36 + yOffset);
 				element.setX(panel.x + 241);
-				element.setY(yOffset - offset + panel.y + 36);
+				element.setY(yOffset - getScrollProgress() + panel.y + 36);
 				element.setWidth(panel.width - 264);
 				element.setHeight(19);
 
@@ -189,6 +195,21 @@ public class ModuleButton {
 	public void tick() {
 		if (isOpen())
 			elements.forEach(AbstractElement::tick);
+
+		if (!isOpen() || _celementHeight < panel.height)
+			return;
+
+		int difference = getHeightDifference();
+
+		setScrollProgress(scrollProgress + scrollSpeed);
+		scrollSpeed *= 0.54;
+
+		if (scrollTimer.hasReached(100)) {
+			if (scrollProgress < 0)
+				scrollSpeed = scrollProgress * -0.45;
+			else if (scrollProgress > difference)
+				scrollSpeed = (scrollProgress - difference) * -0.45;
+		}
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -229,23 +250,11 @@ public class ModuleButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		int scrollOffset = 23;
-		int difference = getHeightDifference();
-		if (!isOpen() || !scrollHover || _celementHeight < panel.height)
-			return;
-
-		if (amount < 0.0D) {
-			this.offset += scrollOffset;
-
-		} else if (amount > 0.0D) {
-			this.offset -= scrollOffset;
+		if (amount != 0 && scrollHover && isOpen()) {
+			double sa = amount < 0 ? amount - 10 : amount + 10;
+			scrollTimer.reset();
+			scrollSpeed -= sa;
 		}
-
-		if (offset > difference)
-			offset = difference;
-		else if (offset < 0)
-			offset = 0;
-
 	}
 
 	public void keyPressed(int keyCode, int scanCode, int modifiers) {
@@ -311,6 +320,16 @@ public class ModuleButton {
 				((CheckBoxElement) element).setMove(0);
 		});
 		alpha = 0;
+	}
+
+	private double getScrollProgress() {
+		return prevScrollProgress
+				+ (scrollProgress - prevScrollProgress) * Helper.minecraftClient.getLastFrameDuration();
+	}
+
+	private void setScrollProgress(double value) {
+		prevScrollProgress = scrollProgress;
+		scrollProgress = value;
 	}
 
 	public boolean isOpen() {

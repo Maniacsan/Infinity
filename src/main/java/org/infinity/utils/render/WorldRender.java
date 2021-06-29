@@ -9,6 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormat;
@@ -38,16 +39,17 @@ public class WorldRender {
 		float g = (color >> 8 & 0xFF) / 255.0F;
 		float b = (color & 0xFF) / 255.0F;
 
-		gl11Setup();
+		setup();
 
 		// Fill
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
+		RenderSystem.setShader(GameRenderer::getPositionColorShader);
 		buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 		WorldRenderer.drawBox(buffer, box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ, r, g, b, a / 2f);
 		tessellator.draw();
 
-		gl11Cleanup();
+		clean();
 	}
 
 	public static void drawBox(Box box, float width, int color) {
@@ -55,13 +57,16 @@ public class WorldRender {
 		float r = (color >> 16 & 0xFF) / 255.0F;
 		float g = (color >> 8 & 0xFF) / 255.0F;
 		float b = (color & 0xFF) / 255.0F;
-		gl11Setup();
+		setup();
 
-		GL11.glLineWidth(width);
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
 
-		buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+		RenderSystem.disableCull();
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+		RenderSystem.lineWidth(width);
+
+		buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
 		buffer.vertex(box.minX, box.minY, box.minZ).color(r, g, b, a).next();
 		buffer.vertex(box.minX, box.minY, box.maxZ).color(r, g, b, a).next();
 		buffer.vertex(box.maxX, box.minY, box.maxZ).color(r, g, b, a).next();
@@ -80,7 +85,8 @@ public class WorldRender {
 		buffer.vertex(box.maxX, box.maxY, box.minZ).color(r, g, b, a).next();
 		tessellator.draw();
 
-		gl11Cleanup();
+		RenderSystem.enableCull();
+		clean();
 	}
 
 	public static void drawLine(double x1, double y1, double z1, double x2, double y2, double z2, float width,
@@ -89,8 +95,12 @@ public class WorldRender {
 		float g = (color >> 8 & 0xFF) / 255.0F;
 		float b = (color & 0xFF) / 255.0F;
 
-		gl11Setup();
-		GL11.glLineWidth(width);
+		setup();
+
+		RenderSystem.disableDepthTest();
+		RenderSystem.disableCull();
+		RenderSystem.setShader(GameRenderer::getRenderTypeLinesShader);
+		RenderSystem.lineWidth(width);
 
 		Tessellator tessellator = Tessellator.getInstance();
 		BufferBuilder buffer = tessellator.getBuffer();
@@ -100,17 +110,20 @@ public class WorldRender {
 		buffer.vertex(x2, y2, z2).color(r, g, b, 1.0F).next();
 		tessellator.draw();
 
-		gl11Cleanup();
+		RenderSystem.enableCull();
+		RenderSystem.enableDepthTest();
+
+		clean();
 
 	}
 
-	public static void gl11Setup() {
+	public static void setup() {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableTexture();
 	}
 
-	public static void gl11Cleanup() {
+	public static void clean() {
 		RenderSystem.disableBlend();
 		RenderSystem.enableTexture();
 	}

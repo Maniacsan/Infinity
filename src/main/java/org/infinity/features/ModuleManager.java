@@ -63,6 +63,7 @@ public class ModuleManager {
 			new StorageESP(),
 			new FullBright(),
 			new XCarry(),
+			new DiscordRPCMod(),
 			new Jesus(), 
 			new Speed(), 
 			new PacketKick(),

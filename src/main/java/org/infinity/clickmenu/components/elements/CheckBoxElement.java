@@ -21,9 +21,9 @@ public class CheckBoxElement extends AbstractElement {
 		this.hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height - 4);
 		
 		move = setting.isToggle() ? Math.min(10, move + 2) : Math.max(0, move - 2);
-		Render2D.drawRoundedRect(matrices, x + width - 13, y + 2, 18, 17, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
+		Render2D.drawHRoundedRect(matrices, x + width - 9, y + 5, 10, 10, setting.isToggle() ? 0xFF101E2E : 0xFF191919);
 
-		Render2D.drawCircle(matrices, x + width - 9 + move, y + 10, 10, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
+		Render2D.drawCircle(matrices, x + width - 9 + move, y + 10, 7, setting.isToggle() ? 0xFF60B9CF : 0xFF505151);
 
 
 		IFont.legacy14.drawString(matrices, this.setting.getName(), x + 1, y + 6, setting.isToggle() ? 0xFFFFFFFF : 0xFFC4BFBF);

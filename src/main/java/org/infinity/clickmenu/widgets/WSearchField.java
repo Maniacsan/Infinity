@@ -64,7 +64,7 @@ public class WSearchField {
 			Render2D.drawRect(matrices, x + 1 + position - 13, y, x + width, y + height, color);
 		}
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 10 + position,
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 9 + position,
 				y + 3, 10, 10);
 
 		if (!panel.isOpenSearch())
@@ -79,7 +79,7 @@ public class WSearchField {
 
 		double diff = Math.max(IFont.legacy15.getStringWidth(getText()) + 6 - getWidth(), 0);
 
-		Render2D.startScissor(x, y, width, height);
+		Render2D.startScissor(x + 4, y, width - 4, height);
 		if (!getText().isEmpty()) {
 			IFont.legacy15.drawString(matrices, getText(), getX() + 4 - diff,
 					getY() + (getHeight() - IFont.legacy15.getFontHeight()) / 2 + 1, -1);

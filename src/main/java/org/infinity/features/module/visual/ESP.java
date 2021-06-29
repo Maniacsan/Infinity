@@ -16,6 +16,7 @@ import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.WorldRender;
 
 import com.darkmagician6.eventapi.EventTarget;
+import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.client.render.BufferBuilderStorage;
 import net.minecraft.client.render.OutlineVertexConsumerProvider;
@@ -67,21 +68,21 @@ public class ESP extends Module {
 
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
-		for (Entity e : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
-				mobs.isToggle(), animals.isToggle())) {
+		if (event.getType().equals(EventType.POST)) {
+			for (Entity e : EntityUtil.getRenderTargets(players.isToggle(), friends.isToggle(), invisibles.isToggle(),
+					mobs.isToggle(), animals.isToggle())) {
 
-			int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),
-					friendsColor.getColor().getRGB(), mobsColor.getColor().getRGB(), animalsColor.getColor().getRGB());
+				int color = EntityUtil.getEntitiesColor(e, playerColor.getColor().getRGB(),
+						friendsColor.getColor().getRGB(), mobsColor.getColor().getRGB(),
+						animalsColor.getColor().getRGB());
 
-			if (e == KillAura.target) {
-				color = Color.RED.getRGB();
-			}
+				if (e == KillAura.target)
+					color = Color.RED.getRGB();
 
-			if (mode.getCurrentMode().equalsIgnoreCase("Fill")) {
-				WorldRender.drawFill(e.getBoundingBox(), color);
-
-			} else if (mode.getCurrentMode().equalsIgnoreCase("Box")) {
-				WorldRender.drawBox(e.getBoundingBox(), width.getCurrentValueFloat(), color);
+				if (mode.getCurrentMode().equalsIgnoreCase("Fill"))
+					WorldRender.drawFill(e.getBoundingBox(), color);
+				else if (mode.getCurrentMode().equalsIgnoreCase("Box"))
+					WorldRender.drawBox(e.getBoundingBox(), width.getCurrentValueFloat(), color);
 
 			}
 		}

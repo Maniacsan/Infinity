@@ -3,6 +3,8 @@ package org.infinity.main;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.infinity.chat.InfChatHud;
 import org.infinity.chat.IRC.IRCClient;
 import org.infinity.clickmenu.ClickMenu;
@@ -24,6 +26,8 @@ import net.minecraft.client.MinecraftClient;
 public class Initialize {
 
 	public IHandler handler;
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static File dir = new File(InfMain.getDirection() + File.separator);
 	public CommandManager commandManager;
@@ -54,7 +58,8 @@ public class Initialize {
 		hookManager = new HookManager();
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
-		friend = new Friend();;
+		friend = new Friend();
+		LOGGER.info("Injected");
 
 		moduleManager.getModuleByClass(HUD.class).enable();
 	}

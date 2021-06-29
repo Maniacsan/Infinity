@@ -35,7 +35,7 @@ public class ClickMenu extends IScreen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 
-		fade = (float) Math.min(1, fade + 0.1);
+		fade = (float) Math.min(1, fade + 0.2);
 		anim = anim > 0 ? Math.max(0, anim - 0.14) : 0;
 
 		matrices.push();

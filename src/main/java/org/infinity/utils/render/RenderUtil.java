@@ -193,4 +193,16 @@ public class RenderUtil {
 			Helper.minecraftClient.getItemRenderer().renderGuiItemOverlay(Helper.minecraftClient.textRenderer,
 					itemStack, x, y, null);
 	}
+
+	/**
+	 * Fixes speed with lags and low FPS
+	 * 
+	 * @param current
+	 * @return
+	 */
+	public static double smoothFrame(double current) {
+		double last = current;
+		return current * Helper.minecraftClient.getLastFrameDuration()
+				+ (last * (1.0f - Helper.minecraftClient.getLastFrameDuration()));
+	}
 }

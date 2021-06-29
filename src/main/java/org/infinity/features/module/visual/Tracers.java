@@ -34,7 +34,7 @@ public class Tracers extends Module {
 	// arrows
 	private Setting radius = new Setting(this, "Radius", 1.4D, 0.5D, 8.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
-	private Setting size = new Setting(this, "Size", 5.0D, 1.0D, 8.0D)
+	private Setting size = new Setting(this, "Size", 9.0D, 5.0D, 20.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
 
 	// targets

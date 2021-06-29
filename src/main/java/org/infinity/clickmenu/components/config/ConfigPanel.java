@@ -11,6 +11,7 @@ import org.infinity.file.config.Config;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -27,14 +28,17 @@ public class ConfigPanel {
 	public WTextField textField;
 	private String name;
 
+	private Timer scrollTimer = new Timer();
+
 	// dont permission error
 	private int errorTime = -1;
 	private double toasterAnim;
 
-	private int offset;
 	public float fade;
 
-	// calc buttons height
+	private double scrollSpeed;
+	private double prevScrollProgress;
+	private double scrollProgress;
 	private double _cbuttonHeight;
 
 	private double x;
@@ -63,7 +67,7 @@ public class ConfigPanel {
 			configList.add(new ConfigButton(config, this));
 		}
 		errorTime = -1;
-		offset = 0;
+		setScrollProgress(0);
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -118,14 +122,14 @@ public class ConfigPanel {
 		// scroll
 		if (_cbuttonHeight > this.height - 80) {
 			Render2D.drawRectWH(matrices, x + width - 5, y + 43, 2, height - 80, 0x90000000);
-			Render2D.drawRectWH(matrices, x + width - 5, y + 43 + offset, 2, height - 80 - getHeightDifference(),
-					0xFF1F5A96);
+			Render2D.drawRectWH(matrices, x + width - 5, y + 43 + getScrollProgress(), 2,
+					height - 80 - getHeightDifference(), 0xFF1F5A96);
 		}
 
 		for (ConfigButton configButton : configList) {
 			_cbuttonHeight = (int) (y + yOffset);
 			configButton.setX(x + 2);
-			configButton.setY(y + yOffset + 43 - offset);
+			configButton.setY(y + yOffset + 43 - getScrollProgress());
 			configButton.setWidth(width - 10);
 			configButton.setHeight(30);
 
@@ -140,6 +144,21 @@ public class ConfigPanel {
 	public void tick() {
 		if (errorTime > 0)
 			errorTime--;
+
+		if (_cbuttonHeight < this.height - 80)
+			return;
+
+		int difference = getHeightDifference();
+
+		setScrollProgress(scrollProgress + scrollSpeed);
+		scrollSpeed *= 0.54;
+
+		if (scrollTimer.hasReached(100)) {
+			if (scrollProgress < 0)
+				scrollSpeed = scrollProgress * -0.35;
+			else if (scrollProgress > difference)
+				scrollSpeed = (scrollProgress - difference) * -0.35;
+		}
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -180,23 +199,10 @@ public class ConfigPanel {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		int scrollOffset = 15;
-		if (_cbuttonHeight < this.height - 80)
-			return;
-
-		if (amount < 0.0D) {
-			this.offset += scrollOffset;
-
-		} else if (amount > 0.0D) {
-			this.offset -= scrollOffset;
-		}
-
-		if (_cbuttonHeight > this.height - 80) {
-			int difference = getHeightDifference();
-			if (offset > difference)
-				offset = difference;
-			else if (offset < 0)
-				offset = 0;
+		if (amount != 0) {
+			double sa = amount < 0 ? amount - 10 : amount + 10;
+			scrollTimer.reset();
+			scrollSpeed -= sa;
 		}
 	}
 
@@ -224,6 +230,16 @@ public class ConfigPanel {
 		for (ConfigButton configButton : configList)
 			height += (configButton.getHeight() + 5);
 		return height;
+	}
+
+	private double getScrollProgress() {
+		return prevScrollProgress
+				+ (scrollProgress - prevScrollProgress) * Helper.minecraftClient.getLastFrameDuration();
+	}
+
+	private void setScrollProgress(double value) {
+		prevScrollProgress = scrollProgress;
+		scrollProgress = value;
 	}
 
 	public String getName() {

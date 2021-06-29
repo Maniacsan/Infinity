@@ -102,13 +102,26 @@ public class Render2D {
 		drawRectWH(matrices, xPos, yPos + height, width + lineWidth, lineWidth, lineColor);
 		drawRectWH(matrices, xPos + width, yPos - lineWidth, lineWidth, height + lineWidth, lineColor);
 		drawRectWH(matrices, xPos, yPos, width, height, bgColor);
-
 	}
 
-	public static void drawRoundedRect(MatrixStack matrices, double x, double y, double width, double height,
+	/**
+	 * Vertical rounded rect
+	 */
+	public static void drawVRoundedRect(MatrixStack matrices, double x, double y, double width, double height,
 			int color) {
-		RenderUtil.drawImage(matrices, true, x, y, width, height,
-				"/assets/infinity/textures/icons/element/roundedrect.png", color);
+		drawCircle(matrices, x + (width / 2), y, width, color);
+		drawCircle(matrices, x + (width / 2), y + height, width, color);
+		drawRectWH(matrices, x, y, width, height, color);
+	}
+
+	/**
+	 * Horizontal rounded rect
+	 */
+	public static void drawHRoundedRect(MatrixStack matrices, double x, double y, double width, double height,
+			int color) {
+		drawCircle(matrices, x, y + (height / 2), height, color);
+		drawCircle(matrices, x + width, y + (height / 2), height, color);
+		drawRectWH(matrices, x, y, width, height, color);
 	}
 
 	public static void drawBorderedCircle(MatrixStack matrices, float x, float y, float radius, int lineWidth,

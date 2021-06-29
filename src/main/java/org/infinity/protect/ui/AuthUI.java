@@ -58,8 +58,8 @@ public class AuthUI extends Screen {
 		this.passwordField.setMaxLength(128);
 		this.addSelectableChild(passwordField);
 
-		this.loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 50,
-				this.height / 2 + 15, 100, 20, new TranslatableText("Login"), (buttonWidget) -> {
+		this.loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 40,
+				this.height / 2 + 15, 80, 20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!usernameField.getText().isEmpty()) {
 						login();
 					}

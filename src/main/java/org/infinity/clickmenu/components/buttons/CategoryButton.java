@@ -9,6 +9,8 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
+import org.infinity.utils.Helper;
+import org.infinity.utils.Timer;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -23,13 +25,18 @@ public class CategoryButton {
 	private ArrayList<ModuleButton> moduleButtons = new ArrayList<>();
 	private List<Module> modules = new ArrayList<>();
 	private List<Module> searchList = new ArrayList<>();
+
+	private Timer scrollTimer = new Timer();
+
 	private Panel panel;
 	private String name;
 	private boolean open;
 
 	private boolean scrollHover;
 
-	private int offset;
+	private double scrollSpeed;
+	private double prevScrollProgress;
+	private double scrollProgress;
 	private int _cbuttonsHeight;
 
 	private double x;
@@ -40,6 +47,7 @@ public class CategoryButton {
 	private double hoverAnim;
 
 	private float fadeAlpha;
+	private float fadeScroll;
 
 	public CategoryButton(String name, List<Module> moduleList, Panel panel) {
 		this.name = name;
@@ -122,25 +130,25 @@ public class CategoryButton {
 		double yMod = 2;
 
 		if (isOpen()) {
-
+			Render2D.startScissor(panel.x + 90, panel.y + 39, 150, panel.height - 40);
 			if (scrollHover && _cbuttonsHeight > panel.height) {
-				Render2D.drawRectWH(matrices, panel.x + 235, panel.y + 37 + offset, 1,
-						panel.height - 40 - getHeightDifference(), 0xFF1F5A96);
+				Render2D.drawVRoundedRect(matrices, panel.x + 235, (panel.y + 55) + (getScrollProgress() - 13), 1,
+						panel.height - 40 - getHeightDifference(), 0xff1F5A96);
 			}
+			Render2D.stopScissor();
 
 			for (ModuleButton moduleButton : moduleButtons) {
 				Render2D.startScissor(panel.x + 90, panel.y + 39, 150, panel.height - 40);
 				_cbuttonsHeight = (int) (panel.y + 37 + yMod);
 				moduleButton.setX(panel.x + 94);
-				moduleButton.setY(yMod + panel.y + 34 - offset);
+				moduleButton.setY(yMod + panel.y + 34 - getScrollProgress());
 				moduleButton.setWidth(140);
 				moduleButton.setHeight(25);
 
 				yMod += 28;
-				
+
 				RenderSystem.setShaderColor(1f, 1f, 1f, fadeAlpha);
 				moduleButton.render(matrices, mouseX, mouseY, delta);
-
 				Render2D.stopScissor();
 			}
 		}
@@ -149,6 +157,21 @@ public class CategoryButton {
 	public void tick() {
 		if (isOpen())
 			moduleButtons.forEach(ModuleButton::tick);
+
+		if (!isOpen() || _cbuttonsHeight < panel.height - 40)
+			return;
+
+		int difference = getHeightDifference();
+
+		setScrollProgress(scrollProgress + scrollSpeed);
+		scrollSpeed *= 0.54;
+
+		if (scrollTimer.hasReached(100)) {
+			if (scrollProgress < 0)
+				scrollSpeed = scrollProgress * -0.45;
+			else if (scrollProgress > difference)
+				scrollSpeed = (scrollProgress - difference) * -0.45;
+		}
 	}
 
 	public void mouseClicked(double mouseX, double mouseY, int button) {
@@ -184,28 +207,14 @@ public class CategoryButton {
 	}
 
 	public void mouseScrolled(double d, double e, double amount) {
-		if (isOpen()) {
+		if (isOpen())
 			moduleButtons.forEach(moduleButton -> moduleButton.mouseScrolled(d, e, amount));
+
+		if (amount != 0 && scrollHover && isOpen()) {
+			double sa = amount < 0 ? amount - 10 : amount + 10;
+			scrollTimer.reset();
+			scrollSpeed -= sa;
 		}
-
-		double scrollOffset = 24;
-
-		if (!isOpen() || !scrollHover || _cbuttonsHeight < panel.height - 40)
-			return;
-
-		if (amount < 0.0D) {
-			this.offset += scrollOffset;
-
-		} else if (amount > 0.0D) {
-			this.offset -= scrollOffset;
-		}
-
-		int difference = getHeightDifference();
-		if (offset > difference)
-			offset = difference;
-		else if (offset < 0)
-			offset = 0;
-
 	}
 
 	public void mouseReleased(double mouseX, double mouseY, int button) {
@@ -271,6 +280,16 @@ public class CategoryButton {
 					list.add(m);
 			}
 		}
+	}
+
+	private double getScrollProgress() {
+		return prevScrollProgress
+				+ (scrollProgress - prevScrollProgress) * Helper.minecraftClient.getLastFrameDuration();
+	}
+
+	private void setScrollProgress(double value) {
+		prevScrollProgress = scrollProgress;
+		scrollProgress = value;
 	}
 
 	public String getName() {

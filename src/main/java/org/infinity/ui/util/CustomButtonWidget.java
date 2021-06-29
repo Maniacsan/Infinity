@@ -41,15 +41,15 @@ public class CustomButtonWidget extends PressableWidget {
 	}
 
 	public void renderButton(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		Render2D.drawRectWH(matrices, x, y, width, height, this.active && this.isHovered() ? hcolor
-				: this.active ? color : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D);
+		int c1 = this.active && this.isHovered() ? hcolor
+				: this.active ? color : !this.active && this.isHovered() ? 0xFF6F737B : 0xFF50545D;
+		Render2D.drawHRoundedRect(matrices, x, y, width, height, c1);
 		IFont.legacy15.drawCenteredString(matrices, this.getMessage().getString(), this.x + this.width / 2,
 				this.y + (this.height - 8) / 2 - 1, -1);
 
 		if (this.isHovered()) {
 			this.renderToolTip(matrices, mouseX, mouseY);
 		}
-
 	}
 
 	public void renderToolTip(MatrixStack matrices, int mouseX, int mouseY) {
