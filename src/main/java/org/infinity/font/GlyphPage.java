@@ -156,7 +156,7 @@ public class GlyphPage {
 		GlStateManager._bindTexture(0);
 	}
 
-	public float drawChar(MatrixStack stack, char ch, float x, float y, int color) {
+	public float drawChar(MatrixStack stack, char ch, float x, float y, float red, float blue, float green, float alpha) {
 		Glyph glyph = glyphCharacterMap.get(ch);
 
 		if (glyph == null)
@@ -173,14 +173,17 @@ public class GlyphPage {
 
 		BufferBuilder bufferBuilder = Tessellator.getInstance().getBuffer();
 
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+		RenderSystem.setShader(GameRenderer::getPositionColorTexShader);
+		bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE);
 
-		bufferBuilder.vertex(stack.peek().getModel(), x, y + height, 0).texture(pageX, pageY + pageHeight).next();
-		bufferBuilder.vertex(stack.peek().getModel(), x + width, y + height, 0)
+		bufferBuilder.vertex(stack.peek().getModel(), x, y + height, 0).color(red, green, blue, alpha)
+				.texture(pageX, pageY + pageHeight).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x + width, y + height, 0).color(red, green, blue, alpha)
 				.texture(pageX + pageWidth, pageY + pageHeight).next();
-		bufferBuilder.vertex(stack.peek().getModel(), x + width, y, 0).texture(pageX + pageWidth, pageY).next();
-		bufferBuilder.vertex(stack.peek().getModel(), x, y, 0).texture(pageX, pageY).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x + width, y, 0).color(red, green, blue, alpha)
+				.texture(pageX + pageWidth, pageY).next();
+		bufferBuilder.vertex(stack.peek().getModel(), x, y, 0).color(red, green, blue, alpha).texture(pageX, pageY)
+				.next();
 		bufferBuilder.end();
 
 		BufferRenderer.draw(bufferBuilder);

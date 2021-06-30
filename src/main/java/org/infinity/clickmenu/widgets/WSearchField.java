@@ -12,7 +12,6 @@ import org.lwjgl.glfw.GLFW;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class WSearchField {
@@ -64,8 +63,8 @@ public class WSearchField {
 			Render2D.drawRect(matrices, x + 1 + position - 13, y, x + width, y + height, color);
 		}
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/search.png"), x - 9 + position,
-				y + 3, 10, 10);
+		RenderUtil.drawImage(matrices, true, x - 9 + position,
+				y + 3, 10, 10, "/assets/infinity/textures/icons/search.png");
 
 		if (!panel.isOpenSearch())
 			return;

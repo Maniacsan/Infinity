@@ -47,7 +47,6 @@ public class CategoryButton {
 	private double hoverAnim;
 
 	private float fadeAlpha;
-	private float fadeScroll;
 
 	public CategoryButton(String name, List<Module> moduleList, Panel panel) {
 		this.name = name;
@@ -100,6 +99,7 @@ public class CategoryButton {
 		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 
 		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.1) : 0);
+		fadeAlpha = (float) RenderUtil.smoothFrame(fadeAlpha);
 
 		if (!name.equalsIgnoreCase(panel.SEARCH)) {
 			if (isOpen()) {
@@ -132,7 +132,7 @@ public class CategoryButton {
 		if (isOpen()) {
 			Render2D.startScissor(panel.x + 90, panel.y + 39, 150, panel.height - 40);
 			if (scrollHover && _cbuttonsHeight > panel.height) {
-				Render2D.drawVRoundedRect(matrices, panel.x + 235, (panel.y + 55) + (getScrollProgress() - 13), 1,
+				Render2D.drawVRoundedRect(matrices, panel.x + 235, (panel.y + 40) + (getScrollProgress()), 1,
 						panel.height - 40 - getHeightDifference(), 0xff1F5A96);
 			}
 			Render2D.stopScissor();
@@ -149,6 +149,7 @@ public class CategoryButton {
 
 				RenderSystem.setShaderColor(1f, 1f, 1f, fadeAlpha);
 				moduleButton.render(matrices, mouseX, mouseY, delta);
+				RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 				Render2D.stopScissor();
 			}
 		}

@@ -20,12 +20,11 @@ public class ClickMenu extends IScreen {
 
 	public ClickMenu() {
 		panel = new Panel(this, 60, 20, 400, 290);
+		anim = 0.32;
 	}
 
 	@Override
 	public void init() {
-		anim = 0.32;
-
 		panel.init();
 
 		super.init();

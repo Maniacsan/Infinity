@@ -59,7 +59,6 @@ public class ModuleButton {
 	private double hoverAnim;
 
 	private float fadeAlpha;
-	private float fadeScroll;
 
 	public ModuleButton(Module module, ArrayList<ModuleButton> buttons, Panel panel) {
 		this.module = module;

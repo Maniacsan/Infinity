@@ -11,7 +11,6 @@ import java.util.Locale;
 import java.util.Random;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.BufferRenderer;
@@ -35,24 +34,6 @@ public class GlyphPageFontRenderer {
 	 * darker version of the same colors for drop shadows.
 	 */
 	private int[] colorCode = new int[32];
-	/**
-	 * Used to specify new red value for the current color.
-	 */
-	private float red;
-	/**
-	 * Used to specify new blue value for the current color.
-	 */
-	private float blue;
-	/**
-	 * Used to specify new green value for the current color.
-	 */
-	private float green;
-	/**
-	 * Used to speify new alpha value for the current color.
-	 */
-	private float alpha;
-	
-	private int color;
 	/**
 	 * Set if the "l" style (bold) is active in currently rendering string
 	 */
@@ -264,18 +245,9 @@ public class GlyphPageFontRenderer {
 			if (dropShadow) {
 				color = (color & 16579836) >> 2 | color & -16777216;
 			}
-			
-			this.color = color;
-			this.red = (float) (color >> 16 & 255) / 255.0F;
-			this.blue = (float) (color >> 8 & 255) / 255.0F;
-			this.green = (float) (color & 255) / 255.0F;
-			this.alpha = (float) (color >> 24 & 255) / 255.0F;
-			RenderSystem.setShaderColor(red, blue, green, alpha);
 			this.posX = x * 2.0f;
 			this.posY = y * 2.0f;
-			this.renderStringAtPos(matrices, text, dropShadow);
-			// Reset color
-			RenderSystem.setShaderColor(1, 1, 1, 1);
+			this.renderStringAtPos(matrices, text, dropShadow, color);
 			return (int) (this.posX / 4.0f);
 		}
 	}
@@ -283,8 +255,12 @@ public class GlyphPageFontRenderer {
 	/**
 	 * Render a single line string at the current (posX,posY) and update posX
 	 */
-	private void renderStringAtPos(MatrixStack matrices, String text, boolean shadow) {
+	private void renderStringAtPos(MatrixStack matrices, String text, boolean shadow, int color) {
 		GlyphPage glyphPage = getCurrentGlyphPage();
+		float alpha = (float) (color >> 24 & 255) / 255.0F;
+		float g = (float) (color >> 16 & 255) / 255.0F;
+		float h = (float) (color >> 8 & 255) / 255.0F;
+		float k = (float) (color & 255) / 255.0F;
 
 		matrices.push();
 
@@ -320,8 +296,9 @@ public class GlyphPageFontRenderer {
 
 					int j1 = this.colorCode[i1];
 
-					RenderSystem.setShaderColor((float) (j1 >> 16) / 255.0F, (float) (j1 >> 8 & 255) / 255.0F,
-							(float) (j1 & 255) / 255.0F, this.alpha);
+					g = (float) (j1 >> 16 & 255) / 255.0F;
+					h = (float) (j1 >> 8 & 255) / 255.0F;
+					k = (float) (j1 & 255) / 255.0F;
 				} else if (i1 == 16) {
 				} else if (i1 == 17) {
 					this.boldStyle = true;
@@ -336,8 +313,6 @@ public class GlyphPageFontRenderer {
 					this.strikethroughStyle = false;
 					this.underlineStyle = false;
 					this.italicStyle = false;
-
-					RenderSystem.setShaderColor(this.red, this.blue, this.green, this.alpha);
 				}
 
 				++i;
@@ -346,14 +321,13 @@ public class GlyphPageFontRenderer {
 
 				glyphPage.bindTexture();
 
-				float f = glyphPage.drawChar(matrices, c0, posX, posY, color);
+				float f = glyphPage.drawChar(matrices, c0, posX, posY, g, k, h, alpha);
 
 				doDraw(f, glyphPage);
 			}
 		}
 
 		glyphPage.unbindTexture();
-
 		matrices.pop();
 
 	}
