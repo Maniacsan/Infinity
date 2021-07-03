@@ -39,7 +39,8 @@
   "ChatHudMixin",
   "IExplosionS2CPacket",
   "GameMenuScreenMixin",
-  "IClickableWidget"
+  "IClickableWidget",
+  "HeldItemRendererMixin"
   ],
     "injectors": {
     "defaultRequire": 1

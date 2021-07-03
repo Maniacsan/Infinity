@@ -172,6 +172,10 @@ public class WSearchField {
 	public void setFocused(boolean focused) {
 		this.focused = focused;
 	}
+	
+	public boolean isFocused() {
+		return focused;
+	}
 
 	public double getWidth() {
 		return width;

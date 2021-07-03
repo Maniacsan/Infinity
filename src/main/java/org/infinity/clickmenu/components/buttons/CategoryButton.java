@@ -78,6 +78,7 @@ public class CategoryButton {
 				ModuleButton enabledButton = new ModuleButton(module, moduleButtons, panel);
 				moduleButtons.add(enabledButton);
 			}
+			init();
 		}
 	}
 
@@ -93,6 +94,7 @@ public class CategoryButton {
 		for (Module result : searchList) {
 			moduleButtons.add(new ModuleButton(result, moduleButtons, panel));
 		}
+		init();
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
@@ -133,7 +135,7 @@ public class CategoryButton {
 			Render2D.startScissor(panel.x + 90, panel.y + 39, 150, panel.height - 40);
 			if (scrollHover && _cbuttonsHeight > panel.height) {
 				Render2D.drawVRoundedRect(matrices, panel.x + 235, (panel.y + 40) + (getScrollProgress()), 1,
-						panel.height - 40 - getHeightDifference(), 0xff1F5A96);
+						panel.height - 45 - getHeightDifference(), 0xff1F5A96);
 			}
 			Render2D.stopScissor();
 
@@ -241,7 +243,7 @@ public class CategoryButton {
 				moduleButtons.forEach(moduleButton -> moduleButton.keyPressed(keyCode, scanCode, modifiers));
 		}
 
-		if (name.equalsIgnoreCase(panel.SEARCH) && panel.isOpenSearch()) {
+		if (name.equalsIgnoreCase(panel.SEARCH) && panel.isOpenSearch() && panel.searchField.isFocused()) {
 			searchRefresh(searchList);
 		}
 	}

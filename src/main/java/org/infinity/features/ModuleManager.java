@@ -88,7 +88,8 @@ public class ModuleManager {
 			new SelfDestruct(),
 			new NoHurtCam(),
 			new NoServerRotation(),
-			new NoFall()
+			new NoFall(),
+			new ViewModel()
 			);
 
 	public List<Module> getList() {
