@@ -8,7 +8,9 @@ import org.infinity.features.command.Command;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.features.module.player.PacketKick;
 import org.infinity.main.InfMain;
+import org.infinity.via.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -18,18 +20,24 @@ import com.darkmagician6.eventapi.EventManager;
 import com.darkmagician6.eventapi.types.EventType;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.PacketDeflater;
+import net.minecraft.network.PacketInflater;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.network.packet.c2s.play.ChatMessageC2SPacket;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
+
+	@Shadow
+	private Channel channel;
 
 	@Inject(method = "handlePacket", at = @At("HEAD"), cancellable = true)
 	private static <T extends PacketListener> void onHandlePacket(Packet<T> packet, PacketListener listener,
@@ -109,6 +117,38 @@ public class ClientConnectionMixin {
 		if (throwable instanceof IOException
 				&& InfMain.getModuleManager().getModuleByClass(PacketKick.class).isEnabled())
 			ci.cancel();
+	}
+
+	@Inject(method = "setCompressionThreshold", at = @At("HEAD"), cancellable = true)
+	private void reorderCompression(int compressionThreshold, CallbackInfo ci) {
+		if (compressionThreshold >= 0) {
+			if (this.channel.pipeline().get("decompress") instanceof PacketInflater) {
+				((PacketInflater) this.channel.pipeline().get("decompress"))
+						.setCompressionThreshold(compressionThreshold);
+			} else {
+				// Via
+				Util.decodeEncodePlacement(channel.pipeline(), "decoder", "decompress",
+						new PacketInflater(compressionThreshold));
+			}
+
+			if (this.channel.pipeline().get("compress") instanceof PacketDeflater) {
+				((PacketDeflater) this.channel.pipeline().get("compress"))
+						.setCompressionThreshold(compressionThreshold);
+			} else {
+				// Via
+				Util.decodeEncodePlacement(channel.pipeline(), "encoder", "compress",
+						new PacketInflater(compressionThreshold));
+			}
+		} else {
+			if (this.channel.pipeline().get("decompress") instanceof PacketInflater) {
+				this.channel.pipeline().remove("decompress");
+			}
+
+			if (this.channel.pipeline().get("compress") instanceof PacketDeflater) {
+				this.channel.pipeline().remove("compress");
+			}
+		}
+		ci.cancel();
 	}
 
 }

@@ -14,6 +14,7 @@ import org.infinity.protect.IHandler;
 import org.infinity.ui.account.main.AccountManager;
 import org.infinity.utils.Helper;
 import org.infinity.utils.user.User;
+import org.infinity.via.ViaFabric;
 
 public class InfMain {
 
@@ -34,6 +35,8 @@ public class InfMain {
 	public void initialize() {
 		self = false;
 		direction = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
+		new ViaFabric().onInitialize();
+		
 		init = new Initialize();
 
 		if (!direction.exists()) {
@@ -98,7 +101,7 @@ public class InfMain {
 	public static IHandler getHandler() {
 		return InfMain.INSTANCE.init.handler;
 	}
-	
+
 	public static User getUser() {
 		return InfMain.INSTANCE.init.user;
 	}

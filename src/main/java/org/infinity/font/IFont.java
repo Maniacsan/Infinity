@@ -1,6 +1,5 @@
 package org.infinity.font;
 
-import org.infinity.FontRenderer;
 import org.jetbrains.annotations.NotNull;
 
 public class IFont {
@@ -22,5 +21,4 @@ public class IFont {
 	public static GlyphPageFontRenderer legacy20 = GlyphPageFontRenderer.createTTF(LEGACY, 20, false, false, false);
 	public static GlyphPageFontRenderer legacy22 = GlyphPageFontRenderer.createTTF(LEGACY, 22, false, false, false);
 
-	public static FontRenderer test = new FontRenderer(LEGACY, 64);
 }

@@ -40,7 +40,9 @@
   "IExplosionS2CPacket",
   "GameMenuScreenMixin",
   "IClickableWidget",
-  "HeldItemRendererMixin"
+  "HeldItemRendererMixin",
+  "ClientConnectionChInitMixin",
+  "ServerNetworkIoChInitMixin"
   ],
     "injectors": {
     "defaultRequire": 1

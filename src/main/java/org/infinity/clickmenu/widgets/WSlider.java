@@ -1,8 +1,5 @@
 package org.infinity.clickmenu.widgets;
 
-import org.infinity.clickmenu.util.FontUtils;
-import org.infinity.utils.MathAssist;
-
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.fabricmc.api.EnvType;
@@ -21,6 +18,7 @@ import net.minecraft.util.math.MathHelper;
 @Environment(EnvType.CLIENT)
 public class WSlider extends ClickableWidget {
 	protected double value;
+	public double prevValue;
 	private double min;
 	private double max;
 
@@ -39,17 +37,14 @@ public class WSlider extends ClickableWidget {
 		return new TranslatableText("gui.narrate.slider", new Object[] { this.getMessage() });
 	}
 
-	protected void renderBg(MatrixStack matrices, MinecraftClient client, int mouseX, int mouseY) {
+	@Override
+	protected void renderBackground(MatrixStack matrices, MinecraftClient client, int mouseX, int mouseY) {
 		RenderSystem.setShaderTexture(0, WIDGETS_TEXTURE);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		int i = (this.isHovered() ? 2 : 1) * 20;
-
 		this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)), this.y, 0, 46 + i, 4, 20);
 		this.drawTexture(matrices, this.x + (int) (this.value * (double) (this.width - 8)) + 4, this.y, 196, 46 + i, 4,
 				20);
-
-		FontUtils.drawStringWithShadow(matrices, String.valueOf(MathAssist.round(getValue(), 2)),
-				x + 4 + (value * width - 8), y + 24, -1);
 	}
 
 	public void onClick(double mouseX, double mouseY) {
@@ -71,10 +66,12 @@ public class WSlider extends ClickableWidget {
 	}
 
 	private void setValueMouse(double mouseX) {
+		prevValue = this.value;
 		this.value = MathHelper.clamp(mouseX, 0.0D, 1.0D);
 	}
 
 	public void setValue(double value) {
+		prevValue = this.value;
 		this.value = MathHelper.clamp((this.adjust(value) - this.min) / (this.max - this.min), 0.0D, 1.0D);
 	}
 
