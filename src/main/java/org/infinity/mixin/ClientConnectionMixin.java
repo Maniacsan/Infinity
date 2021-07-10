@@ -45,9 +45,8 @@ public class ClientConnectionMixin {
 		PacketEvent event = new PacketEvent(EventType.RECIEVE, packet);
 		EventManager.call(event);
 
-		if (event.isCancelled()) {
+		if (event.isCancelled())
 			info.cancel();
-		}
 	}
 
 	@Inject(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"), cancellable = true)

@@ -100,7 +100,7 @@ public class CategoryButton {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 90, panel.y + 37, width + 60, panel.height - 40);
 
-		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.1) : 0);
+		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.16) : 0);
 		fadeAlpha = (float) RenderUtil.smoothFrame(fadeAlpha);
 
 		if (!name.equalsIgnoreCase(panel.SEARCH)) {

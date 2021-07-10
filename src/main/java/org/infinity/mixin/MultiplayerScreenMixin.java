@@ -32,17 +32,13 @@ public class MultiplayerScreenMixin extends Screen {
 
 	@Unique
 	private String currentVersion;
-	
-	@Unique 
-	private double stateValue;
 
 	protected MultiplayerScreenMixin(Text title) {
 		super(title);
 	}
-	
+
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initClass(CallbackInfo ci) {
-		stateValue = ProtocolSorter.getProtocolVersions().size() - 1;
 		currentVersion = String.valueOf(ViaFabric.clientSideVersion);
 	}
 
@@ -63,25 +59,24 @@ public class MultiplayerScreenMixin extends Screen {
 		addDrawableChild(accButton);
 
 		slider = new WSlider(0D, ProtocolSorter.getProtocolVersions().size() - 1, width / 2 + 50, 10, 110, 20,
-				new LiteralText("Version " + currentVersion), stateValue);
+				new LiteralText("Version " + currentVersion), ViaFabric.stateValue);
 		addDrawableChild(slider);
 	}
 
 	@Inject(method = "render", at = @At("TAIL"))
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		slider.render(matrices, mouseX, mouseY, delta);
-		
+
 		if (slider.prevValue != slider.getValue()) {
 			currentVersion = ProtocolUtils
 					.getProtocolName(ProtocolSorter.getProtocolVersions().get((int) slider.getValue()).getVersion());
-			stateValue = slider.getValue();
+			ViaFabric.stateValue = slider.getValue();
 
 			Integer parsed = ProtocolUtils.parseProtocolId(currentVersion);
 			ViaFabric.clientSideVersion = parsed;
 			slider.setMessage(new LiteralText("Version " + currentVersion));
 			slider.prevValue = slider.getValue();
 		}
-		
 	}
 
 }

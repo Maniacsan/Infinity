@@ -12,6 +12,7 @@ import org.infinity.via.platform.VRLoader;
 import org.infinity.via.platform.VRPlatform;
 import org.infinity.via.protocol.ViaFabricHostnameProtocol;
 import org.infinity.via.util.JLoggerToLog4j;
+import org.infinity.via.util.ProtocolSorter;
 
 import com.google.common.collect.Range;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -27,6 +28,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class ViaFabric {
 	
     public static int clientSideVersion = 755;
+    public static double stateValue = ProtocolSorter.getProtocolVersions().size() - 1;
     
     public static final Logger JLOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaFabric"));
     public static final ExecutorService ASYNC_EXECUTOR;

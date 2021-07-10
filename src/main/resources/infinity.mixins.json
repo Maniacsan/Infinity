@@ -42,7 +42,9 @@
   "IClickableWidget",
   "HeldItemRendererMixin",
   "ClientConnectionChInitMixin",
-  "ServerNetworkIoChInitMixin"
+  "ServerNetworkIoChInitMixin",
+  "PlayerSkinProviderMixin",
+  "IElytraFeatureRenderer"
   ],
     "injectors": {
     "defaultRequire": 1

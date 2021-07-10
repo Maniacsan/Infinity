@@ -2,6 +2,7 @@ package org.infinity.clickmenu;
 
 import org.infinity.clickmenu.components.Panel;
 import org.infinity.ui.IScreen;
+import org.infinity.utils.Helper;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -20,11 +21,12 @@ public class ClickMenu extends IScreen {
 
 	public ClickMenu() {
 		panel = new Panel(this, 60, 20, 400, 290);
-		anim = 0.28;
 	}
 
 	@Override
 	public void init() {
+		anim = 0.23;
+		fade = -0.2f;
 		panel.init();
 
 		super.init();
@@ -34,12 +36,14 @@ public class ClickMenu extends IScreen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 
-		fade = (float) Math.min(1, fade + 0.2);
-		anim = anim > 0 ? Math.max(0, anim - 0.14) : 0;
+		fade = (float) ((Helper.minecraftClient.currentScreen == null) ? Math.max(0, fade - 0.48)
+				: Math.min(1, fade + 0.68));
+		anim = Helper.minecraftClient.currentScreen != null ? Math.max(0, anim - 0.13)
+				: Helper.minecraftClient.currentScreen == null ? Math.min(0.23, anim + 0.13) : 0.23;
 
 		matrices.push();
 
-		if (anim > 0) {
+		if (anim != 0) {
 			matrices.translate(panel.x + 200, panel.y + 145, 0);
 			matrices.scale((float) (1 + anim), (float) (1 + anim), (float) (1 + anim));
 			matrices.translate(-panel.x - 200, -panel.y - 145, 0);
@@ -86,9 +90,6 @@ public class ClickMenu extends IScreen {
 	@Override
 	public void onClose() {
 		panel.onClose();
-
-		anim = 0.28;
-		fade = 0;
 		super.onClose();
 	}
 

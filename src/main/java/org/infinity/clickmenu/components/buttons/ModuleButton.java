@@ -120,7 +120,7 @@ public class ModuleButton {
 		this.scrollHover = Render2D.isHovered(mouseX, mouseY, panel.x + 244, panel.y + 37, panel.width,
 				panel.height - 40);
 
-		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.1) : 0);
+		fadeAlpha = (float) (isOpen() ? Math.min(1, fadeAlpha + 0.16) : 0);
 		hoverAnim = hovered ? Math.min(2.7, hoverAnim + 0.18) : Math.max(1, hoverAnim - 0.15);
 
 		// shadow
