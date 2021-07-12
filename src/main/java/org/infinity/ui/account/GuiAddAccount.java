@@ -1,7 +1,7 @@
 package org.infinity.ui.account;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.ui.account.main.AddThread;
+import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;

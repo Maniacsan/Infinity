@@ -18,7 +18,8 @@ public class CommandManager {
 			new ToggleCommand(),
 			new HClipCommand(),
 			new VClipCommand(),
-			new IPCommand()
+			new IPCommand(),
+			new UUIDCommand()
 			);
 
 	public List<Command> getCommands() {

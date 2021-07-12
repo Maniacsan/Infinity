@@ -27,8 +27,8 @@ public class ToggleCommand extends Command {
 
 	@Override
 	public void error() {
-		set(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
-		set(Formatting.WHITE + prefix + "toggle " + Formatting.GRAY + "<" + Formatting.AQUA + "module" + Formatting.GRAY
+		send(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
+		send(Formatting.WHITE + prefix + "toggle " + Formatting.GRAY + "<" + Formatting.AQUA + "module" + Formatting.GRAY
 				+ ">");
 
 	}

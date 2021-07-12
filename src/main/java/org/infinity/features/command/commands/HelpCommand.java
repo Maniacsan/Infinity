@@ -12,13 +12,13 @@ public class HelpCommand extends Command {
 	@Override
 	public void command(String[] args, String msg) {
 		for (Command commands : InfMain.getCommandManager().getCommands()) {
-			set(commands.getName() + " - " + Formatting.GRAY + commands.getDesc());
+			send(commands.getName() + " - " + Formatting.GRAY + commands.getDesc());
 		}
 	}
 
 	@Override
 	public void error() {
-		set("Please use: " + Formatting.AQUA + prefix + "help");
+		send("Please use: " + Formatting.AQUA + prefix + "help");
 	}
 
 }

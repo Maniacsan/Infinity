@@ -1,7 +1,7 @@
 package org.infinity.ui;
 
-import org.infinity.clickmenu.util.FontUtils;
-import org.infinity.clickmenu.util.Render2D;
+import org.infinity.ui.menu.util.FontUtils;
+import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.ConnectUtil;
 
 import net.minecraft.client.gui.screen.Screen;

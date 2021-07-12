@@ -1,12 +1,12 @@
 package org.infinity.protect.impl;
 
 import org.infinity.chat.IRC.IRCClient;
-import org.infinity.clickmenu.ClickMenu;
 import org.infinity.event.protect.SuccessEvent;
 import org.infinity.features.component.macro.MacroManager;
 import org.infinity.file.config.ConfigManager;
 import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
+import org.infinity.ui.menu.ClickMenu;
 import org.infinity.utils.ConnectUtil;
 
 import com.darkmagician6.eventapi.EventTarget;

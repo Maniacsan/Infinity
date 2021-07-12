@@ -15,26 +15,26 @@ public class BindCommand extends Command {
 		org.infinity.features.Module module = InfMain.getModuleManager().getModuleByName(args[1]);
 		if (args[0].equalsIgnoreCase("add")) {
 			module.setKey(InputUtil.fromTranslationKey("key.keyboard." + args[2].toLowerCase()).getCode());
-			set(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " binded to "
+			send(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " binded to "
 					+ Formatting.AQUA + args[2]);
 		} else if (args[0].equalsIgnoreCase("del")) {
 			module.setKey(-2);
-			set(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " removed binds");
+			send(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " removed binds");
 		} else if (args[0].equalsIgnoreCase("clear")) {
 			for (org.infinity.features.Module m : InfMain.getModuleManager().getList())
 				m.setKey(-2);
 
-			set(Formatting.GRAY + "Binds cleared");
+			send(Formatting.GRAY + "Binds cleared");
 		}
 	}
 
 	@Override
 	public void error() {
-		set(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
-		set(Formatting.WHITE + prefix + "bind add " + Formatting.AQUA + "module" + Formatting.GRAY + "<"
+		send(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
+		send(Formatting.WHITE + prefix + "bind add " + Formatting.AQUA + "module" + Formatting.GRAY + "<"
 				+ Formatting.AQUA + "key" + Formatting.GRAY + ">");
-		set(Formatting.WHITE + prefix + "bind del " + Formatting.AQUA + "module");
-		set(Formatting.WHITE + prefix + "bind clear");
+		send(Formatting.WHITE + prefix + "bind del " + Formatting.AQUA + "module");
+		send(Formatting.WHITE + prefix + "bind clear");
 	}
 
 }

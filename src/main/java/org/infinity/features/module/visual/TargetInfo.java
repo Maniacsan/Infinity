@@ -1,11 +1,11 @@
 package org.infinity.features.module.visual;
 
-import org.infinity.clickmenu.util.Render2D;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.font.IFont;
+import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.entity.EntityUtil;

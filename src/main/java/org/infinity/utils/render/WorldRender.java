@@ -1,6 +1,6 @@
 package org.infinity.utils.render;
 
-import org.infinity.clickmenu.util.FontUtils;
+import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 import org.lwjgl.opengl.GL11;
 

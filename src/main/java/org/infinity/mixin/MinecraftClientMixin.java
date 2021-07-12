@@ -4,6 +4,7 @@ import org.infinity.event.ClickEvent;
 import org.infinity.event.OpenScreenEvent;
 import org.infinity.event.TickEvent;
 import org.infinity.event.protect.StartProcessEvent;
+import org.infinity.features.component.cape.AnyCapes;
 import org.infinity.main.InfMain;
 import org.infinity.ui.FirstStartUI;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,10 +43,17 @@ public abstract class MinecraftClientMixin {
 		EventManager.call(event);
 	}
 
-	@Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/SplashScreen;init(Lnet/minecraft/client/MinecraftClient;)V", shift = At.Shift.AFTER))
+	@Inject(method = "<init>", at = @At(value = "TAIL"))
 	public void onScreenInit(RunArgs runArgs, CallbackInfo ci) {
 		StartProcessEvent event = new StartProcessEvent(EventType.POST);
 		EventManager.call(event);
+	}
+
+	@Inject(at = {
+			@At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER) }, method = {
+					"run" })
+	private void onStart(CallbackInfo ci) {
+		new AnyCapes().onInitialize((MinecraftClient) ((Object) this));
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")
@@ -54,9 +62,8 @@ public abstract class MinecraftClientMixin {
 		EventManager.call(tickEvent);
 
 		if (world != null) {
-			if (InfMain.firstStart) {
+			if (InfMain.firstStart)
 				((MinecraftClient) (Object) this).openScreen(new FirstStartUI());
-			}
 		}
 	}
 

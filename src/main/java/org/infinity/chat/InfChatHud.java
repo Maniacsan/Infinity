@@ -5,8 +5,8 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 
-import org.infinity.clickmenu.util.FontUtils;
-import org.infinity.clickmenu.util.Render2D;
+import org.infinity.font.IFont;
+import org.infinity.ui.menu.util.Render2D;
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.Lists;
@@ -43,10 +43,8 @@ public class InfChatHud extends DrawableHelper {
 	public List<Chat> chats = new ArrayList<>();
 
 	public Chat currentChat = null;
-
 	public Chat mcChat = new Chat("Minecraft");
-
-	public Chat infChat = new Chat("Infinity IRC");
+	public Chat infChat = new Chat("Infinity");
 
 	private int topY;
 	private int tabWidth;
@@ -71,9 +69,9 @@ public class InfChatHud extends DrawableHelper {
 
 				float d = (float) this.getChatScale();
 				int k = MathHelper.ceil((double) this.getWidth() / d);
-	            matrices.push();
-	            matrices.translate(4.0D, 8.0D, 0.0D);
-	            matrices.scale(d, d, 1.0F);
+				matrices.push();
+				matrices.translate(4.0D, 8.0D, 0.0D);
+				matrices.scale(d, d, 1.0F);
 
 				double e = this.client.options.chatOpacity * 0.8999999761581421D + 0.10000000149011612D;
 				double f = this.client.options.textBackgroundOpacity;
@@ -81,6 +79,11 @@ public class InfChatHud extends DrawableHelper {
 				double h = -8.0D * (this.client.options.chatLineSpacing + 1.0D)
 						+ 4.0D * this.client.options.chatLineSpacing;
 				int l = 0;
+
+				if (bl) {
+					fill(matrices, 3, (-i) * 11, k + 4, 7, bl ? -804253680 : -1341124592);
+					topY = (-i + 1) * 11 - 11 + 5;
+				}
 
 				int m;
 				int x;
@@ -101,12 +104,12 @@ public class InfChatHud extends DrawableHelper {
 									double s = (double) (-m) * g;
 									matrices.push();
 									matrices.translate(0.0D, 0.0D, 50.0D);
-									fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
-									topY = (int) (s - g + 4);
+									if (!bl)
+										fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
 									RenderSystem.enableBlend();
 									matrices.translate(0.0D, 0.0D, 50.0D);
 									this.client.textRenderer.drawWithShadow(matrices,
-											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
+											(OrderedText) chatHudLine.getText(), bl ? 6F : 0F, (float) ((int) (s + h)),
 											16777215 + (aa << 24));
 									RenderSystem.disableBlend();
 									matrices.pop();
@@ -129,12 +132,12 @@ public class InfChatHud extends DrawableHelper {
 									double s = (double) (-m) * g;
 									matrices.push();
 									matrices.translate(0.0D, 0.0D, 50.0D);
-									fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
-									topY = (int) (s - g + 4);
+									if (!bl)
+										fill(matrices, -2, (int) (s - g), 0 + k + 4, (int) s, ab << 24);
 									RenderSystem.enableBlend();
 									matrices.translate(0.0D, 0.0D, 50.0D);
 									this.client.textRenderer.drawWithShadow(matrices,
-											(OrderedText) chatHudLine.getText(), 0.0F, (float) ((int) (s + h)),
+											(OrderedText) chatHudLine.getText(), bl ? 6F : 0F, (float) ((int) (s + h)),
 											16777215 + (aa << 24));
 									RenderSystem.disableBlend();
 									matrices.pop();
@@ -181,20 +184,22 @@ public class InfChatHud extends DrawableHelper {
 					int tabCount = Math.min(3, i1);
 					tabWidth = width / tabCount;
 
-					fill(matrices, 0, topY - 29, tabWidth * 2 + 7, topY - 8, 0xFF363636);
-					fill(matrices, 2, topY - 26, tabWidth, topY - 11, currentChat == mcChat ? 0xFF555454 : 0xFF1D1C1C);
-					fill(matrices, tabWidth + 3, topY - 26, tabWidth + tabWidth, topY - 11,
-							currentChat == infChat ? 0xFF555454 : 0xFF1D1C1C);
-					FontUtils.drawHVCenteredString(matrices, "Minecraft", tabWidth / 2 + 2, topY - 18,
+					Render2D.drawRectWH(matrices, 0, topY - 32, tabWidth * 2 + 7, 25, 0xFF363636);
+					Render2D.drawHRoundedRect(matrices, 16, topY - 27, IFont.legacy18.getStringWidth(mcChat.name) + 5,
+							15, currentChat == mcChat ? 0xFF555454 : 0xFF1D1C1C);
+					Render2D.drawHRoundedRect(matrices, 12 + IFont.legacy18.getStringWidth(mcChat.name) + 34, topY - 27,
+							IFont.legacy18.getStringWidth(infChat.name) + 5, 15, currentChat == infChat ? 0xFF555454 : 0xFF1D1C1C);
+					IFont.legacy18.drawCenteredString(matrices, mcChat.name, 37, topY - 25,
 							currentChat == mcChat ? -1 : 0xFF8E8B8B);
-					FontUtils.drawHVCenteredString(matrices, "Infinity", tabWidth + tabWidth / 2, topY - 18,
+					IFont.legacy18.drawCenteredString(matrices, infChat.name,
+							18 + IFont.legacy18.getStringWidth(mcChat.name) + 44, topY - 25,
 							currentChat == infChat ? -1 : 0xFF8E8B8B);
 
 					fill(matrices, 2, topY - 8, tabWidth * 2 + 7, topY - 7, 0xFF74E9EA);
 
 					topY -= 16;
 				}
-	            matrices.pop();
+				matrices.pop();
 			}
 		}
 	}
@@ -362,17 +367,12 @@ public class InfChatHud extends DrawableHelper {
 
 	public boolean mouseClicked(double mouseX, double mouseY) {
 		if (this.isChatFocused()) {
-			int i = this.chats.size();
-			int width = (int) (Math.ceil(getWidth() / getChatScale()) + 1);
-			int tabCount = Math.min(3, i);
-			float tabWidth = width / tabCount;
-
-			if (Render2D.isFillHovered(mouseX, mouseY, tabWidth - tabWidth, Render2D.getScaledHeight() + topY - 2 - 50,
-					tabWidth, Render2D.getScaledHeight() + topY + 13 - 50)) {
+			if (Render2D.isFillHovered(mouseX, mouseY, 12, Render2D.getScaledHeight() + topY - 2 - 50,
+					IFont.legacy18.getStringWidth(mcChat.name) + 34, Render2D.getScaledHeight() + topY + 13 - 50)) {
 				this.currentChat = mcChat;
 
-			} else if (Render2D.isFillHovered(mouseX, mouseY, tabWidth, Render2D.getScaledHeight() + topY - 2 - 50,
-					tabWidth + tabWidth, Render2D.getScaledHeight() + topY + 13 - 50)) {
+			} else if (Render2D.isFillHovered(mouseX, mouseY, 8 + IFont.legacy18.getStringWidth(mcChat.name) + 34, Render2D.getScaledHeight() + topY - 2 - 50,
+					(IFont.legacy18.getStringWidth(mcChat.name) + 30) + IFont.legacy18.getStringWidth(infChat.name) + 34, Render2D.getScaledHeight() + topY + 13 - 50)) {
 				this.currentChat = infChat;
 
 			}

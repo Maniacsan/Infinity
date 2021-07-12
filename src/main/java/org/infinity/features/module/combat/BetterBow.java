@@ -1,10 +1,10 @@
 package org.infinity.features.module.combat;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.util.math.MatrixStack;

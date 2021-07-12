@@ -2,12 +2,12 @@ package org.infinity.protect.ui;
 
 import java.awt.Color;
 
-import org.infinity.clickmenu.util.FontUtils;
-import org.infinity.clickmenu.util.Render2D;
 import org.infinity.file.AuthInfo;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.mixin.IClickableWidget;
+import org.infinity.ui.menu.util.FontUtils;
+import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
 import org.infinity.utils.Helper;

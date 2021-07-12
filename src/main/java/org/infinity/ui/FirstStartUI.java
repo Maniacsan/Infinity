@@ -2,10 +2,10 @@ package org.infinity.ui;
 
 import java.awt.Color;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.command.Command;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
+import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;

@@ -119,15 +119,15 @@ public class ClientConnectionMixin {
 	}
 
 	@Inject(method = "setCompressionThreshold", at = @At("HEAD"), cancellable = true)
-	private void reorderCompression(int compressionThreshold, CallbackInfo ci) {
+	private void reorderCompression(int compressionThreshold, boolean bl, CallbackInfo ci) {
 		if (compressionThreshold >= 0) {
 			if (this.channel.pipeline().get("decompress") instanceof PacketInflater) {
 				((PacketInflater) this.channel.pipeline().get("decompress"))
-						.setCompressionThreshold(compressionThreshold);
+						.setCompressionThreshold(compressionThreshold, bl);
 			} else {
 				// Via
 				Util.decodeEncodePlacement(channel.pipeline(), "decoder", "decompress",
-						new PacketInflater(compressionThreshold));
+						new PacketInflater(compressionThreshold, bl));
 			}
 
 			if (this.channel.pipeline().get("compress") instanceof PacketDeflater) {
@@ -136,7 +136,7 @@ public class ClientConnectionMixin {
 			} else {
 				// Via
 				Util.decodeEncodePlacement(channel.pipeline(), "encoder", "compress",
-						new PacketInflater(compressionThreshold));
+						new PacketInflater(compressionThreshold, bl));
 			}
 		} else {
 			if (this.channel.pipeline().get("decompress") instanceof PacketInflater) {

@@ -1,8 +1,8 @@
 package org.infinity.mixin;
 
-import org.infinity.clickmenu.widgets.WSlider;
 import org.infinity.main.InfMain;
 import org.infinity.ui.account.GuiAccountManager;
+import org.infinity.ui.menu.widgets.WSlider;
 import org.infinity.ui.tools.ToolsMain;
 import org.infinity.utils.Helper;
 import org.infinity.via.ViaFabric;

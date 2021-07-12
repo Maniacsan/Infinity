@@ -3,8 +3,8 @@ package org.infinity.mixin;
 import java.io.File;
 import java.util.Map;
 
-import org.infinity.component.cape.cape.AbstractCapeProvider;
-import org.infinity.component.cape.mixinterface.PlayerSkinProviderAccess;
+import org.infinity.features.component.cape.cape.AbstractCapeProvider;
+import org.infinity.features.component.cape.mixinterface.PlayerSkinProviderAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.gen.Accessor;

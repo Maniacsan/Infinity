@@ -4,7 +4,6 @@ import java.io.File;
 
 import org.infinity.chat.InfChatHud;
 import org.infinity.chat.IRC.IRCClient;
-import org.infinity.component.cape.AnyCapes;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
@@ -37,7 +36,6 @@ public class InfMain {
 		self = false;
 		direction = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
 		new ViaFabric().onInitialize();
-		new AnyCapes().onInitialize();
 		
 		init = new Initialize();
 

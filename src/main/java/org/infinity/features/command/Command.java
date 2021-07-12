@@ -34,7 +34,7 @@ public abstract class Command {
 		this.desc = desc;
 	}
 
-	public void set(String message) {
+	public void send(String message) {
 		Helper.infoMessage(message);
 	}
 

@@ -17,36 +17,36 @@ public class MacroCommand extends Command {
 		if (args[0].equalsIgnoreCase("add")) {
 			InfMain.getMacroManager().getList().add(new Macro(macroMsg,
 					InputUtil.fromTranslationKey("key.keyboard." + args[1].toLowerCase()).getCode()));
-			set(Formatting.GRAY + "Macro added to key " + Formatting.WHITE + args[1]);
+			send(Formatting.GRAY + "Macro added to key " + Formatting.WHITE + args[1]);
 			InfMain.getMacroManager().save();
 		} else if (args[0].equalsIgnoreCase("del")) {
 			InfMain.getMacroManager()
 					.del(InputUtil.fromTranslationKey("key.keyboard." + args[1].toLowerCase()).getCode());
-			set(Formatting.GRAY + "Macro deleted from key " + Formatting.WHITE + args[1]);
+			send(Formatting.GRAY + "Macro deleted from key " + Formatting.WHITE + args[1]);
 			InfMain.getMacroManager().save();
 		} else if (args[0].equalsIgnoreCase("list")) {
 			if (InfMain.getMacroManager().getList().isEmpty()) {
-				set(Formatting.GRAY + "Macro binds is empty");
+				send(Formatting.GRAY + "Macro binds is empty");
 			} else {
 				InfMain.getMacroManager().getList().forEach(macro -> {
-					set(macro.getKey() + " -> " + Formatting.GRAY + macro.getMessage());
+					send(macro.getKey() + " -> " + Formatting.GRAY + macro.getMessage());
 				});
 			}
 		} else if (args[0].equalsIgnoreCase("clear")) {
 			InfMain.getMacroManager().getList().clear();
-			set(Formatting.GRAY + "Macros cleared");
+			send(Formatting.GRAY + "Macros cleared");
 			InfMain.getMacroManager().save();
 		}
 	}
 
 	@Override
 	public void error() {
-		set(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
-		set(Formatting.WHITE + prefix + "macro add " + Formatting.GRAY + "<" + Formatting.AQUA + "key" + Formatting.GRAY
+		send(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
+		send(Formatting.WHITE + prefix + "macro add " + Formatting.GRAY + "<" + Formatting.AQUA + "key" + Formatting.GRAY
 				+ ">" + Formatting.GRAY + " message");
-		set(Formatting.WHITE + prefix + "macro del " + Formatting.AQUA + "key");
-		set(Formatting.WHITE + prefix + "macro list");
-		set(Formatting.WHITE + prefix + "macro clear");
+		send(Formatting.WHITE + prefix + "macro del " + Formatting.AQUA + "key");
+		send(Formatting.WHITE + prefix + "macro list");
+		send(Formatting.WHITE + prefix + "macro clear");
 
 	}
 

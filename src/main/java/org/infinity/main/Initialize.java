@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.infinity.chat.InfChatHud;
 import org.infinity.chat.IRC.IRCClient;
-import org.infinity.clickmenu.ClickMenu;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
@@ -19,6 +18,7 @@ import org.infinity.protect.HandlerManager;
 import org.infinity.protect.IHandler;
 import org.infinity.protect.ui.AuthUI;
 import org.infinity.ui.account.main.AccountManager;
+import org.infinity.ui.menu.ClickMenu;
 import org.infinity.utils.user.User;
 
 import net.minecraft.client.MinecraftClient;

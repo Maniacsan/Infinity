@@ -111,8 +111,7 @@ public class AntiBot extends Module {
 				if (!needHit.contains(PacketUtil.getEntity(pa).getId())) {
 					needHit.add(PacketUtil.getEntity(pa).getId());
 					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
-							+ PacketUtil.getEntity(pa).getName().getString() + Formatting.GRAY
-							+ " added to targets");
+							+ PacketUtil.getEntity(pa).getName().getString() + Formatting.GRAY + " added to targets");
 				}
 			}
 		}
@@ -153,10 +152,10 @@ public class AntiBot extends Module {
 	private void message(String bot) {
 		if (remove.isToggle() && mode.getCurrentMode().equalsIgnoreCase("Custom"))
 			Helper.infoMessage(
-					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Removed a bot: " + Formatting.BLUE + bot);
+					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Removed a bot: " + Formatting.GREEN + bot);
 		else
 			Helper.infoMessage(
-					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Bot detected: " + Formatting.BLUE + bot);
+					Formatting.GRAY + "[AntiBot] " + Formatting.WHITE + "Bot detected: " + Formatting.GREEN + bot);
 	}
 
 }

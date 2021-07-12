@@ -3,11 +3,11 @@ package org.infinity.features.module.visual;
 import java.util.Arrays;
 import java.util.List;
 
-import org.infinity.clickmenu.util.Render2D;
 import org.infinity.event.RenderTooltipEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
+import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
 import org.infinity.utils.Reflections;

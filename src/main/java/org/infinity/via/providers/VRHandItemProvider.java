@@ -4,18 +4,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.infinity.via.ViaFabric;
-
 import com.viaversion.viaversion.api.connection.UserConnection;
 import com.viaversion.viaversion.api.minecraft.item.DataItem;
 import com.viaversion.viaversion.api.minecraft.item.Item;
 import com.viaversion.viaversion.protocols.protocol1_9to1_8.providers.HandItemProvider;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -45,34 +38,6 @@ public class VRHandItemProvider extends HandItemProvider {
         return new DataItem(clientItem);
     }
 
-    @Environment(EnvType.CLIENT)
-    public void registerClientTick() {
-        try {
-            ClientTickEvents.END_WORLD_TICK.register(clientWorld -> tickClient());
-        } catch (NoClassDefFoundError ignored) {
-            try {
-                WorldTickCallback.EVENT.register(world -> {
-                    if (world.isClient) {
-                        tickClient();
-                    }
-                });
-            } catch (NoClassDefFoundError ignored2) {
-                ViaFabric.JLOGGER.info("Fabric Lifecycle V0/V1 isn't installed");
-            }
-        }
-    }
-
-    public void registerServerTick() {
-        try {
-            ServerTickEvents.END_WORLD_TICK.register(this::tickServer);
-        } catch (NoClassDefFoundError ignored) {
-            WorldTickCallback.EVENT.register(world -> {
-                if (!world.isClient) {
-                    tickServer(world);
-                }
-            });
-        }
-    }
 
     private void tickClient() {
         ClientPlayerEntity p = MinecraftClient.getInstance().player;

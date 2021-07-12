@@ -1,8 +1,8 @@
 package org.infinity.mixin;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.module.hidden.Menu;
 import org.infinity.main.InfMain;
+import org.infinity.ui.menu.util.FontUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

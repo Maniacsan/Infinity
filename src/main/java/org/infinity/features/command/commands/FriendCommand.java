@@ -30,11 +30,11 @@ public class FriendCommand extends Command {
 
 	@Override
 	public void error() {
-		set(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
-		set(Formatting.WHITE + prefix + "friend add " + Formatting.AQUA + "name");
-		set(Formatting.WHITE + prefix + "bind del " + Formatting.AQUA + "name");
-		set(Formatting.WHITE + prefix + "bind list");
-		set(Formatting.WHITE + prefix + "bind clear");
+		send(Formatting.GRAY + "Please use" + Formatting.WHITE + ":");
+		send(Formatting.WHITE + prefix + "friend add " + Formatting.AQUA + "name");
+		send(Formatting.WHITE + prefix + "bind del " + Formatting.AQUA + "name");
+		send(Formatting.WHITE + prefix + "bind list");
+		send(Formatting.WHITE + prefix + "bind clear");
 		
 	}
 

@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import org.infinity.clickmenu.util.Render2D;
+import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.RenderUtil;
 import org.jetbrains.annotations.Nullable;

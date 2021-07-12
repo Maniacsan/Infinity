@@ -1,9 +1,9 @@
 package org.infinity.ui.tools;
 
-import org.infinity.clickmenu.util.FontUtils;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.main.InfMain;
 import org.infinity.ui.FirstStartUI;
+import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 
 import net.minecraft.client.gui.screen.Screen;
