@@ -21,14 +21,14 @@ public class ColorPickerElement extends AbstractElement {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		hovered = Render2D.isHovered(mouseX, mouseY, x, y, width, height);
 
-		IFont.legacy15.drawString(matrices, setting.getName(), x + 24, y + 7, 0xFFFFFFFF);
-		Render2D.drawBorderedRect(matrices, x + 3, y + 4, 16, 14, 1f, 0xFF070337, setting.getColor().getRGB());
+		IFont.legacy14.drawString(matrices, setting.getName(), x + 22, y + 5.5, 0xFFFFFFFF);
+		Render2D.drawBorderedRect(matrices, x + 3, y + 3.5, 16, 12, 0.5f, 0xFF070337, setting.getColor().getRGB());
 	}
 
 	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
 		if (hovered)
-			Helper.openScreen(new ColorPickerWindow(Helper.minecraftClient.currentScreen, setting));
+			Helper.openScreen(new ColorPickerWindow(Helper.MC.currentScreen, setting));
 	}
 
 	@Override

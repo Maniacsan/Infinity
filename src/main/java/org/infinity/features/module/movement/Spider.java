@@ -17,7 +17,7 @@ public class Spider extends Module {
 			new ArrayList<>(Arrays.asList("Matrix 6.1.1", "Vanilla")));
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {

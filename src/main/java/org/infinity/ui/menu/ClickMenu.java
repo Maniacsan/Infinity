@@ -37,10 +37,10 @@ public class ClickMenu extends IScreen {
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 		this.renderBackground(matrices);
 
-		fade = (float) ((Helper.minecraftClient.currentScreen == null) ? Math.max(0, fade - 0.48)
-				: Math.min(1, fade + 0.68));
-		anim = Helper.minecraftClient.currentScreen != null ? Math.max(0, anim - 0.13)
-				: Helper.minecraftClient.currentScreen == null ? Math.min(0.23, anim + 0.13) : 0.23;
+		fade = (float) ((Helper.MC.currentScreen == null) ? Math.max(0, fade - 0.58)
+				: Math.min(1, fade + 0.58));
+		anim = Helper.MC.currentScreen != null ? Math.max(0, anim - 0.09)
+				: Helper.MC.currentScreen == null ? Math.min(0.23, anim + 0.13) : 0.23;
 
 		matrices.push();
 

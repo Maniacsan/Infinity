@@ -9,9 +9,9 @@ import org.infinity.utils.Helper;
 public class Sprint extends Module {
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer().forwardSpeed != 0) {
-			Helper.minecraftClient.options.keySprint.setPressed(true);
+			Helper.MC.options.keySprint.setPressed(true);
 		}
 	}
 

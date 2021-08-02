@@ -38,7 +38,7 @@ public class PingSpoof extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(String.valueOf(delay.getCurrentValueInt()));
 	}
 
@@ -61,7 +61,7 @@ public class PingSpoof extends Module {
 	public void onPacket(PacketEvent event) {
 		if (event.getType().equals(EventType.SEND)) {
 
-			if (Helper.minecraftClient.isInSingleplayer() || Helper.getPlayer().getHealth() <= 0)
+			if (Helper.MC.isInSingleplayer() || Helper.getPlayer().getHealth() <= 0)
 				return;
 
 			if (event.getPacket() instanceof KeepAliveC2SPacket

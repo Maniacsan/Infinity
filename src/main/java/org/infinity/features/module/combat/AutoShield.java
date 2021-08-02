@@ -15,7 +15,7 @@ public class AutoShield extends Module {
 	private Setting ignoreTotem = new Setting(this, "Ignore Totem", false);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer() == null && Helper.getWorld() == null)
 			return;
 

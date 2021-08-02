@@ -33,7 +33,7 @@ public class HUD extends Module {
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-		if (Helper.minecraftClient.options.debugEnabled)
+		if (Helper.MC.options.debugEnabled)
 			return;
 
 		double scale = getScale();
@@ -93,7 +93,7 @@ public class HUD extends Module {
 			double upY = this.scale.getCurrentMode().equalsIgnoreCase("100%") ? 18
 					: this.scale.getCurrentMode().equalsIgnoreCase("80%") ? 19
 							: this.scale.getCurrentMode().equalsIgnoreCase("40%") ? 29 : 23;
-			double y2 = Helper.minecraftClient.currentScreen instanceof ChatScreen ? upY : 11;
+			double y2 = Helper.MC.currentScreen instanceof ChatScreen ? upY : 11;
 
 			IFont.legacy17.drawStringWithShadow(matrices, coords, rWidth + 44, height - y2, 0xFFFFFFFF);
 		}
@@ -114,8 +114,8 @@ public class HUD extends Module {
 			double upY = this.scale.getCurrentMode().equalsIgnoreCase("100%") ? 29
 					: this.scale.getCurrentMode().equalsIgnoreCase("80%") ? 30
 							: this.scale.getCurrentMode().equalsIgnoreCase("40%") ? 40 : 34;
-			double y1 = Helper.minecraftClient.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23
-					: Helper.minecraftClient.currentScreen instanceof ChatScreen && coordinates.isToggle() ? upY
+			double y1 = Helper.MC.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23
+					: Helper.MC.currentScreen instanceof ChatScreen && coordinates.isToggle() ? upY
 							: coordinates.isToggle() ? 22 : 11;
 
 			IFont.legacy17.drawStringWithShadow(matrices, nCoords, rWidth + 43, height - y1, 0xFFFFFFFF);

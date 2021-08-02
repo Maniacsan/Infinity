@@ -42,10 +42,10 @@ public class ChestSteal extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (packet != null && Helper.getPlayer().currentScreenHandler.syncId == packet.getSyncId()) {
-			if (Helper.minecraftClient.currentScreen instanceof ShulkerBoxScreen
-					|| Helper.minecraftClient.currentScreen instanceof GenericContainerScreen) {
+			if (Helper.MC.currentScreen instanceof ShulkerBoxScreen
+					|| Helper.MC.currentScreen instanceof GenericContainerScreen) {
 				if (!isContainerEmpty(Helper.getPlayer().currentScreenHandler)) {
 					for (int i = 0; i < Helper.getPlayer().currentScreenHandler.slots.size() - 36; ++i) {
 						net.minecraft.screen.slot.Slot slot = Helper.getPlayer().currentScreenHandler.getSlot(i);

@@ -25,7 +25,7 @@ public class HitBoxes extends Module {
 	public Setting size = new Setting(this, "Size", 0.35D, 0.0D, 5.0D);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(StringUtil.DF(size.getCurrentValueDouble(), 2));
 	}
 
@@ -33,7 +33,7 @@ public class HitBoxes extends Module {
 	public void onRotation(RotationEvent event) {
 		// spoofing to entity rotation
 
-		if (Helper.minecraftClient.targetedEntity == null && !EntityUtil.isTarget(Helper.minecraftClient.targetedEntity,
+		if (Helper.MC.targetedEntity == null && !EntityUtil.isTarget(Helper.MC.targetedEntity,
 				players.isToggle(), false, invisibles.isToggle(), mobs.isToggle(), animals.isToggle()))
 			return;
 

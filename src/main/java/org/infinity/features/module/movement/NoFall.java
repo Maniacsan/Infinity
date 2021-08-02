@@ -29,7 +29,7 @@ public class NoFall extends Module {
 	private int y2;
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 		if (mode.getCurrentMode().equalsIgnoreCase("Vanilla")) {
 			if (Helper.getPlayer().fallDistance > 2.5 && !Helper.getPlayer().isFallFlying())

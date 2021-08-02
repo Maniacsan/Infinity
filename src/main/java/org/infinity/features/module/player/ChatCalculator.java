@@ -11,7 +11,6 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
-import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
 import org.infinity.utils.calc.TermSolver;
@@ -52,7 +51,7 @@ public class ChatCalculator extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (solvesResults.size() > 3) {
 			solvesResults.remove(solvesResults.size() - 1);
 		}
@@ -137,10 +136,7 @@ public class ChatCalculator extends Module {
 		if (event.getType().equals(EventType.SEND)) {
 			if (event.getPacket() instanceof ChatMessageC2SPacket) {
 				ChatMessageC2SPacket cms = (ChatMessageC2SPacket) event.getPacket();
-
-				if (InfMain.getChatHud().currentChat == InfMain.getChatHud().infChat)
-					return;
-
+				
 				String chatMessage = cms.getChatMessage().contains("Ðåøèòå ïðèìåð:")
 						? cms.getChatMessage().replace("Ðåøèòå ïðèìåð:", "")
 						: cms.getChatMessage().replace("!", "");

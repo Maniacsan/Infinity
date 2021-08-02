@@ -57,7 +57,7 @@ public class ColorPickerWindow extends IScreen {
 
 	@Override
 	public void init() {
-		Helper.minecraftClient.keyboard.setRepeatEvents(true);
+		Helper.MC.keyboard.setRepeatEvents(true);
 		colorField = new WTextField(0xFF0B1427, false);
 		colorField.setMaxLength(6);
 

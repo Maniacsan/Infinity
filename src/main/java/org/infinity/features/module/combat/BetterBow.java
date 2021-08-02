@@ -24,12 +24,12 @@ public class BetterBow extends Module {
 	private Setting delay = new Setting(this, "Delay", 2.5, 0.1, 25.0);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()) {
 
 			if (Helper.getPlayer().getItemUseTime() >= delay.getCurrentValueDouble()) {
 
-				if (autoShoot.isToggle() || Helper.minecraftClient.options.keyAttack.isPressed()) {
+				if (autoShoot.isToggle() || Helper.MC.options.keyAttack.isPressed()) {
 					Helper.sendPacket(new PlayerActionC2SPacket(Action.RELEASE_USE_ITEM, BlockPos.ORIGIN,
 							Helper.getPlayer().getHorizontalFacing()));
 					Helper.sendPacket(new PlayerInteractItemC2SPacket(Helper.getPlayer().getActiveHand()));

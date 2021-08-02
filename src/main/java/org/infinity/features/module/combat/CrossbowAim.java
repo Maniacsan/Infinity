@@ -64,7 +64,7 @@ public class CrossbowAim extends Module {
 
 			if (Helper.getPlayer().getMainHandStack().getItem() instanceof CrossbowItem
 					&& ((ICrossbowItem) Helper.getPlayer().getMainHandStack().getItem()).isLoaded()
-					&& Helper.minecraftClient.options.keyAttack.isPressed()) {
+					&& Helper.MC.options.keyAttack.isPressed()) {
 				target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(),
 						players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(),
 						animals.isToggle(), throughWalls.isToggle());

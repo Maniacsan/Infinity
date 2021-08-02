@@ -104,7 +104,7 @@ public class ConnectUtil {
 		new Thread(() -> {
 
 			try {
-				File path = new File(Helper.minecraftClient.runDirectory, "mods");
+				File path = new File(Helper.MC.runDirectory, "mods");
 				File file = new File(path, "Infinity-" + getUpdateVersion() + ".jar");
 				if (Protect.DOWNLOADER.download(
 						new URL("http://whyuleet.ru/infinity/jar/Infinity-" + getUpdateVersion() + ".jar"),

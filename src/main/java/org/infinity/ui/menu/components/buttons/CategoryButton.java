@@ -287,7 +287,7 @@ public class CategoryButton {
 
 	private double getScrollProgress() {
 		return prevScrollProgress
-				+ (scrollProgress - prevScrollProgress) * Helper.minecraftClient.getLastFrameDuration();
+				+ (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
 	}
 
 	private void setScrollProgress(double value) {

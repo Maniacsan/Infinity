@@ -20,7 +20,7 @@ public class RenderTooltipEvent extends EventCancellable {
 
 	public RenderTooltipEvent(MatrixStack matrix, List<? extends OrderedText> text, int x, int y) {
 		this.matrix = matrix;
-		screen = Helper.minecraftClient.currentScreen;
+		screen = Helper.MC.currentScreen;
 		this.text = text;
 		this.x = x;
 		this.y = y;

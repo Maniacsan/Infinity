@@ -19,8 +19,16 @@ import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 
+/**
+ * 
+ * @author superblaubeere27
+ * @ported sprayD
+ *
+ */
 public class GlyphPageFontRenderer {
+
 	public Random fontRandom = new Random();
+
 	/**
 	 * Current X coordinate at which to draw the next character.
 	 */
@@ -123,7 +131,7 @@ public class GlyphPageFontRenderer {
 		return new GlyphPageFontRenderer(regularPage, boldPage, italicPage, boldItalicPage);
 	}
 
-	public static GlyphPageFontRenderer createTTF(String ttf, int size, boolean bold, boolean italic,
+	public static GlyphPageFontRenderer createFromID(String id, int size, boolean bold, boolean italic,
 			boolean boldItalic) {
 		char[] chars = new char[256];
 
@@ -134,7 +142,7 @@ public class GlyphPageFontRenderer {
 		Font font = null;
 
 		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(ttf))
+			font = Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(id))
 					.deriveFont(Font.PLAIN, size);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,7 +161,7 @@ public class GlyphPageFontRenderer {
 		try {
 			if (bold) {
 				boldPage = new GlyphPage(
-						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(ttf))
+						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(id))
 								.deriveFont(Font.BOLD, size),
 						true, true);
 
@@ -163,7 +171,7 @@ public class GlyphPageFontRenderer {
 
 			if (italic) {
 				italicPage = new GlyphPage(
-						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(ttf))
+						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(id))
 								.deriveFont(Font.ITALIC, size),
 						true, true);
 
@@ -173,7 +181,7 @@ public class GlyphPageFontRenderer {
 
 			if (boldItalic) {
 				boldItalicPage = new GlyphPage(
-						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(ttf))
+						Font.createFont(Font.TRUETYPE_FONT, GlyphPageFontRenderer.class.getResourceAsStream(id))
 								.deriveFont(Font.BOLD | Font.ITALIC, size),
 						true, true);
 

@@ -13,15 +13,15 @@ import net.minecraft.client.util.InputUtil;
 public class InvWalk extends Module {
 
 	@Override
-	public void onPlayerTick() {
-		if (Helper.minecraftClient.currentScreen != null
-				&& !(Helper.minecraftClient.currentScreen instanceof ChatScreen)) {
+	public void onUpdate() {
+		if (Helper.MC.currentScreen != null
+				&& !(Helper.MC.currentScreen instanceof ChatScreen)) {
 			
-			for (KeyBinding k : new KeyBinding[] { Helper.minecraftClient.options.keyForward,
-					Helper.minecraftClient.options.keyBack, Helper.minecraftClient.options.keyLeft,
-					Helper.minecraftClient.options.keyRight, Helper.minecraftClient.options.keyJump,
-					Helper.minecraftClient.options.keySprint }) {
-				k.setPressed(InputUtil.isKeyPressed(Helper.minecraftClient.getWindow().getHandle(),
+			for (KeyBinding k : new KeyBinding[] { Helper.MC.options.keyForward,
+					Helper.MC.options.keyBack, Helper.MC.options.keyLeft,
+					Helper.MC.options.keyRight, Helper.MC.options.keyJump,
+					Helper.MC.options.keySprint }) {
+				k.setPressed(InputUtil.isKeyPressed(Helper.MC.getWindow().getHandle(),
 						InputUtil.fromTranslationKey(k.getBoundKeyTranslationKey()).getCode()));
 			}
 		}

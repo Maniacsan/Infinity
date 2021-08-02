@@ -17,7 +17,7 @@ public class Timer extends Module {
 	}
 	
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		InfMain.TIMER = value.getCurrentValueFloat();
 	}
 

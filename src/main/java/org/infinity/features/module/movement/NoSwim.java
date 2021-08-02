@@ -9,7 +9,7 @@ import org.infinity.utils.Helper;
 public class NoSwim extends Module {
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer().isTouchingWater()) {
 			Helper.getPlayer().setSwimming(false);
 		}

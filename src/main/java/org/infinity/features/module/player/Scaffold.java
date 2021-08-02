@@ -63,24 +63,24 @@ public class Scaffold extends Module {
 
 	@Override
 	public void onDisable() {
-		if (Helper.minecraftClient.options.keySneak.isPressed())
-			Helper.minecraftClient.options.keySneak.setPressed(false);
+		if (Helper.MC.options.keySneak.isPressed())
+			Helper.MC.options.keySneak.setPressed(false);
 
 		pos = null;
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 
 		// eagle
 		BlockPos eaglePos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1,
 				Helper.getPlayer().getZ());
 
 		if (eagle.isToggle()) {
-			if (Helper.minecraftClient.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {
-				Helper.minecraftClient.options.keySneak.setPressed(false);
+			if (Helper.MC.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {
+				Helper.MC.options.keySneak.setPressed(false);
 			} else {
-				Helper.minecraftClient.options.keySneak.setPressed(true);
+				Helper.MC.options.keySneak.setPressed(true);
 			}
 		}
 
@@ -120,7 +120,7 @@ public class Scaffold extends Module {
 			Helper.getPlayer().headYaw = alwaysL[0];
 		}
 
-		if (Helper.minecraftClient.world.getBlockState(pos).getBlock() == Blocks.AIR) {
+		if (Helper.MC.world.getBlockState(pos).getBlock() == Blocks.AIR) {
 
 			if (pos == null) {
 				timer.reset();
@@ -150,7 +150,7 @@ public class Scaffold extends Module {
 					if (!safe())
 						return;
 
-					if (Helper.minecraftClient.options.keyJump.isPressed() && Helper.getPlayer().fallDistance == 0) {
+					if (Helper.MC.options.keyJump.isPressed() && Helper.getPlayer().fallDistance == 0) {
 						return;
 					}
 
@@ -244,7 +244,7 @@ public class Scaffold extends Module {
 
 	private boolean safe() {
 		if (mode.getCurrentMode().equalsIgnoreCase("Safe")) {
-			if (Helper.minecraftClient.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+			if (Helper.MC.crosshairTarget.getType() == HitResult.Type.BLOCK) {
 				return true;
 			} else {
 				return false;

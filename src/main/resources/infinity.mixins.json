@@ -36,7 +36,6 @@
   "BlockModelRendererMixin",
   "ChunkOcclusionDataBuilderMixin",
   "ScreenMixin",
-  "ChatHudMixin",
   "IExplosionS2CPacket",
   "GameMenuScreenMixin",
   "IClickableWidget",

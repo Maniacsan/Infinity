@@ -58,9 +58,9 @@ public class TargetStrafe extends Module {
 		if (Helper.getPlayer().isOnGround())
 			Helper.getPlayer().jump();
 
-		if (Helper.minecraftClient.options.keyLeft.isPressed())
+		if (Helper.MC.options.keyLeft.isPressed())
 			direction = 1;
-		else if (Helper.minecraftClient.options.keyRight.isPressed())
+		else if (Helper.MC.options.keyRight.isPressed())
 			direction = -1;
 
 		if (Helper.getPlayer().horizontalCollision)
@@ -121,7 +121,7 @@ public class TargetStrafe extends Module {
 
 	public static float getNormalizeYaw(Entity entity) {
 		float yaw = (float) (RotationUtil.lookAtEntity(entity)[0] + MathAssist.random(-3D, 3D));
-		float sens = (float) Helper.minecraftClient.options.mouseSensitivity / 0.005F;
+		float sens = (float) Helper.MC.options.mouseSensitivity / 0.005F;
 		float f = 0.005F * sens;
 		float gcd = f * f * f * 1.2F;
 		yaw -= yaw % gcd;

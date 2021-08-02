@@ -63,7 +63,7 @@ public class NameTags extends Module {
 			Vec3d rPos = EntityUtil.getRenderPos(entity);
 
 			scale = Math.max(
-					this.scale.getCurrentValueDouble() * (Helper.minecraftClient.cameraEntity.distanceTo(entity) / 20),
+					this.scale.getCurrentValueDouble() * (Helper.MC.cameraEntity.distanceTo(entity) / 20),
 					1);
 
 			if (items.isToggle() && entity instanceof ItemEntity) {
@@ -137,9 +137,9 @@ public class NameTags extends Module {
 
 			String subText = text.substring(0, 2) + m.getValue();
 
-			int w1 = Helper.minecraftClient.textRenderer.getWidth(subText) / 2;
+			int w1 = Helper.MC.textRenderer.getWidth(subText) / 2;
 			// hz vashe kak 0 - w1 rabotaet ,no bez nego krivo
-			Helper.minecraftClient.textRenderer.drawWithShadow(matrix, subText, 0 - w1, c * 12 - 24, 0xFFFFFFFF);
+			Helper.MC.textRenderer.drawWithShadow(matrix, subText, 0 - w1, c * 12 - 24, 0xFFFFFFFF);
 			c--;
 		}
 

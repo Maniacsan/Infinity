@@ -96,9 +96,9 @@ public class Step extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
-			if (Helper.minecraftClient.options.keyJump.isPressed()
+			if (Helper.MC.options.keyJump.isPressed()
 					|| InfMain.getModuleManager().getModuleByClass(TargetStrafe.class).isEnabled()
 							&& TargetStrafe.target != null)
 				EntityUtil.setStepHeight(0.6f);
@@ -127,7 +127,7 @@ public class Step extends Module {
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
 			if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
-				if (Helper.minecraftClient.options.keyJump.isPressed())
+				if (Helper.MC.options.keyJump.isPressed())
 					return;
 
 				offsetX = 0;

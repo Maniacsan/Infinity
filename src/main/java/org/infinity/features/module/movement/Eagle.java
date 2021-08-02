@@ -13,22 +13,22 @@ public class Eagle extends Module {
 
 	@Override
 	public void onDisable() {
-		if (Helper.minecraftClient.options.keySneak.isPressed())
-			Helper.minecraftClient.options.keySneak.setPressed(false);
+		if (Helper.MC.options.keySneak.isPressed())
+			Helper.MC.options.keySneak.setPressed(false);
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		BlockPos eaglePos = new BlockPos(Helper.getPlayer().getX(), Helper.getPlayer().getY() - 1,
 				Helper.getPlayer().getZ());
 		
 		if (Helper.getPlayer().getAbilities().flying)
 			return;
 
-		if (Helper.minecraftClient.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {
-			Helper.minecraftClient.options.keySneak.setPressed(false);
+		if (Helper.MC.world.getBlockState(eaglePos).getBlock() != Blocks.AIR) {
+			Helper.MC.options.keySneak.setPressed(false);
 		} else {
-			Helper.minecraftClient.options.keySneak.setPressed(true);
+			Helper.MC.options.keySneak.setPressed(true);
 		}
 	}
 

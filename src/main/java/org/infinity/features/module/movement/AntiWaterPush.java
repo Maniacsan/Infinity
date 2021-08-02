@@ -17,7 +17,7 @@ public class AntiWaterPush extends Module {
 	}
 	
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		Helper.getPlayer().setSprinting(false);
 	}
 

@@ -55,7 +55,7 @@ public class AntiBot extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 
 		if (Helper.getPlayer() == null || Helper.getWorld() == null)

@@ -26,7 +26,7 @@ public class BlocksSelectElement extends AbstractElement {
 			boolean isAdded = setting.getBlocks().contains(blocks);
 			Render2D.drawRectWH(matrices, xOffset + x - 1, yOffset + y + 3, 21, 19,
 					isAdded ? 0xFF30639F : hover ? Color.GRAY.getRGB() : 0x70000000);
-			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
+			Helper.MC.getItemRenderer().renderGuiItemIcon(blocks.asItem().getDefaultStack(),
 					(int) ((int) xOffset + x + 2), (int) ((int) yOffset + y + 5));
 			xOffset += 23;
 			if (xOffset > 140) {

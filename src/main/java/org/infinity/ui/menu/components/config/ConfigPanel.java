@@ -53,7 +53,7 @@ public class ConfigPanel {
 	}
 
 	public void init() {
-		Helper.minecraftClient.keyboard.setRepeatEvents(true);
+		Helper.MC.keyboard.setRepeatEvents(true);
 		textField = new WTextField(0xFF0B1427, false);
 
 		textField.setMaxLength(45);
@@ -234,7 +234,7 @@ public class ConfigPanel {
 
 	private double getScrollProgress() {
 		return prevScrollProgress
-				+ (scrollProgress - prevScrollProgress) * Helper.minecraftClient.getLastFrameDuration();
+				+ (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
 	}
 
 	private void setScrollProgress(double value) {

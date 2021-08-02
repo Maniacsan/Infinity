@@ -51,7 +51,7 @@ public abstract class EntityMixin {
 
 	@Inject(method = "move", at = @At("RETURN"))
 	private void onMovePost(MovementType type, Vec3d movement, CallbackInfo info) {
-		if ((Object) this != Helper.minecraftClient.player)
+		if ((Object) this != Helper.MC.player)
 			return;
 		MoveEvent moveEvent = new MoveEvent(EventType.POST, type, movement);
 		EventManager.call(moveEvent);

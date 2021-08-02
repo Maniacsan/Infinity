@@ -12,20 +12,20 @@ public class FullBright extends Module {
 
 	@Override
 	public void onEnable() {
-		oldGamma = Helper.minecraftClient.options.gamma;
+		oldGamma = Helper.MC.options.gamma;
 	}
 
 	@Override
 	public void onDisable() {
 		if (oldGamma != -2) {
-			Helper.minecraftClient.options.gamma = oldGamma;
+			Helper.MC.options.gamma = oldGamma;
 			oldGamma = -2;
 		}
 	}
 
 	@Override
-	public void onPlayerTick() {
-		Helper.minecraftClient.options.gamma = 100;
+	public void onUpdate() {
+		Helper.MC.options.gamma = 100;
 	}
 
 }

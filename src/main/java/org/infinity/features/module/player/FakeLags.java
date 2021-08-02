@@ -51,7 +51,7 @@ public class FakeLags extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Pulse")) {
@@ -68,7 +68,7 @@ public class FakeLags extends Module {
 				}
 			}
 		} else if (mode.getCurrentMode().equalsIgnoreCase("Legit")) {
-			if (Helper.getPlayer().isDead() || Helper.minecraftClient.isInSingleplayer())
+			if (Helper.getPlayer().isDead() || Helper.MC.isInSingleplayer())
 				return;
 
 			if (legitTicks >= legitDelay.getCurrentValueDouble()) {
@@ -90,7 +90,7 @@ public class FakeLags extends Module {
 					ticks = 0;
 					return;
 				}
-				Helper.minecraftClient.getNetworkHandler().sendPacket(bothPacket);
+				Helper.MC.getNetworkHandler().sendPacket(bothPacket);
 
 				ticks = 0;
 				bothPacket = null;
@@ -142,7 +142,7 @@ public class FakeLags extends Module {
 		if (packetList != null) {
 			try {
 				for (Packet<?> unsentPacket : this.packetList)
-					Helper.minecraftClient.getNetworkHandler().sendPacket(unsentPacket);
+					Helper.MC.getNetworkHandler().sendPacket(unsentPacket);
 			} catch (Exception exception) {
 			}
 			this.packetList.clear();

@@ -31,7 +31,7 @@ public class Velocity extends Module {
 	public Setting horizontal = new Setting(this, "Horizontal", 0.0D, 0.0D, 1.0D);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 	}
 

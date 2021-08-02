@@ -85,7 +85,7 @@ public class AutoPotion extends Module {
 				new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), 90, Helper.getPlayer().isOnGround()));
 
 			Helper.getPlayer().getInventory().selectedSlot = slot;
-			Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
+			Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
 					Hand.MAIN_HAND);
 
 			// set timer

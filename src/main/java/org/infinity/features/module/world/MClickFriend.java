@@ -17,13 +17,13 @@ public class MClickFriend extends Module {
 	@EventTarget
 	public void onMiddleClick(ClickButtonEvent event) {
 
-		if (Helper.minecraftClient.currentScreen != null)
+		if (Helper.MC.currentScreen != null)
 			return;
 
 		if (event.getButton() == 2) {
-			if (Helper.minecraftClient.targetedEntity != null
-					&& Helper.minecraftClient.targetedEntity instanceof PlayerEntity) {
-				InfMain.getFriend().addOrDelate(Helper.minecraftClient.targetedEntity.getName().getString());
+			if (Helper.MC.targetedEntity != null
+					&& Helper.MC.targetedEntity instanceof PlayerEntity) {
+				InfMain.getFriend().switchFriend(Helper.MC.targetedEntity.getName().getString());
 			}
 		}
 	}

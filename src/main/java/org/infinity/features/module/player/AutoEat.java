@@ -22,7 +22,7 @@ public class AutoEat extends Module {
 	private boolean eating = false;
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer().getAbilities().creativeMode)
 			return;
 		if (eating && !Helper.getPlayer().isUsingItem()) {
@@ -30,7 +30,7 @@ public class AutoEat extends Module {
 				Helper.getPlayer().getInventory().selectedSlot = lastSlot;
 				lastSlot = -1;
 			}
-			KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyUse).getBoundKey(), false);
+			KeyBinding.setKeyPressed(((IKeyBinding) Helper.MC.options.keyUse).getBoundKey(), false);
 			eating = false;
 			return;
 		}
@@ -67,8 +67,8 @@ public class AutoEat extends Module {
 	}
 
 	private void use() {
-		KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyUse).getBoundKey(), true);
-		Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
+		KeyBinding.setKeyPressed(((IKeyBinding) Helper.MC.options.keyUse).getBoundKey(), true);
+		Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
 	}
 
 	private int findFood() {

@@ -116,6 +116,11 @@ public class Setting {
 		return this;
 	}
 
+	public Setting setColor(Color color) {
+		this.color = color;
+		return this;
+	}
+
 	public Module getModule() {
 		return module;
 	}

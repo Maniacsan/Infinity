@@ -20,7 +20,7 @@ public class SelfDestruct extends Module {
 
 	@Override
 	public void onEnable() {
-		Helper.openScreen(new SelfDestructWindow(Helper.minecraftClient.currentScreen));
+		Helper.openScreen(new SelfDestructWindow(Helper.MC.currentScreen));
 		setEnabled(false);
 	}
 

@@ -15,7 +15,7 @@ public class AutoTotem extends Module {
 	private Setting health = new Setting(this, "Health", 20D, 0D, 20D);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (Helper.getPlayer().getHealth() <= this.health.getCurrentValueDouble()) {
 
 			int totem = InvUtil.findItemFullInv(Items.TOTEM_OF_UNDYING);

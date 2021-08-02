@@ -60,7 +60,7 @@ public class Criticals extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 	}
 
@@ -163,8 +163,8 @@ public class Criticals extends Module {
 					attackCount = 0;
 					return;
 				}
-				Helper.minecraftClient.getNetworkHandler().sendPacket(attackPacket);
-				Helper.minecraftClient.getNetworkHandler().sendPacket(swingPacket);
+				Helper.MC.getNetworkHandler().sendPacket(attackPacket);
+				Helper.MC.getNetworkHandler().sendPacket(swingPacket);
 
 				attackCount = 0;
 				attackPacket = null;

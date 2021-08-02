@@ -33,7 +33,7 @@ public class Reach extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		reach = MathAssist.random(minReach.getCurrentValueDouble(), maxReach.getCurrentValueDouble());
 
 		if (lastReach != 0)
@@ -42,7 +42,7 @@ public class Reach extends Module {
 
 	@EventTarget
 	public void onClick(ClickEvent event) {
-		EntityUtil.updateTargetRaycast(Helper.minecraftClient.targetedEntity, reach, Helper.getPlayer().getYaw(),
+		EntityUtil.updateTargetRaycast(Helper.MC.targetedEntity, reach, Helper.getPlayer().getYaw(),
 				Helper.getPlayer().getPitch());
 
 	}

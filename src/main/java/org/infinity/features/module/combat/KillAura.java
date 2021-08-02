@@ -117,13 +117,13 @@ public class KillAura extends Module {
 				+ minSpeed.getCurrentValueDouble());
 
 		focus = RotationUtil.lookAtEntity(target);
-		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+		smash = rotation(target, Helper.MC.options.mouseSensitivity, speed);
 
 		// bypass matrix acceleration check
 		focus[0] = (float) Math.round((focus[0] + MathAssist.random(-3D, 3D)) * 1000) / 1000;
 		focus[1] = (float) Math.round((focus[1] + MathAssist.random(-3D, 3D)) * 1000) / 1000;
 
-		smash = rotation(target, Helper.minecraftClient.options.mouseSensitivity, speed);
+		smash = rotation(target, Helper.MC.options.mouseSensitivity, speed);
 		smash[0] = RotationUtil.limitAngleChange(event.getYaw(), smash[0], speed);
 		smash[1] = RotationUtil.limitAngleChange(event.getPitch(), smash[1], speed);
 

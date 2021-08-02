@@ -13,14 +13,14 @@ public class Friend {
 	private FriendsFile friendFile = new FriendsFile();
 	private List<String> friendList = new ArrayList<String>();
 
-	public boolean check(String name) {
+	public boolean contains(String name) {
 		if (friendList.contains(name)) {
 			return true;
 		}
 		return false;
 	}
 
-	public void addOrDelate(String name) {
+	public void switchFriend(String name) {
 		if (friendList.contains(name)) {
 			remove(name);
 		} else {

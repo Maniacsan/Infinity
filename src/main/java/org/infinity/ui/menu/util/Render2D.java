@@ -200,13 +200,13 @@ public class Render2D {
 	}
 
 	public static void startScissor(double x, double y, double width, double height) {
-		double scaleWidth = (double) Helper.minecraftClient.getWindow().getWidth()
-				/ Helper.minecraftClient.getWindow().getScaledWidth();
-		double scaleHeight = (double) Helper.minecraftClient.getWindow().getHeight()
-				/ Helper.minecraftClient.getWindow().getScaledHeight();
+		double scaleWidth = (double) Helper.MC.getWindow().getWidth()
+				/ Helper.MC.getWindow().getScaledWidth();
+		double scaleHeight = (double) Helper.MC.getWindow().getHeight()
+				/ Helper.MC.getWindow().getScaledHeight();
 
 		RenderSystem.enableScissor((int) (x * scaleWidth),
-				(int) ((Helper.minecraftClient.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
+				(int) ((Helper.MC.getWindow().getHeight()) - (int) ((y + height) * scaleHeight)),
 				(int) (width * scaleWidth), (int) (height * scaleHeight));
 	}
 

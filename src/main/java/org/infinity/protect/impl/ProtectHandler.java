@@ -16,6 +16,7 @@ public class ProtectHandler extends Handler {
 			InfMain.getHandler().getHandler(ConnectLocker.class).enable();
 		} else if (event.getType().equals(EventType.POST)) {
 			InfMain.getHandler().getHandler(ReLoginProcess.class).enable();
+			InfMain.getHandler().getHandler(OpenScreenLocker.class).enable();
 		}
 	}
 }

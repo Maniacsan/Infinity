@@ -76,7 +76,7 @@ public class AuthUI extends Screen {
 			Helper.openSite("https://whyuleet.ru/community/entry/register");
 		}
 		if (exitHover && button == 0) {
-			Helper.minecraftClient.stop();
+			Helper.MC.stop();
 		}
 
 		return super.mouseClicked(mouseX, mouseY, button);

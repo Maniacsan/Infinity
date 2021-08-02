@@ -20,7 +20,7 @@ public class ArmorHUD extends Module {
 
 	@Override
 	public void onRender(MatrixStack matrices, float tickDelta, int width, int height) {
-		if (Helper.minecraftClient.options.debugEnabled)
+		if (Helper.MC.options.debugEnabled)
 			return;
 
 		float scale = (float) this.scale.getCurrentValueDouble();

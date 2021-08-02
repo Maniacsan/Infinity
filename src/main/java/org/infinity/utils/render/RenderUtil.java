@@ -188,9 +188,9 @@ public class RenderUtil {
 	}
 
 	public static void drawItem(ItemStack itemStack, int x, int y, boolean overlay) {
-		Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(itemStack, x, y);
+		Helper.MC.getItemRenderer().renderGuiItemIcon(itemStack, x, y);
 		if (overlay)
-			Helper.minecraftClient.getItemRenderer().renderGuiItemOverlay(Helper.minecraftClient.textRenderer,
+			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer,
 					itemStack, x, y, null);
 	}
 
@@ -202,7 +202,7 @@ public class RenderUtil {
 	 */
 	public static double smoothFrame(double current) {
 		double last = current;
-		return current * Helper.minecraftClient.getLastFrameDuration()
-				+ (last * (1.0f - Helper.minecraftClient.getLastFrameDuration()));
+		return current * Helper.MC.getLastFrameDuration()
+				+ (last * (1.0f - Helper.MC.getLastFrameDuration()));
 	}
 }

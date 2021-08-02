@@ -39,7 +39,7 @@ public class MultiplayerScreenMixin extends Screen {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initClass(CallbackInfo ci) {
-		currentVersion = String.valueOf(ViaFabric.clientSideVersion);
+		currentVersion = ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion);
 	}
 
 	@Inject(method = "init", at = @At("TAIL"))
@@ -48,13 +48,13 @@ public class MultiplayerScreenMixin extends Screen {
 			return;
 
 		ButtonWidget tools = new ButtonWidget(5, 10, 80, 20, new TranslatableText("Tools"), (buttonWidget) -> {
-			Helper.minecraftClient.openScreen(new ToolsMain(this));
+			Helper.MC.openScreen(new ToolsMain(this));
 		});
 		addDrawableChild(tools);
 
 		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 0,
 				new Identifier("infinity", "textures/game/screen/alt.png"), 20, 20,
-				buttonWidget -> Helper.minecraftClient.openScreen(new GuiAccountManager(this)),
+				buttonWidget -> Helper.MC.openScreen(new GuiAccountManager(this)),
 				new TranslatableText("Account"));
 		addDrawableChild(accButton);
 

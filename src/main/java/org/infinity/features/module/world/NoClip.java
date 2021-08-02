@@ -20,15 +20,15 @@ public class NoClip extends Module {
 	public void onMotionTick(MotionEvent event) {
 		MoveUtil.setYVelocity(0);
 
-		if (Helper.minecraftClient.options.keySneak.isPressed()) {
+		if (Helper.MC.options.keySneak.isPressed()) {
 			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y - 0.2);
-		} else if (Helper.minecraftClient.options.keyJump.isPressed()) {
+		} else if (Helper.MC.options.keyJump.isPressed()) {
 			MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().y + 0.2);
 		}
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 	}
 
 	@EventTarget

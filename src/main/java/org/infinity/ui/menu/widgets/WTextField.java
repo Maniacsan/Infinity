@@ -85,7 +85,7 @@ public class WTextField {
 				if (getText().length() != 0)
 					setText(getText().substring(0, getText().length() - 1));
 			} else if (Helper.isPaste(keyCode)) {
-				setText(getText() + Helper.minecraftClient.keyboard.getClipboard());
+				setText(getText() + Helper.MC.keyboard.getClipboard());
 			}
 		}
 	}

@@ -41,13 +41,13 @@ public class GuiDirect extends Screen {
 					if (!accountName.getText().isEmpty()) {
 						Account account = new Account(accountName.getText(), password.getText());
 						(new AccountThread(account)).start();
-						Helper.minecraftClient.openScreen(prev);
+						Helper.MC.openScreen(prev);
 					}
 				}));
 
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height / 4 + 96 + 28, 200, 20,
 				new TranslatableText("Cancel"), (buttonWidget) -> {
-					Helper.minecraftClient.openScreen(prev);
+					Helper.MC.openScreen(prev);
 				}));
 
 	}

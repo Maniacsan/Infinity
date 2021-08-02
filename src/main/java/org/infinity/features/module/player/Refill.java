@@ -34,7 +34,7 @@ public class Refill extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		int find = InvUtil.findPotionInternalInv(StatusEffects.INSTANT_HEALTH, false);
 		int freeSlots = Helper.getPlayer().getInventory().getEmptySlot();
 

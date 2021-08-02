@@ -15,31 +15,27 @@ import net.minecraft.util.Util;
 
 public class Helper {
 
-	public static MinecraftClient minecraftClient = MinecraftClient.getInstance();
+	public static MinecraftClient MC = MinecraftClient.getInstance();
 
 	public static ClientPlayerEntity getPlayer() {
-		return minecraftClient.player;
+		return MC.player;
 	}
 
 	public static ClientWorld getWorld() {
-		return minecraftClient.world;
+		return MC.world;
 	}
 
 	public static void sendPacket(Packet<?> packet) {
 		getPlayer().networkHandler.sendPacket(packet);
 	}
 
-	public static void ircMessage(String text) {
-		InfMain.getChatHud().addInfMessage(new LiteralText(text));
-	}
-
 	public static void infoMessage(String message) {
-		minecraftClient.inGameHud.getChatHud()
+		MC.inGameHud.getChatHud()
 				.addMessage(new LiteralText(Formatting.BLUE + "Infinity" + Formatting.WHITE + ": " + message));
 	}
 
 	public static void openScreen(Screen screen) {
-		minecraftClient.openScreen(screen);
+		MC.openScreen(screen);
 	}
 
 	public static void openSite(String url) {

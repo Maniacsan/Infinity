@@ -44,11 +44,11 @@ public class Jesus extends Module {
 
 	@Override
 	public void onDisable() {
-		KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), false);
+		KeyBinding.setKeyPressed(((IKeyBinding) Helper.MC.options.keyJump).getBoundKey(), false);
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
 			return;
@@ -67,25 +67,25 @@ public class Jesus extends Module {
 			if (Helper.getPlayer().isTouchingWater()) {
 				Helper.getPlayer().setSprinting(false);
 				MoveUtil.strafe(MoveUtil.calcMoveYaw(), speed.getCurrentValueDouble());
-				KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keyJump).getBoundKey(), true);
+				KeyBinding.setKeyPressed(((IKeyBinding) Helper.MC.options.keyJump).getBoundKey(), true);
 			}
 			break;
 		case "Swing":
 			if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
 				if (Helper.getPlayer().age % 3 == 0) {
-					if (Helper.minecraftClient.options.keyForward.isPressed()) {
+					if (Helper.MC.options.keyForward.isPressed()) {
 						dir = Math.toRadians(Helper.getPlayer().getYaw());
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.7), 0.2, Math.cos(dir) * 0.7);
 
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.4), 0.2, Math.cos(dir) * 0.4);
 					}
-					if (Helper.minecraftClient.options.keyLeft.isPressed()) {
+					if (Helper.MC.options.keyLeft.isPressed()) {
 						dir = Math.toRadians(Helper.getPlayer().getYaw() - 90);
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.6), 0.2, Math.cos(dir) * 0.6);
 
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.3), 0.2, Math.cos(dir) * 0.3);
 					}
-					if (Helper.minecraftClient.options.keyRight.isPressed()) {
+					if (Helper.MC.options.keyRight.isPressed()) {
 						dir = Math.toRadians(Helper.getPlayer().getYaw() + 90);
 						Helper.getPlayer().setVelocity((-Math.sin(dir) * 0.6), 0.2, Math.cos(dir) * 0.6);
 
@@ -115,9 +115,9 @@ public class Jesus extends Module {
 
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava() || water) {
 					if (Helper.getPlayer().age % 2 == 0) {
-						if (Helper.minecraftClient.options.keyRight.isPressed()
-								|| Helper.minecraftClient.options.keyLeft.isPressed()
-								|| Helper.minecraftClient.options.keyForward.isPressed())
+						if (Helper.MC.options.keyRight.isPressed()
+								|| Helper.MC.options.keyLeft.isPressed()
+								|| Helper.MC.options.keyForward.isPressed())
 							Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().x, -0.2,
 									Helper.getPlayer().getVelocity().z);
 					}
@@ -127,9 +127,9 @@ public class Jesus extends Module {
 			water = Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava();
 			if (mode.getCurrentMode().equalsIgnoreCase("Swing")) {
 				if (Helper.getPlayer().isTouchingWater() || Helper.getPlayer().isInLava()) {
-					if (Helper.minecraftClient.options.keyRight.isPressed()
-							|| Helper.minecraftClient.options.keyLeft.isPressed()
-							|| Helper.minecraftClient.options.keyForward.isPressed())
+					if (Helper.MC.options.keyRight.isPressed()
+							|| Helper.MC.options.keyLeft.isPressed()
+							|| Helper.MC.options.keyForward.isPressed())
 						return;
 					Helper.getPlayer().setVelocity(Helper.getPlayer().getVelocity().x, 0.2,
 							Helper.getPlayer().getVelocity().z);

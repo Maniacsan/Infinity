@@ -12,7 +12,7 @@ public class FastBreak extends Module {
 	public Setting speed = new Setting(this, "Speed", 1, 1.6, 3);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(StringUtil.DF(speed.getCurrentValueDouble(), 2));
 	}
 

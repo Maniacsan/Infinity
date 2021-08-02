@@ -42,7 +42,7 @@ public class BlockUtil {
 	public static List<WorldChunk> getLoadedChunks() {
 		List<WorldChunk> chunks = new ArrayList<>();
 
-		int viewDist = Helper.minecraftClient.options.viewDistance;
+		int viewDist = Helper.MC.options.viewDistance;
 
 		for (int x = -viewDist; x <= viewDist; x++) {
 			for (int z = -viewDist; z <= viewDist; z++) {
@@ -119,7 +119,7 @@ public class BlockUtil {
 	}
 
 	public static boolean canBeClicked(BlockPos pos) {
-		return getState(pos).getOutlineShape(Helper.minecraftClient.world, pos) != VoxelShapes.empty();
+		return getState(pos).getOutlineShape(Helper.MC.world, pos) != VoxelShapes.empty();
 	}
 
 	public static List<BlockPos> getAllInBox(int x1, int y1, int z1, int x2, int y2, int z2) {

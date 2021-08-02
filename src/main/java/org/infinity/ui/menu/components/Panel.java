@@ -82,7 +82,7 @@ public class Panel {
 	}
 
 	public void init() {
-		Helper.minecraftClient.keyboard.setRepeatEvents(true);
+		Helper.MC.keyboard.setRepeatEvents(true);
 		searchField = new WSearchField(this);
 
 		searchField.setMaxLength(60);
@@ -106,7 +106,7 @@ public class Panel {
 		}
 
 		// drag borders
-		Window window = Helper.minecraftClient.getWindow();
+		Window window = Helper.MC.getWindow();
 		double scaleWidth = window.getScaledWidth();
 		double scaleHeight = window.getScaledHeight();
 		if (x < 0) {

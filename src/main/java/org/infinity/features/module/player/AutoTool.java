@@ -59,7 +59,7 @@ public class AutoTool extends Module {
 
 		if (destroyShield.isToggle()) {
 
-			Entity target = Helper.minecraftClient.targetedEntity;
+			Entity target = Helper.MC.targetedEntity;
 			if (target instanceof PlayerEntity) {
 				if (((PlayerEntity) target).isBlocking()) {
 					if (slotAxe != -2) {
@@ -87,7 +87,7 @@ public class AutoTool extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 
 	}
 

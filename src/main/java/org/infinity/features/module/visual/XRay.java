@@ -39,14 +39,11 @@ public class XRay extends Module {
 	private BlockPos progressBlock;
 
 	// orebfuscator
-	private Setting orebfuscator = new Setting(this, "Orebfuscator", false);
+	private Setting orebfuscator = new Setting(this, "Orebfuscator", false).setColor(new Color(134, 188, 241));
 	public Setting noRender = new Setting(this, "No Render", true).setVisible(() -> orebfuscator.isToggle());
 	private Setting radius = new Setting(this, "Radius", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
 	private Setting up = new Setting(this, "Up Distance", 10.0D, 1.0D, 50.0D).setVisible(() -> orebfuscator.isToggle());
 	private Setting down = new Setting(this, "Down Distance", 10.0D, 1.0D, 50.0D)
-			.setVisible(() -> orebfuscator.isToggle());
-
-	private Setting color = new Setting(this, "Color", new Color(134, 188, 241))
 			.setVisible(() -> orebfuscator.isToggle());
 
 	public Setting block = new Setting(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
@@ -69,7 +66,7 @@ public class XRay extends Module {
 
 	@Override
 	public void onEnable() {
-		Helper.minecraftClient.worldRenderer.reload();
+		Helper.MC.worldRenderer.reload();
 
 		if (!clickedBlocks.isEmpty())
 			clickedBlocks.clear();
@@ -83,11 +80,11 @@ public class XRay extends Module {
 
 		progressBlock = null;
 
-		Helper.minecraftClient.worldRenderer.reload();
+		Helper.MC.worldRenderer.reload();
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		if (orebfuscator.isToggle()) {
 
 			if (Helper.getPlayer().isCreative() || Helper.getPlayer().isSpectator())
@@ -149,15 +146,14 @@ public class XRay extends Module {
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
 		if (progressBlock != null) {
-			WorldRender.drawBox(progressBlock, 1, 0xFFFFFFFF);
+
 		}
 
 		if (renderBlocks.isEmpty())
 			return;
 
 		for (BlockPos renderPos : renderBlocks) {
-
-			WorldRender.drawBox(renderPos, 1, color.getColor().getRGB());
+			WorldRender.drawBox(renderPos, 1, orebfuscator.getColor().getRGB());
 		}
 	}
 
@@ -172,13 +168,13 @@ public class XRay extends Module {
 
 		if (Helper.getPlayer().isCreative()) {
 			blockState2 = Helper.getWorld().getBlockState(pos);
-			Helper.minecraftClient.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 1.0F);
+			Helper.MC.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 1.0F);
 			Helper.sendPacket(
 					new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 		}
 
 		blockState2 = Helper.getWorld().getBlockState(pos);
-		Helper.minecraftClient.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 0.0F);
+		Helper.MC.getTutorialManager().onBlockBreaking(Helper.getWorld(), pos, blockState2, 0.0F);
 		Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, direction));
 		boolean bl = !blockState2.isAir();
 		if (bl && this.breakProgress == 0.0F) {

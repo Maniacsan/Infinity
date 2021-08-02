@@ -17,7 +17,7 @@ public class SliderElement extends AbstractElement {
 
 	public SliderElement(Setting setting) {
 		super(setting);
-		Helper.minecraftClient.keyboard.setRepeatEvents(true);
+		Helper.MC.keyboard.setRepeatEvents(true);
 		valueField = new WTextField(0xFF0B1427, true);
 		valueField.setMaxLength(12);
 	}

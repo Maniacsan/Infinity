@@ -23,10 +23,10 @@ public class AutoLeave extends Module {
 	private Setting radius = new Setting(this, "Radius", 20D, 1D, 50D);
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		for (Entity e : Helper.getWorld().getPlayers()) {
 			if (e == Helper.getPlayer() || e == Helper.getPlayer().getVehicle()
-					|| ignoreFriends.isToggle() && InfMain.getFriend().check(e.getEntityName()))
+					|| ignoreFriends.isToggle() && InfMain.getFriend().contains(e.getEntityName()))
 				continue;
 
 			if (Helper.getPlayer().distanceTo(e) <= radius.getCurrentValueDouble()) {

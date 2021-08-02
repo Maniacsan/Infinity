@@ -23,9 +23,9 @@ public class InventoryLogo {
 			return;
 		
 		int cy = Helper.getPlayer().isCreative()
-				&& Helper.minecraftClient.currentScreen instanceof AbstractInventoryScreen ? 28 : 0;
+				&& Helper.MC.currentScreen instanceof AbstractInventoryScreen ? 28 : 0;
 		int cx = Helper.getPlayer().isCreative()
-				&& Helper.minecraftClient.currentScreen instanceof AbstractInventoryScreen ? 8 : 0;
+				&& Helper.MC.currentScreen instanceof AbstractInventoryScreen ? 8 : 0;
 
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/inventory/infinity.png"),
 				this.x + 53 + cx, this.y - 30 - cy, 90, 23);

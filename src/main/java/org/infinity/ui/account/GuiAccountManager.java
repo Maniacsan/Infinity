@@ -41,7 +41,7 @@ public class GuiAccountManager extends Screen {
 		listGui = new ListGui(client, this, getListAccount());
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4 + 50, this.height - 52, 100, 20,
 				new TranslatableText("Add"), (buttonWidget) -> {
-					Helper.minecraftClient.openScreen(new GuiAddAccount(this));
+					Helper.MC.openScreen(new GuiAddAccount(this));
 				}));
 		buttonDelete = (ButtonWidget) this.addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height - 52, 100, 20,
 				new TranslatableText("Delete"), (buttonWidget) -> {
@@ -68,12 +68,12 @@ public class GuiAccountManager extends Screen {
 				new TranslatableText("Edit"), (buttonWidget) -> {
 					Account selectAccount = listGui.getSelectedAlt();
 					if (selectAccount != null)
-						Helper.minecraftClient.openScreen(new GuiEdit(this, selectAccount));
+						Helper.MC.openScreen(new GuiEdit(this, selectAccount));
 					refresh();
 				}));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 - 74, this.height - 28, 70, 20,
 				new TranslatableText("Direct"), (buttonWidget) -> {
-					Helper.minecraftClient.openScreen(new GuiDirect(this));
+					Helper.MC.openScreen(new GuiDirect(this));
 					refresh();
 				}));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4, this.height - 28, 70, 20,
@@ -82,7 +82,7 @@ public class GuiAccountManager extends Screen {
 				}));
 		this.addDrawableChild(new ButtonWidget(this.width / 2 + 4 + 76, this.height - 28, 75, 20,
 				new TranslatableText("Back"), (buttonWidget) -> {
-					Helper.minecraftClient.openScreen(prev);
+					Helper.MC.openScreen(prev);
 				}));
 	}
 
@@ -105,7 +105,7 @@ public class GuiAccountManager extends Screen {
 		listGui.render(matrixStack, mouseX, mouseY, partialTicks);
 		FontUtils.drawHVCenteredString(matrixStack, "Account Manager", this.width / 2, 27, -1);
 		FontUtils.drawStringWithShadow(matrixStack,
-				"Logged in as : " + Formatting.GRAY + Helper.minecraftClient.getSession().getUsername(), 2, 5,
+				"Logged in as : " + Formatting.GRAY + Helper.MC.getSession().getUsername(), 2, 5,
 				0xFFFFFFFF);
 		super.render(matrixStack, mouseX, mouseY, partialTicks);
 	}

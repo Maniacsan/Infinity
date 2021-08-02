@@ -17,7 +17,6 @@ import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.render.BufferBuilder;
@@ -32,6 +31,7 @@ import net.minecraft.client.texture.NativeImageBackedTexture;
 import net.minecraft.client.util.math.MatrixStack;
 
 public class GlyphPage {
+	
 	private int imgSize;
 	private int maxFontHeight = -1;
 	private Font font;
@@ -134,7 +134,7 @@ public class GlyphPage {
 
 	public void setupTexture() {
 		try {
-			// converting to ByteBuffer
+			// Converting to ByteBuffer
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ImageIO.write(bufferedImage, "png", baos);
 			byte[] bytes = baos.toByteArray();
@@ -148,12 +148,11 @@ public class GlyphPage {
 	}
 
 	public void bindTexture() {
-		GlStateManager._bindTexture(loadedTexture.getGlId());
 		RenderSystem.setShaderTexture(0, loadedTexture.getGlId());
 	}
 
 	public void unbindTexture() {
-		GlStateManager._bindTexture(0);
+		RenderSystem.setShaderTexture(0, 0);
 	}
 
 	public float drawChar(MatrixStack stack, char ch, float x, float y, float red, float blue, float green, float alpha) {

@@ -36,18 +36,18 @@ public class TriggerBot extends Module {
 	private int preSlot = -2;
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		// update target
-		EntityUtil.updateTargetRaycast(Helper.minecraftClient.targetedEntity, range.getCurrentValueDouble(),
+		EntityUtil.updateTargetRaycast(Helper.MC.targetedEntity, range.getCurrentValueDouble(),
 				Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch());
 
-		if (EntityUtil.isTarget(Helper.minecraftClient.targetedEntity, players.isToggle(), friends.isToggle(),
+		if (EntityUtil.isTarget(Helper.MC.targetedEntity, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle())) {
-			if (Helper.minecraftClient.targetedEntity != null) {
+			if (Helper.MC.targetedEntity != null) {
 
 				if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 						: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-					if (Criticals.fall(Helper.minecraftClient.targetedEntity)) {
+					if (Criticals.fall(Helper.MC.targetedEntity)) {
 						destroyShield();
 
 						((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
@@ -65,7 +65,7 @@ public class TriggerBot extends Module {
 
 		if (destroyShield.isToggle()) {
 
-			Entity target = Helper.minecraftClient.targetedEntity;
+			Entity target = Helper.MC.targetedEntity;
 			if (target instanceof PlayerEntity) {
 				if (((PlayerEntity) target).isBlocking()) {
 					if (slotAxe != -2) {

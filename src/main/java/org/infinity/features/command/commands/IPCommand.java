@@ -11,7 +11,7 @@ public class IPCommand extends Command {
 
 	@Override
 	public void command(String[] args, String msg) {
-		if (Helper.minecraftClient.isInSingleplayer()) {
+		if (Helper.MC.isInSingleplayer()) {
 			send(Formatting.GRAY + "You playing " + Formatting.WHITE + "SinglePlayer");
 		} else
 		send(Formatting.GRAY + "Server IP addres: "

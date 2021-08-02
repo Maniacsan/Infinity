@@ -58,7 +58,7 @@ public class FreeCam extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		Helper.getPlayer().setOnGround(false);
 		Helper.getPlayer().getAbilities().setFlySpeed((float) (speed.getCurrentValueDouble() / 5));
 		Helper.getPlayer().getAbilities().flying = true;

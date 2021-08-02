@@ -276,16 +276,16 @@ public class CustomFieldWidget extends ClickableWidget implements Drawable, Elem
 				this.setSelectionEnd(0);
 				return true;
 			} else if (Screen.isCopy(keyCode)) {
-				Helper.minecraftClient.keyboard.setClipboard(this.getSelectedText());
+				Helper.MC.keyboard.setClipboard(this.getSelectedText());
 				return true;
 			} else if (Screen.isPaste(keyCode)) {
 				if (this.editable) {
-					this.write(Helper.minecraftClient.keyboard.getClipboard());
+					this.write(Helper.MC.keyboard.getClipboard());
 				}
 
 				return true;
 			} else if (Screen.isCut(keyCode)) {
-				Helper.minecraftClient.keyboard.setClipboard(this.getSelectedText());
+				Helper.MC.keyboard.setClipboard(this.getSelectedText());
 				if (this.editable) {
 					this.write("");
 				}

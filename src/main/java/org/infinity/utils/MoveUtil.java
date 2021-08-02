@@ -30,7 +30,7 @@ public class MoveUtil {
 			moveYaw += 90.0F * forward;
 		moveYaw = (float) Math.toRadians(moveYaw);
 		
-		float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+		float f = (float) (Helper.MC.options.mouseSensitivity * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 
 		moveYaw -= moveYaw % gcd;
@@ -55,7 +55,7 @@ public class MoveUtil {
 		float yaw = yawIn - strafe;
 		yaw -= ((moveForward < 0.0F) ? 180 : 0);
 		yaw = (float) Math.toRadians(yaw);
-		float sens = (float) (Helper.minecraftClient.options.mouseSensitivity);
+		float sens = (float) (Helper.MC.options.mouseSensitivity);
 		float f = (float) (sens * 0.6F + 0.2F);
 		float gcd = f * f * f * 1.2F;
 		

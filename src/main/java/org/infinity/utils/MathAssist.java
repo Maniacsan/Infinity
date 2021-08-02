@@ -22,4 +22,8 @@ public class MathAssist {
 		return Math.round(wert * Math.pow(10.0D, stellen)) / Math.pow(10.0D, stellen);
 	}
 
+	public static double interpolate(double current, double old, double scale) {
+		return old + (current - old) * scale;
+	}
+
 }

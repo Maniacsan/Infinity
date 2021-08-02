@@ -31,7 +31,7 @@ public class Fly extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 	}
 
@@ -42,10 +42,10 @@ public class Fly extends Module {
 			if (mode.getCurrentMode().equalsIgnoreCase("Motion")) {
 				MoveUtil.setYVelocity(0);
 
-				if (Helper.minecraftClient.options.keyJump.isPressed()) {
+				if (Helper.MC.options.keyJump.isPressed()) {
 					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() + speed.getCurrentValueDouble());
 				}
-				if (Helper.minecraftClient.options.keySneak.isPressed()) {
+				if (Helper.MC.options.keySneak.isPressed()) {
 					MoveUtil.setYVelocity(Helper.getPlayer().getVelocity().getY() - speed.getCurrentValueDouble());
 				}
 

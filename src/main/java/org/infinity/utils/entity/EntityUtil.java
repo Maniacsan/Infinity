@@ -51,7 +51,7 @@ public class EntityUtil {
 
 	public static List<Entity> getTargets(double fov, boolean players, boolean friends, boolean invisibles,
 			boolean mobs, boolean animals, boolean throughWalls) {
-		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false).filter(
+		return StreamSupport.stream(Helper.MC.world.getEntities().spliterator(), false).filter(
 				entity -> isCombatTarget(entity, fov, players, friends, invisibles, mobs, animals, throughWalls))
 				.collect(Collectors.toList());
 	}
@@ -61,7 +61,7 @@ public class EntityUtil {
 	 */
 	public static List<Entity> getRenderTargets(boolean players, boolean friends, boolean invisibles, boolean mobs,
 			boolean animals) {
-		return StreamSupport.stream(Helper.minecraftClient.world.getEntities().spliterator(), false)
+		return StreamSupport.stream(Helper.MC.world.getEntities().spliterator(), false)
 				.filter(entity -> isTarget(entity, players, friends, invisibles, mobs, animals))
 				.collect(Collectors.toList());
 	}
@@ -141,17 +141,17 @@ public class EntityUtil {
 
 	public static void updateTargetRaycast(Entity target, double reachDistance, float yaw, float pitch) {
 		float tickDelta = 1.0F;
-		Entity entity = Helper.minecraftClient.getCameraEntity();
+		Entity entity = Helper.MC.getCameraEntity();
 		if (entity != null) {
-			if (Helper.minecraftClient.world != null) {
-				Helper.minecraftClient.getProfiler().push("pick");
+			if (Helper.MC.world != null) {
+				Helper.MC.getProfiler().push("pick");
 				double d = reachDistance;
-				Helper.minecraftClient.crosshairTarget = entity.raycast(d, tickDelta, false);
+				Helper.MC.crosshairTarget = entity.raycast(d, tickDelta, false);
 				Vec3d vec3d = entity.getCameraPosVec(tickDelta);
 				double e = d;
 
-				if (Helper.minecraftClient.crosshairTarget != null) {
-					e = Helper.minecraftClient.crosshairTarget.getPos().squaredDistanceTo(vec3d);
+				if (Helper.MC.crosshairTarget != null) {
+					e = Helper.MC.crosshairTarget.getPos().squaredDistanceTo(vec3d);
 				}
 
 				e *= e;
@@ -165,14 +165,14 @@ public class EntityUtil {
 					Entity entity2 = entityHitResult.getEntity();
 					Vec3d vec3d4 = entityHitResult.getPos();
 					double g = vec3d.squaredDistanceTo(vec3d4);
-					if (g < e || Helper.minecraftClient.crosshairTarget == null) {
-						Helper.minecraftClient.crosshairTarget = entityHitResult;
+					if (g < e || Helper.MC.crosshairTarget == null) {
+						Helper.MC.crosshairTarget = entityHitResult;
 						if (entity2 instanceof LivingEntity || entity2 instanceof ItemFrameEntity) {
 							target = entity2;
 						}
 					}
 				}
-				Helper.minecraftClient.getProfiler().pop();
+				Helper.MC.getProfiler().pop();
 			}
 		}
 	}
@@ -209,7 +209,7 @@ public class EntityUtil {
 			side2 = Direction.UP;
 
 		if (hitVec != null) {
-			Helper.minecraftClient.interactionManager.interactBlock(Helper.getPlayer(), Helper.minecraftClient.world,
+			Helper.MC.interactionManager.interactBlock(Helper.getPlayer(), Helper.MC.world,
 					hand, new BlockHitResult(hitVec, side2, neighbor, false));
 			Helper.getPlayer().swingHand(hand);
 		}
@@ -230,7 +230,7 @@ public class EntityUtil {
 		int color = -1;
 		if (entity instanceof PlayerEntity)
 			color = players;
-		if (InfMain.getFriend().check(entity.getEntityName()))
+		if (InfMain.getFriend().contains(entity.getEntityName()))
 			color = friends;
 		if (isMonster(entity))
 			color = mobs;
@@ -270,7 +270,7 @@ public class EntityUtil {
         double tZ = Math.abs(entity.getZ() - entity.prevZ);
         double length = Math.sqrt(tX * tX + tZ * tZ);
         
-        length *= InfMain.TIMER;
+        length *= Helper.MC.getLastFrameDuration();
 
 		return length * 20;
 	}
@@ -280,16 +280,16 @@ public class EntityUtil {
 	}
 
 	public static Vec3d getRenderPos(Entity e) {
-		return Helper.minecraftClient.currentScreen != null && Helper.minecraftClient.currentScreen.isPauseScreen()
+		return Helper.MC.currentScreen != null && Helper.MC.currentScreen.isPauseScreen()
 				? e.getPos().add(0, e.getHeight(), 0)
-				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.minecraftClient.getTickDelta(),
-						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.minecraftClient.getTickDelta())
+				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.MC.getTickDelta(),
+						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.MC.getTickDelta())
 								+ e.getHeight(),
-						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.minecraftClient.getTickDelta());
+						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.MC.getTickDelta());
 	}
 
 	public static boolean isOnGround(double height) {
-		if (!Helper.minecraftClient.world.isSpaceEmpty(Helper.getPlayer(),
+		if (!Helper.MC.world.isSpaceEmpty(Helper.getPlayer(),
 				Helper.getPlayer().getBoundingBox().offset(0.0D, -height, 0.0D)))
 			return true;
 		return false;

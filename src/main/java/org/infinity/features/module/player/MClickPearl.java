@@ -21,11 +21,11 @@ public class MClickPearl extends Module {
 	public void onMiddleClick(ClickButtonEvent event) {
 		int pearlSlot = InvUtil.findItemOnHotbar(Items.ENDER_PEARL);
 
-		if (Helper.minecraftClient.currentScreen != null)
+		if (Helper.MC.currentScreen != null)
 			return;
 
 		if (InfMain.getModuleManager().getModuleByClass(MClickFriend.class).isEnabled()
-				&& Helper.minecraftClient.targetedEntity != null)
+				&& Helper.MC.targetedEntity != null)
 			return;
 
 		if (event.getButton() == 2) {
@@ -34,7 +34,7 @@ public class MClickPearl extends Module {
 				int preSlot = Helper.getPlayer().getInventory().selectedSlot;
 
 				Helper.getPlayer().getInventory().selectedSlot = pearlSlot;
-				Helper.minecraftClient.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
+				Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
 						Hand.MAIN_HAND);
 
 				Helper.getPlayer().getInventory().selectedSlot = preSlot;

@@ -59,7 +59,7 @@ public class AntiAim extends Module {
 				pitch = (float) MathAssist.random(-90, 90);
 			}
 
-			float f = (float) (Helper.minecraftClient.options.mouseSensitivity * 0.6F + 0.2F);
+			float f = (float) (Helper.MC.options.mouseSensitivity * 0.6F + 0.2F);
 			float gcd = f * f * f * 1.2F;
 
 			yaw -= yaw % gcd;

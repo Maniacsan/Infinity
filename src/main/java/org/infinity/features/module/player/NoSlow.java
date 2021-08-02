@@ -32,7 +32,7 @@ public class NoSlow extends Module {
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Vanilla"));
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 	}
 

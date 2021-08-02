@@ -25,7 +25,7 @@ public class HookManager {
 	public void onPlayerTick() {
 		InfMain.getModuleManager().getList().forEach(m -> {
 			if (m.isEnabled()) {
-				m.onPlayerTick();
+				m.onUpdate();
 			}
 		});
 	}

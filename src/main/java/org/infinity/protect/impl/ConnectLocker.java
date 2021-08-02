@@ -17,7 +17,7 @@ public class ConnectLocker extends Handler {
 	@EventTarget
 	public void onConnect(ServerConnectEvent event) {
 		 CrashReport crashReport = CrashReport.create(null, "");
-		if (Helper.minecraftClient.currentScreen instanceof AuthUI) {
+		if (Helper.MC.currentScreen instanceof AuthUI) {
 			event.cancel();
 			MinecraftClient.printCrashReport(crashReport);
 		}

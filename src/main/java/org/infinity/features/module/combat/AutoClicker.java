@@ -17,13 +17,13 @@ public class AutoClicker extends Module {
 	private Timer timer = new Timer();
 
 	@Override
-	public void onPlayerTick() {
-		if (Helper.minecraftClient.options.keyAttack.isPressed()) {
+	public void onUpdate() {
+		if (Helper.MC.options.keyAttack.isPressed()) {
 
 			if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 					: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 
-				((IMinecraftClient) Helper.minecraftClient).mouseClick();
+				((IMinecraftClient) Helper.MC).mouseClick();
 
 				Helper.getPlayer().resetLastAttackedTicks();
 				timer.reset();

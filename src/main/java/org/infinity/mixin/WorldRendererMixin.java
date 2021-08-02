@@ -31,7 +31,7 @@ public class WorldRendererMixin {
 	private void renderPre(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline,
 			Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f,
 			CallbackInfo info) {
-		RenderEvent event = new RenderEvent(EventType.PRE, tickDelta);
+		RenderEvent event = new RenderEvent(EventType.PRE, matrices, tickDelta);
 		EventManager.call(event);
 
 		if (event.isCancelled()) {
@@ -44,7 +44,7 @@ public class WorldRendererMixin {
 			Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f,
 			CallbackInfo info) {
 		RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, MinecraftClient.IS_SYSTEM_MAC);
-		RenderEvent event = new RenderEvent(EventType.POST, tickDelta);
+		RenderEvent event = new RenderEvent(EventType.POST, matrices, tickDelta);
 		EventManager.call(event);
 	}
 

@@ -6,12 +6,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.infinity.main.InfMain;
+import org.infinity.utils.StringUtil;
 
 import com.darkmagician6.eventapi.EventManager;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 
 @Environment(EnvType.CLIENT)
 public class Module {
@@ -25,25 +27,25 @@ public class Module {
 	private boolean visible, defaultVisible;
 	private boolean enabled, defaultEnabled;
 	private List<Setting> settings;
+	
+	public float fade;
 
 	public Module() {
-		name = this.getClass().getAnnotation(ModuleInfo.class).name();
+		setName(this.getClass().getAnnotation(ModuleInfo.class).name());
 		setKey(this.getClass().getAnnotation(ModuleInfo.class).key());
-		visible = this.getClass().getAnnotation(ModuleInfo.class).visible();
+		setVisible(this.getClass().getAnnotation(ModuleInfo.class).visible());
 		setCategory(this.getClass().getAnnotation(ModuleInfo.class).category());
-		desc = this.getClass().getAnnotation(ModuleInfo.class).desc();
+		setDesc(this.getClass().getAnnotation(ModuleInfo.class).desc());
 		this.settings = new ArrayList<>();
 	}
 
-	// HookManager methods
-	public void onPlayerTick() {
+	public void onUpdate() {
 	}
 
 	// 2d render
 	public void onRender(MatrixStack matrices, float tickDelta, int scaledWidth, int scaledHeight) {
 	}
 
-	// Fast use
 	public void enable() {
 		setEnabled(!isEnabled());
 	}
@@ -111,6 +113,10 @@ public class Module {
 		this.name = name;
 	}
 
+	public String getRenderName() {
+		return getName() + " " + Formatting.WHITE + StringUtil.replaceNull(getSuffix());
+	}
+
 	public int getKey() {
 		return key;
 	}
@@ -134,7 +140,7 @@ public class Module {
 	public void setEnabled(boolean enabled) {
 		if (InfMain.INSTANCE.self)
 			return;
-		
+
 		this.enabled = enabled;
 		if (enabled)
 			enableHandle();

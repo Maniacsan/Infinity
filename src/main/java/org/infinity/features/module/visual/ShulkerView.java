@@ -79,11 +79,11 @@ public class ShulkerView extends Module {
 			Render2D.drawRectWH(event.getMatrix(), x1 - 1, y1 - 1, 18, 18, 0xff2998E3);
 			Render2D.drawRectWH(event.getMatrix(), x1, y1, 16, 16, 0xff555555);
 
-			Helper.minecraftClient.getItemRenderer().zOffset = 400;
-			Helper.minecraftClient.getItemRenderer().renderGuiItemIcon(i, x1, y1);
-			Helper.minecraftClient.getItemRenderer().renderGuiItemOverlay(Helper.minecraftClient.textRenderer, i, x1,
+			Helper.MC.getItemRenderer().zOffset = 400;
+			Helper.MC.getItemRenderer().renderGuiItemIcon(i, x1, y1);
+			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer, i, x1,
 					y1, i.getCount() > 1 ? i.getCount() + "" : "");
-			Helper.minecraftClient.getItemRenderer().zOffset = 300;
+			Helper.MC.getItemRenderer().zOffset = 300;
 			count++;
 		}
 	}

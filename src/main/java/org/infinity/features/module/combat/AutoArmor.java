@@ -34,9 +34,9 @@ public class AutoArmor extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 
-		if (onInv.isToggle() && !(Helper.minecraftClient.currentScreen instanceof HandledScreen))
+		if (onInv.isToggle() && !(Helper.MC.currentScreen instanceof HandledScreen))
 			return;
 
 		ItemStack itemStack;

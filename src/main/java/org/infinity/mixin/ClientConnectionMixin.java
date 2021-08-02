@@ -2,7 +2,6 @@ package org.infinity.mixin;
 
 import java.io.IOException;
 
-import org.infinity.chat.IRC.IRCClient;
 import org.infinity.event.PacketEvent;
 import org.infinity.features.command.Command;
 import org.infinity.features.module.hidden.AntiFabric;
@@ -54,19 +53,9 @@ public class ClientConnectionMixin {
 			CallbackInfo callback) {
 		if (packet instanceof ChatMessageC2SPacket) {
 			ChatMessageC2SPacket chatPacket = (ChatMessageC2SPacket) packet;
-			// irc
-			if (InfMain.getChatHud().currentChat == InfMain.getChatHud().infChat) {
-				IRCClient irc = InfMain.getIrc();
-				if (irc != null && irc.isActive()) {
-					irc.runIRC(chatPacket.getChatMessage());
-				}
-
-				callback.cancel();
-			}
 
 			// commands
-			if (chatPacket.getChatMessage().startsWith(Command.prefix)
-					&& InfMain.getChatHud().currentChat != InfMain.getChatHud().infChat && !InfMain.INSTANCE.self) {
+			if (chatPacket.getChatMessage().startsWith(Command.prefix) && !InfMain.INSTANCE.self) {
 				InfMain.getCommandManager().callCommand(chatPacket.getChatMessage().substring(Command.prefix.length()));
 				callback.cancel();
 			}

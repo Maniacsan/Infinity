@@ -53,7 +53,7 @@ public class ClickAura extends Module {
 		if (target == null)
 			return;
 
-		if (!Helper.minecraftClient.options.keyAttack.isPressed())
+		if (!Helper.MC.options.keyAttack.isPressed())
 			return;
 
 		float[] rotate = RotationUtil.lookAtEntity(target);
@@ -62,7 +62,7 @@ public class ClickAura extends Module {
 			Helper.getPlayer().setYaw(rotate[0]);
 			Helper.getPlayer().setPitch(rotate[1]);
 		}
-		Helper.minecraftClient.interactionManager.attackEntity(Helper.getPlayer(), target);
+		Helper.MC.interactionManager.attackEntity(Helper.getPlayer(), target);
 		EntityUtil.swing(true);
 
 	}
@@ -70,7 +70,7 @@ public class ClickAura extends Module {
 	@EventTarget
 	public void onPacket(PacketEvent event) {
 		float[] rotate = RotationUtil.lookAtEntity(target);
-		if (!Helper.minecraftClient.options.keyAttack.isPressed())
+		if (!Helper.MC.options.keyAttack.isPressed())
 			return;
 
 		if (rotation.isToggle()) {
@@ -84,7 +84,7 @@ public class ClickAura extends Module {
 		if (target == null)
 			return;
 
-		if (!Helper.minecraftClient.options.keyAttack.isPressed())
+		if (!Helper.MC.options.keyAttack.isPressed())
 			return;
 
 		if (rotation.isToggle()) {

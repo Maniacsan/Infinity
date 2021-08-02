@@ -12,10 +12,10 @@ import net.minecraft.item.Items;
 public class FastEXP extends Module {
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		// Super module, Very hard
 		if (Helper.getPlayer().getMainHandStack().getItem() == Items.EXPERIENCE_BOTTLE) {
-			((IMinecraftClient) Helper.minecraftClient).setItemCooldown(0);
+			((IMinecraftClient) Helper.MC).setItemCooldown(0);
 		}
 	}
 

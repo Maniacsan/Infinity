@@ -33,7 +33,7 @@ public class Speed extends Module {
 	}
 
 	@Override
-	public void onPlayerTick() {
+	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
 
 		if (mode.getCurrentMode().equalsIgnoreCase("Strafe")) {

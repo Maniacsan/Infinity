@@ -1,12 +1,9 @@
 package org.infinity.main;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.infinity.chat.InfChatHud;
-import org.infinity.chat.IRC.IRCClient;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
@@ -20,8 +17,6 @@ import org.infinity.protect.ui.AuthUI;
 import org.infinity.ui.account.main.AccountManager;
 import org.infinity.ui.menu.ClickMenu;
 import org.infinity.utils.user.User;
-
-import net.minecraft.client.MinecraftClient;
 
 public class Initialize {
 
@@ -39,18 +34,12 @@ public class Initialize {
 	public Friend friend;
 	public User user;
 
-	public InfChatHud chatHud;
-	public IRCClient irc;
-
 	public boolean infChat;
 
 	public ClickMenu menu;
 	public AuthUI authUI;
 
 	public Initialize() {
-		chatHud = new InfChatHud(MinecraftClient.getInstance());
-
-		//
 		handler = new HandlerManager();
 		authUI = new AuthUI();
 
@@ -65,16 +54,7 @@ public class Initialize {
 	}
 
 	public void shutDown() {
-		if (irc == null)
-			return;
 
-		if (irc.isActive()) {
-
-			try {
-				irc.quit("Client disconnected.", false);
-			} catch (IOException e) {
-			}
-		}
 	}
 
 }

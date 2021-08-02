@@ -2,8 +2,6 @@ package org.infinity.main;
 
 import java.io.File;
 
-import org.infinity.chat.InfChatHud;
-import org.infinity.chat.IRC.IRCClient;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
@@ -33,11 +31,12 @@ public class InfMain {
 	public static float TIMER = 1.0f;
 
 	public void initialize() {
-		self = false;
-		direction = new File(Helper.minecraftClient.runDirectory + File.separator + "Infinity");
-		new ViaFabric().onInitialize();
+		direction = new File(Helper.MC.runDirectory + File.separator + "Infinity");
 		
 		init = new Initialize();
+		
+		self = false;
+		new ViaFabric().onInitialize();
 
 		if (!direction.exists()) {
 			firstStart = true;
@@ -88,14 +87,6 @@ public class InfMain {
 
 	public static Friend getFriend() {
 		return InfMain.INSTANCE.init.friend;
-	}
-
-	public static InfChatHud getChatHud() {
-		return InfMain.INSTANCE.init.chatHud;
-	}
-
-	public static IRCClient getIrc() {
-		return InfMain.INSTANCE.init.irc;
 	}
 
 	public static IHandler getHandler() {

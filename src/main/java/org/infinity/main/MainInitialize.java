@@ -1,6 +1,4 @@
-package org.infinity;
-
-import org.infinity.main.InfMain;
+package org.infinity.main;
 
 import net.fabricmc.api.ModInitializer;
 

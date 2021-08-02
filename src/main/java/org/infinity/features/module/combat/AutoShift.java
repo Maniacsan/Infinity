@@ -26,7 +26,7 @@ public class AutoShift extends Module {
 	@Override
 	public void onDisable() {
 
-		KeyBinding.setKeyPressed(((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), false);
+		KeyBinding.setKeyPressed(((IKeyBinding) Helper.MC.options.keySneak).getBoundKey(), false);
 	}
 
 	@EventTarget
@@ -60,11 +60,11 @@ public class AutoShift extends Module {
 						try {
 
 							KeyBinding.setKeyPressed(
-									((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), true);
+									((IKeyBinding) Helper.MC.options.keySneak).getBoundKey(), true);
 							Thread.sleep(100);
 
 							KeyBinding.setKeyPressed(
-									((IKeyBinding) Helper.minecraftClient.options.keySneak).getBoundKey(), false);
+									((IKeyBinding) Helper.MC.options.keySneak).getBoundKey(), false);
 
 						} catch (Exception e) {
 							e.printStackTrace();

@@ -19,14 +19,14 @@ import net.minecraft.entity.ItemEntity;
 public class ItemESP extends Module {
 
 	private Setting color = new Setting(this, "Color", new Color(143, 124, 241));
+	private Setting width = new Setting(this, "Width", 1.1f, 0.5f, 3.0f);
 
 	@EventTarget
 	public void onWorldRender(RenderEvent event) {
 		for (Entity e : Helper.getWorld().getEntities()) {
 
 			if (e instanceof ItemEntity) {
-
-				WorldRender.drawBox(e.getBoundingBox(), 1.5f, color.getColor().getRGB())	;
+				WorldRender.drawBox(e.getBoundingBox(), width.getCurrentValueFloat(), color.getColor().getRGB());
 
 			}
 		}

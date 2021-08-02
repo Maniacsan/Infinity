@@ -56,10 +56,10 @@ public class DiscordRPCMod extends Module {
 
 			String gameStatus = "Idle";
 
-			if (Helper.minecraftClient.isInSingleplayer())
+			if (Helper.MC.isInSingleplayer())
 				gameStatus = "in SinglePlayer";
-			else if (Helper.minecraftClient.getCurrentServerEntry().address != null)
-				gameStatus = "Playing on: " + Helper.minecraftClient.getCurrentServerEntry().address;
+			else if (Helper.MC.getCurrentServerEntry().address != null)
+				gameStatus = "Playing on: " + Helper.MC.getCurrentServerEntry().address;
 			else
 				gameStatus = "Idle";
 
