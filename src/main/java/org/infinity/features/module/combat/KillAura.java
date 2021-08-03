@@ -26,8 +26,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -53,6 +58,8 @@ public class KillAura extends Module {
 	private Setting fov = new Setting(this, "FOV", 240D, 0D, 360D);
 
 	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
+
+	private Setting releaseShield = new Setting(this, "Let go of the shield on impact", false);
 
 	private Setting keepSprint = new Setting(this, "Keep Sprint", true);
 
@@ -106,7 +113,7 @@ public class KillAura extends Module {
 	public void onMotionTick(MotionEvent event) {
 		setSuffix(rotation.getCurrentMode());
 
-		target = EntityUtil.setTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(), players.isToggle(),
+		target = EntityUtil.getTarget(range.getCurrentValueDouble(), fov.getCurrentValueDouble(), players.isToggle(),
 				friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
 				throughWalls.isToggle());
 
@@ -223,6 +230,10 @@ public class KillAura extends Module {
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
 
+				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+					Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM,
+							new BlockPos(0, 0, 0), Direction.DOWN));
+
 				destroyShield();
 
 				if (rotation.getCurrentMode().equalsIgnoreCase("Reset")) {
@@ -264,6 +275,9 @@ public class KillAura extends Module {
 					Helper.getPlayer().attack(target);
 				}
 				timer.reset();
+				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+					Helper.sendPacket(new PlayerInteractItemC2SPacket(Hand.OFF_HAND));
+
 			}
 		}
 	}

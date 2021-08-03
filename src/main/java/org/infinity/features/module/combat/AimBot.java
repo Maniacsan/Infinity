@@ -3,6 +3,7 @@ package org.infinity.features.module.combat;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.infinity.event.ClickEvent;
 import org.infinity.event.MotionEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
@@ -33,8 +34,9 @@ public class AimBot extends Module {
 
 	private Setting throughWalls = new Setting(this, "Through Walls", false);
 
-	// on mooving
-	private Setting onMoving = new Setting(this, "On Moving", false);
+	private Setting whenClick = new Setting(this, "When Click", false);
+
+	private Setting whenMoving = new Setting(this, "When Moving", false);
 
 	private Setting range = new Setting(this, "Range", 3.5D, 0D, 6D);
 
@@ -43,30 +45,44 @@ public class AimBot extends Module {
 	private Setting maxSpeed = new Setting(this, "Max Speed %", 60D, 0D, 100D);
 	private Setting minSpeed = new Setting(this, "Min Speed %", 20D, 0D, 100D);
 
+	private Entity target;
+	private float[] lookPos;
+	private float speed;
+
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		Entity target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
+		target = EntityUtil.getTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
 				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
 				throughWalls.isToggle());
 
-		if (target == null)
+		if (target == null || whenClick.isToggle())
 			return;
 
 		double min = minSpeed.getCurrentValueDouble();
 		double max = maxSpeed.getCurrentValueDouble();
-		float speed = (float) MathAssist.random(min, max);
+		speed = (float) MathAssist.random(min, max);
 
-		float[] look = look(target);
+		lookPos = getLookPos(target);
 
-		if (onMoving.isToggle() && !MoveUtil.isMoving())
+		if (whenMoving.isToggle() && !MoveUtil.isMoving())
 			return;
 
-		event.setRotation(RotationUtil.limitAngleChange(event.getYaw(), look[0], speed),
-				RotationUtil.limitAngleChange(event.getPitch(), look[1], speed), true);
+		event.setRotation(RotationUtil.limitAngleChange(event.getYaw(), lookPos[0], speed),
+				RotationUtil.limitAngleChange(event.getPitch(), lookPos[1], speed), true);
 
 	}
 
-	private float[] look(Entity target) {
+	@EventTarget
+	public void onClick(ClickEvent event) {
+		if (!whenClick.isToggle() && target == null)
+			return;
+
+		Helper.getPlayer().setYaw(RotationUtil.limitAngleChange(Helper.getPlayer().getYaw(), lookPos[0], speed));
+		Helper.getPlayer().setPitch(RotationUtil.limitAngleChange(Helper.getPlayer().getPitch(), lookPos[1], speed));
+
+	}
+
+	private float[] getLookPos(Entity target) {
 
 		double d = target.getPos().x - Helper.getPlayer().getPos().x;
 		double e = target.getPos().z - Helper.getPlayer().getPos().z;

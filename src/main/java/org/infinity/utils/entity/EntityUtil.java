@@ -33,7 +33,7 @@ import net.minecraft.util.math.Vec3d;
 
 public class EntityUtil {
 
-	public static Entity setTarget(double range, double fov, boolean players, boolean friends, boolean invisibles,
+	public static Entity getTarget(double range, double fov, boolean players, boolean friends, boolean invisibles,
 			boolean mobs, boolean animals, boolean throughWalls) {
 		Entity entity = null;
 		float maxDist = (float) range;

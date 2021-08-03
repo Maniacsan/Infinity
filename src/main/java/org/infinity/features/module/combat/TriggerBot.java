@@ -13,6 +13,11 @@ import org.infinity.utils.entity.EntityUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 @ModuleInfo(category = Category.COMBAT, desc = "Automatically hits when hovering over an entity", key = -2, name = "TriggerBot", visible = true)
 public class TriggerBot extends Module {
@@ -25,6 +30,7 @@ public class TriggerBot extends Module {
 	private Setting animals = new Setting(this, "Animals", true);
 
 	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
+	private Setting releaseShield = new Setting(this, "Let go of the shield on impact", false);
 
 	public Setting range = new Setting(this, "Range", 3.7D, 0D, 6.0D);
 
@@ -41,20 +47,27 @@ public class TriggerBot extends Module {
 		EntityUtil.updateTargetRaycast(Helper.MC.targetedEntity, range.getCurrentValueDouble(),
 				Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch());
 
-		if (EntityUtil.isTarget(Helper.MC.targetedEntity, players.isToggle(), friends.isToggle(),
-				invisibles.isToggle(), mobs.isToggle(), animals.isToggle())) {
-			if (Helper.MC.targetedEntity != null) {
+		if (EntityUtil.isTarget(Helper.MC.targetedEntity, players.isToggle(), friends.isToggle(), invisibles.isToggle(),
+				mobs.isToggle(), animals.isToggle())) {
+			if (Helper.MC.targetedEntity == null)
+				return;
 
-				if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
-						: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
-					if (Criticals.fall(Helper.MC.targetedEntity)) {
-						destroyShield();
+			if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
+					: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
+				if (Criticals.fall(Helper.MC.targetedEntity)) {
+					if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+						Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM,
+								new BlockPos(0, 0, 0), Direction.DOWN));
 
-						((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
+					destroyShield();
 
-						Helper.getPlayer().resetLastAttackedTicks();
-						timer.reset();
-					}
+					((IMinecraftClient) MinecraftClient.getInstance()).mouseClick();
+
+					Helper.getPlayer().resetLastAttackedTicks();
+					timer.reset();
+
+					if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+						Helper.sendPacket(new PlayerInteractItemC2SPacket(Hand.OFF_HAND));
 				}
 			}
 		}

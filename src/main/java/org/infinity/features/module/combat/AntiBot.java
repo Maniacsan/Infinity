@@ -9,6 +9,7 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.PacketUtil;
 import org.infinity.utils.entity.EntityUtil;
@@ -32,6 +33,10 @@ public class AntiBot extends Module {
 
 	public Setting mode = new Setting(this, "Mode", "Matrix 6.1.1",
 			new ArrayList<>(Arrays.asList("Matrix 6.1.1", "Custom", "Need Hit")));
+
+	// Need Hit
+	private Setting ignoreFriends = new Setting(this, "Ignore Friends", true)
+			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Need Hit"));
 
 	// Custom
 	private Setting invisible = new Setting(this, "Invisible", false)
@@ -109,6 +114,10 @@ public class AntiBot extends Module {
 					return;
 
 				if (!needHit.contains(PacketUtil.getEntity(pa).getId())) {
+					if (ignoreFriends.isToggle()
+							&& InfMain.getFriend().contains(PacketUtil.getEntity(pa).getName().getString()))
+						return;
+
 					needHit.add(PacketUtil.getEntity(pa).getId());
 					Helper.infoMessage(Formatting.GRAY + "[AntiBot] " + Formatting.WHITE
 							+ PacketUtil.getEntity(pa).getName().getString() + Formatting.GRAY + " added to targets");

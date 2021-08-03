@@ -41,7 +41,7 @@ public class BowAim extends Module {
 		if (event.getType().equals(EventType.PRE)) {
 			if (Helper.getPlayer().getMainHandStack().getItem() instanceof BowItem && Helper.getPlayer().isUsingItem()
 					&& Helper.getPlayer().getItemUseTime() >= 3) {
-				target = EntityUtil.setTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(),
+				target = EntityUtil.getTarget(range.getCurrentValueInt(), fov.getCurrentValueDouble(),
 						players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(),
 						animals.isToggle(), throughWalls.isToggle());
 				if (target == null)

@@ -49,7 +49,7 @@ public class TargetStrafe extends Module {
 	public void onMotionTick(MotionEvent event) {
 		setSuffix(mode.getCurrentMode());
 
-		target = EntityUtil.setTarget(distance.getCurrentValueDouble(), 360, players.isToggle(), friends.isToggle(),
+		target = EntityUtil.getTarget(distance.getCurrentValueDouble(), 360, players.isToggle(), friends.isToggle(),
 				invisibles.isToggle(), mobs.isToggle(), animals.isToggle(), true);
 
 		if (target == null)

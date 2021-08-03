@@ -146,6 +146,18 @@ public class Render2D {
 
 		matrices.pop();
 	}
+	
+	public static void drawArrow(MatrixStack matrices, double x, double y, float radius, float rotation, int color) {
+		matrices.push();
+		matrices.translate(x, y, 0);
+		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(rotation));
+		matrices.translate(-x, -y, 0);
+
+		RenderUtil.drawImage(matrices, true, x - (radius / 2), y - (radius / 2), radius, radius,
+				"/assets/infinity/textures/icons/element/triangle.png", color);
+
+		matrices.pop();
+	}
 
 	public static void fill(Matrix4f matrix4f, double x1, double y1, double x2, double y2, int color) {
 		double j;

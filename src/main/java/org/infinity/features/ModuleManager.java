@@ -68,6 +68,7 @@ public class ModuleManager {
 			new Speed(), 
 			new PacketKick(),
 			new FastBreak(),
+			new AutoFish(),
 			new ArmorHUD(),
 			new NameTags(), 
 			new NoClip(),

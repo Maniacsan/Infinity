@@ -67,7 +67,7 @@ public class Tracers extends Module {
 				int color = EntityUtil.getEntitiesColor(e, players.getColor().getRGB(), friends.getColor().getRGB(),
 						mobs.getColor().getRGB(), animals.getColor().getRGB());
 
-				Render2D.drawTriangle(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
+				Render2D.drawArrow(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
 						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().getYaw()), color);
 			}
 		}

@@ -15,8 +15,11 @@ public interface IMinecraftClient {
 
 	@Accessor("session")
 	void setSession(Session session);
-	
+
 	@Invoker("doAttack")
 	void mouseClick();
+
+	@Invoker("doItemUse")
+	void rightClick();
 
 }

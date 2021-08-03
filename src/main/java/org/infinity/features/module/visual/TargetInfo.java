@@ -32,7 +32,7 @@ public class TargetInfo extends Module {
 
 	@Override
 	public void onRender(MatrixStack matrices, float tickDelta, int w, int h) {
-		target = EntityUtil.setTarget(range.getCurrentValueDouble(), 360, true, friends.isToggle(),
+		target = EntityUtil.getTarget(range.getCurrentValueDouble(), 360, true, friends.isToggle(),
 				invisibles.isToggle(), false, false, true);
 
 		if (target == null || target == Helper.getPlayer())

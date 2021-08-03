@@ -15,6 +15,11 @@ import org.infinity.utils.rotation.RotationUtil;
 import com.darkmagician6.eventapi.EventTarget;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
+import net.minecraft.util.Hand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 
 @ModuleInfo(category = Category.COMBAT, desc = "Attacking target on click", key = -2, name = "ClickAura", visible = true)
 public class ClickAura extends Module {
@@ -27,6 +32,8 @@ public class ClickAura extends Module {
 	private Setting animals = new Setting(this, "Animals", false);
 
 	private Setting throughWalls = new Setting(this, "Through Walls", false);
+
+	private Setting releaseShield = new Setting(this, "Let go of the shield on impact", false);
 
 	private Setting rotation = new Setting(this, "Rotation", true);
 	private Setting look = new Setting(this, "Look View", true).setVisible(() -> rotation.isToggle());
@@ -46,7 +53,7 @@ public class ClickAura extends Module {
 	@EventTarget
 	public void onClick(ClickEvent event) {
 
-		target = EntityUtil.setTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
+		target = EntityUtil.getTarget(this.range.getCurrentValueDouble(), fov.getCurrentValueDouble(),
 				players.isToggle(), friends.isToggle(), invisibles.isToggle(), mobs.isToggle(), animals.isToggle(),
 				throughWalls.isToggle());
 
@@ -62,8 +69,15 @@ public class ClickAura extends Module {
 			Helper.getPlayer().setYaw(rotate[0]);
 			Helper.getPlayer().setPitch(rotate[1]);
 		}
+		if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+			Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM,
+					new BlockPos(0, 0, 0), Direction.DOWN));
+
 		Helper.MC.interactionManager.attackEntity(Helper.getPlayer(), target);
 		EntityUtil.swing(true);
+
+		if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
+			Helper.sendPacket(new PlayerInteractItemC2SPacket(Hand.OFF_HAND));
 
 	}
 
