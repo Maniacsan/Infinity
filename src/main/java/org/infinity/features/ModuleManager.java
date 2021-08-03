@@ -8,8 +8,7 @@ import java.util.stream.Collectors;
 
 import org.infinity.features.module.combat.*;
 import org.infinity.features.module.hidden.*;
-import org.infinity.features.module.misc.DiscordRPCMod;
-import org.infinity.features.module.misc.SelfDestruct;
+import org.infinity.features.module.misc.*;
 import org.infinity.features.module.movement.*;
 import org.infinity.features.module.player.*;
 import org.infinity.features.module.visual.*;
@@ -45,6 +44,7 @@ public class ModuleManager {
 			new Refill(),
 			new AutoPotion(),
 			new BetterBow(),
+			new NameProtect(),
 			new ChestSteal(),
 			new FreeCam(),
 			new AutoEat(),
@@ -97,7 +97,7 @@ public class ModuleManager {
 		return list;
 	}
 
-	public Module getModuleByClass(Class<?> clas) {
+	public Module get(Class<?> clas) {
 		Iterator<Module> iteratorMod = list.iterator();
 		Module module;
 		do {
@@ -109,7 +109,7 @@ public class ModuleManager {
 		return module;
 	}
 
-	public Module getModuleByName(String name) {
+	public Module getByName(String name) {
 		for (Module m : list) {
 			if (m.getName().equalsIgnoreCase(name)) {
 				return m;
@@ -118,7 +118,7 @@ public class ModuleManager {
 		return null;
 	}
 
-	public List<Module> getModulesByCategory(Category category) {
+	public List<Module> getByCategory(Category category) {
 		return getList().stream().filter(m -> m.getCategory().equals(category)).collect(Collectors.toList());
 	}
 

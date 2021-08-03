@@ -14,6 +14,7 @@ import org.infinity.ui.menu.components.elements.CheckBoxElement;
 import org.infinity.ui.menu.components.elements.ColorPickerElement;
 import org.infinity.ui.menu.components.elements.ComboBoxElement;
 import org.infinity.ui.menu.components.elements.SliderElement;
+import org.infinity.ui.menu.components.elements.TextFieldElement;
 import org.infinity.ui.menu.components.elements.slider.DoubleSlider;
 import org.infinity.ui.menu.components.elements.slider.FloatSlider;
 import org.infinity.ui.menu.components.elements.slider.IntSlider;
@@ -85,31 +86,35 @@ public class ModuleButton {
 		for (Setting setting : settings) {
 			switch ((Category) setting.getCategory()) {
 			case COLOR:
-				this.elements.add(new ColorPickerElement(setting));
+				elements.add(new ColorPickerElement(setting));
 				break;
 
 			case MODE:
-				this.elements.add(new ComboBoxElement(setting));
+				elements.add(new ComboBoxElement(setting));
 				break;
 
 			case BOOLEAN:
-				this.elements.add(new CheckBoxElement(setting));
+				elements.add(new CheckBoxElement(setting));
 				break;
 
 			case VALUE_DOUBLE:
-				this.elements.add(new DoubleSlider(setting));
+				elements.add(new DoubleSlider(setting));
 				break;
 
 			case VALUE_FLOAT:
-				this.elements.add(new FloatSlider(setting));
+				elements.add(new FloatSlider(setting));
 				break;
 
 			case VALUE_INT:
-				this.elements.add(new IntSlider(setting));
+				elements.add(new IntSlider(setting));
 				break;
 
 			case BLOCKS:
-				this.elements.add(new BlocksSelectElement(setting));
+				elements.add(new BlocksSelectElement(setting));
+				break;
+
+			case TEXT:
+				elements.add(new TextFieldElement(setting));
 				break;
 			}
 		}
@@ -177,9 +182,14 @@ public class ModuleButton {
 
 				if (element instanceof SliderElement)
 					yOffset += 18;
-				else if (element instanceof ColorPickerElement) {
+				else if (element instanceof ColorPickerElement)
+				{
 					yOffset += 20;
-				} else if (element instanceof ComboBoxElement) {
+				} else if (element instanceof TextFieldElement)
+				{
+					yOffset += 28;
+				} else if (element instanceof ComboBoxElement)
+				{
 					if (((ComboBoxElement) element).isOpen())
 						yOffset += ((ComboBoxElement) element).getSetting().getModes().size() * 20;
 					else
@@ -296,6 +306,8 @@ public class ModuleButton {
 					offset = (((ComboBoxElement) element).getSetting().getModes().size() - 1) * 18;
 				else if (element instanceof ColorPickerElement)
 					offset = 1;
+				else if (element instanceof ColorPickerElement)
+					offset = 3;
 				else
 					offset = 0;
 
@@ -322,8 +334,7 @@ public class ModuleButton {
 	}
 
 	private double getScrollProgress() {
-		return prevScrollProgress
-				+ (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
+		return prevScrollProgress + (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
 	}
 
 	private void setScrollProgress(double value) {

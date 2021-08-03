@@ -16,7 +16,7 @@ public class PlayerEntityMixin {
 
 	@Inject(method = { "getBlockBreakingSpeed" }, at = { @At("RETURN") }, cancellable = true)
 	public void onGetBlockBreakingSpeed(BlockState block, CallbackInfoReturnable<Float> cir) {
-		FastBreak fastBreak = ((FastBreak) InfMain.getModuleManager().getModuleByClass(FastBreak.class));
+		FastBreak fastBreak = ((FastBreak) InfMain.getModuleManager().get(FastBreak.class));
 		if (fastBreak.isEnabled()) {
 			cir.setReturnValue((float) (cir.getReturnValue() * fastBreak.speed.getCurrentValueDouble()));
 		}
@@ -24,7 +24,7 @@ public class PlayerEntityMixin {
 
 	@Inject(method = "isSwimming", at = @At("HEAD"), cancellable = true)
 	public void isOnSwimming(CallbackInfoReturnable<Boolean> ci) {
-		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled())
+		if (InfMain.getModuleManager().get(NoSwim.class).isEnabled())
 			ci.setReturnValue(false);
 	}
 

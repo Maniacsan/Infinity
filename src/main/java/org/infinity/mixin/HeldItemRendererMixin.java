@@ -22,7 +22,7 @@ public class HeldItemRendererMixin {
 			ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers,
 			int light, CallbackInfo ci) {
 		if (!item.isEmpty())
-			((ViewModel) InfMain.getModuleManager().getModuleByClass(ViewModel.class)).transform(matrices);
+			((ViewModel) InfMain.getModuleManager().get(ViewModel.class)).transform(matrices);
 	}
 
 }

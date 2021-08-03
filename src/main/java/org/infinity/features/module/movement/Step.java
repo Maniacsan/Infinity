@@ -99,7 +99,7 @@ public class Step extends Module {
 	public void onUpdate() {
 		if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0")) {
 			if (Helper.MC.options.keyJump.isPressed()
-					|| InfMain.getModuleManager().getModuleByClass(TargetStrafe.class).isEnabled()
+					|| InfMain.getModuleManager().get(TargetStrafe.class).isEnabled()
 							&& TargetStrafe.target != null)
 				EntityUtil.setStepHeight(0.6f);
 			else

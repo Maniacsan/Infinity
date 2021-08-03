@@ -2,6 +2,7 @@ package org.infinity.mixin;
 
 import org.infinity.event.HudRenderEvent;
 import org.infinity.main.InfMain;
+import org.infinity.utils.Helper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,9 @@ public class InGameHudMixin extends DrawableHelper {
 
 	@Inject(at = @At(value = "RETURN"), method = "render")
 	private void onRender(MatrixStack matrices, float tickDelta, CallbackInfo info) {
+		if (Helper.MC.options.debugEnabled)
+			return;
+		
 		InfMain.getHookManager().onRender(matrices, tickDelta, scaledWidth, scaledHeight);
 		HudRenderEvent hudRenderEvent = new HudRenderEvent(MinecraftClient.getInstance().getWindow(), scaledWidth,
 				scaledHeight, matrices);

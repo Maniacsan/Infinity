@@ -208,7 +208,7 @@ public class Criticals extends Module {
 	}
 
 	public static boolean fall(net.minecraft.entity.Entity target) {
-		Criticals criticals = ((Criticals) InfMain.getModuleManager().getModuleByClass(Criticals.class));
+		Criticals criticals = ((Criticals) InfMain.getModuleManager().get(Criticals.class));
 		// lul
 		if (criticals.isEnabled() && criticals.mode.getCurrentMode().equalsIgnoreCase("Jump")
 				&& criticals.falling.isToggle()) {

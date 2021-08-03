@@ -13,7 +13,7 @@ public class ToggleCommand extends Command {
 
 	@Override
 	public void command(String[] args, String msg) {
-		org.infinity.features.Module module = InfMain.getModuleManager().getModuleByName(args[0]);
+		org.infinity.features.Module module = InfMain.getModuleManager().getByName(args[0]);
 		
 		if (module.getCategory() != Category.HIDDEN)
 		module.enable();

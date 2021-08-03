@@ -251,8 +251,8 @@ public class KillAura extends Module {
 				}
 
 				// fakeLags reset
-				if (InfMain.getModuleManager().getModuleByClass(FakeLags.class).isEnabled())
-					((FakeLags) InfMain.getModuleManager().getModuleByClass(FakeLags.class)).sendPackets();
+				if (InfMain.getModuleManager().get(FakeLags.class).isEnabled())
+					((FakeLags) InfMain.getModuleManager().get(FakeLags.class)).sendPackets();
 
 				Helper.sendPacket(PlayerInteractEntityC2SPacket.attack(target, Helper.getPlayer().isSneaking()));
 				EntityUtil.swing(!noSwing.isToggle());

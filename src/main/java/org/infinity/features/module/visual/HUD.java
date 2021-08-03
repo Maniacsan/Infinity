@@ -33,9 +33,6 @@ public class HUD extends Module {
 
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-		if (Helper.MC.options.debugEnabled)
-			return;
-
 		double scale = getScale();
 
 		matrices.push();

@@ -63,19 +63,19 @@ public class Panel {
 		this.width = width;
 		this.height = height;
 		categoryButtons.add(
-				new CategoryButton("Combat", InfMain.getModuleManager().getModulesByCategory(Category.COMBAT), this));
+				new CategoryButton("Combat", InfMain.getModuleManager().getByCategory(Category.COMBAT), this));
 		categoryButtons.add(new CategoryButton("Movement",
-				InfMain.getModuleManager().getModulesByCategory(Category.MOVEMENT), this));
+				InfMain.getModuleManager().getByCategory(Category.MOVEMENT), this));
 		categoryButtons.add(
-				new CategoryButton("World", InfMain.getModuleManager().getModulesByCategory(Category.WORLD), this));
+				new CategoryButton("World", InfMain.getModuleManager().getByCategory(Category.WORLD), this));
 		categoryButtons.add(
-				new CategoryButton("Player", InfMain.getModuleManager().getModulesByCategory(Category.PLAYER), this));
+				new CategoryButton("Player", InfMain.getModuleManager().getByCategory(Category.PLAYER), this));
 		categoryButtons.add(
-				new CategoryButton("Visual", InfMain.getModuleManager().getModulesByCategory(Category.VISUAL), this));
+				new CategoryButton("Visual", InfMain.getModuleManager().getByCategory(Category.VISUAL), this));
 		categoryButtons
-				.add(new CategoryButton("Misc", InfMain.getModuleManager().getModulesByCategory(Category.MISC), this));
+				.add(new CategoryButton("Misc", InfMain.getModuleManager().getByCategory(Category.MISC), this));
 		categoryButtons.add(
-				new CategoryButton(ENABLED, InfMain.getModuleManager().getModulesByCategory(Category.ENABLED), this));
+				new CategoryButton(ENABLED, InfMain.getModuleManager().getByCategory(Category.ENABLED), this));
 		categoryButtons.add(new CategoryButton(configPanel.getName(), null, this));
 		categoryButtons.add(new CategoryButton(SEARCH, null, this));
 

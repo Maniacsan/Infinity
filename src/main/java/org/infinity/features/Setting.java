@@ -24,12 +24,13 @@ public class Setting {
 	private ArrayList<Block> renderBlocks;
 	private ArrayList<String> modes;
 	private String currentMode, defaultMode;
+	private String text, defaultText;
 	private Color color, defaultColor;
 
 	private Category category;
 
 	public enum Category {
-		BOOLEAN, VALUE_INT, VALUE_DOUBLE, VALUE_FLOAT, MODE, COLOR, BLOCKS;
+		BOOLEAN, VALUE_INT, VALUE_DOUBLE, VALUE_FLOAT, MODE, COLOR, BLOCKS, TEXT;
 	}
 
 	// boolean
@@ -108,6 +109,16 @@ public class Setting {
 		this.defaultBlocks = blocks;
 		this.renderBlocks = renderBlocks;
 		this.category = Category.BLOCKS;
+		this.visible = () -> true;
+	}
+
+	// Text
+	public Setting(Module module, String name, String text) {
+		this.module = module;
+		this.name = name;
+		this.text = text;
+		this.defaultText = text;
+		this.category = Category.TEXT;
 		this.visible = () -> true;
 	}
 
@@ -241,6 +252,10 @@ public class Setting {
 		this.color = new Color(color);
 	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public ArrayList<Block> getBlocks() {
 		return blocks;
 	}
@@ -304,6 +319,10 @@ public class Setting {
 		return visible.get().booleanValue();
 	}
 
+	public String getText() {
+		return text;
+	}
+
 	public boolean isDefaultToogle() {
 		return defaultToogle;
 	}
@@ -330,6 +349,10 @@ public class Setting {
 
 	public Color getDefaultColor() {
 		return defaultColor;
+	}
+
+	public String getDefaultText() {
+		return defaultText;
 	}
 
 	public Category getCategory() {

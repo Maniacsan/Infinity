@@ -41,7 +41,7 @@ public class MenuSettingWindow extends Screen {
 
 	@Override
 	public void init() {
-		for (Setting setting : InfMain.getModuleManager().getModuleByClass(Menu.class).getSettings()) {
+		for (Setting setting : InfMain.getModuleManager().get(Menu.class).getSettings()) {
 			if (setting == null)
 				continue;
 

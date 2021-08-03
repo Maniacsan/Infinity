@@ -51,7 +51,7 @@ public class AutoShift extends Module {
 	}
 
 	public static void shift() {
-		if (InfMain.getModuleManager().getModuleByClass(AutoShift.class).isEnabled()) {
+		if (InfMain.getModuleManager().get(AutoShift.class).isEnabled()) {
 			if (!Helper.getPlayer().isOnGround()) {
 
 				(new Thread() {

@@ -14,7 +14,7 @@ public class LivingEntityMixin {
 	
 	@Inject(method = "isInSwimmingPose", at = @At("HEAD"), cancellable = true)
 	public void isInSwimmingPose(CallbackInfoReturnable<Boolean> ci) {
-		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled()) 
+		if (InfMain.getModuleManager().get(NoSwim.class).isEnabled()) 
 			ci.setReturnValue(false);
 	}
 

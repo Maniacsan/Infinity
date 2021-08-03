@@ -14,7 +14,7 @@ public class GameRendererMixin {
 
 	@Inject(method = "bobViewWhenHurt", at = @At("HEAD"), cancellable = true)
 	public void onHurtCam(CallbackInfo ci) {
-		if (InfMain.getModuleManager().getModuleByClass(NoHurtCam.class).isEnabled())
+		if (InfMain.getModuleManager().get(NoHurtCam.class).isEnabled())
 			ci.cancel();
 	}
 }

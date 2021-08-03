@@ -23,6 +23,9 @@ public class ConfigButton {
 	private double width;
 	private double height;
 
+	private double dscale;
+	private double escale;
+
 	public ConfigButton(Config config, ConfigPanel panel) {
 		this.config = config;
 		this.panel = panel;
@@ -36,17 +39,37 @@ public class ConfigButton {
 				Render2D.isHovered(mouseX, mouseY, x + width - 85, y + 6, 75, 20) ? 0xFF55B9C8 : 0xFF41A5B4);
 		IFont.legacy15.drawString(matrices, "Load", x + width - 50, y + 11, -1);
 
-		double anim = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10) ? RenderUtil.animate(2, 0, 0.4)
-				: 0;
-		double anim1 = Render2D.isHovered(mouseX, mouseY, x + width - 110, y + 11, 10, 10)
-				? RenderUtil.animate(2, 0, 0.4)
-				: 0;
+		dscale = Render2D.isHovered(mouseX, mouseY, x + width - 95, y + 11, 10, 10) ? Math.min(1.2, dscale + 0.1)
+				: Math.max(1, dscale - 0.1);
+		escale = Render2D.isHovered(mouseX, mouseY, x + width - 110, y + 11, 10, 10) ? Math.min(1.2, escale + 0.1)
+				: Math.max(1, escale - 0.1);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), x + width - 95 - anim,
-				y + 11 - anim, 10 + (anim + anim), 10 + (anim + anim));
+		matrices.push();
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"),
-				x + width - 110 - anim1, y + 11 - anim1, 10 + (anim1 + anim1), 10 + (anim1 + anim1));
+		double dx = x + width - 95;
+		double dy = y + 11;
+
+		matrices.translate(dx + 5, dy + 5, 0);
+		matrices.scale((float) dscale, (float) dscale, 1f);
+		matrices.translate(-dx - 5, -dy - 5, 0);
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/save.png"), dx, dy, 10, 10);
+
+		matrices.pop();
+
+		matrices.push();
+
+		double ex = x + width - 110;
+		double ey = y + 11;
+
+		matrices.translate(ex + 5, ey + 5, 0);
+		matrices.scale((float) escale, (float) escale, 1f);
+		matrices.translate(-ex - 5, -ey - 5, 0);
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/delete.png"), x + width - 110,
+				y + 11, 10, 10);
+
+		matrices.pop();
 
 		String name = StringUtil.replaceNull(config.getName());
 		String author = StringUtil.replaceNull(config.getAuthor());

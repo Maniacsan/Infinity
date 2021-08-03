@@ -27,21 +27,21 @@ public class SelfDestructWindow extends Screen {
 	@Override
 	protected void init() {
 		super.init();
-		addDrawableChild(new CustomButtonWidget(this.width / 2 - 85, height / 2 + 10, 80, 20, new LiteralText("Yes"),
+		addDrawableChild(new CustomButtonWidget(this.width / 2 - 45, height / 2 + 10, 35, 18, new LiteralText("Yes"),
 				buttonWidget -> {
-					((SelfDestruct) InfMain.getModuleManager().getModuleByClass(SelfDestruct.class)).destruct();
+					((SelfDestruct) InfMain.getModuleManager().get(SelfDestruct.class)).destruct();
 				}));
-		addDrawableChild(new CustomButtonWidget(this.width / 2 - 85 + 100, height / 2 + 10, 80, 20,
+		addDrawableChild(new CustomButtonWidget(this.width / 2 - 75 + 100, height / 2 + 10, 35, 18,
 				new LiteralText("Cancel"), buttonWidget -> {
-					InfMain.getModuleManager().getModuleByClass(SelfDestruct.class).setEnabled(false);
+					InfMain.getModuleManager().get(SelfDestruct.class).setEnabled(false);
 					onClose();
 				}));
 	}
 
 	@Override
 	public void onClose() {
-		if (InfMain.getModuleManager().getModuleByClass(SelfDestruct.class).isEnabled())
-			InfMain.getModuleManager().getModuleByClass(SelfDestruct.class).setEnabled(false);
+		if (InfMain.getModuleManager().get(SelfDestruct.class).isEnabled())
+			InfMain.getModuleManager().get(SelfDestruct.class).setEnabled(false);
 		Helper.openScreen(prev);
 	}
 

@@ -207,9 +207,9 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Override
 	protected boolean clipAtLedge() {
-		return super.clipAtLedge() || InfMain.getModuleManager().getModuleByClass(SafeWalk.class).isEnabled()
-				|| (InfMain.getModuleManager().getModuleByClass(Scaffold.class).isEnabled()
-						&& ((Scaffold) InfMain.getModuleManager().getModuleByClass(Scaffold.class)).safeWalk
+		return super.clipAtLedge() || InfMain.getModuleManager().get(SafeWalk.class).isEnabled()
+				|| (InfMain.getModuleManager().get(Scaffold.class).isEnabled()
+						&& ((Scaffold) InfMain.getModuleManager().get(Scaffold.class)).safeWalk
 								.isToggle());
 	}
 
@@ -224,7 +224,7 @@ public abstract class ClientPlayerEntityMixin extends AbstractClientPlayerEntity
 
 	@Inject(method = "setSprinting", at = @At("HEAD"), cancellable = true)
 	public void onSetSprinting(CallbackInfo ci) {
-		if (InfMain.getModuleManager().getModuleByClass(NoSwim.class).isEnabled()
+		if (InfMain.getModuleManager().get(NoSwim.class).isEnabled()
 				&& Helper.getPlayer().isTouchingWater()) {
 			ci.cancel();
 		}

@@ -154,7 +154,7 @@ public class Render2D {
 		matrices.translate(-x, -y, 0);
 
 		RenderUtil.drawImage(matrices, true, x - (radius / 2), y - (radius / 2), radius, radius,
-				"/assets/infinity/textures/icons/element/triangle.png", color);
+				"/assets/infinity/textures/icons/element/arrow.png", color);
 
 		matrices.pop();
 	}

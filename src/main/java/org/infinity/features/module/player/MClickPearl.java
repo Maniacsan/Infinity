@@ -24,7 +24,7 @@ public class MClickPearl extends Module {
 		if (Helper.MC.currentScreen != null)
 			return;
 
-		if (InfMain.getModuleManager().getModuleByClass(MClickFriend.class).isEnabled()
+		if (InfMain.getModuleManager().get(MClickFriend.class).isEnabled()
 				&& Helper.MC.targetedEntity != null)
 			return;
 

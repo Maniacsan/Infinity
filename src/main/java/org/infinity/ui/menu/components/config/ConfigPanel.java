@@ -66,16 +66,15 @@ public class ConfigPanel {
 		for (Config config : InfMain.getConfigManager().getConfigList()) {
 			configList.add(new ConfigButton(config, this));
 		}
+		refreshHover = 0;
 		errorTime = -1;
 		setScrollProgress(0);
 	}
 
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
 
-		if (Render2D.isHovered(mouseX, mouseY, x + width - 23, y + 16, 10, 10))
-			refreshHover = Math.min(350, refreshHover + 32);
-		else if (refreshHover >= 0)
-			refreshHover = Math.max(0, refreshHover - 32);
+		if (refreshHover != 360)
+			refreshHover = Math.min(360, refreshHover + 37);
 
 		Render2D.drawRectWH(matrices, x, y, width - 2, 40, 0xFF1F5A96);
 		Render2D.drawRectWH(matrices, x + 1, y, width - 4, 40, 0xFF0D121D);

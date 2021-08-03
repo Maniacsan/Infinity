@@ -43,7 +43,8 @@
   "ClientConnectionChInitMixin",
   "ServerNetworkIoChInitMixin",
   "PlayerSkinProviderMixin",
-  "IElytraFeatureRenderer"
+  "IElytraFeatureRenderer",
+  "TextVisitFactoryMixin"
   ],
     "injectors": {
     "defaultRequire": 1

@@ -20,7 +20,7 @@ public class BlockMixin {
 	@Inject(method = "shouldDrawSide", at = @At("HEAD"), cancellable = true)
 	private static void shouldDrawSide(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos blockPos,
 									   CallbackInfoReturnable<Boolean> callback) {
-		XRay xray = ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class));
+		XRay xray = ((XRay) InfMain.getModuleManager().get(XRay.class));
 		if (xray.isEnabled() && xray.isNoRender()) {
 			callback.setReturnValue(xray.isValid(state.getBlock()));
 			callback.cancel();
@@ -29,8 +29,8 @@ public class BlockMixin {
 
 	@Inject(method = "isShapeFullCube", at = @At("HEAD"), cancellable = true)
 	private static void isShapeFullCube(VoxelShape shape, CallbackInfoReturnable<Boolean> callback) {
-		if (InfMain.getModuleManager().getModuleByClass(XRay.class).isEnabled()
-				&& ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class)).isNoRender()) {
+		if (InfMain.getModuleManager().get(XRay.class).isEnabled()
+				&& ((XRay) InfMain.getModuleManager().get(XRay.class)).isNoRender()) {
 			callback.setReturnValue(false);
 		}
 	}

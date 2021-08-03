@@ -37,7 +37,7 @@ public class Jesus extends Module {
 
 	@Override
 	public void onEnable() {
-		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled()) {
+		if (InfMain.getModuleManager().get(AntiWaterPush.class).isEnabled()) {
 			Helper.infoMessage("Jesus will not work stably, please turn off AntiWaterPush module");
 		}
 	}
@@ -50,7 +50,7 @@ public class Jesus extends Module {
 	@Override
 	public void onUpdate() {
 		setSuffix(mode.getCurrentMode());
-		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+		if (InfMain.getModuleManager().get(AntiWaterPush.class).isEnabled())
 			return;
 
 		double offsetY = MathAssist.random(0.01, 0.3);
@@ -107,7 +107,7 @@ public class Jesus extends Module {
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
-		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+		if (InfMain.getModuleManager().get(AntiWaterPush.class).isEnabled())
 			return;
 		
 		if (event.getType().equals(EventType.PRE)) {

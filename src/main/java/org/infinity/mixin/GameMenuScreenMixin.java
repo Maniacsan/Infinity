@@ -21,7 +21,7 @@ public class GameMenuScreenMixin {
 		if (InfMain.INSTANCE.self)
 			return;
 		
-		int modKey = InfMain.getModuleManager().getModuleByClass(Menu.class).getKey();
+		int modKey = InfMain.getModuleManager().get(Menu.class).getKey();
 		String key = modKey == 96
 				? Formatting.BLUE + "GRAVE " + Formatting.GRAY + "\"" + Formatting.BLUE + " ` " + Formatting.GRAY
 						+ "\" "

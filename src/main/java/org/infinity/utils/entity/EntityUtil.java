@@ -68,7 +68,7 @@ public class EntityUtil {
 
 	public static boolean isCombatTarget(Entity entity, double fov, boolean players, boolean friends,
 			boolean invisibles, boolean mobs, boolean animals, boolean throughWalls) {
-		AntiBot antiBot = ((AntiBot) InfMain.getModuleManager().getModuleByClass(AntiBot.class));
+		AntiBot antiBot = ((AntiBot) InfMain.getModuleManager().get(AntiBot.class));
 
 		if (antiBot.isEnabled() && antiBot.mode.getCurrentMode().equalsIgnoreCase("Need Hit")) {
 			if (antiBot.isHitted(entity))

@@ -39,7 +39,7 @@ public class CheckBoxElement extends AbstractElement {
 
 	@Override
 	public void mouseClicked(double mouseX, double mouseY, int button) {
-		if (Render2D.isHovered(mouseX, mouseY, x + width - 40, y + 4, 19, 12)) {
+		if (Render2D.isHovered(mouseX, mouseY, x + width - 40, y + 4, 19, 12) && setting.getColor() != null) {
 			Helper.openScreen(new ColorPickerWindow(Helper.MC.currentScreen, setting));
 		} else if (this.hovered && button == 0) {
 			this.setting.setToggle(!this.setting.isToggle());

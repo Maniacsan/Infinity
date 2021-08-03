@@ -15,8 +15,8 @@ public class ChunkOcclusionDataBuilderMixin {
 
 	@Inject(method = "markClosed", at = @At("HEAD"), cancellable = true)
 	public void markClosed(BlockPos pos, CallbackInfo callback) {
-		if (InfMain.getModuleManager().getModuleByClass(XRay.class).isEnabled()
-				&& ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class)).isNoRender()) {
+		if (InfMain.getModuleManager().get(XRay.class).isEnabled()
+				&& ((XRay) InfMain.getModuleManager().get(XRay.class)).isNoRender()) {
 			callback.cancel();
 		}
 	}

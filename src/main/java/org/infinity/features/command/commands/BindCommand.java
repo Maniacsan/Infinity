@@ -12,7 +12,7 @@ public class BindCommand extends Command {
 
 	@Override
 	public void command(String[] args, String msg) {
-		org.infinity.features.Module module = InfMain.getModuleManager().getModuleByName(args[1]);
+		org.infinity.features.Module module = InfMain.getModuleManager().getByName(args[1]);
 		if (args[0].equalsIgnoreCase("add")) {
 			module.setKey(InputUtil.fromTranslationKey("key.keyboard." + args[2].toLowerCase()).getCode());
 			send(Formatting.GRAY + "[Feature] " + Formatting.WHITE + module.getName() + Formatting.GRAY + " binded to "

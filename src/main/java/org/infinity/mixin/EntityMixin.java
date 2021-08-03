@@ -69,7 +69,7 @@ public abstract class EntityMixin {
 
 	@Inject(method = "getTargetingMargin", at = @At("HEAD"), cancellable = true)
 	public void getTargetingMargin(CallbackInfoReturnable<Float> info) {
-		float box = ((HitBoxes) InfMain.getModuleManager().getModuleByClass(HitBoxes.class))
+		float box = ((HitBoxes) InfMain.getModuleManager().get(HitBoxes.class))
 				.getSize((Entity) (Object) this);
 		if (box != 0) {
 			info.setReturnValue(box);
@@ -79,7 +79,7 @@ public abstract class EntityMixin {
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V", opcode = Opcodes.INVOKEVIRTUAL, ordinal = 0), method = {
 			"updateMovementInFluid(Lnet/minecraft/tag/Tag;D)Z" })
 	private void setVelocityFromFluid(Entity entity, Vec3d velocity) {
-		if (InfMain.getModuleManager().getModuleByClass(AntiWaterPush.class).isEnabled())
+		if (InfMain.getModuleManager().get(AntiWaterPush.class).isEnabled())
 			return;
 
 		entity.setVelocity(velocity);
@@ -87,7 +87,7 @@ public abstract class EntityMixin {
 
 	@Inject(method = "pushAwayFrom", at = @At("HEAD"), cancellable = true)
 	private void onPushAwayFrom(Entity entity, CallbackInfo ci) {
-		Velocity velocity = ((Velocity) InfMain.getModuleManager().getModuleByClass(Velocity.class));
+		Velocity velocity = ((Velocity) InfMain.getModuleManager().get(Velocity.class));
 
 		if (velocity.isEnabled() && velocity.mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.0"))
 			velocity.pushAway((Entity) (Object) this, entity, ci);

@@ -14,7 +14,7 @@ public class CameraMixin {
 
 	@Inject(method = "clipToSpace", at = @At("HEAD"), cancellable = true)
 	private void onClipToSpace(double desiredCameraDistance, CallbackInfoReturnable<Double> info) {
-		if (InfMain.getModuleManager().getModuleByClass(CameraClip.class).isEnabled()) {
+		if (InfMain.getModuleManager().get(CameraClip.class).isEnabled()) {
 			info.setReturnValue(desiredCameraDistance);
 		}
 	}

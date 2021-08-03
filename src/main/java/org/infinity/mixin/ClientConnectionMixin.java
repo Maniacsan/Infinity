@@ -61,7 +61,7 @@ public class ClientConnectionMixin {
 			}
 		}
 		// antifabric spoof
-		if (InfMain.getModuleManager().getModuleByClass(AntiFabric.class).isEnabled()) {
+		if (InfMain.getModuleManager().get(AntiFabric.class).isEnabled()) {
 			if (!(packet instanceof ICustomPayloadC2SPacket))
 				return;
 
@@ -85,7 +85,7 @@ public class ClientConnectionMixin {
 
 	@ModifyVariable(method = "send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V", at = @At("HEAD"))
 	public Packet<?> onSendPacket(Packet<?> packet) {
-		if (InfMain.getModuleManager().getModuleByClass(AntiFabric.class).isEnabled()) {
+		if (InfMain.getModuleManager().get(AntiFabric.class).isEnabled()) {
 			if ((packet instanceof ICustomPayloadC2SPacket)) {
 
 				ICustomPayloadC2SPacket plPacket = (ICustomPayloadC2SPacket) packet;
@@ -103,7 +103,7 @@ public class ClientConnectionMixin {
 	@Inject(method = "exceptionCaught", at = @At("HEAD"), cancellable = true)
 	private void exceptionCaught(ChannelHandlerContext context, Throwable throwable, CallbackInfo ci) {
 		if (throwable instanceof IOException
-				&& InfMain.getModuleManager().getModuleByClass(PacketKick.class).isEnabled())
+				&& InfMain.getModuleManager().get(PacketKick.class).isEnabled())
 			ci.cancel();
 	}
 

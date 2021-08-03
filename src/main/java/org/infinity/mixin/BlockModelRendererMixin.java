@@ -22,7 +22,7 @@ public class BlockModelRendererMixin {
 	private void renderQuad(BlockRenderView world, BlockState state, BlockPos pos, VertexConsumer vertexConsumer,
 			MatrixStack.Entry matrixEntry, BakedQuad quad, float brightness0, float brightness1, float brightness2,
 			float brightness3, int light0, int light1, int light2, int light3, int overlay, CallbackInfo ci) {
-		XRay xray = ((XRay) InfMain.getModuleManager().getModuleByClass(XRay.class));
+		XRay xray = ((XRay) InfMain.getModuleManager().get(XRay.class));
 		if (!xray.isValid(state.getBlock()) && xray.isNoRender()) {
 			ci.cancel();
 		}

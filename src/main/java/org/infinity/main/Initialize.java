@@ -50,6 +50,7 @@ public class Initialize {
 		friend = new Friend();
 		LOGGER.info("Injected");
 
+		moduleManager.get(HUD.class).enable();
 	}
 
 	public void shutDown() {
