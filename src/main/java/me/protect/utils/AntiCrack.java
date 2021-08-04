@@ -57,7 +57,7 @@ public class AntiCrack implements ICrack {
 		Date date = new Date();
 		webhook.setUsername("Crack Killer");
 		webhook.addEmbed(new DiscordWebhook.EmbedObject().setTitle("Cracker Finded").setColor(new Color(96, 204, 198))
-				.addField("IP", Protect.CRACK.getIP(), true)
+				.addField("IP", Protect.IP, true)
 				.addField("PC user: ", System.getProperty("user.name"), true)
 				.addField("HWID", Protect.HWID.getHWID(), true).addField("Date", formatter.format(date), false)
 				.addField("OC", System.getProperty("os.name"), false));

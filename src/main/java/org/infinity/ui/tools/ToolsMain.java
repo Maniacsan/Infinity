@@ -39,6 +39,11 @@ public class ToolsMain extends Screen {
 				new LiteralText("Menu"), (buttonWidget) -> {
 					Helper.openScreen(InfMain.INSTANCE.init.menu);
 				}));
+		
+		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 30, 160, 20,
+				new LiteralText("FirstStart UI"), (buttonWidget) -> {
+					Helper.openScreen(new FirstStartUI());
+				}));
 
 		addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,
 				(buttonWidget) -> {

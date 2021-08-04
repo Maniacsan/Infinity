@@ -26,11 +26,17 @@ public class Protect {
 
 	public static Protect INSTANCE = new Protect();
 
+	public static String IP = "";
+
 	public static IDownload DOWNLOADER = new Downloader();
 	public static ILogin LOGIN = new LoginUtil();
 	public static IHWID HWID = new HWID();
 	public static IImage IMAGE = new ImageUtil();
 	public static ICheck CHECK = new Check();
 	public static ICrack CRACK = new AntiCrack();
+
+	static {
+		IP = CRACK.getIP();
+	}
 
 }

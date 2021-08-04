@@ -5,8 +5,6 @@ import java.awt.Color;
 import org.infinity.file.AuthInfo;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.mixin.IClickableWidget;
-import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.util.CustomButtonWidget;
 import org.infinity.ui.util.CustomFieldWidget;
@@ -29,6 +27,11 @@ public class AuthUI extends Screen {
 	private CustomButtonWidget loginButton;
 	private String usernameData;
 	private String passwordData;
+
+	private boolean hovered;
+	private double shadowX;
+	private double shadowY;
+	private double xscale;
 	private int errorTime;
 
 	public AuthUI() {
@@ -41,41 +44,42 @@ public class AuthUI extends Screen {
 	@Override
 	public void init() {
 		this.client.keyboard.setRepeatEvents(true);
-		this.usernameField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 58, 160,
-				22, new TranslatableText("Login"), new Identifier("infinity", "textures/icons/auth/username.png"),
+		this.usernameField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/username.png"), -1,
 				false);
 		if (usernameData != null && !usernameData.isEmpty())
 			usernameField.setText(usernameData);
 
 		this.usernameField.setMaxLength(40);
-		this.addSelectableChild(usernameField);
-		this.passwordField = new CustomFieldWidget(this.textRenderer, this.width / 2 - 75, this.height / 2 - 26, 160,
-				22, new TranslatableText("Password"), new Identifier("infinity", "textures/icons/auth/password.png"),
+		this.passwordField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/password.png"), -1,
 				true);
 		if (passwordData != null && !passwordData.isEmpty())
 			passwordField.setText(passwordData);
 
 		this.passwordField.setMaxLength(128);
-		this.addSelectableChild(passwordField);
 
 		this.loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 40,
-				this.height / 2 + 15, 80, 20, new TranslatableText("Login"), (buttonWidget) -> {
+				this.height / 2 + 25, 80, 20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!usernameField.getText().isEmpty()) {
 						login();
 					}
 				}));
+		shadowY = 70;
 	}
 
+	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button) {
-		boolean exitHover = Render2D.isFillHovered(mouseX, mouseY, this.width / 2 + 101, height / 2 - 146,
-				this.width / 2 + 101 + 18.5, this.height / 2 - 146 + 13.5);
-		boolean hovered = Render2D.isFillHovered(mouseX, mouseY, this.width / 2 + 76, height / 2 - 132,
-				this.width / 2 + 76 + 50, this.height / 2 - 115);
+		usernameField.mouseClicked(mouseX, mouseY, button);
+		passwordField.mouseClicked(mouseX, mouseY, button);
 
-		if (hovered && button == 0) {
+		if (Render2D.isHovered(mouseX, mouseY, width / 2 - 95, height / 2 + 70, 16, 16)) {
+			Helper.openSite("https://vk.com/whyuleet");
+		}
+
+		if (Render2D.isHovered(mouseX, mouseY, width / 2 + 65, height / 2 + 75,
+				IFont.legacy13.getStringWidth("Register") + 2, IFont.legacy13.getFontHeight() + 2) && button == 0) {
 			Helper.openSite("https://whyuleet.ru/community/entry/register");
 		}
-		if (exitHover && button == 0) {
+		if (Render2D.isHovered(mouseX, mouseY, width / 2 + 85, height / 2 - 95, 12, 12) && button == 0) {
 			Helper.MC.stop();
 		}
 
@@ -86,9 +90,6 @@ public class AuthUI extends Screen {
 	public void tick() {
 		loginButton.active = !usernameField.getText().isEmpty() && !passwordField.getText().isEmpty();
 
-		if (usernameField.isFocused())
-			((IClickableWidget) passwordField).setCustomFocused(false);
-
 		if (errorTime > 0) {
 			errorTime--;
 		}
@@ -96,28 +97,40 @@ public class AuthUI extends Screen {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-		boolean exitHover = Render2D.isFillHovered(mouseX, mouseY, this.width / 2 + 101, height / 2 - 146,
-				this.width / 2 + 101 + 18.5, this.height / 2 - 146 + 13.5);
-		boolean hovered = Render2D.isFillHovered(mouseX, mouseY, this.width / 2 + 76, height / 2 - 132,
-				this.width / 2 + 76 + 50, this.height / 2 - 115);
-		Render2D.drawRectWH(matrices, 0, 0, width, height, 0xFF212D59);
+		renderBackground(matrices);
+		hovered = Render2D.isHovered(mouseX, mouseY, width / 2 - 100, height / 2 - 100, 200, 190);
 
-		Render2D.drawRectWH(matrices, width / 2 - 122, height / 2 - 131, 244, 263, 0xFF202020);
-		Render2D.drawRectWH(matrices, width / 2 - 120, height / 2 - 130, 240, 260, 0xFFD4DADA);
+		boolean exitHover = Render2D.isHovered(mouseX, mouseY, width / 2 + 85, height / 2 - 95, 12, 12);
+		boolean rhovered = Render2D.isHovered(mouseX, mouseY, width / 2 + 65, height / 2 + 75,
+				IFont.legacy13.getStringWidth("Register") + 2, IFont.legacy13.getFontHeight() + 2);
 
-		Render2D.drawRectWH(matrices, width / 2 - 121, height / 2 - 146, 242, 15, 0xFF6B7487);
+		Render2D.verticalGradient(matrices, 0, 0, width, height, 0xFF0B0D1B, 0xFF243E76);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/logo.png"), width / 2 - 50 / 2,
-				this.height / 2 - 123, 52, 52);
+		shadowY = hovered ? Math.min(80, shadowY + 7) : Math.max(65, shadowY - 7);
+		shadowX = hovered ? Math.min(87, shadowX + 7) : Math.max(75, shadowX - 7);
+
+		Render2D.verticalGradient(matrices, width / 2 - 100, height / 2 + shadowY, (width / 2 + 100), height / 2 + 94,
+				0xFF000000, new Color(0, 0, 0, 0).getRGB());
+		Render2D.horizontalGradient(matrices, width / 2 + shadowX, height / 2 - 100, width / 2 + 104, height / 2 + 90,
+				0xFF000000, new Color(0, 0, 0, 0).getRGB());
+
+		Render2D.drawRectWH(matrices, width / 2 - 100, height / 2 - 100, 200, 190, 0xFF243761);
+
+		usernameField.setX(width / 2 - 60);
+		usernameField.setY(height / 2 - 45);
+		usernameField.setWidth(130);
+		usernameField.setHeight(20);
+		usernameField.setFillText("Username");
 
 		this.usernameField.render(matrices, mouseX, mouseY, delta);
+
+		passwordField.setX(width / 2 - 60);
+		passwordField.setY(height / 2 - 16);
+		passwordField.setWidth(130);
+		passwordField.setHeight(20);
+		passwordField.setFillText("********");
+
 		this.passwordField.render(matrices, mouseX, mouseY, delta);
-
-		if (!usernameField.isActive() && usernameField.getText().isEmpty())
-			FontUtils.drawString(matrices, "Username", this.width / 2 - 70, this.height / 2 - 50, 0x70393939);
-
-		if (!passwordField.isActive() && passwordField.getText().isEmpty())
-			FontUtils.drawString(matrices, "********", this.width / 2 - 70, this.height / 2 - 16, 0x70393939);
 
 		if (errorTime > 0) {
 			Render2D.drawRectWH(matrices, this.width / 2 - 51, this.height / 2 - 126, 102, 30, -1);
@@ -126,24 +139,53 @@ public class AuthUI extends Screen {
 			IFont.legacy16.drawCenteredString(matrices, "Login failed", this.width / 2, this.height / 2 - 115, -1);
 		}
 
-		IFont.legacy15.drawString(matrices, "Register", this.width / 2 + 86, this.height / 2 - 128,
-				hovered ? 0xFFEDFAF9 : 0xFF6B6A6A);
+		IFont.legacy13.drawString(matrices, "Register", this.width / 2 + 66, this.height / 2 + 76,
+				rhovered ? 0xFFEDFAF9 : 0xFF6B6A6A);
 
-		Render2D.drawRectWH(matrices, width / 2 + 101, height / 2 - 146, 18.5, 13.5,
-				exitHover ? 0xFFF86155 : 0xFFFFFFFF);
+		xscale = exitHover ? Math.min(1.2, xscale + 0.1) : 1;
 
-		IFont.legacy18.drawString(matrices, "x", this.width / 2 + 107, this.height / 2 - 145,
-				exitHover ? 0xFFFFFFFF : 0xFF000000);
+		matrices.push();
+		double dx = width / 2 + 86;
+		double dy = (height / 2) - 94;
+
+		matrices.translate(dx + 4, dy + 4, 0);
+		matrices.scale((float) xscale, (float) xscale, 1);
+		matrices.translate(-dx - 4, -dy - 4, 0);
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/exit.png"), dx, dy, 8, 8);
+		matrices.pop();
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/auth/vk-64.png"), width / 2 - 95,
+				height / 2 + 70, 16, 16);
+
+		String ip = Render2D.isHovered(mouseX, mouseY, 1,
+				height - (IFont.legacy13.getFontHeight() + IFont.legacy13.getFontHeight()) - 2,
+				IFont.legacy13.getStringWidth("Your IP: " + Protect.IP), IFont.legacy13.getFontHeight()) ? Protect.IP
+						: "***.***.***.***.**";
+
+		IFont.legacy13.drawString(matrices, "Your IP: " + ip, 1,
+				height - (IFont.legacy13.getFontHeight() + IFont.legacy13.getFontHeight()) - 2, -1);
+		IFont.legacy13.drawString(matrices, "Your HWID: " + Protect.HWID.getHWID(), 1,
+				height - IFont.legacy13.getFontHeight() - 2, -1);
 
 		super.render(matrices, mouseX, mouseY, delta);
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+		usernameField.keyPressed(keyCode, scanCode, modifiers);
+		passwordField.keyPressed(keyCode, scanCode, modifiers);
 		if (keyCode == GLFW.GLFW_KEY_ENTER && loginButton.active) {
 			login();
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public boolean charTyped(char typedChar, int keyCode) {
+		usernameField.charTyped(typedChar, keyCode);
+		passwordField.charTyped(typedChar, keyCode);
+		return super.charTyped(typedChar, keyCode);
 	}
 
 	private void login() {
@@ -158,6 +200,8 @@ public class AuthUI extends Screen {
 
 	@Override
 	public void onClose() {
+		usernameField.onClose();
+		passwordField.onClose();
 		if (!Protect.CHECK.getResult().get().equalsIgnoreCase("true")) {
 			Helper.openScreen(InfMain.INSTANCE.init.authUI);
 		}
