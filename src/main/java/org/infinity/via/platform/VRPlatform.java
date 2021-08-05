@@ -86,7 +86,7 @@ public class VRPlatform implements ViaPlatform<UUID> {
 
     @Override
     public String getPlatformVersion() {
-        return ViaFabric.getVersion();
+        return null;
     }
 
     @Override

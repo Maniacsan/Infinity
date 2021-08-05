@@ -44,20 +44,22 @@ public class AuthUI extends Screen {
 	@Override
 	public void init() {
 		this.client.keyboard.setRepeatEvents(true);
-		this.usernameField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/username.png"), -1,
+		usernameField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/username.png"), -1,
 				false);
 		if (usernameData != null && !usernameData.isEmpty())
 			usernameField.setText(usernameData);
 
-		this.usernameField.setMaxLength(40);
-		this.passwordField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/password.png"), -1,
-				true);
+		usernameField.setMaxLength(40);
+		usernameField.setFocused(false);
+
+		passwordField = new CustomFieldWidget(new Identifier("infinity", "textures/icons/auth/password.png"), -1, true);
 		if (passwordData != null && !passwordData.isEmpty())
 			passwordField.setText(passwordData);
 
-		this.passwordField.setMaxLength(128);
+		passwordField.setMaxLength(128);
+		passwordField.setFocused(false);
 
-		this.loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 40,
+		loginButton = (CustomButtonWidget) this.addDrawableChild(new CustomButtonWidget(this.width / 2 - 40,
 				this.height / 2 + 25, 80, 20, new TranslatableText("Login"), (buttonWidget) -> {
 					if (!usernameField.getText().isEmpty()) {
 						login();
@@ -122,7 +124,7 @@ public class AuthUI extends Screen {
 		usernameField.setHeight(20);
 		usernameField.setFillText("Username");
 
-		this.usernameField.render(matrices, mouseX, mouseY, delta);
+		usernameField.render(matrices, mouseX, mouseY, delta);
 
 		passwordField.setX(width / 2 - 60);
 		passwordField.setY(height / 2 - 16);
@@ -130,7 +132,7 @@ public class AuthUI extends Screen {
 		passwordField.setHeight(20);
 		passwordField.setFillText("********");
 
-		this.passwordField.render(matrices, mouseX, mouseY, delta);
+		passwordField.render(matrices, mouseX, mouseY, delta);
 
 		if (errorTime > 0) {
 			Render2D.drawRectWH(matrices, this.width / 2 - 51, this.height / 2 - 126, 102, 30, -1);

@@ -13,6 +13,7 @@ import org.infinity.via.platform.VRPlatform;
 import org.infinity.via.protocol.ViaFabricHostnameProtocol;
 import org.infinity.via.util.JLoggerToLog4j;
 import org.infinity.via.util.ProtocolSorter;
+import org.infinity.via.util.ProtocolUtils;
 
 import com.google.common.collect.Range;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
@@ -26,42 +27,51 @@ import io.netty.channel.EventLoop;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class ViaFabric {
-	
-    public static int clientSideVersion = 755;
-    public static double stateValue = ProtocolSorter.getProtocolVersions().size() - 1;
-    
-    public static final Logger JLOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaFabric"));
-    public static final ExecutorService ASYNC_EXECUTOR;
-    public static final EventLoop EVENT_LOOP;
-    public static CompletableFuture<Void> INIT_FUTURE = new CompletableFuture<>();
 
-    static {
-        ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaFabric-%d").build();
-        ASYNC_EXECUTOR = Executors.newFixedThreadPool(8, factory);
-        EVENT_LOOP = new DefaultEventLoop(factory);
-        EVENT_LOOP.submit(INIT_FUTURE::join); // https://github.com/ViaVersion/ViaFabric/issues/53 ugly workaround code but works tm
-    }
+	public static ViaFabric INSTANCE = new ViaFabric();
+	public static int CLIENT_VERSION_ID = 755;
+	public static String CURRENT_VERSION;
+	public static double stateValue = ProtocolSorter.getProtocolVersions().size() - 1;
 
-    public static String getVersion() {
-        return FabricLoader.getInstance().getModContainer("viafabric")
-                .get().getMetadata().getVersion().getFriendlyString();
-    }
+	private int version;
 
-    public void onInitialize() {
-        Via.init(ViaManagerImpl.builder()
-                .injector(new VRInjector())
-                .loader(new VRLoader())
-                .platform(new VRPlatform()).build());
+	public static final Logger JLOGGER = new JLoggerToLog4j(LogManager.getLogger("ViaFabric"));
+	public static ExecutorService ASYNC_EXECUTOR;
+	public static EventLoop EVENT_LOOP;
+	public static CompletableFuture<Void> INIT_FUTURE = new CompletableFuture<>();
 
-        FabricLoader.getInstance().getModContainer("viabackwards").ifPresent(mod -> MappingDataLoader.enableMappingsCache());
+	public void onInitialize() {
+		ThreadFactory factory = new ThreadFactoryBuilder().setDaemon(true).setNameFormat("ViaFabric-%d").build();
+		ASYNC_EXECUTOR = Executors.newFixedThreadPool(8, factory);
+		EVENT_LOOP = new DefaultEventLoop(factory);
+		EVENT_LOOP.submit(INIT_FUTURE::join);
 
-        ((ViaManagerImpl) Via.getManager()).init();
+		setVersion(CLIENT_VERSION_ID);
+		CURRENT_VERSION = ProtocolUtils.getProtocolName(getVersion());
 
-        Via.getManager().getProtocolManager().registerBaseProtocol(ViaFabricHostnameProtocol.INSTANCE, Range.lessThan(Integer.MIN_VALUE));
-        ProtocolVersion.register(-2, "AUTO");
+		Via.init(ViaManagerImpl.builder().injector(new VRInjector()).loader(new VRLoader()).platform(new VRPlatform())
+				.build());
 
-        FabricLoader.getInstance().getEntrypoints("viafabric:via_api_initialized", Runnable.class).forEach(Runnable::run);
+		FabricLoader.getInstance().getModContainer("viabackwards")
+				.ifPresent(mod -> MappingDataLoader.enableMappingsCache());
 
-        INIT_FUTURE.complete(null);
-    }
+		((ViaManagerImpl) Via.getManager()).init();
+
+		Via.getManager().getProtocolManager().registerBaseProtocol(ViaFabricHostnameProtocol.INSTANCE,
+				Range.lessThan(Integer.MIN_VALUE));
+		ProtocolVersion.register(-2, "AUTO");
+
+		FabricLoader.getInstance().getEntrypoints("viafabric:via_api_initialized", Runnable.class)
+				.forEach(Runnable::run);
+
+		INIT_FUTURE.complete(null);
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
+	public int getVersion() {
+		return version;
+	}
 }

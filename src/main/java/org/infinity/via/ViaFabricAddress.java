@@ -1,77 +1,82 @@
 package org.infinity.via;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
+import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 
-import java.util.Locale;
-
 public class ViaFabricAddress {
-    public int protocol = 0;
-    public String viaSuffix = null;
-    public String realAddress = null;
 
-    public ViaFabricAddress parse(String address) {
-        if (address == null) return null;
-        String[] parts = address.split("\\.");
+	public Integer protocol;
+	public String viaSuffix;
+	public String serverAddress;
+	public String viaOptions;
 
-        boolean foundDomain = false;
-        boolean foundOptions = false;
+	public ViaFabricAddress parse(String address) {
+		return parse(address, ".viafabric");
+	}
 
-        StringBuilder ourParts = new StringBuilder();
-        StringBuilder realAddrBuilder = new StringBuilder();
+	public ViaFabricAddress parse(String address, String viaHostName) {
+		address = StringUtils.removeEnd(address, ".");
+		String suffixRemoved = StringUtils.removeEnd(address, viaHostName);
 
-        for (int i = parts.length - 1; i >= 0; i--) {
-            String part = parts[i];
-            boolean realAddrPart = false;
-            if (foundDomain) {
-                if (!foundOptions) {
-                    if (part.startsWith("_")) {
-                        String arg = part.substring(2);
-                        if (part.toLowerCase(Locale.ROOT).startsWith("_v")) {
-                            try {
-                                protocol = Integer.parseInt(arg);
-                            } catch (NumberFormatException e) {
-                                ProtocolVersion closest = ProtocolVersion.getClosest(arg.replace("_", "."));
-                                if (closest != null) {
-                                    protocol = closest.getVersion();
-                                }
-                            }
-                        }
-                    } else {
-                        foundOptions = true;
-                    }
-                }
-                if (foundOptions) {
-                    realAddrPart = true;
-                }
-            } else if (part.equalsIgnoreCase("viafabric")) {
-                foundDomain = true;
-            }
-            if (realAddrPart) {
-                realAddrBuilder.insert(0, part + ".");
-            } else {
-                ourParts.insert(0, part + ".");
-            }
-        }
+		if (suffixRemoved.equals(address)) {
+			serverAddress = address;
+			return this;
+		}
 
-        String realAddr = realAddrBuilder.toString().replaceAll("\\.$", "");
-        String suffix = ourParts.toString().replaceAll("\\.$", "");
+		boolean stopOptions = false;
+		List<String> optionsParts = new ArrayList<>();
+		List<String> serverParts = new ArrayList<>();
 
-        if (realAddr.isEmpty()) {
-            this.realAddress = address;
-        } else {
-            this.realAddress = realAddr;
-            this.viaSuffix = suffix;
-        }
+		for (String part : Lists.reverse(Arrays.asList(suffixRemoved.split(Pattern.quote("."))))) {
+			if (!stopOptions && parseOption(part)) {
+				optionsParts.add(part);
+				continue;
+			}
+			stopOptions = true;
+			serverParts.add(part);
+		}
 
-        return this;
-    }
+		serverAddress = String.join(".", Lists.reverse(serverParts));
+		viaOptions = String.join(".", Lists.reverse(optionsParts));
+		viaSuffix = viaHostName;
 
-    @Override
-    public String toString() {
-        return "ViaFabricAddress{" +
-                "protocol=" + protocol +
-                ", viaSuffix='" + viaSuffix + '\'' +
-                ", realAddress='" + realAddress + '\'' +
-                '}';
-    }
+		return this;
+	}
+
+	public boolean parseOption(String part) {
+		String option;
+		if (part.length() < 2) {
+			return false;
+		} else if (part.startsWith("_")) {
+			option = String.valueOf(part.charAt(1));
+		} else if (part.charAt(1) == '_') {
+			option = String.valueOf(part.charAt(0));
+		} else {
+			return false;
+		}
+
+		String arg = part.substring(2);
+		if ("v".equals(option)) {
+			parseProtocol(arg);
+		}
+
+		return true;
+	}
+
+	public void parseProtocol(String arg) {
+		protocol = Ints.tryParse(arg);
+		if (protocol == null) {
+			ProtocolVersion ver = ProtocolVersion.getClosest(arg.replace("_", "."));
+			if (ver != null)
+				protocol = ver.getVersion();
+		}
+	}
 }

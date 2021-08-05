@@ -2,16 +2,12 @@ package org.infinity.via.providers;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.infinity.via.ViaFabric;
-import org.infinity.via.ViaFabricAddress;
 import org.infinity.via.util.ProtocolUtils;
 
 import com.viaversion.viaversion.api.connection.ProtocolInfo;
@@ -64,25 +60,7 @@ public class VRVersionProvider extends BaseVersionProvider {
 	@Override
 	public int getClosestServerProtocol(UserConnection connection) throws Exception {
 		if (connection.isClientSide()) {
-			ProtocolInfo info = Objects.requireNonNull(connection.getProtocolInfo());
-
-			int serverVer = ViaFabric.clientSideVersion;
-			SocketAddress addr = connection.getChannel().remoteAddress();
-
-			if (addr instanceof InetSocketAddress) {
-				int addrVersion = new ViaFabricAddress().parse(((InetSocketAddress) addr).getHostName()).protocol;
-				if (addrVersion != 0)
-					serverVer = addrVersion;
-			}
-
-			boolean supported = ProtocolUtils.isSupported(serverVer, info.getProtocolVersion());
-
-			handleMulticonnectPing(connection, info, false, serverVer);
-
-			if (!supported)
-				serverVer = info.getProtocolVersion();
-
-			return serverVer;
+			return ViaFabric.INSTANCE.getVersion();
 		}
 		return super.getClosestServerProtocol(connection);
 	}

@@ -1,5 +1,6 @@
 package org.infinity.mixin;
 
+import org.infinity.via.ViaFabric;
 import org.infinity.via.handler.CommonTransformer;
 import org.infinity.via.handler.FabricDecodeHandler;
 import org.infinity.via.handler.FabricEncodeHandler;
@@ -21,7 +22,7 @@ public class ClientConnectionChInitMixin {
 
 	@Inject(method = "initChannel", at = @At(value = "TAIL"), remap = false)
 	private void onInitChannel(Channel channel, CallbackInfo ci) {
-		if (channel instanceof SocketChannel) {
+		if (channel instanceof SocketChannel && ViaFabric.INSTANCE.getVersion() != ViaFabric.CLIENT_VERSION_ID) {
 			UserConnection user = new UserConnectionImpl(channel, true);
 			new ProtocolPipelineImpl(user).add(ViaFabricHostnameProtocol.INSTANCE);
 

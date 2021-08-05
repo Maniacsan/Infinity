@@ -30,16 +30,8 @@ public class MultiplayerScreenMixin extends Screen {
 	@Unique
 	private WSlider slider;
 
-	@Unique
-	private String currentVersion;
-
 	protected MultiplayerScreenMixin(Text title) {
 		super(title);
-	}
-
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void initClass(CallbackInfo ci) {
-		currentVersion = ProtocolUtils.getProtocolName(ViaFabric.clientSideVersion);
 	}
 
 	@Inject(method = "init", at = @At("TAIL"))
@@ -54,12 +46,11 @@ public class MultiplayerScreenMixin extends Screen {
 
 		ButtonWidget accButton = new TexturedButtonWidget(this.width / 2 - 180, this.height - 52, 20, 20, 0, 0, 0,
 				new Identifier("infinity", "textures/game/screen/alt.png"), 20, 20,
-				buttonWidget -> Helper.MC.openScreen(new GuiAccountManager(this)),
-				new TranslatableText("Account"));
+				buttonWidget -> Helper.MC.openScreen(new GuiAccountManager(this)), new TranslatableText("Account"));
 		addDrawableChild(accButton);
 
 		slider = new WSlider(0D, ProtocolSorter.getProtocolVersions().size() - 1, width / 2 + 50, 10, 110, 20,
-				new LiteralText("Version " + currentVersion), ViaFabric.stateValue);
+				new LiteralText("Version " + ViaFabric.CURRENT_VERSION), ViaFabric.stateValue);
 		addDrawableChild(slider);
 	}
 
@@ -68,13 +59,13 @@ public class MultiplayerScreenMixin extends Screen {
 		slider.render(matrices, mouseX, mouseY, delta);
 
 		if (slider.prevValue != slider.getValue()) {
-			currentVersion = ProtocolUtils
+			ViaFabric.CURRENT_VERSION = ProtocolUtils
 					.getProtocolName(ProtocolSorter.getProtocolVersions().get((int) slider.getValue()).getVersion());
 			ViaFabric.stateValue = slider.getValue();
 
-			Integer parsed = ProtocolUtils.parseProtocolId(currentVersion);
-			ViaFabric.clientSideVersion = parsed;
-			slider.setMessage(new LiteralText("Version " + currentVersion));
+			Integer parsed = ProtocolUtils.parseProtocolId(ViaFabric.CURRENT_VERSION);
+			ViaFabric.INSTANCE.setVersion(parsed);
+			slider.setMessage(new LiteralText("Version " + ViaFabric.CURRENT_VERSION));
 			slider.prevValue = slider.getValue();
 		}
 	}

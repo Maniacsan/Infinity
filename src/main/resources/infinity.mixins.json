@@ -1,10 +1,11 @@
 {
   "required": true,
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
    "package": "org.infinity.mixin",
   "client": [
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
+  "ClientConnectionChInitMixin",
   "ClientPlayNetworkHandlerMixin",
   "ClientPlayerInteractionManagerMixin",
   "IEntityVelocityUpdateS2CPacket",
@@ -40,7 +41,6 @@
   "GameMenuScreenMixin",
   "IClickableWidget",
   "HeldItemRendererMixin",
-  "ClientConnectionChInitMixin",
   "ServerNetworkIoChInitMixin",
   "PlayerSkinProviderMixin",
   "IElytraFeatureRenderer",

@@ -1,7 +1,5 @@
 package org.infinity.ui;
 
-import java.awt.Color;
-
 import org.infinity.features.command.Command;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
@@ -16,8 +14,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 public class FirstStartUI extends Screen {
-
-
 
 	public FirstStartUI() {
 		super(new LiteralText(""));

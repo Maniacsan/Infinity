@@ -178,6 +178,10 @@ public class CustomFieldWidget {
 		return focused;
 	}
 
+	public void setFocused(boolean state) {
+		this.focused = state;
+	}
+
 	public int getImageColor() {
 		return imageColor;
 	}
