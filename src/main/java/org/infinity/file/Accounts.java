@@ -16,7 +16,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-public class AccountsFile {
+public class Accounts {
 
 	public static File dir = new File(InfMain.getDirection() + File.separator);
 	public static File accountFile = FileUtil.createJsonFile(dir, "accounts");

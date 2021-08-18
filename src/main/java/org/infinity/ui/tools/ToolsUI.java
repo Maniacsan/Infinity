@@ -3,8 +3,9 @@ package org.infinity.ui.tools;
 import org.infinity.features.module.hidden.AntiFabric;
 import org.infinity.main.InfMain;
 import org.infinity.ui.FirstStartUI;
-import org.infinity.ui.menu.util.FontUtils;
+import org.infinity.ui.cape.CapeUI;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ScreenTexts;
@@ -13,13 +14,13 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
-public class ToolsMain extends Screen {
+public class ToolsUI extends Screen {
 
 	private Screen parent;
 
 	private ButtonWidget fSpoofWidget;
 
-	public ToolsMain(Screen parent) {
+	public ToolsUI(Screen parent) {
 		super(new LiteralText("Tools"));
 		this.parent = parent;
 	}
@@ -35,17 +36,17 @@ public class ToolsMain extends Screen {
 					fSpoofWidget.setMessage(new LiteralText("AntiFabric Spoof: " + onOrOff(antiFabric.isEnabled())));
 				}));
 
-		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 60, 160, 20,
+		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 65, 160, 20,
 				new LiteralText("Menu"), (buttonWidget) -> {
 					Helper.openScreen(InfMain.INSTANCE.init.menu);
 				}));
 		
-		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 30, 160, 20,
-				new LiteralText("FirstStart UI"), (buttonWidget) -> {
-					Helper.openScreen(new FirstStartUI());
+		addDrawableChild(fSpoofWidget = new ButtonWidget(this.width / 2 - 80, this.height / 2 - 40, 160, 20,
+				new LiteralText("Capes"), (buttonWidget) -> {
+					Helper.openScreen(new CapeUI());
 				}));
 
-		addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.DONE,
+		addDrawableChild(new ButtonWidget(this.width / 2 - 50, this.height / 2 + 60, 100, 20, ScreenTexts.BACK,
 				(buttonWidget) -> {
 					this.client.openScreen(parent);
 				}));

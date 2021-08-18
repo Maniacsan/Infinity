@@ -1,4 +1,4 @@
-package org.infinity.ui.menu.util;
+package org.infinity.utils.render;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

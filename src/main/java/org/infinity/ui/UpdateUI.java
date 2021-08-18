@@ -1,8 +1,8 @@
 package org.infinity.ui;
 
-import org.infinity.ui.menu.util.FontUtils;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.ConnectUtil;
+import org.infinity.utils.render.FontUtils;
+import org.infinity.utils.render.Render2D;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;

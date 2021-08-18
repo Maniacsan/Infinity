@@ -44,7 +44,8 @@
   "ServerNetworkIoChInitMixin",
   "PlayerSkinProviderMixin",
   "IElytraFeatureRenderer",
-  "TextVisitFactoryMixin"
+  "TextVisitFactoryMixin",
+  "IHandledScreen"
   ],
     "injectors": {
     "defaultRequire": 1

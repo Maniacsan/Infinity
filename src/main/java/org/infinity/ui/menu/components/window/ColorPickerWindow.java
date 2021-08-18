@@ -6,10 +6,10 @@ import java.awt.Rectangle;
 import org.infinity.features.Setting;
 import org.infinity.font.IFont;
 import org.infinity.ui.IScreen;
-import org.infinity.ui.menu.util.FontUtils;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.menu.widgets.WTextField;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.screen.Screen;

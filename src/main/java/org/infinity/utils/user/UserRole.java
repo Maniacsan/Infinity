@@ -2,7 +2,7 @@ package org.infinity.utils.user;
 
 public enum UserRole {
 	
-	Admin("Admin"), Moderator("Moderator"), Premium("Premium"), User("User");
+	Admin("Admin"), Moderator("Moderator"), YouTube("YouTube"), Premium("Premium"), User("User");
 
     public String name;
     

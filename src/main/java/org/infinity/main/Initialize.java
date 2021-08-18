@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
+import org.infinity.features.component.cape.Capes;
 import org.infinity.features.component.friends.Friend;
 import org.infinity.features.component.macro.MacroManager;
 import org.infinity.features.module.visual.HUD;
@@ -25,6 +26,7 @@ public class Initialize {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static File dir = new File(InfMain.getDirection() + File.separator);
+	
 	public CommandManager commandManager;
 	public ConfigManager configManager;
 	public ModuleManager moduleManager;
@@ -33,6 +35,7 @@ public class Initialize {
 	public MacroManager macroManager;
 	public Friend friend;
 	public User user;
+	public Capes cape;
 
 	public boolean infChat;
 
@@ -48,8 +51,10 @@ public class Initialize {
 		accountManager = new AccountManager();
 		commandManager = new CommandManager();
 		friend = new Friend();
+		cape = new Capes();
 		LOGGER.info("Injected");
 
+		cape.updateCapes();
 		moduleManager.get(HUD.class).enable();
 	}
 

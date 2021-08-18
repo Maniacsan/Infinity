@@ -40,7 +40,7 @@ public abstract class AbstractCapeProvider {
 	}
 	
 	public void loadCape(GameProfile gameProfile, MinecraftProfileTexture mojangCape, SkinTextureAvailableCallback callback) {
-		//AnyCapes.LOGGER.debug("Loading cape for profile " + gameProfile);
+		//Capes.LOGGER.debug("Loading cape for profile " + gameProfile);
 		String hash = Hashing.sha1().hashUnencodedChars("cape-" + gameProfile.getId().toString()).toString();
 		Identifier identifier = new Identifier("skins/" + hash);
 		AbstractTexture texture = textureManager.getTexture(identifier);
@@ -71,7 +71,7 @@ public abstract class AbstractCapeProvider {
 					if (callback != null) {
 						callback.onSkinTextureAvailable(Type.CAPE, identifier, url == null ? null : new MinecraftProfileTexture(url.toString(), null));
 					}
-					//AnyCapes.LOGGER.debug("Loaded cape for profile " + gameProfile + " from " + url);
+					//Capes.LOGGER.debug("Loaded cape for profile " + gameProfile + " from " + url);
 				});
 			});
 		}

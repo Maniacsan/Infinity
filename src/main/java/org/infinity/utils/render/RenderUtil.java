@@ -30,7 +30,7 @@ import net.minecraft.world.GameMode;
 public class RenderUtil {
 
 	private static final HashMap<String, Identifier> loadedSkins = new HashMap<>();
-	private static TextureUtil TEXTURE = new TextureUtil();
+	public static TextureUtil TEXTURE = new TextureUtil();
 
 	public void setColor(Color color) {
 		GL11.glColor4f(color.getRed() / 255.0f, color.getGreen() / 255.0f, color.getBlue() / 255.0f,
@@ -49,9 +49,9 @@ public class RenderUtil {
 		return c.getRed() | c.getGreen() << 8 | c.getBlue() << 16 | c.getAlpha() << 24;
 	}
 
-	private static void bindSkinTexture(String name) {
+	public static void bindSkinTexture(UUID UUID, String name) {
 		if (loadedSkins.get(name) == null) {
-			UUID uuid = PlayerEntity.getUuidFromProfile(new GameProfile((UUID) null, name));
+			UUID uuid = PlayerEntity.getUuidFromProfile(new GameProfile(UUID, name));
 
 			PlayerListEntry entry = new PlayerListEntry(new PlayerListS2CPacket.Entry(new GameProfile(uuid, name), 0,
 					GameMode.CREATIVE, new LiteralText(name)));
@@ -60,6 +60,10 @@ public class RenderUtil {
 		}
 
 		RenderSystem.setShaderTexture(0, loadedSkins.get(name));
+	}
+
+	public static void bindSkinTexture(String name) {
+		bindSkinTexture(null, name);
 	}
 
 	public static void drawFace(MatrixStack matrixStack, String name, int x, int y, int w, int h, boolean selected) {
@@ -88,14 +92,18 @@ public class RenderUtil {
 	public static void drawTexture(MatrixStack matrices, Identifier ident, double x, double y, double width,
 			double height) {
 		RenderSystem.setShaderTexture(0, ident);
+		RenderSystem.enableBlend();
 		DrawableHelper.drawTexture(matrices, (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width,
 				(int) height);
+		RenderSystem.disableBlend();
 	}
 
 	public static void drawTexture(MatrixStack matrices, Identifier ident, double x, double y, double width,
 			double height, int color) {
 		RenderSystem.setShaderTexture(0, ident);
+		RenderSystem.enableBlend();
 		drawTexture(matrices, (int) x, (int) y, 0, 0, (int) width, (int) height, (int) width, (int) height, color);
+		RenderSystem.disableBlend();
 	}
 
 	public static double animate(double target, double current, double speed) {
@@ -141,7 +149,7 @@ public class RenderUtil {
 		draw();
 	}
 
-	private static void draw() {
+	public static void draw() {
 		RenderSystem.disableDepthTest();
 		RenderSystem.enableBlend();
 		RenderSystem.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
@@ -190,8 +198,7 @@ public class RenderUtil {
 	public static void drawItem(ItemStack itemStack, int x, int y, boolean overlay) {
 		Helper.MC.getItemRenderer().renderGuiItemIcon(itemStack, x, y);
 		if (overlay)
-			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer,
-					itemStack, x, y, null);
+			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer, itemStack, x, y, null);
 	}
 
 	/**
@@ -202,7 +209,6 @@ public class RenderUtil {
 	 */
 	public static double smoothFrame(double current) {
 		double last = current;
-		return current * Helper.MC.getLastFrameDuration()
-				+ (last * (1.0f - Helper.MC.getLastFrameDuration()));
+		return current * Helper.MC.getLastFrameDuration() + (last * (1.0f - Helper.MC.getLastFrameDuration()));
 	}
 }

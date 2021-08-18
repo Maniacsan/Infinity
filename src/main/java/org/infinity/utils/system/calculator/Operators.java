@@ -1,4 +1,4 @@
-package org.infinity.utils.calc;
+package org.infinity.utils.system.calculator;
 
 import java.util.function.DoubleBinaryOperator;
 

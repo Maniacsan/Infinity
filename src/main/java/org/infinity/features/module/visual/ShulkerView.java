@@ -7,10 +7,10 @@ import org.infinity.event.RenderTooltipEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.ui.menu.util.Render2D;
+import org.infinity.mixin.IHandledScreen;
 import org.infinity.utils.Helper;
 import org.infinity.utils.InvUtil;
-import org.infinity.utils.Reflections;
+import org.infinity.utils.render.Render2D;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.google.common.collect.Lists;
@@ -32,7 +32,7 @@ public class ShulkerView extends Module {
 
 	@EventTarget
 	public void onRenderTooltip(RenderTooltipEvent event) {
-		Slot slot = (Slot) Reflections.getFieldValue(event.getScreen(), "field_2787", "focusedSlot");
+		Slot slot = ((IHandledScreen) event.getScreen()).getFocusedSlot();
 		if (slot == null)
 			return;
 
@@ -75,14 +75,14 @@ public class ShulkerView extends Module {
 
 			int x1 = x + 10 + (17 * (count % 9));
 			int y1 = y - 67 + (17 * (count / 9));
-			
+
 			Render2D.drawRectWH(event.getMatrix(), x1 - 1, y1 - 1, 18, 18, 0xff2998E3);
 			Render2D.drawRectWH(event.getMatrix(), x1, y1, 16, 16, 0xff555555);
 
 			Helper.MC.getItemRenderer().zOffset = 400;
 			Helper.MC.getItemRenderer().renderGuiItemIcon(i, x1, y1);
-			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer, i, x1,
-					y1, i.getCount() > 1 ? i.getCount() + "" : "");
+			Helper.MC.getItemRenderer().renderGuiItemOverlay(Helper.MC.textRenderer, i, x1, y1,
+					i.getCount() > 1 ? i.getCount() + "" : "");
 			Helper.MC.getItemRenderer().zOffset = 300;
 			count++;
 		}

@@ -18,9 +18,9 @@ import org.infinity.ui.menu.components.elements.TextFieldElement;
 import org.infinity.ui.menu.components.elements.slider.DoubleSlider;
 import org.infinity.ui.menu.components.elements.slider.FloatSlider;
 import org.infinity.ui.menu.components.elements.slider.IntSlider;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 

@@ -198,6 +198,8 @@ public class Config {
 					setting.addBlockFromId(jsonElement.getAsInt());
 
 				break;
+			default:
+				break;
 			}
 		}
 	}
@@ -233,6 +235,8 @@ public class Config {
 					jsonArray.add(Block.getRawIdFromState(blocks.getDefaultState()));
 				}
 				dataJson.add(setting.getName(), jsonArray);
+				break;
+			default:
 				break;
 			}
 		}

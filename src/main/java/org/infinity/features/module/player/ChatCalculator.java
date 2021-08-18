@@ -13,7 +13,7 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
-import org.infinity.utils.calc.TermSolver;
+import org.infinity.utils.system.calculator.TermSolver;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;

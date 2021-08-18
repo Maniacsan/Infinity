@@ -4,9 +4,9 @@ import org.infinity.file.config.Config;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.ui.menu.ClickMenu;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.StringUtil;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.util.math.MatrixStack;

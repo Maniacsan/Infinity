@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import org.infinity.features.Setting;
 import org.infinity.ui.menu.components.base.AbstractElement;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.Render2D;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.util.math.MatrixStack;

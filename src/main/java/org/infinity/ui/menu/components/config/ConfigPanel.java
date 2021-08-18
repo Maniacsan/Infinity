@@ -7,11 +7,11 @@ import java.util.Calendar;
 import org.infinity.file.config.Config;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.menu.util.FontUtils;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.menu.widgets.WTextField;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
+import org.infinity.utils.render.FontUtils;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -68,6 +68,7 @@ public class ConfigPanel {
 		}
 		refreshHover = 0;
 		errorTime = -1;
+		fade = -0.5f;
 		setScrollProgress(0);
 	}
 
@@ -103,6 +104,9 @@ public class ConfigPanel {
 		textField.render(matrices, mouseX, mouseY, delta);
 
 		double yOffset = 2;
+		
+		if (fade != 1)
+			fade = (float) Math.min(1, fade + 0.11);
 
 		toasterAnim = errorTime > 0 ? Math.min(3, toasterAnim + 7)
 				: errorTime == -1 ? -35 : Math.max(-35, toasterAnim - 7);

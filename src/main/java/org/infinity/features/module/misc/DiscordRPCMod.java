@@ -30,7 +30,7 @@ public class DiscordRPCMod extends Module {
 		rpc.startTimestamp = System.currentTimeMillis() / 1000L;
 		rpc.largeImageKey = "rpclogo";
 		ticks = 0;
-		rpc.largeImageText = InfMain.getName() + " " + InfMain.getVersion();
+		rpc.largeImageText = InfMain.NAME + " " + InfMain.VERSION;
 		if (InfMain.getUser().getName().isEmpty() || InfMain.getUser().getName() == null)
 			PHelper.makeCrash();
 

@@ -2,25 +2,42 @@ package org.infinity.mixin;
 
 import org.infinity.features.module.hidden.Menu;
 import org.infinity.main.InfMain;
-import org.infinity.ui.menu.util.FontUtils;
+import org.infinity.ui.tools.ToolsUI;
+import org.infinity.utils.render.FontUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.gui.screen.GameMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 @Mixin(GameMenuScreen.class)
-public class GameMenuScreenMixin {
+public class GameMenuScreenMixin extends Screen {
+
+	protected GameMenuScreenMixin(Text title) {
+		super(title);
+	}
+
+	@Inject(method = "init", at = @At("TAIL"))
+	private void onPostInit(CallbackInfo ci) {
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 40, this.height - 30, 80, 20,
+				new LiteralText("Tools"), (button) -> {
+					this.client.openScreen(new ToolsUI((Screen) this));
+				}));
+	}
 
 	@Inject(method = "render", at = @At("TAIL"), cancellable = true)
 	private void onRender(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
 		if (InfMain.INSTANCE.self)
 			return;
-		
+
 		int modKey = InfMain.getModuleManager().get(Menu.class).getKey();
 		String key = modKey == 96
 				? Formatting.BLUE + "GRAVE " + Formatting.GRAY + "\"" + Formatting.BLUE + " ` " + Formatting.GRAY

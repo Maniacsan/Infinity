@@ -21,7 +21,7 @@ public class ClickMenu extends IScreen {
 	private float fade;
 
 	public ClickMenu() {
-		panel = new Panel(this, 60, 20, 400, 290);
+		panel = new Panel(this, 60, 20, 400, 280);
 	}
 
 	@Override

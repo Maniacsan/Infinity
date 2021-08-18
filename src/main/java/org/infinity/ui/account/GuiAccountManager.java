@@ -7,10 +7,10 @@ import org.infinity.main.InfMain;
 import org.infinity.ui.account.main.Account;
 import org.infinity.ui.account.main.AccountManager;
 import org.infinity.ui.account.main.AccountThread;
-import org.infinity.ui.menu.util.FontUtils;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.util.ListWidget;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.MinecraftClient;

@@ -19,7 +19,8 @@ public class CommandManager {
 			new HClipCommand(),
 			new VClipCommand(),
 			new IPCommand(),
-			new UUIDCommand()
+			new UUIDCommand(),
+			new XRayCommand()
 			);
 
 	public List<Command> getCommands() {

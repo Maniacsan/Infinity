@@ -53,6 +53,10 @@ public class Helper {
 	public static boolean isModerator() {
 		return InfMain.getUser().getRole().equals(UserRole.Moderator);
 	}
+	
+	public static boolean isYouTube() {
+		return InfMain.getUser().getRole().equals(UserRole.YouTube);
+	}
 
 	public static boolean isAdmin() {
 		return InfMain.getUser().getRole().equals(UserRole.Admin);

@@ -3,14 +3,14 @@ package org.infinity.features.component.macro;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinity.file.MacrosFile;
+import org.infinity.file.Macros;
 import org.infinity.utils.Helper;
 
 import net.minecraft.util.Formatting;
 
 public class MacroManager {
 
-	private MacrosFile macrosFile = new MacrosFile();
+	private Macros macrosFile = new Macros();
 	private List<Macro> list = new ArrayList<>();
 
 	public List<Macro> getList() {

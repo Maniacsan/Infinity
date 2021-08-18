@@ -3,14 +3,14 @@ package org.infinity.features.component.friends;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.infinity.file.FriendsFile;
+import org.infinity.file.Friends;
 import org.infinity.utils.Helper;
 
 import net.minecraft.util.Formatting;
 
 public class Friend {
 
-	private FriendsFile friendFile = new FriendsFile();
+	private Friends friendFile = new Friends();
 	private List<String> friendList = new ArrayList<String>();
 
 	public boolean contains(String name) {
@@ -63,7 +63,7 @@ public class Friend {
 		friendFile.loadFriends();
 	}
 
-	public FriendsFile getFriendsFile() {
+	public Friends getFriendsFile() {
 		return friendFile;
 	}
 

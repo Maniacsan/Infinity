@@ -4,6 +4,7 @@ public class User {
 
 	private String name;
 	private String photo;
+	private String uuid;
 	private UserRole role;
 
 	public User(String name, String role, String photo) {
@@ -22,5 +23,13 @@ public class User {
 
 	public String getPhoto() {
 		return photo;
+	}
+
+	public String getUUID() {
+		return uuid;
+	}
+
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
 	}
 }

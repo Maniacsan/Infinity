@@ -4,8 +4,8 @@ import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
-import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
 
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BowItem;

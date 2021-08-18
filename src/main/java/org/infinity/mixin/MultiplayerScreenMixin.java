@@ -3,7 +3,7 @@ package org.infinity.mixin;
 import org.infinity.main.InfMain;
 import org.infinity.ui.account.GuiAccountManager;
 import org.infinity.ui.menu.widgets.WSlider;
-import org.infinity.ui.tools.ToolsMain;
+import org.infinity.ui.tools.ToolsUI;
 import org.infinity.utils.Helper;
 import org.infinity.via.ViaFabric;
 import org.infinity.via.util.ProtocolSorter;
@@ -40,7 +40,7 @@ public class MultiplayerScreenMixin extends Screen {
 			return;
 
 		ButtonWidget tools = new ButtonWidget(5, 10, 80, 20, new TranslatableText("Tools"), (buttonWidget) -> {
-			Helper.MC.openScreen(new ToolsMain(this));
+			Helper.MC.openScreen(new ToolsUI(this));
 		});
 		addDrawableChild(tools);
 

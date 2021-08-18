@@ -11,10 +11,10 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
 import org.infinity.utils.StringUtil;
+import org.infinity.utils.render.Render2D;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;

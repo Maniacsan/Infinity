@@ -8,9 +8,9 @@ import org.infinity.features.Module;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.ui.menu.components.Panel;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
 import org.infinity.utils.Timer;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;

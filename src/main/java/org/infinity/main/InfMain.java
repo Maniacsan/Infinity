@@ -5,20 +5,23 @@ import java.io.File;
 import org.infinity.features.HookManager;
 import org.infinity.features.ModuleManager;
 import org.infinity.features.command.CommandManager;
+import org.infinity.features.component.cape.Capes;
 import org.infinity.features.component.friends.Friend;
 import org.infinity.features.component.macro.MacroManager;
+import org.infinity.file.ClientSettings;
 import org.infinity.file.config.ConfigManager;
 import org.infinity.protect.IHandler;
 import org.infinity.ui.account.main.AccountManager;
 import org.infinity.utils.Helper;
 import org.infinity.utils.user.User;
-import org.infinity.via.ViaFabric;
 
 public class InfMain {
 
 	public static InfMain INSTANCE = new InfMain();
-	private static String NAME = "Infinity";
-	private static String VERSION = "1.0.6";
+	public static String NAME = "Infinity";
+	public static String VERSION = "1.0.6";
+
+	public ClientSettings SETTINGS = new ClientSettings();
 
 	private static File direction;
 	public Initialize init;
@@ -32,29 +35,24 @@ public class InfMain {
 
 	public void initialize() {
 		direction = new File(Helper.MC.runDirectory + File.separator + "Infinity");
-		
-		init = new Initialize();
-		
-		self = false;
-		new ViaFabric().onInitialize();
 
-		if (!direction.exists()) {
+		init = new Initialize();
+
+		if (!direction.exists())
 			firstStart = true;
-		}
+
+		self = false;
 		reLogin = true;
 
+		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+			if (getUser().getUUID() != null)
+			getCape().deleteCape(getUser().getUUID());
+			SETTINGS.save();
+		}));
 	}
 
 	public void shutDown() {
 		init.shutDown();
-	}
-
-	public static String getName() {
-		return NAME;
-	}
-
-	public static String getVersion() {
-		return VERSION;
 	}
 
 	public static File getDirection() {
@@ -87,6 +85,10 @@ public class InfMain {
 
 	public static Friend getFriend() {
 		return InfMain.INSTANCE.init.friend;
+	}
+
+	public static Capes getCape() {
+		return InfMain.INSTANCE.init.cape;
 	}
 
 	public static IHandler getHandler() {

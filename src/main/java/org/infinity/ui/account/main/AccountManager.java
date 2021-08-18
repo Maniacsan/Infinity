@@ -2,11 +2,11 @@ package org.infinity.ui.account.main;
 
 import java.util.ArrayList;
 
-import org.infinity.file.AccountsFile;
+import org.infinity.file.Accounts;
 
 public class AccountManager {
                   
-	private static AccountsFile accountsFile = new AccountsFile();
+	private static Accounts accountsFile = new Accounts();
 	public static Account lastAlt;
 	public static ArrayList<Account> registry;
 

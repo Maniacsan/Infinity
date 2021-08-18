@@ -4,8 +4,8 @@ import java.awt.Color;
 
 import org.infinity.font.IFont;
 import org.infinity.ui.menu.components.Panel;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 import org.lwjgl.glfw.GLFW;
 

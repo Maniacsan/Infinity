@@ -33,7 +33,7 @@ import me.protect.utils.PHelper;
 public class ConnectUtil {
 
 	public static boolean checkUpdate() {
-		String currentVersion = InfMain.getVersion();
+		String currentVersion = InfMain.VERSION;
 
 		if (getUpdateVersion().equalsIgnoreCase(currentVersion)) {
 			return true;

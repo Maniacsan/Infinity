@@ -3,8 +3,8 @@ package org.infinity.ui;
 import org.infinity.features.command.Command;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
-import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;

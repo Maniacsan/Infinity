@@ -4,7 +4,7 @@ import org.infinity.event.ClickEvent;
 import org.infinity.event.OpenScreenEvent;
 import org.infinity.event.TickEvent;
 import org.infinity.event.protect.StartProcessEvent;
-import org.infinity.features.component.cape.AnyCapes;
+import org.infinity.features.component.cape.Capes;
 import org.infinity.main.InfMain;
 import org.infinity.ui.FirstStartUI;
 import org.spongepowered.asm.mixin.Mixin;
@@ -47,13 +47,6 @@ public abstract class MinecraftClientMixin {
 	public void onScreenInit(RunArgs runArgs, CallbackInfo ci) {
 		StartProcessEvent event = new StartProcessEvent(EventType.POST);
 		EventManager.call(event);
-	}
-
-	@Inject(at = {
-			@At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER) }, method = {
-					"run" })
-	private void onStart(CallbackInfo ci) {
-		new AnyCapes().onInitialize((MinecraftClient) ((Object) this));
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")

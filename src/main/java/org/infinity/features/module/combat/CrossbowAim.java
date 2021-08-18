@@ -9,9 +9,9 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.mixin.ICrossbowItem;
-import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
 import org.infinity.utils.entity.EntityUtil;
+import org.infinity.utils.render.FontUtils;
 import org.infinity.utils.rotation.RotationUtil;
 
 import com.darkmagician6.eventapi.EventTarget;

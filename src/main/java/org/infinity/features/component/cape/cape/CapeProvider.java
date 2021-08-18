@@ -7,7 +7,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import org.infinity.features.component.cape.AnyCapes;
+import org.infinity.features.component.cape.Capes;
 import org.infinity.features.component.cape.util.ImageUtil;
 
 import com.mojang.authlib.GameProfile;
@@ -22,12 +22,12 @@ public class CapeProvider extends AbstractCapeProvider {
 
 	@Override
 	public List<String> getCapeUrls() {
-		return AnyCapes.getConfig().getOptions().capeUrls;
+		return Capes.getConfig().getOptions().capeUrls;
 	}
 
 	@Override
 	public boolean useCaching() {
-		return AnyCapes.getConfig().getOptions().useCaching;
+		return Capes.getConfig().getOptions().useCaching;
 	}
 
 	@Override
@@ -48,7 +48,7 @@ public class CapeProvider extends AbstractCapeProvider {
 		try {
 			url = new URL(urlStr);
 		} catch (MalformedURLException e) {
-			AnyCapes.LOGGER.warn("Invalid URL: " + urlStr);
+			
 		}
 		return url;
 	}

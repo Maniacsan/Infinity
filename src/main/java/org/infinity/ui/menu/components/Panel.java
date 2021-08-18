@@ -10,10 +10,10 @@ import org.infinity.main.InfMain;
 import org.infinity.ui.menu.ClickMenu;
 import org.infinity.ui.menu.components.buttons.CategoryButton;
 import org.infinity.ui.menu.components.config.ConfigPanel;
-import org.infinity.ui.menu.util.ColorUtils;
-import org.infinity.ui.menu.util.Render2D;
 import org.infinity.ui.menu.widgets.WSearchField;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.ColorUtils;
+import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -21,6 +21,7 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 
@@ -129,7 +130,7 @@ public class Panel {
 
 		// category panel
 		Render2D.drawRectWH(matrices, x + 2, y + 2, 90, height - 4, 0xFF161621);
-		IFont.legacy13.drawString(matrices, "v" + InfMain.getVersion(), x + 2, y + height - 12, 0xFF464746);
+		IFont.legacy13.drawString(matrices, "v" + InfMain.VERSION, x + 2, y + height - 12, 0xFF464746);
 
 		// header
 		Render2D.drawRectWH(matrices, this.x + 92, this.y + 3, width - 92, 28 - 1, 0xFF161621);
@@ -144,8 +145,12 @@ public class Panel {
 			profileName = profileName.substring(0, 18) + "...";
 
 		IFont.legacy16.drawString(matrices, profileName, x + 119, y + 5, -1);
+		
+		String role = InfMain.getUser().getRole().name();
+		if (role.equalsIgnoreCase("YouTube"))
+			role = Formatting.RED + "You" + Formatting.BLACK + "Tube";
 		IFont.legacy14.drawString(matrices,
-				"License: " + ColorUtils.getUserRoleColor() + InfMain.getUser().getRole().name(), x + 119, y + 17, -1);
+				"License: " + ColorUtils.getUserRoleColor() + role, x + 119, y + 17, -1);
 		RenderUtil.drawImage(matrices, false, x + 95, y + 5, 20, 20,
 				InfMain.getDirection() + File.separator + "profile" + File.separator + "photo.png");
 
@@ -174,13 +179,13 @@ public class Panel {
 		matrices.translate(-lx, -ly, 0);
 
 		RenderUtil.drawTexture(matrices,
-				new Identifier("infinity", _lhover > 1 ? "textures/game/logoblur.png" : "textures/game/logoneon.png"),
+				new Identifier("infinity", "textures/game/circle_logo.png"),
 				x + 26, y + 6, 39, 39);
 
 		GlStateManager._disableBlend();
 		matrices.pop();
 
-		IFont.legacy20.drawString(matrices, InfMain.getName().toUpperCase(), x + 22, y + 48, -1);
+		IFont.legacy20.drawString(matrices, InfMain.NAME.toUpperCase(), x + 22, y + 48, -1);
 		Render2D.drawRectWH(matrices, x + 6, y + 64.5, 80, 0.5, 0xFF4A4F65);
 
 		searchField.setX((int) (x + width - 115));
@@ -213,7 +218,6 @@ public class Panel {
 
 			if (categoryButton.isOpen() && !isSearch()
 					&& categoryButton.getName().equalsIgnoreCase(configPanel.getName())) {
-				configPanel.fade = (float) Math.min(1, configPanel.fade + 0.11);
 				configPanel.setX(x + 92);
 				configPanel.setY(y + 34);
 				configPanel.setWidth(width - 92);

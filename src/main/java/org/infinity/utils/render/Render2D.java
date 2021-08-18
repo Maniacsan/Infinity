@@ -1,7 +1,6 @@
-package org.infinity.ui.menu.util;
+package org.infinity.utils.render;
 
 import org.infinity.utils.Helper;
-import org.infinity.utils.render.RenderUtil;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 

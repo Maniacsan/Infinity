@@ -2,8 +2,8 @@ package org.infinity.ui.account;
 
 import org.infinity.ui.account.main.Account;
 import org.infinity.ui.account.main.AccountThread;
-import org.infinity.ui.menu.util.FontUtils;
 import org.infinity.utils.Helper;
+import org.infinity.utils.render.FontUtils;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
