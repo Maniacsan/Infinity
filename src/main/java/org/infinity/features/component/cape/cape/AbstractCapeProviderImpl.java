@@ -19,32 +19,34 @@ import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.PlayerSkinProvider.SkinTextureAvailableCallback;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
-public abstract class AbstractCapeProvider {
-	private static final Identifier DEFAULT_ELYTRA = IElytraFeatureRenderer.getElytraTexture();
-	
-	private File skinCacheDir;
-	private TextureManager textureManager;
-	private Executor executor;
-	private Proxy proxy;
-	
-	public AbstractCapeProvider(File skinCacheDir, TextureManager textureManager, Executor executor, Proxy proxy) {
+public abstract class AbstractCapeProviderImpl implements CapeProvider {
+	protected static final Identifier DEFAULT_ELYTRA = IElytraFeatureRenderer.getElytraTexture();
+
+	protected final File skinCacheDir;
+	protected final TextureManager textureManager;
+	protected final Executor executor;
+	protected final Proxy proxy;
+
+	public AbstractCapeProviderImpl(File skinCacheDir, TextureManager textureManager, Executor executor, Proxy proxy) {
 		this.skinCacheDir = skinCacheDir;
 		this.textureManager = textureManager;
 		this.executor = executor;
 		this.proxy = proxy;
 	}
-	
+
+	@Override
 	public void loadCape(GameProfile gameProfile, MinecraftProfileTexture mojangCape, SkinTextureAvailableCallback callback) {
-		//Capes.LOGGER.debug("Loading cape for profile " + gameProfile);
+//		AnyCapes.LOGGER.debug("Loading cape for profile " + gameProfile);
 		String hash = Hashing.sha1().hashUnencodedChars("cape-" + gameProfile.getId().toString()).toString();
 		Identifier identifier = new Identifier("skins/" + hash);
-		AbstractTexture texture = textureManager.getTexture(identifier);
-		if (texture != null) {
+		AbstractTexture texture = textureManager.getOrDefault(identifier, MissingSprite.getMissingSpriteTexture());
+		if (texture != MissingSprite.getMissingSpriteTexture()) {
 			if (callback != null) {
 				if (texture instanceof CapeTexture) {
 					if (!((CapeTexture) texture).hasElytra()) {
@@ -60,9 +62,9 @@ public abstract class AbstractCapeProvider {
 			}
 			getCape(gameProfile, mojangCape == null ? null : mojangCape.getUrl(), cacheFile, (nativeImage, url) -> {
 				MinecraftClient.getInstance().execute(() -> {
-					CapeTransformResult result = transformCapeImage(nativeImage);
-					NativeImage capeImage = result.transformedImage;
-					boolean hasElytra = result.hasElytra;
+					CapeProcessResult result = processCapeImage(nativeImage);
+					NativeImage capeImage = result.getProcessedImage();
+					boolean hasElytra = result.hasElytra();
 					if (!hasElytra) {
 						callback.onSkinTextureAvailable(Type.ELYTRA, DEFAULT_ELYTRA, null);
 					}
@@ -71,12 +73,12 @@ public abstract class AbstractCapeProvider {
 					if (callback != null) {
 						callback.onSkinTextureAvailable(Type.CAPE, identifier, url == null ? null : new MinecraftProfileTexture(url.toString(), null));
 					}
-					//Capes.LOGGER.debug("Loaded cape for profile " + gameProfile + " from " + url);
+//					AnyCapes.LOGGER.debug("Loaded cape for profile " + gameProfile + " from " + url);
 				});
 			});
 		}
 	}
-	
+
 	public void getCape(GameProfile gameProfile, String mojangCapeUrl, File cacheFile, ImageDownloadCallback callback) {
 		if (cacheFile != null && cacheFile.isFile()) {
 			NativeImage nativeImage = null;
@@ -94,20 +96,20 @@ public abstract class AbstractCapeProvider {
 
 		downloadCape(gameProfile, mojangCapeUrl, cacheFile, callback);
 	}
-	
-	public void downloadCape(GameProfile gameProfile, String mojangCapeUrl, File cacheFile, ImageDownloadCallback callback) {
-		CompletableFuture.runAsync(() -> {
+
+	public CompletableFuture<Void> downloadCape(GameProfile gameProfile, String mojangCapeUrl, File cacheFile, ImageDownloadCallback callback) {
+		return CompletableFuture.runAsync(() -> {
 			downloadCape(getCapeUrls(), 0, gameProfile, mojangCapeUrl, cacheFile, callback);
 		}, executor);
 	}
-	
-	private void downloadCape(List<String> urls, int index, GameProfile gameProfile, String mojangCapeUrl, File cacheFile, ImageDownloadCallback callback) {
+
+	protected void downloadCape(List<String> urls, int index, GameProfile gameProfile, String mojangCapeUrl, File cacheFile, ImageDownloadCallback callback) {
 		if (index >= urls.size()) {
 			return;
 		}
 		URL url = formatUrl(urls.get(index), gameProfile, mojangCapeUrl);
 		if (url == null) {
-			downloadCape(urls, index+1, gameProfile, mojangCapeUrl, cacheFile, callback);
+			downloadCape(urls, index + 1, gameProfile, mojangCapeUrl, cacheFile, callback);
 			return;
 		}
 		CompletableFuture<NativeImage> future = downloadImage(url, cacheFile);
@@ -115,11 +117,11 @@ public abstract class AbstractCapeProvider {
 			if (nativeImage != null && throwable == null) {
 				callback.onSuccess(nativeImage, url);
 			} else {
-				downloadCape(urls, index+1, gameProfile, mojangCapeUrl, cacheFile, callback);
+				downloadCape(urls, index + 1, gameProfile, mojangCapeUrl, cacheFile, callback);
 			}
 		}, executor);
 	}
-	
+
 	public CompletableFuture<NativeImage> downloadImage(URL url, File cacheFile) {
 		return CompletableFuture.supplyAsync(() -> {
 			HttpURLConnection httpURLConnection = null;
@@ -144,12 +146,12 @@ public abstract class AbstractCapeProvider {
 			return nativeImage;
 		}, executor);
 	}
-	
+
 	public abstract List<String> getCapeUrls();
-	
+
 	public abstract boolean useCaching();
-	
+
 	public abstract URL formatUrl(String urlStr, GameProfile gameProfile, String mojangCapeUrl);
-	
-	public abstract CapeTransformResult transformCapeImage(NativeImage capeImage);
+
+	public abstract CapeProcessResult processCapeImage(NativeImage capeImage);
 }

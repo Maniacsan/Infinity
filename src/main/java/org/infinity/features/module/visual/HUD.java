@@ -2,7 +2,6 @@ package org.infinity.features.module.visual;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.infinity.features.Category;
@@ -23,23 +22,21 @@ import net.minecraft.util.Formatting;
 @ModuleInfo(category = Category.VISUAL, desc = "Ingame Infinity Hud", key = -2, name = "HUD", visible = true)
 public class HUD extends Module {
 
-	public Setting scale = new Setting(this, "Scale", "60%",
-			new ArrayList<>(Arrays.asList(new String[] { "40%", "60%", "80%", "100%" })));
+	private Setting watermark = new Setting(this, "WaterMark", false);
+	private Setting markText = new Setting(this, "Mark Text", "Infinity").setVisible(() -> watermark.isToggle());
+
 	private Setting array = new Setting(this, "Arraylist", true);
 
 	private Setting coordinates = new Setting(this, "Coordinates", true);
 
 	private Setting netherCoords = new Setting(this, "Nether Coordinates", false);
 
+	private double animX;
+
 	@Override
 	public void onRender(MatrixStack matrices, float tick, int width, int height) {
-		double scale = getScale();
-
-		matrices.push();
-		matrices.translate(width, 0, 0);
-		matrices.scale((float) scale, (float) scale, (float) scale);
-		matrices.translate(-width, 0, 0);
-
+		if (watermark.isToggle())
+			markRender(matrices, tick, width, height);
 		if (array.isToggle()) {
 
 			List<String> arrayList = new ArrayList<>();
@@ -67,14 +64,6 @@ public class HUD extends Module {
 				count[0]++;
 			}
 		}
-		matrices.pop();
-
-		matrices.push();
-
-		matrices.translate(width, height, 0);
-		matrices.scale((float) scale, (float) scale, (float) scale);
-		matrices.translate(-width, -height, 0);
-
 		if (coordinates.isToggle()) {
 			double x = Helper.getPlayer().getX();
 			double y = Helper.getPlayer().getY();
@@ -87,9 +76,7 @@ public class HUD extends Module {
 			String coords = Formatting.BLUE + "x" + Formatting.WHITE + ": " + x + Formatting.BLUE + " y"
 					+ Formatting.WHITE + ": " + y + Formatting.BLUE + " z" + Formatting.WHITE + ": " + z;
 			double rWidth = width - IFont.legacy17.getWidthIgnoreChar(coords);
-			double upY = this.scale.getCurrentMode().equalsIgnoreCase("100%") ? 18
-					: this.scale.getCurrentMode().equalsIgnoreCase("80%") ? 19
-							: this.scale.getCurrentMode().equalsIgnoreCase("40%") ? 29 : 23;
+			double upY = 23;
 			double y2 = Helper.MC.currentScreen instanceof ChatScreen ? upY : 11;
 
 			IFont.legacy17.drawStringWithShadow(matrices, coords, rWidth + 44, height - y2, 0xFFFFFFFF);
@@ -108,36 +95,17 @@ public class HUD extends Module {
 					+ Formatting.WHITE + ": " + y + Formatting.RED + " z" + Formatting.WHITE + ": " + z;
 			double rWidth = width - IFont.legacy17.getWidthIgnoreChar(nCoords);
 
-			double upY = this.scale.getCurrentMode().equalsIgnoreCase("100%") ? 29
-					: this.scale.getCurrentMode().equalsIgnoreCase("80%") ? 30
-							: this.scale.getCurrentMode().equalsIgnoreCase("40%") ? 40 : 34;
+			double upY = 34;
 			double y1 = Helper.MC.currentScreen instanceof ChatScreen && !coordinates.isToggle() ? 23
 					: Helper.MC.currentScreen instanceof ChatScreen && coordinates.isToggle() ? upY
 							: coordinates.isToggle() ? 22 : 11;
 
 			IFont.legacy17.drawStringWithShadow(matrices, nCoords, rWidth + 43, height - y1, 0xFFFFFFFF);
 		}
-
-		matrices.pop();
 	}
 
-	public double getScale() {
-		double scale1 = 1.0F;
-		switch (scale.getCurrentMode()) {
-		case "100%":
-			scale1 = 1.5;
-			break;
-		case "80%":
-			scale1 = 1.2;
-			break;
-		case "60%":
-			scale1 = 1.0;
-			break;
-		case "40%":
-			scale1 = 0.7;
-			break;
-		}
-		return scale1;
+	private void markRender(MatrixStack matrices, float tick, int width, int height) {
+		IFont.legacy18.drawString(matrices, markText.getText(), 2, 2, 0xFFFFFFFF);
 	}
 
 	public static int rainbow(int delay) {

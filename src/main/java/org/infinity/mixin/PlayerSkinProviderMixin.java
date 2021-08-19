@@ -3,7 +3,7 @@ package org.infinity.mixin;
 import java.io.File;
 import java.util.Map;
 
-import org.infinity.features.component.cape.cape.AbstractCapeProvider;
+import org.infinity.features.component.cape.cape.CapeProvider;
 import org.infinity.features.component.cape.mixinterface.PlayerSkinProviderAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -25,15 +25,15 @@ import net.minecraft.client.texture.TextureManager;
 @Mixin(PlayerSkinProvider.class)
 public abstract class PlayerSkinProviderMixin implements PlayerSkinProviderAccess {
 	@Unique
-	private AbstractCapeProvider capeProvider;
-	
+	private CapeProvider capeProvider;
+
 	@Override
-	public AbstractCapeProvider getCapeProvider() {
+	public CapeProvider getCapeProvider() {
 		return capeProvider;
 	}
 
 	@Override
-	public void setCapeProvider(AbstractCapeProvider capeProvider) {
+	public void setCapeProvider(CapeProvider capeProvider) {
 		this.capeProvider = capeProvider;
 	}
 
@@ -44,22 +44,17 @@ public abstract class PlayerSkinProviderMixin implements PlayerSkinProviderAcces
 	@Override
 	@Accessor("skinCacheDir")
 	public abstract File getSkinCacheDir();
-	
-	@Inject(
-		at = @At(
-			value = "INVOKE",
-			target = "Lnet/minecraft/client/MinecraftClient;execute(Ljava/lang/Runnable;)V"
-		),
-		method = "method_4653(Lcom/mojang/authlib/GameProfile;ZLnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)V",
-		locals = LocalCapture.CAPTURE_FAILHARD
-	)
-	public void onLoadSkinRunnable(GameProfile profile, boolean requireSecure, PlayerSkinProvider.SkinTextureAvailableCallback callback, CallbackInfo ci, Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map) {
-		MinecraftClient.getInstance().execute(() -> {
-			RenderSystem.recordRenderCall(() -> {
-				if (capeProvider != null) {
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;execute(Ljava/lang/Runnable;)V"), method = "method_4653(Lcom/mojang/authlib/GameProfile;ZLnet/minecraft/client/texture/PlayerSkinProvider$SkinTextureAvailableCallback;)V", locals = LocalCapture.CAPTURE_FAILHARD)
+	public void onLoadSkinRunnable(GameProfile profile, boolean requireSecure,
+			PlayerSkinProvider.SkinTextureAvailableCallback callback, CallbackInfo ci,
+			Map<MinecraftProfileTexture.Type, MinecraftProfileTexture> map) {
+		if (capeProvider != null) {
+			MinecraftClient.getInstance().execute(() -> {
+				RenderSystem.recordRenderCall(() -> {
 					capeProvider.loadCape(profile, map.remove(Type.CAPE), callback);
-				}
+				});
 			});
-		});
+		}
 	}
 }

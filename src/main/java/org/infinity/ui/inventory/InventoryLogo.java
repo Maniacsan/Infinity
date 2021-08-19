@@ -30,7 +30,7 @@ public class InventoryLogo {
 		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/inventory/infinity.png"),
 				this.x + 53 + cx, this.y - 30 - cy, 90, 23);
 
-		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/logoneon.png"), this.x + 12 + cx,
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/circle_logo.png"), this.x + 12 + cx,
 				this.y - 39 - cy, 38, 38);
 	}
 

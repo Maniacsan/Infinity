@@ -20,8 +20,6 @@ public class CapeModel extends EntityModel {
 
 	public static TexturedModelData getTexturedModelData() {
 		ModelData modelData = new ModelData();
-		ModelPartData modelPartData = modelData.getRoot();
-		Dilation dilation = new Dilation(1.0F);
 		return TexturedModelData.of(modelData, 64, 32);
 	}
 

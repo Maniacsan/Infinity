@@ -384,7 +384,7 @@ public class CapeUI extends Screen {
 
 			Identifier id = new Identifier("infinity_capes/" + InfMain.getCape().CURRENT_NAME.toLowerCase());
 
-			int ys = slim ? 66 : 70;
+			int ys = slim ? 66 : 72;
 			// Background for transparent capes
 			Render2D.drawRectWH(matrixStack, x - 29, y - 66, 61, 103, 0xFF222222);
 

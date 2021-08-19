@@ -175,6 +175,10 @@ public class Config {
 				break;
 			case BOOLEAN:
 				setting.setToggle(jsonObject.get(setting.getName()).getAsBoolean());
+				if (setting.getColor() != null)
+					if (!jsonObject.get(setting.getName()).getAsString().contains("true")
+							&& !jsonObject.get(setting.getName()).getAsString().contains("false"))
+						setting.setColor(jsonObject.get(setting.getName()).getAsInt());
 				break;
 			case VALUE_DOUBLE:
 				setting.setCurrentValueDouble(jsonObject.get(setting.getName()).getAsDouble());
@@ -214,6 +218,8 @@ public class Config {
 			switch (setting.getCategory()) {
 			case BOOLEAN:
 				dataJson.addProperty(setting.getName(), setting.isToggle());
+				if (setting.getColor() != null)
+					dataJson.addProperty(setting.getName(), setting.getColor().getRGB());
 				break;
 			case VALUE_DOUBLE:
 				dataJson.addProperty(setting.getName(), setting.getCurrentValueDouble());

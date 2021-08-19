@@ -1,5 +1,7 @@
 package org.infinity.features.module.visual;
 
+import java.awt.Color;
+
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
@@ -17,11 +19,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Formatting;
 
 @ModuleInfo(category = Category.VISUAL, desc = "Shows information about the enemy ", key = -2, name = "TargetInfo", visible = true)
 public class TargetInfo extends Module {
-
-	public Setting scale = new Setting(this, "Scale", 1.0D, 0.4, 2.0D);
 
 	private Setting friends = new Setting(this, "Friends", false);
 	private Setting invisibles = new Setting(this, "Invisibles", true);
@@ -43,37 +44,36 @@ public class TargetInfo extends Module {
 
 		if (target instanceof PlayerEntity) {
 			PlayerEntity player = (PlayerEntity) target;
-			double inc = ((player.getHealth() + player.getAbsorptionAmount()) / player.getMaxHealth()) * 161;
-			double end = Math.min(inc, 161);
+			double inc = ((player.getHealth() + player.getAbsorptionAmount()) / player.getMaxHealth()) * 75;
+			double end = Math.min(inc, 75);
 
-			float scale = (float) this.scale.getCurrentValueDouble();
-
-			matrices.push();
-
-			matrices.translate(wc + (162 / 2), hc + (60 / 2), 0);
-			matrices.scale(scale, scale, scale);
-			matrices.translate(-wc - (162 / 2), -hc - (60 / 2), 0);
-
-			Render2D.drawBorderedRect(matrices, wc, hc, 160, 58, 2, 0xFF060515, 0x9908090F);
-			InventoryScreen.drawEntity(wc + 18, hc + 54, 23, 60, -target.getPitch(), (LivingEntity) target);
+			Render2D.horizontalGradient(matrices, wc, hc, (int) (wc - 1 + 170), hc + 51, 0x900A0A0A,
+					new Color(0, 0, 0, 0).getRGB());
+			InventoryScreen.drawEntity(wc + 18, hc + 47, 23, 60, -target.getPitch(), (LivingEntity) target);
 			int off = 0;
 
 			for (int i = 3; i >= 0; i--) {
-				RenderUtil.drawItem(player.getInventory().getArmorStack(i), wc + 34, hc - 1 + off, true);
-				off += 14;
+				RenderUtil.drawItem(player.getInventory().getArmorStack(i), wc + 37 + off, hc + 1, true);
+				if (!player.getInventory().getArmorStack(i).isEmpty())
+				off += 16;
 			}
 
 			RenderUtil.drawItem(player.getEquippedStack(EquipmentSlot.MAINHAND),
-					player.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty() ? wc + 52 : wc + 70, hc + 38, true);
-			RenderUtil.drawItem(player.getEquippedStack(EquipmentSlot.OFFHAND), wc + 52, hc + 38, true);
+					player.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty() ? wc + 37 : wc + 51, hc + 17, true);
+			RenderUtil.drawItem(player.getEquippedStack(EquipmentSlot.OFFHAND), wc + 37, hc + 17, true);
 
-			IFont.legacy15.drawString(matrices, player.getName().getString(), wc + 52, hc + 2, 0xFFFFFFFF);
-			IFont.legacy15.drawString(matrices,
-					"Health: " + MathAssist.round(player.getHealth() + player.getAbsorptionAmount(), 1), wc + 52,
-					hc + 13, 0xFFFFFFFF);
-			Render2D.horizontalGradient(matrices, wc, hc + 58, (int) (wc - 1 + end), hc + 59, 0xFFF41919, 0xFF1DF420);
+			String name = player.getCustomName() != null ? player.getCustomName().getString()
+					: player.getDisplayName().getString();
 
-			matrices.pop();
+			IFont.legacy14.drawString(matrices, Formatting.RESET + name, wc + 2, hc - 9, -1);
+			
+			IFont.legacy14.drawString(matrices,
+					String.valueOf(MathAssist.round(player.getHealth() + player.getAbsorptionAmount(), 1)),
+					wc + 49 + end, hc + 39, 0xFFFFFFFF);
+
+			Render2D.drawHRoundedRect(matrices, wc + 43, hc + 40, 75, 6, 0xFF0A0A0A);
+			Render2D.drawHRoundedRect(matrices, wc + 43, hc + 40, end, 6, 0xFF59DFD8);
+
 		}
 	}
 }

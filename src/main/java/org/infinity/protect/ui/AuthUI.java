@@ -32,6 +32,7 @@ public class AuthUI extends Screen {
 	private double shadowX;
 	private double shadowY;
 	private double xscale;
+
 	private int errorTime;
 
 	public AuthUI() {
@@ -135,10 +136,8 @@ public class AuthUI extends Screen {
 		passwordField.render(matrices, mouseX, mouseY, delta);
 
 		if (errorTime > 0) {
-			Render2D.drawRectWH(matrices, this.width / 2 - 51, this.height / 2 - 126, 102, 30, -1);
-			Render2D.drawRectWH(matrices, this.width / 2 - 50, this.height / 2 - 125, 100, 28,
-					new Color(181, 59, 86).getRGB());
-			IFont.legacy16.drawCenteredString(matrices, "Login failed", this.width / 2, this.height / 2 - 115, -1);
+			IFont.legacy14.drawCenteredString(matrices, "Login failed", this.width / 2, this.height / 2 - 73,
+					0xFFDA2525);
 		}
 
 		IFont.legacy13.drawString(matrices, "Register", this.width / 2 + 66, this.height / 2 + 76,

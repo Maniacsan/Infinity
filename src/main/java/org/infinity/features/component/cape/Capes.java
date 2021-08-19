@@ -1,12 +1,12 @@
 package org.infinity.features.component.cape;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.infinity.features.component.cape.cape.CapeProvider;
-import org.infinity.features.component.cape.config.Config;
+import org.infinity.features.component.cape.cape.CapeProviderImpl;
 import org.infinity.features.component.cape.mixinterface.PlayerSkinProviderAccess;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
@@ -16,12 +16,13 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.minecraft.util.Util;
 
 public class Capes {
 
-	private static Config config;
+	public List<String> capeUrls = Arrays.asList("{mojang}",
+			"https://whyuleet.ru/infinity/api/cape/profiles/{uuid-dash}.png");
 
 	public String CURRENT_CAPE = "";
 	public String CURRENT_NAME = "";
@@ -128,7 +129,8 @@ public class Capes {
 	}
 
 	public boolean isModerator(String capeName) {
-		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.MODERATOR).collect(Collectors.toList());
+		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.MODERATOR)
+				.collect(Collectors.toList());
 		for (Cape cape : filteredCapes) {
 			if (cape.getName().equalsIgnoreCase(capeName))
 				return true;
@@ -154,21 +156,12 @@ public class Capes {
 		return false;
 	}
 
-	public static Config getConfig() {
-		if (config == null) {
-			loadConfig();
-		}
-		return config;
-	}
-
-	private static void loadConfig() {
-		config = new Config();
-	}
-
-	public void onInitialize(MinecraftClient client) {
-		PlayerSkinProviderAccess skinProviderAccess = (PlayerSkinProviderAccess) client.getSkinProvider();
-		skinProviderAccess.setCapeProvider(new CapeProvider(skinProviderAccess.getSkinCacheDir(),
-				skinProviderAccess.getTextureManager(), Util.getMainWorkerExecutor(), client.getNetworkProxy()));
+	public void onInitialize() {
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			PlayerSkinProviderAccess skinProviderAccess = (PlayerSkinProviderAccess) client.getSkinProvider();
+			skinProviderAccess.setCapeProvider(new CapeProviderImpl(skinProviderAccess.getSkinCacheDir(),
+					skinProviderAccess.getTextureManager(), Util.getMainWorkerExecutor(), client.getNetworkProxy()));
+		});
 		updateCape();
 	}
 

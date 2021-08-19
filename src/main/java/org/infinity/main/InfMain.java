@@ -37,6 +37,7 @@ public class InfMain {
 		direction = new File(Helper.MC.runDirectory + File.separator + "Infinity");
 
 		init = new Initialize();
+		getCape().onInitialize();
 
 		if (!direction.exists())
 			firstStart = true;

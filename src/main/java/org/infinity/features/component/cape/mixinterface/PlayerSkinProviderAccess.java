@@ -2,14 +2,14 @@ package org.infinity.features.component.cape.mixinterface;
 
 import java.io.File;
 
-import org.infinity.features.component.cape.cape.AbstractCapeProvider;
+import org.infinity.features.component.cape.cape.CapeProvider;
 
 import net.minecraft.client.texture.TextureManager;
 
 public interface PlayerSkinProviderAccess {
-	public AbstractCapeProvider getCapeProvider();
+	public CapeProvider getCapeProvider();
 	
-	public void setCapeProvider(AbstractCapeProvider capeProvider);
+	public void setCapeProvider(CapeProvider capeProvider);
 	
 	public TextureManager getTextureManager();
 	

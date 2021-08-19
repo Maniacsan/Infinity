@@ -5,6 +5,7 @@ import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
 import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
+import org.infinity.ui.FirstStartUI;
 import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -20,7 +21,7 @@ public class AuthHandler extends Handler {
 	public void onPostStart(StartProcessEvent event) {
 		if (event.getType().equals(EventType.POST))
 			Helper.openScreen(InfMain.INSTANCE.init.authUI);
-	
+
 	}
 
 	@EventTarget(5)
@@ -29,7 +30,10 @@ public class AuthHandler extends Handler {
 			SuccessEvent successEvent = new SuccessEvent();
 			EventManager.call(successEvent);
 
-					Helper.openScreen(new TitleScreen(true));
+			if (InfMain.firstStart)
+				Helper.openScreen(new FirstStartUI());
+			else
+				Helper.openScreen(new TitleScreen(true));
 
 		}
 	}

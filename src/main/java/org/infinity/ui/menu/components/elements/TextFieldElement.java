@@ -29,8 +29,9 @@ public class TextFieldElement extends AbstractElement {
 	@Override
 	public void init() {
 		if (setting.getText() != null)
-		setText(setting.getText());
-		
+			setText(setting.getText());
+		fillText = setting.getDefaultText();
+
 		maxLength = 35;
 	}
 
@@ -54,8 +55,7 @@ public class TextFieldElement extends AbstractElement {
 		}
 
 		if (!focused && text.isEmpty() && !fillText.isEmpty())
-			IFont.legacy14.drawString(matrices, fillText, x,
-					getY() + (getHeight() - IFont.legacy14.getFontHeight()) / 2, -1);
+			IFont.legacy14.drawString(matrices, fillText, x - diff, getY() + (getHeight() - 6), 0x80F9F9F9);
 
 		if (focused) {
 			Render2D.drawRectWH(matrices, x + IFont.legacy14.getStringWidth(getText()) + 3 - diff,

@@ -27,7 +27,7 @@ public class GameMenuScreenMixin extends Screen {
 
 	@Inject(method = "init", at = @At("TAIL"))
 	private void onPostInit(CallbackInfo ci) {
-		this.addDrawableChild(new ButtonWidget(this.width / 2 - 40, this.height - 30, 80, 20,
+		this.addDrawableChild(new ButtonWidget(this.width / 2 - 60, this.height - 30, 120, 20,
 				new LiteralText("Tools"), (button) -> {
 					this.client.openScreen(new ToolsUI((Screen) this));
 				}));
