@@ -224,6 +224,7 @@ public class CapeUI extends Screen {
 
 	private void done() {
 		InfMain.getCape().updateCape();
+		InfMain.getCape().initCape(Helper.MC);
 		InfMain.getCape().updateCapes();
 		onClose();
 	}
@@ -256,7 +257,7 @@ public class CapeUI extends Screen {
 				role = Formatting.RED + "You" + Formatting.BLACK + "Tube";
 			String profileName = ColorUtils.getUserRoleColor() + role + " " + Formatting.WHITE
 					+ InfMain.getUser().getName();
-			IFont.legacy13.drawCenteredString(matrixStack, profileName, x + width / 2 - 5,
+			IFont.legacy13.drawCenteredString(matrixStack, profileName, x + width / 2,
 					y - 10 - IFont.legacy13.getFontHeight(), -1);
 
 			RenderUtil.bindSkinTexture(Helper.MC.getSession().getProfile().getId(), name);
@@ -458,7 +459,7 @@ public class CapeUI extends Screen {
 				RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/locked.png"),
 						x + width / 2 - 8, y + height / 2 - 21, 16, 16);
 
-				String srole = role.name().substring(0, 1).toUpperCase() + role.name().substring(1).toLowerCase();
+				String srole = role.name().substring(1).toLowerCase();
 				if (srole.equalsIgnoreCase("Youtube"))
 					srole = Formatting.RED + "You" + Formatting.BLACK + "Tube";
 

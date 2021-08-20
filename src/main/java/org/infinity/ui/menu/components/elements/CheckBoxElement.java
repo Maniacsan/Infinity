@@ -32,9 +32,16 @@ public class CheckBoxElement extends AbstractElement {
 
 		if (setting.getColor() == null)
 			return;
+		
+		int color = setting.getColor().getRGB();
+		Render2D.drawCircle(matrices, x + width - 37, y + 7, 4, color);
+		Render2D.drawCircle(matrices, x + width - 24, y + 7, 4, color);
+		
+		Render2D.drawCircle(matrices, x + width - 37, y + 13, 4, color);
+		Render2D.drawCircle(matrices, x + width - 24, y + 13, 4, color);
 
-		Render2D.drawBorderedRect(matrices, x + width - 39, y + 5, 17, 10, 0.5f, 0x90000000,
-				setting.getColor().getRGB());
+		Render2D.drawRectWH(matrices, x + width - 39, y + 7, 17, 6, color);
+		Render2D.drawRectWH(matrices, x + width - 37, y + 5, 13, 10, color);
 	}
 
 	@Override

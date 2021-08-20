@@ -58,8 +58,7 @@ dependencies {
 	include group: 'org.json', name: 'json', version: '20210307'
 	include group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
 	
-	implementation group: 'com.github.minndevelopment', name: 'java-discordrpc', version: '2.0.2'
-	include group: 'com.github.minndevelopment', name: 'java-discordrpc', version: '2.0.2'
+	dependency group: 'com.github.minndevelopment', name: 'java-discordrpc', version: '2.0.2'
 }
 
 configurations {

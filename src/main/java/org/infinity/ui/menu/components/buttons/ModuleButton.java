@@ -182,14 +182,11 @@ public class ModuleButton {
 
 				if (element instanceof SliderElement)
 					yOffset += 18;
-				else if (element instanceof ColorPickerElement)
-				{
+				else if (element instanceof ColorPickerElement) {
 					yOffset += 20;
-				} else if (element instanceof TextFieldElement)
-				{
+				} else if (element instanceof TextFieldElement) {
 					yOffset += 28;
-				} else if (element instanceof ComboBoxElement)
-				{
+				} else if (element instanceof ComboBoxElement) {
 					if (((ComboBoxElement) element).isOpen())
 						yOffset += ((ComboBoxElement) element).getSetting().getModes().size() * 20;
 					else
@@ -202,22 +199,25 @@ public class ModuleButton {
 	}
 
 	public void tick() {
-		if (isOpen())
+		if (isOpen()) {
 			elements.forEach(AbstractElement::tick);
 
-		if (!isOpen() || _celementHeight < panel.height)
-			return;
+			if (_celementHeight < panel.height) {
+				setScrollProgress(0);
+				return;
+			}
 
-		int difference = getHeightDifference();
+			int difference = getHeightDifference();
 
-		setScrollProgress(scrollProgress + scrollSpeed);
-		scrollSpeed *= 0.54;
+			setScrollProgress(scrollProgress + scrollSpeed);
+			scrollSpeed *= 0.54;
 
-		if (scrollTimer.hasReached(100)) {
-			if (scrollProgress < 0)
-				scrollSpeed = scrollProgress * -0.45;
-			else if (scrollProgress > difference)
-				scrollSpeed = (scrollProgress - difference) * -0.45;
+			if (scrollTimer.hasReached(100)) {
+				if (scrollProgress < 0)
+					scrollSpeed = scrollProgress * -0.45;
+				else if (scrollProgress > difference)
+					scrollSpeed = (scrollProgress - difference) * -0.45;
+			}
 		}
 	}
 

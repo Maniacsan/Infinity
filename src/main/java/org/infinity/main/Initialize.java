@@ -52,8 +52,10 @@ public class Initialize {
 		commandManager = new CommandManager();
 		friend = new Friend();
 		cape = new Capes();
+		InfMain.INSTANCE.SETTINGS.load();
 		LOGGER.info("Injected");
 
+		cape.updateCape();
 		cape.updateCapes();
 		moduleManager.get(HUD.class).enable();
 	}

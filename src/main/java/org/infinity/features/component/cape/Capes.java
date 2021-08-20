@@ -17,6 +17,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mojang.authlib.GameProfile;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Util;
 
 public class Capes {
@@ -156,11 +157,17 @@ public class Capes {
 		return false;
 	}
 
+	public void initCape(MinecraftClient client) {
+		PlayerSkinProviderAccess skinProviderAccess = (PlayerSkinProviderAccess) client.getSkinProvider();
+		if (skinProviderAccess.getCapeProvider() != null)
+			skinProviderAccess.setCapeProvider(null);
+		skinProviderAccess.setCapeProvider(new CapeProviderImpl(skinProviderAccess.getSkinCacheDir(),
+				skinProviderAccess.getTextureManager(), Util.getMainWorkerExecutor(), client.getNetworkProxy()));
+	}
+
 	public void onInitialize() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			PlayerSkinProviderAccess skinProviderAccess = (PlayerSkinProviderAccess) client.getSkinProvider();
-			skinProviderAccess.setCapeProvider(new CapeProviderImpl(skinProviderAccess.getSkinCacheDir(),
-					skinProviderAccess.getTextureManager(), Util.getMainWorkerExecutor(), client.getNetworkProxy()));
+			initCape(client);
 		});
 		updateCape();
 	}

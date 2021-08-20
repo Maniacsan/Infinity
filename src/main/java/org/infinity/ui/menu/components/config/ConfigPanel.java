@@ -104,7 +104,7 @@ public class ConfigPanel {
 		textField.render(matrices, mouseX, mouseY, delta);
 
 		double yOffset = 2;
-		
+
 		if (fade != 1)
 			fade = (float) Math.min(1, fade + 0.11);
 
@@ -148,8 +148,10 @@ public class ConfigPanel {
 		if (errorTime > 0)
 			errorTime--;
 
-		if (_cbuttonHeight < this.height - 80)
+		if (_cbuttonHeight < this.height - 80) {
+			setScrollProgress(0);
 			return;
+		}
 
 		int difference = getHeightDifference();
 
@@ -236,8 +238,7 @@ public class ConfigPanel {
 	}
 
 	private double getScrollProgress() {
-		return prevScrollProgress
-				+ (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
+		return prevScrollProgress + (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
 	}
 
 	private void setScrollProgress(double value) {

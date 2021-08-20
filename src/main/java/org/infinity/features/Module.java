@@ -28,7 +28,8 @@ public class Module {
 	private boolean enabled, defaultEnabled;
 	private List<Setting> settings;
 	
-	public float fade;
+	public float animY;
+	public float animX;
 
 	public Module() {
 		setName(this.getClass().getAnnotation(ModuleInfo.class).name());

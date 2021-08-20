@@ -158,22 +158,25 @@ public class CategoryButton {
 	}
 
 	public void tick() {
-		if (isOpen())
+		if (isOpen()) {
 			moduleButtons.forEach(ModuleButton::tick);
 
-		if (!isOpen() || _cbuttonsHeight < panel.height - 40)
-			return;
+			if (_cbuttonsHeight < panel.height - 40) {
+				setScrollProgress(0);
+				return;
+			}
 
-		int difference = getHeightDifference();
+			int difference = getHeightDifference();
 
-		setScrollProgress(scrollProgress + scrollSpeed);
-		scrollSpeed *= 0.54;
+			setScrollProgress(scrollProgress + scrollSpeed);
+			scrollSpeed *= 0.54;
 
-		if (scrollTimer.hasReached(100)) {
-			if (scrollProgress < 0)
-				scrollSpeed = scrollProgress * -0.45;
-			else if (scrollProgress > difference)
-				scrollSpeed = (scrollProgress - difference) * -0.45;
+			if (scrollTimer.hasReached(100)) {
+				if (scrollProgress < 0)
+					scrollSpeed = scrollProgress * -0.45;
+				else if (scrollProgress > difference)
+					scrollSpeed = (scrollProgress - difference) * -0.45;
+			}
 		}
 	}
 
@@ -286,8 +289,7 @@ public class CategoryButton {
 	}
 
 	private double getScrollProgress() {
-		return prevScrollProgress
-				+ (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
+		return prevScrollProgress + (scrollProgress - prevScrollProgress) * Helper.MC.getLastFrameDuration();
 	}
 
 	private void setScrollProgress(double value) {
