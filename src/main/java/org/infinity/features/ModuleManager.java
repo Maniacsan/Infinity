@@ -90,7 +90,9 @@ public class ModuleManager {
 			new NoHurtCam(),
 			new NoServerRotation(),
 			new NoFall(),
-			new ViewModel()
+			new ViewModel(),
+			new ScoreboardMod(),
+			new NoFire()
 			);
 
 	public List<Module> getList() {

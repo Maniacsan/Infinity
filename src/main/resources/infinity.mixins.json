@@ -45,7 +45,9 @@
   "PlayerSkinProviderMixin",
   "IElytraFeatureRenderer",
   "TextVisitFactoryMixin",
-  "IHandledScreen"
+  "IHandledScreen",
+  "InGameOverlayRendererMixin",
+  "ScoreboardPlayerScoreMixin"
   ],
     "injectors": {
     "defaultRequire": 1

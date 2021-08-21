@@ -34,7 +34,7 @@ public class Tracers extends Module {
 	// arrows
 	private Setting radius = new Setting(this, "Radius", 1.4D, 0.5D, 8.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
-	private Setting size = new Setting(this, "Size", 9.0D, 5.0D, 20.0D)
+	private Setting size = new Setting(this, "Size", 13.0D, 5.0D, 20.0D)
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Arrows"));
 
 	private Setting players = new Setting(this, "Players", true).setColor(new Color(120, 97, 238));
@@ -67,6 +67,8 @@ public class Tracers extends Module {
 				int color = EntityUtil.getEntitiesColor(e, players.getColor().getRGB(), friends.getColor().getRGB(),
 						mobs.getColor().getRGB(), animals.getColor().getRGB());
 
+				Render2D.drawArrow(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
+						(int) size.getCurrentValueDouble() + 1, (int) (toRot[0] - Helper.getPlayer().getYaw()), 0xFF0A0A0A);
 				Render2D.drawArrow(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
 						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().getYaw()), color);
 			}

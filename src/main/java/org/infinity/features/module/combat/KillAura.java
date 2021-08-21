@@ -210,23 +210,18 @@ public class KillAura extends Module {
 		}
 	}
 
-	private void switchSlot() {
+	private void resetSlot() {
 		if (preSlot != -2) {
 			Helper.getPlayer().getInventory().selectedSlot = preSlot;
-			preSlot = -2;
+			preSlot = Helper.getPlayer().getInventory().selectedSlot;
 		}
 	}
 
 	public void attack(MotionEvent event) {
-		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 0.8
-				: timer.hasReached(1000 / (aps.getCurrentValueDouble() - 0.5))) {
-			if (Criticals.fall(target)) {
-				destroyShield();
-			}
-		}
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
+				destroyShield();
 
 				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
 					Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM,
@@ -246,7 +241,6 @@ public class KillAura extends Module {
 					time = 4;
 				}
 
-				// fakeLags reset
 				if (InfMain.getModuleManager().get(FakeLags.class).isEnabled())
 					((FakeLags) InfMain.getModuleManager().get(FakeLags.class)).sendPackets();
 
@@ -270,7 +264,7 @@ public class KillAura extends Module {
 				} else {
 					Helper.getPlayer().attack(target);
 				}
-				switchSlot();
+				resetSlot();
 				timer.reset();
 				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
 					Helper.sendPacket(new PlayerInteractItemC2SPacket(Hand.OFF_HAND));

@@ -12,7 +12,6 @@ public class NameProtect extends Module {
 //	public Setting prefix = new Setting(this, "Prefix", "Operator");
 	public Setting name = new Setting(this, "Name", "sempai");
 
-	
 	public String protect(String string) {
 		if (!isEnabled() || Helper.getPlayer() == null)
 			return string;

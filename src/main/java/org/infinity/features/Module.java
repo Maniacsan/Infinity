@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.infinity.main.InfMain;
+import org.infinity.utils.Helper;
 import org.infinity.utils.StringUtil;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -28,8 +29,8 @@ public class Module {
 	private boolean enabled, defaultEnabled;
 	private List<Setting> settings;
 	
-	public float animY;
-	public float animX;
+	public float animY = 0;
+	public float animX = -1;
 
 	public Module() {
 		setName(this.getClass().getAnnotation(ModuleInfo.class).name());
