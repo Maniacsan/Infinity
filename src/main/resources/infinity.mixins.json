@@ -42,12 +42,11 @@
   "IClickableWidget",
   "HeldItemRendererMixin",
   "ServerNetworkIoChInitMixin",
-  "PlayerSkinProviderMixin",
-  "IElytraFeatureRenderer",
   "TextVisitFactoryMixin",
   "IHandledScreen",
   "InGameOverlayRendererMixin",
-  "ScoreboardPlayerScoreMixin"
+  "ScoreboardPlayerScoreMixin",
+  "PlayerListEntryMixin"
   ],
     "injectors": {
     "defaultRequire": 1

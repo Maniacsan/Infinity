@@ -1,29 +1,17 @@
 package org.infinity.features.component.cape;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.infinity.features.component.cape.cape.CapeProviderImpl;
-import org.infinity.features.component.cape.mixinterface.PlayerSkinProviderAccess;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.system.Http;
 
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.mojang.authlib.GameProfile;
-
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Util;
 
 public class Capes {
-
-	public List<String> capeUrls = Arrays.asList("{mojang}",
-			"https://whyuleet.ru/infinity/api/cape/profiles/{uuid-dash}.png");
 
 	public String CURRENT_CAPE = "";
 	public String CURRENT_NAME = "";
@@ -40,44 +28,56 @@ public class Capes {
 		CURRENT_CAPE = url;
 	}
 
-	public void addCape(String cape) {
-		GameProfile profile = Helper.MC.getSession().getProfile();
-		addCape(profile.getId().toString(), cape);
+	public void register(String cape) {
+		register(Helper.MC.getSession().getUsername(), cape);
 	}
 
-	public void deleteCape() {
-		GameProfile profile = Helper.MC.getSession().getProfile();
-		deleteCape(profile.getId().toString());
-	}
-
-	public void addCape(String uuid, String cape) {
+	public void register(String name, String cape) {
 		try {
 			CURRENT_CAPE = cape;
-			Unirest.post(ADD_URL).field("uuid", uuid).field("cape", cape).asString();
+			Unirest.post(ADD_URL).field("name", name).field("cape", cape).asString();
 			InfMain.INSTANCE.SETTINGS.save();
-			InfMain.getUser().setUUID(uuid);
+			InfMain.getUser().setUsername(name);
 		} catch (UnirestException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void deleteCape(String uuid) {
+	public void destroy() {
+		destroy(Helper.MC.getSession().getUsername());
+	}
+
+	public void destroy(String name) {
 		try {
 			CURRENT_CAPE = "";
-			Unirest.post(DELETE_URL).field("uuid", uuid).asString();
+			Unirest.post(DELETE_URL).field("name", name).asString();
 			InfMain.INSTANCE.SETTINGS.save();
-			InfMain.getUser().setUUID(uuid);
+			InfMain.getUser().setUsername(name);
 		} catch (UnirestException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void updateCape() {
-		if (CURRENT_CAPE != null && !CURRENT_CAPE.isEmpty() && !isLocked(CURRENT_NAME))
-			addCape(CURRENT_CAPE);
+	public void update() {
+		update(Helper.MC.getSession().getUsername());
 	}
 
-	public void updateCapes() {
+	public void update(String name) {
+		if (CURRENT_CAPE != null && !CURRENT_CAPE.isEmpty() && !locked(CURRENT_NAME))
+			register(name, CURRENT_CAPE);
+		else if (CURRENT_CAPE.isEmpty())
+			destroy(name);
+	}
+
+	public void remove(String name) {
+		try {
+			Unirest.post(DELETE_URL).field("name", name).asString();
+		} catch (UnirestException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void initCapes() {
 		capes.clear();
 
 		Stream<String> lines = Http.get(CAPES).sendLines();
@@ -97,79 +97,42 @@ public class Capes {
 		return capes;
 	}
 
-	public boolean isLocked(String capeName) {
-		boolean isPremium = isPremium(capeName);
-		boolean isAdmin = isAdmin(capeName);
-		boolean isModerator = isModerator(capeName);
-		boolean isYoutube = isYoutube(capeName);
+	public boolean locked(String capeName) {
+		boolean premium = premiumCape(capeName);
+		boolean admin = adminCape(capeName);
+		boolean moderator = moderatorCape(capeName);
+		boolean youtube = youtubeCape(capeName);
 
-		if (Helper.isUser()) {
-			if (isPremium || isAdmin || isModerator || isYoutube)
-				return true;
-		}
-		if (Helper.isPremium()) {
-			if (isAdmin || isModerator || isYoutube)
-				return true;
-		}
+		if (Helper.isUser())
+			return premium || admin || moderator || youtube;
 
-		if (Helper.isModerator() || Helper.isYouTube()) {
-			if (isAdmin)
-				return true;
-		}
+		if (Helper.isPremium())
+			return admin || moderator || youtube;
+
+		if (Helper.isModerator() || Helper.isYouTube())
+			return admin;
 
 		return false;
 	}
 
-	public boolean isPremium(String capeName) {
-		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.PREMIUM).collect(Collectors.toList());
-		for (Cape cape : filteredCapes) {
-			if (cape.getName().equalsIgnoreCase(capeName))
-				return true;
-		}
-		return false;
+	public boolean premiumCape(String capeName) {
+		var premiumCapes = capes.stream().filter(c -> c.getRole().equals(Role.PREMIUM)).map(Cape::getName).toList();
+		return premiumCapes.contains(capeName);
 	}
 
-	public boolean isModerator(String capeName) {
-		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.MODERATOR)
-				.collect(Collectors.toList());
-		for (Cape cape : filteredCapes) {
-			if (cape.getName().equalsIgnoreCase(capeName))
-				return true;
-		}
-		return false;
+	public boolean moderatorCape(String capeName) {
+		var moderatorCapes = capes.stream().filter(c -> c.getRole().equals(Role.MODERATOR)).map(Cape::getName).toList();
+		return moderatorCapes.contains(capeName);
 	}
 
-	public boolean isYoutube(String capeName) {
-		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.YOUTUBE).collect(Collectors.toList());
-		for (Cape cape : filteredCapes) {
-			if (cape.getName().equalsIgnoreCase(capeName))
-				return true;
-		}
-		return false;
+	public boolean youtubeCape(String capeName) {
+		var youtubeCapes = capes.stream().filter(c -> c.getRole().equals(Role.YOUTUBE)).map(Cape::getName).toList();
+		return youtubeCapes.contains(capeName);
 	}
 
-	public boolean isAdmin(String capeName) {
-		List<Cape> filteredCapes = capes.stream().filter(c -> c.getRole() == Role.ADMIN).collect(Collectors.toList());
-		for (Cape cape : filteredCapes) {
-			if (cape.getName().equalsIgnoreCase(capeName))
-				return true;
-		}
-		return false;
-	}
-
-	public void initCape(MinecraftClient client) {
-		PlayerSkinProviderAccess skinProviderAccess = (PlayerSkinProviderAccess) client.getSkinProvider();
-		if (skinProviderAccess.getCapeProvider() != null)
-			skinProviderAccess.setCapeProvider(null);
-		skinProviderAccess.setCapeProvider(new CapeProviderImpl(skinProviderAccess.getSkinCacheDir(),
-				skinProviderAccess.getTextureManager(), Util.getMainWorkerExecutor(), client.getNetworkProxy()));
-	}
-
-	public void onInitialize() {
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			initCape(client);
-		});
-		updateCape();
+	public boolean adminCape(String capeName) {
+		var adminCapes = capes.stream().filter(c -> c.getRole().equals(Role.ADMIN)).map(Cape::getName).toList();
+		return adminCapes.contains(capeName);
 	}
 
 	public enum Role {

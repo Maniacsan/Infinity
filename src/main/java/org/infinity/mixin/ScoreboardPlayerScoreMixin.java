@@ -12,11 +12,12 @@ import net.minecraft.scoreboard.ScoreboardPlayerScore;
 
 @Mixin(ScoreboardPlayerScore.class)
 public class ScoreboardPlayerScoreMixin {
-	
+
 	@Inject(method = "getPlayerName", at = @At("HEAD"), cancellable = true)
 	private void getPlayerName(CallbackInfoReturnable<String> ci) {
 		NameProtect nameProtect = ((NameProtect) InfMain.getModuleManager().get(NameProtect.class));
-		if (nameProtect.isEnabled() && Helper.MC.getSession().getUsername().contains(ci.getReturnValue()))
+		if (nameProtect.isEnabled() && ci.getReturnValue() != null
+				&& Helper.MC.getSession().getUsername().contains(ci.getReturnValue()))
 			ci.setReturnValue(nameProtect.name.getText());
 	}
 

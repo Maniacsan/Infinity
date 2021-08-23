@@ -68,7 +68,7 @@ public class Tracers extends Module {
 						mobs.getColor().getRGB(), animals.getColor().getRGB());
 
 				Render2D.drawArrow(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
-						(int) size.getCurrentValueDouble() + 1, (int) (toRot[0] - Helper.getPlayer().getYaw()), 0xFF0A0A0A);
+						(int) size.getCurrentValueDouble() + 3, (int) (toRot[0] - Helper.getPlayer().getYaw()), 0xFF0A0A0A);
 				Render2D.drawArrow(matrices, (width / 2) - (int) getX(yaw), height / 2 - (int) getY(yaw),
 						(int) size.getCurrentValueDouble(), (int) (toRot[0] - Helper.getPlayer().getYaw()), color);
 			}

@@ -10,7 +10,7 @@ import java.util.HashMap;
 
 import javax.imageio.ImageIO;
 
-import org.infinity.features.component.cape.util.ImageUtil;
+import org.infinity.features.component.cape.CapeProvider;
 import org.infinity.utils.Helper;
 import org.lwjgl.BufferUtils;
 
@@ -96,7 +96,7 @@ public class TextureUtil extends HashMap<String, AbstractTexture> {
 				if (url != null && !url.isEmpty()) {
 					NativeImage image = NativeImage.read(new URL(url).openStream());
 
-					texture = new NativeImageBackedTexture(transformCapeImage(image));
+					texture = new NativeImageBackedTexture(CapeProvider.uncrop(image));
 					if (id != null) {
 						Helper.MC.getTextureManager().destroyTexture(id);
 						Helper.MC.getTextureManager().registerTexture(id, texture);
@@ -108,31 +108,6 @@ public class TextureUtil extends HashMap<String, AbstractTexture> {
 		} catch (IOException ioexception) {
 			ioexception.printStackTrace();
 		}
-	}
-
-	private NativeImage transformCapeImage(NativeImage capeImage) {
-		NativeImage transformed;
-
-		if (capeImage.getWidth() % 46 == 0 && capeImage.getHeight() % 22 == 0) {
-			int scale = capeImage.getWidth() / 46;
-			transformed = ImageUtil.resizeCanvas(capeImage, scale * 64, scale * 32);
-		} else if (capeImage.getWidth() % 22 == 0 && capeImage.getHeight() % 17 == 0) {
-			int scale = capeImage.getWidth() / 22;
-			transformed = ImageUtil.resizeCanvas(capeImage, scale * 64, scale * 32);
-		} else if (capeImage.getWidth() % 355 == 0 && capeImage.getHeight() % 275 == 0) {
-			int scale = capeImage.getWidth() / 355;
-			transformed = ImageUtil.cropAndResizeCanvas(capeImage, scale * 1024, scale * 512, scale * 2, scale * 2,
-					scale, scale);
-		} else if (capeImage.getWidth() % 352 == 0 && capeImage.getHeight() % 275 == 0) {
-			int scale = capeImage.getWidth() / 352;
-			transformed = ImageUtil.cropAndResizeCanvas(capeImage, scale * 1024, scale * 512, 0, scale * 2, 0, scale);
-		} else if (capeImage.getWidth() % 355 == 0 && capeImage.getHeight() % 272 == 0) {
-			int scale = capeImage.getWidth() / 355;
-			transformed = ImageUtil.cropAndResizeCanvas(capeImage, scale * 1024, scale * 512, scale * 2, 0, scale, 0);
-		} else {
-			transformed = capeImage;
-		}
-		return transformed;
 	}
 
 }

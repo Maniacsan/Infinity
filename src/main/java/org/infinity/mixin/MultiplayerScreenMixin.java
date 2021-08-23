@@ -23,6 +23,7 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
+import us.myles.ViaVersion.api.protocol.ProtocolVersion;
 
 @Mixin(MultiplayerScreen.class)
 public class MultiplayerScreenMixin extends Screen {
@@ -49,8 +50,9 @@ public class MultiplayerScreenMixin extends Screen {
 				buttonWidget -> Helper.MC.openScreen(new GuiAccountManager(this)), new TranslatableText("Account"));
 		addDrawableChild(accButton);
 
-		slider = new WSlider(0D, ProtocolSorter.getProtocolVersions().size() - 1, width / 2 + 50, 10, 110, 20,
-				new LiteralText("Version " + ViaFabric.CURRENT_VERSION), ViaFabric.stateValue);
+		slider = new WSlider(0D, ProtocolSorter.getProtocolVersions().size() - 1,
+				width / 2 + 50, 10, 110, 20, new LiteralText("Version " + ViaFabric.CURRENT_VERSION),
+				ViaFabric.stateValue);
 		addDrawableChild(slider);
 	}
 

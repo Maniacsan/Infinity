@@ -44,8 +44,8 @@ public class AutoPotion extends Module {
 
 	@Override
 	public void onDisable() {
-		Helper.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch(),
-				Helper.getPlayer().isOnGround()));
+		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
+				Helper.getPlayer().getPitch(), Helper.getPlayer().isOnGround()));
 	}
 
 	@EventTarget
@@ -81,20 +81,19 @@ public class AutoPotion extends Module {
 
 	private synchronized void baff(int slot) {
 		int preSlot = Helper.getPlayer().getInventory().selectedSlot;
-		Helper.sendPacket(
-				new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), 90, Helper.getPlayer().isOnGround()));
+		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
+				90, Helper.getPlayer().isOnGround()));
 
-			Helper.getPlayer().getInventory().selectedSlot = slot;
-			Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(),
-					Hand.MAIN_HAND);
+		Helper.getPlayer().getInventory().selectedSlot = slot;
+		Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
 
-			// set timer
-			timer = (int) delay.getCurrentValueDouble();
+		// set timer
+		timer = (int) delay.getCurrentValueDouble();
 
 		// reset
 		Helper.getPlayer().getInventory().selectedSlot = preSlot;
-		Helper.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(), Helper.getPlayer().getPitch(),
-				Helper.getPlayer().isOnGround()));
+		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
+				Helper.getPlayer().getPitch(), Helper.getPlayer().isOnGround()));
 	}
 
 }

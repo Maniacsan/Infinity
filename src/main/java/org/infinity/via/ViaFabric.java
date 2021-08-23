@@ -31,7 +31,7 @@ public class ViaFabric {
 	public static ViaFabric INSTANCE = new ViaFabric();
 	public static int CLIENT_VERSION_ID = 755;
 	public static String CURRENT_VERSION;
-	public static double stateValue = ProtocolSorter.getProtocolVersions().size() - 1;
+	public static double stateValue;
 
 	private int version;
 
@@ -45,6 +45,7 @@ public class ViaFabric {
 		ASYNC_EXECUTOR = Executors.newFixedThreadPool(8, factory);
 		EVENT_LOOP = new DefaultEventLoop(factory);
 		EVENT_LOOP.submit(INIT_FUTURE::join);
+		stateValue = ProtocolSorter.getProtocolVersions().size();
 
 		setVersion(CLIENT_VERSION_ID);
 		CURRENT_VERSION = ProtocolUtils.getProtocolName(getVersion());

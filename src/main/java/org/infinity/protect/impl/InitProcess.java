@@ -7,6 +7,7 @@ import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
 import org.infinity.ui.menu.ClickMenu;
 import org.infinity.utils.ConnectUtil;
+import org.infinity.utils.Helper;
 import org.infinity.via.ViaFabric;
 
 import com.darkmagician6.eventapi.EventTarget;
@@ -20,6 +21,8 @@ public class InitProcess extends Handler {
 		InfMain.INSTANCE.init.configManager = new ConfigManager();
 		InfMain.INSTANCE.init.macroManager = new MacroManager();
 		InfMain.INSTANCE.init.menu = new ClickMenu();
+		
+		new ViaFabric().onInitialize();
 
 		// loads
 		InfMain.INSTANCE.init.configManager.loadConfig(false);
@@ -27,10 +30,11 @@ public class InitProcess extends Handler {
 		InfMain.INSTANCE.init.friend.load();
 		InfMain.INSTANCE.init.accountManager.load();
 		InfMain.INSTANCE.SETTINGS.load();
-		
-		new ViaFabric().onInitialize();
 
+		InfMain.getModuleManager().getList().forEach(m -> m.animX = Helper.MC.getWindow().getWidth() + 1);
 		ConnectUtil.downloadPhoto();
+		
+		InfMain.getCape().update();
 
 		setInit(false);
 	}

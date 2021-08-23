@@ -37,7 +37,6 @@ public class InfMain {
 		direction = new File(Helper.MC.runDirectory + File.separator + "Infinity");
 
 		init = new Initialize();
-		getCape().onInitialize();
 
 		if (!direction.exists())
 			firstStart = true;
@@ -46,8 +45,8 @@ public class InfMain {
 		reLogin = true;
 
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-			if (getUser().getUUID() != null)
-			getCape().deleteCape(getUser().getUUID());
+			if (getUser().getUsername() != null)
+			getCape().remove(getUser().getUsername());
 			SETTINGS.save();
 		}));
 	}

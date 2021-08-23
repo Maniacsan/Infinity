@@ -1,13 +1,14 @@
 package org.infinity.via.util;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import us.myles.ViaVersion.api.protocol.ProtocolVersion;
 
 public class ProtocolSorter {
 
-    private static final LinkedList<ProtocolVersion> protocolVersions = new LinkedList<>();
+    private static final List<ProtocolVersion> protocolVersions = new ArrayList<>();
 
     private static int count = 0;
 
@@ -25,7 +26,7 @@ public class ProtocolSorter {
             }
         }
     }
-    public static LinkedList<ProtocolVersion> getProtocolVersions() {
+    public static List<ProtocolVersion> getProtocolVersions() {
         return protocolVersions;
     }
 }

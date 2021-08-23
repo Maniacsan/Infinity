@@ -1,6 +1,8 @@
 package org.infinity.mixin;
 
 import org.infinity.event.ClickEvent;
+import org.infinity.event.DisconnectEvent;
+import org.infinity.event.JoinWorldEvent;
 import org.infinity.event.OpenScreenEvent;
 import org.infinity.event.TickEvent;
 import org.infinity.event.protect.StartProcessEvent;
@@ -73,7 +75,20 @@ public abstract class MinecraftClientMixin {
 	private void onOpenScreen(Screen screen, CallbackInfo ci) {
 		OpenScreenEvent openScreenEvent = new OpenScreenEvent(screen);
 		EventManager.call(openScreenEvent);
+	}
 
+	@Inject(method = "joinWorld", at = @At("TAIL"))
+	public void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+		EventManager.call(new JoinWorldEvent(world));
+	}
+
+	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V", at = @At("HEAD"), cancellable = true)
+	public void onDisconnect(Screen screen, CallbackInfo ci) {
+		DisconnectEvent disconnectEvent = new DisconnectEvent();
+		EventManager.call(disconnectEvent);
+
+		if (disconnectEvent.isCancelled())
+			ci.cancel();
 	}
 
 }

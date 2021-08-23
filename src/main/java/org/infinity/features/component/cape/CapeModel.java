@@ -1,4 +1,4 @@
-package org.infinity.features.component.cape.cape;
+package org.infinity.features.component.cape;
 
 import net.minecraft.client.model.Dilation;
 import net.minecraft.client.model.ModelData;

@@ -49,12 +49,10 @@ public class AntiBot extends Module {
 			.setVisible(() -> mode.getCurrentMode().equalsIgnoreCase("Custom"));
 
 	private List<Integer> bots = new ArrayList<>();
-	private List<Integer> matrixBots = new ArrayList<>();
 	private List<Integer> needHit = new ArrayList<>();
 
 	@Override
 	public void onDisable() {
-		matrixBots.clear();
 		needHit.clear();
 		bots.clear();
 	}
@@ -92,7 +90,7 @@ public class AntiBot extends Module {
 								&& !bot.velocityDirty;
 
 						if (botContains && speedAnalysis) {
-							matrixBots.add(bot.getId());
+							Helper.getWorld().removeEntity(entity.getId(), Entity.RemovalReason.DISCARDED);
 							message(bot.getName().getString());
 						}
 					}
@@ -132,11 +130,6 @@ public class AntiBot extends Module {
 
 		if (bots.contains(entity.getId()))
 			return true;
-
-		if (matrixBots.contains(entity.getId()) && entity != null) {
-			Helper.getWorld().removeEntity(entity.getId(), Entity.RemovalReason.DISCARDED);
-			return true;
-		}
 
 		return false;
 	}

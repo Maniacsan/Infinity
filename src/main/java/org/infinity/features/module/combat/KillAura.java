@@ -201,19 +201,17 @@ public class KillAura extends Module {
 			return;
 
 		if (target instanceof PlayerEntity) {
-			if (((PlayerEntity) target).isBlocking()) {
-				if (slotAxe != -2) {
-					preSlot = Helper.getPlayer().getInventory().selectedSlot;
-					Helper.getPlayer().getInventory().selectedSlot = slotAxe;
-				}
+			if (((PlayerEntity) target).isBlocking() && slotAxe != -2) {
+				preSlot = Helper.getPlayer().getInventory().selectedSlot;
+				Helper.getPlayer().getInventory().selectedSlot = slotAxe;
 			}
-		}
-	}
-
-	private void resetSlot() {
-		if (preSlot != -2) {
+			try {
+				Thread.sleep(80);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if (preSlot != -2)
 			Helper.getPlayer().getInventory().selectedSlot = preSlot;
-			preSlot = Helper.getPlayer().getInventory().selectedSlot;
 		}
 	}
 
@@ -264,7 +262,6 @@ public class KillAura extends Module {
 				} else {
 					Helper.getPlayer().attack(target);
 				}
-				resetSlot();
 				timer.reset();
 				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
 					Helper.sendPacket(new PlayerInteractItemC2SPacket(Hand.OFF_HAND));

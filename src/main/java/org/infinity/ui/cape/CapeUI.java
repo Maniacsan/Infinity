@@ -5,9 +5,9 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.infinity.features.component.cape.CapeModel;
 import org.infinity.features.component.cape.Capes.Cape;
 import org.infinity.features.component.cape.Capes.Role;
-import org.infinity.features.component.cape.cape.CapeModel;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
 import org.infinity.ui.util.CustomButtonWidget;
@@ -223,9 +223,8 @@ public class CapeUI extends Screen {
 	}
 
 	private void done() {
-		InfMain.getCape().updateCape();
-		InfMain.getCape().initCape(Helper.MC);
-		InfMain.getCape().updateCapes();
+		InfMain.getCape().update();
+		InfMain.getCape().initCapes();
 		onClose();
 	}
 
@@ -424,7 +423,7 @@ public class CapeUI extends Screen {
 			id = new Identifier("infinity_capes/" + capeName.toLowerCase());
 			RenderUtil.TEXTURE.downloadCapeFromUrl(id, capeURL);
 
-			if (InfMain.getCape().CURRENT_NAME.equalsIgnoreCase(capeName))
+			if (InfMain.getCape().CURRENT_NAME.equalsIgnoreCase(capeName) && !locked())
 				setSelected(true);
 		}
 
@@ -444,7 +443,7 @@ public class CapeUI extends Screen {
 			Render2D.drawBorderedRect(matrices, x, y, width, height, 0.5F, isSelected() ? 0xFFDFBA33 : 0xFF585757,
 					new Color(10, 10, 10, 255).getRGB());
 
-			boolean locked = isLocked();
+			boolean locked = locked();
 
 			renderCape(matrices, locked, mouseX, mouseY, delta);
 
@@ -459,7 +458,7 @@ public class CapeUI extends Screen {
 				RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/icons/locked.png"),
 						x + width / 2 - 8, y + height / 2 - 21, 16, 16);
 
-				String srole = role.name().substring(1).toLowerCase();
+				String srole = role.name().substring(0, 1).toUpperCase() + role.name().substring(1).toLowerCase();
 				if (srole.equalsIgnoreCase("Youtube"))
 					srole = Formatting.RED + "You" + Formatting.BLACK + "Tube";
 
@@ -512,7 +511,7 @@ public class CapeUI extends Screen {
 
 		public void mouseClicked(double mouseX, double mouseY, int button) {
 			if (Render2D.isHovered(mouseX, mouseY, x, y, width, height)) {
-				if (isLocked()) {
+				if (locked()) {
 					setSelected(false);
 					return;
 				}
@@ -530,8 +529,8 @@ public class CapeUI extends Screen {
 			}
 		}
 
-		private boolean isLocked() {
-			return InfMain.getCape().isLocked(capeName);
+		private boolean locked() {
+			return InfMain.getCape().locked(capeName);
 		}
 
 		public double getX() {

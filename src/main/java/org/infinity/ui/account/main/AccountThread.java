@@ -4,6 +4,7 @@ import java.net.Proxy;
 
 import org.infinity.main.InfMain;
 import org.infinity.mixin.IMinecraftClient;
+import org.infinity.utils.Helper;
 
 import com.mojang.authlib.Agent;
 import com.mojang.authlib.exceptions.AuthenticationException;
@@ -43,14 +44,10 @@ public class AccountThread extends Thread {
 
 	@Override
 	public void run() {
-		try {
-			InfMain.getCape().deleteCape();
-		} catch (Exception e) {
-		}
-		
+		InfMain.getCape().remove(Helper.MC.getSession().getUsername());
 		if (alt.isNickname()) {
 			setSession(new Session(alt.getUsername(), "", "", "mojang"));
-			InfMain.getCape().updateCape();
+			InfMain.getCape().update();
 			return;
 		}
 		Session auth = createSession(alt.getUsername(), alt.getPassword());
@@ -61,6 +58,6 @@ public class AccountThread extends Thread {
 		AccountManager.lastAlt = new Account(alt.getUsername(), alt.getPassword());
 		alt.setMask(auth.getUsername());
 		setSession(auth);
-		InfMain.getCape().updateCape();
+		InfMain.getCape().update();
 	}
 }
