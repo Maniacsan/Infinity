@@ -26,6 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.AxeItem;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
@@ -202,16 +203,26 @@ public class KillAura extends Module {
 
 		if (target instanceof PlayerEntity) {
 			if (((PlayerEntity) target).isBlocking() && slotAxe != -2) {
+				if (!(Helper.getPlayer().getMainHandStack().getItem() instanceof AxeItem))
 				preSlot = Helper.getPlayer().getInventory().selectedSlot;
 				Helper.getPlayer().getInventory().selectedSlot = slotAxe;
 			}
-			try {
-				Thread.sleep(80);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			
+			if (preSlot != -2) {
+				(new Thread() {
+					@Override
+					public void run() {
+						try {
+							Thread.sleep(70);
+
+							Helper.getPlayer().getInventory().selectedSlot = preSlot;
+							preSlot = -2;
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}).start();
 			}
-			if (preSlot != -2)
-			Helper.getPlayer().getInventory().selectedSlot = preSlot;
 		}
 	}
 

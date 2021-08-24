@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.infinity.event.HudRenderEvent;
+import org.infinity.features.module.misc.NameProtect;
 import org.infinity.features.module.visual.ScoreboardMod;
 import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
@@ -92,6 +93,8 @@ public abstract class InGameHudMixin extends DrawableHelper {
 			int i = this.getTextRenderer().getWidth((StringVisitable) text);
 			int j = i;
 			int k = this.getTextRenderer().getWidth(": ");
+			
+			NameProtect nameProtect = ((NameProtect)InfMain.getModuleManager().get(NameProtect.class));
 
 			ScoreboardPlayerScore scoreboardPlayerScore;
 			MutableText text2;
@@ -99,8 +102,13 @@ public abstract class InGameHudMixin extends DrawableHelper {
 					.hasNext(); j = Math.max(j, this.getTextRenderer().getWidth((StringVisitable) text2) + k
 							+ this.getTextRenderer().getWidth(Integer.toString(scoreboardPlayerScore.getScore())))) {
 				scoreboardPlayerScore = (ScoreboardPlayerScore) var11.next();
-				Team team = scoreboard.getPlayerTeam(scoreboardPlayerScore.getPlayerName());
-				text2 = Team.decorateName(team, new LiteralText(scoreboardPlayerScore.getPlayerName()));
+				String playerName = scoreboardPlayerScore.getPlayerName();
+				
+				if (nameProtect.isEnabled() && Helper.MC.getSession().getUsername().contains(playerName))
+					playerName = playerName.replace(playerName, nameProtect.name.getText());
+				
+				Team team = scoreboard.getPlayerTeam(playerName);
+				text2 = Team.decorateName(team, new LiteralText(playerName));
 				list2.add(Pair.of(scoreboardPlayerScore, text2));
 			}
 

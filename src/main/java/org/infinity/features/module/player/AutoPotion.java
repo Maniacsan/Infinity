@@ -17,7 +17,6 @@ import com.darkmagician6.eventapi.types.EventType;
 
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
 
 @ModuleInfo(category = Category.PLAYER, desc = "Automatically throws certain potions", key = -2, name = "AutoPotion", visible = true)
@@ -37,6 +36,8 @@ public class AutoPotion extends Module {
 	}
 
 	private Setting delay = new Setting(this, "Delay", 5.2D, 3D, 20D);
+	
+	private float prevPitch = -2;
 
 	private int timer;
 
@@ -44,19 +45,17 @@ public class AutoPotion extends Module {
 
 	@Override
 	public void onDisable() {
-		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
-				Helper.getPlayer().getPitch(), Helper.getPlayer().isOnGround()));
+		prevPitch = -2;
 	}
 
 	@EventTarget
 	public void onMotionTick(MotionEvent event) {
 		if (event.getType().equals(EventType.PRE)) {
-
 			if (!Helper.getPlayer().isOnGround())
 				return;
 
 			int i = 1;
-			for (Entry entry : this.potions.entrySet()) {
+			for (Entry<StatusEffect, Setting> entry : this.potions.entrySet()) {
 				StatusEffect effect = (StatusEffect) entry.getKey();
 				Setting sett = (Setting) entry.getValue();
 				int slot = InvUtil.findPotionHotbar(effect, true);
@@ -70,30 +69,30 @@ public class AutoPotion extends Module {
 
 				if (sett.isToggle() && slot != -2 && !EntityUtil.checkActivePotion(effect)) {
 					if (next == i) {
-						baff(slot);
+						prevPitch = Helper.getPlayer().getPitch();
+						event.setPitch(90);
+						baff(event, slot);
 						next += 1;
 					}
 				}
 				i++;
 			}
+		} else if (event.getType().equals(EventType.POST)) {
+			if (prevPitch != -2)
+			Helper.getPlayer().setPitch(prevPitch);
 		}
 	}
 
-	private synchronized void baff(int slot) {
+	private synchronized void baff(MotionEvent event, int slot) {
 		int preSlot = Helper.getPlayer().getInventory().selectedSlot;
-		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
-				90, Helper.getPlayer().isOnGround()));
 
 		Helper.getPlayer().getInventory().selectedSlot = slot;
+		Helper.getPlayer().setPitch(90);
 		Helper.MC.interactionManager.interactItem(Helper.getPlayer(), Helper.getWorld(), Hand.MAIN_HAND);
 
-		// set timer
 		timer = (int) delay.getCurrentValueDouble();
 
-		// reset
 		Helper.getPlayer().getInventory().selectedSlot = preSlot;
-		Helper.MC.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(Helper.getPlayer().getYaw(),
-				Helper.getPlayer().getPitch(), Helper.getPlayer().isOnGround()));
 	}
 
 }

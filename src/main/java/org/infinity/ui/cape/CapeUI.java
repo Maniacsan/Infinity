@@ -251,9 +251,7 @@ public class CapeUI extends Screen {
 
 	public static void drawPlayer(MatrixStack matrixStack, String name, int x, int y, int width, int height) {
 		try {
-			String role = InfMain.getUser().getRole().name();
-			if (role.equalsIgnoreCase("YouTube"))
-				role = Formatting.RED + "You" + Formatting.BLACK + "Tube";
+			String role = InfMain.getUser().getRole().getName();
 			String profileName = ColorUtils.getUserRoleColor() + role + " " + Formatting.WHITE
 					+ InfMain.getUser().getName();
 			IFont.legacy13.drawCenteredString(matrixStack, profileName, x + width / 2,

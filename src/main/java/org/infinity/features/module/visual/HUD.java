@@ -11,37 +11,44 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.font.IFont;
 import org.infinity.main.InfMain;
+import org.infinity.mixin.IMinecraftClient;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MathAssist;
+import org.infinity.utils.entity.EntityUtil;
 import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
 
 import net.minecraft.client.gui.screen.ChatScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 
 @ModuleInfo(category = Category.VISUAL, desc = "Ingame Infinity Hud", key = -2, name = "HUD", visible = true)
 public class HUD extends Module {
 
-	public Setting watermark = new Setting(this, "WaterMark", false);
+	public Setting watermark = new Setting(this, "WaterMark", true);
+	private Setting name = new Setting(this, "Profile Name", true).setVisible(() -> watermark.isToggle());
+	private Setting fps = new Setting(this, "FPS", true).setVisible(() -> watermark.isToggle());
+	private Setting ping = new Setting(this, "Ping", true).setVisible(() -> watermark.isToggle());
 
 	// Array List
 	private Setting array = new Setting(this, "Arraylist", true);
-	private Setting listPosition = new Setting(this, "List Position", "Below",
+	private Setting listPosition = new Setting(this, "List Position", "Top",
 			new ArrayList<>(Arrays.asList("Top", "Below"))).setVisible(() -> array.isToggle());
 	private Setting transparencyBG = new Setting(this, "Transparency", 200D, 0D, 255D)
 			.setVisible(() -> array.isToggle());
-	private Setting animSpeed = new Setting(this, "Anim Speed", 0.7D, 0.1D, 0.95D).setVisible(() -> array.isToggle());
+	private Setting animSpeed = new Setting(this, "Anim Speed", 0.85D, 0.1D, 0.95D).setVisible(() -> array.isToggle());
 	private Setting offsetY = new Setting(this, "Offset Y", 1.7D, 0D, 5D).setVisible(() -> array.isToggle());
-	private Setting colorMode = new Setting(this, "Color Mode", "Rainbow",
+	private Setting colorMode = new Setting(this, "Color Mode", "Pulse",
 			new ArrayList<>(Arrays.asList("Rainbow", "Pulse", "Custom"))).setVisible(() -> array.isToggle());
 
-	private Setting rainbowGradient = new Setting(this, "Gradient", 140D, 0D, 300D)
-			.setVisible(() -> array.isToggle() && colorMode.getCurrentMode().equalsIgnoreCase("Rainbow"));
+	private Setting gradient = new Setting(this, "Gradient", 140D, 0D, 300D)
+			.setVisible(() -> array.isToggle() && colorMode.getCurrentMode().equalsIgnoreCase("Rainbow")
+					|| array.isToggle() && colorMode.getCurrentMode().equalsIgnoreCase("Pulse"));
 	private Setting rainbowDelay = new Setting(this, "Rainbow Delay", 14D, 1D, 30D)
 			.setVisible(() -> array.isToggle() && colorMode.getCurrentMode().equalsIgnoreCase("Rainbow"));
 
-	private Setting arrayColor = new Setting(this, "Array Color", new Color(250, 250, 250))
+	private Setting arrayColor = new Setting(this, "Array Color", new Color(44, 112, 160))
 			.setVisible(() -> array.isToggle() && colorMode.getCurrentMode().equalsIgnoreCase("Custom")
 					|| colorMode.getCurrentMode().equalsIgnoreCase("Pulse"));
 
@@ -70,9 +77,9 @@ public class HUD extends Module {
 
 			double countY = Helper.MC.currentScreen instanceof ChatScreen ? 23 : 11;
 			double posY = belowPosition ? 1 : height - countY;
-			double posX = width - IFont.legacy17.getWidthIgnoreChar(coords);
+			double posX = width - IFont.legacy15.getWidthIgnoreChar(coords);
 
-			IFont.legacy17.drawStringWithShadow(matrices, coords, posX + 44, posY, 0xFFFFFFFF);
+			IFont.legacy15.drawStringWithShadow(matrices, coords, posX + 44, posY, 0xFFFFFFFF);
 		}
 
 		if (netherCoords.isToggle()) {
@@ -86,9 +93,9 @@ public class HUD extends Module {
 					: Helper.MC.currentScreen instanceof ChatScreen && coordinates.isToggle() ? 34
 							: coordinates.isToggle() ? 22 : 11;
 			double posY = belowPosition && coordinates.isToggle() ? 11 : belowPosition ? 1 : height - countY;
-			double posX = width - IFont.legacy17.getWidthIgnoreChar(netherCoords);
+			double posX = width - IFont.legacy15.getWidthIgnoreChar(netherCoords);
 
-			IFont.legacy17.drawStringWithShadow(matrices, netherCoords, posX + 43, posY, 0xFFFFFFFF);
+			IFont.legacy15.drawStringWithShadow(matrices, netherCoords, posX + 43, posY, 0xFFFFFFFF);
 		}
 	}
 
@@ -117,11 +124,11 @@ public class HUD extends Module {
 
 			switch (colorMode.getCurrentMode()) {
 			case "Rainbow":
-				color = rainbow((int) (counter[0] * rainbowGradient.getCurrentValueDouble()),
+				color = rainbow((int) (counter[0] * gradient.getCurrentValueDouble()),
 						rainbowDelay.getCurrentValueDouble());
 				break;
 			case "Pulse":
-				color = fade(arrayColor.getColor(), 200, 70);
+				color = fade(arrayColor.getColor(), (int) (counter[0] * gradient.getCurrentValueDouble()));
 				break;
 			case "Custom":
 				color = arrayColor.getColor().getRGB();
@@ -129,7 +136,8 @@ public class HUD extends Module {
 			}
 
 			module.animY = (float) (enabled ? Math.min(9 + this.offsetY.getCurrentValueDouble(), module.animY + 5)
-					: module.animX > width - (IFont.legacy15.getWidthIgnoreChar(module.getRenderName()) / 2 + 6) ? Math.max(0, module.animY - 5)
+					: module.animX > width - (IFont.legacy15.getWidthIgnoreChar(module.getRenderName()) / 2 + 6)
+							? Math.max(0, module.animY - 5)
 							: 9 + this.offsetY.getCurrentValueDouble());
 			float posX = width - IFont.legacy15.getWidthIgnoreChar(module.getRenderName()) + 6;
 			module.animX = (float) (enabled && module.animY > 8
@@ -154,7 +162,51 @@ public class HUD extends Module {
 	}
 
 	private void markRender(MatrixStack matrices, float tick, int width, int height) {
-		IFont.legacy18.drawString(matrices, "INFINITY", 2, 2, 0xFFFFFFFF);
+		String playerPing = EntityUtil.getPing(Helper.getPlayer()) + " ms";
+		String watermark = "INFINITY";
+		String fpsDebug = ((IMinecraftClient) Helper.MC).getFps() + " fps";
+
+		int firstPos = IFont.legacy15.getStringWidth(watermark) + 23;
+		int secondPos = firstPos + IFont.legacy15
+				.getStringWidth(ping.isToggle() && !name.isToggle() ? playerPing : InfMain.getUser().getName()) + 7;
+		int thirdPos = secondPos + IFont.legacy15.getStringWidth(playerPing) + 7;
+
+		int xw = IFont.legacy15.getStringWidth(watermark) + 21;
+
+		if (name.isToggle())
+			xw += IFont.legacy15.getStringWidth(InfMain.getUser().getName()) + 7;
+		if (ping.isToggle())
+			xw += IFont.legacy15.getStringWidth(playerPing) + 7;
+		if (fps.isToggle())
+			xw += IFont.legacy15.getStringWidth(fpsDebug) + 7;
+
+		Render2D.drawRectWH(matrices, 1.5, 2, xw, IFont.legacy15.getFontHeight() + 3, new Color(2, 2, 2, 210).getRGB());
+
+		if (name.isToggle()) {
+			IFont.legacy15.drawString(matrices, InfMain.getUser().getName(), firstPos + 3, 3.5, 0xFFFFFFFF);
+			Render2D.drawRectWH(matrices, firstPos, 4, 0.5, IFont.legacy15.getFontHeight() - 1, 0x80FFFFFF);
+		}
+
+		if (ping.isToggle()) {
+			IFont.legacy15.drawString(matrices, playerPing, name.isToggle() ? secondPos + 3 : firstPos + 3, 3.5,
+					0xFFFFFFFF);
+			Render2D.drawRectWH(matrices, name.isToggle() ? secondPos : firstPos, 4, 0.5,
+					IFont.legacy15.getFontHeight() - 1, 0x80FFFFFF);
+		}
+
+		if (fps.isToggle()) {
+			IFont.legacy15.drawString(matrices, fpsDebug, name.isToggle() && ping.isToggle() ? thirdPos + 3
+					: name.isToggle() || ping.isToggle() ? secondPos + 3 : firstPos + 3, 3.5, 0xFFFFFFFF);
+			Render2D.drawRectWH(matrices,
+					name.isToggle() && ping.isToggle() ? thirdPos
+							: name.isToggle() || ping.isToggle() ? secondPos : firstPos,
+					4, 0.5, IFont.legacy15.getFontHeight() - 1, 0x80FFFFFF);
+		}
+
+		Render2D.drawRectWH(matrices, 16, 4, 0.5, IFont.legacy15.getFontHeight() - 1, 0x80FFFFFF);
+
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/alogo64x.png"), 4.5, 3, 9, 10);
+		IFont.legacy15.drawString(matrices, watermark, 19, 3.7, 0xFFFFFFFF);
 	}
 
 	private int rainbow(int delay, double speed) {
@@ -163,11 +215,10 @@ public class HUD extends Module {
 		return Color.getHSBColor((float) -((rainbow / 360.0F)), 0.7F, 0.8F).getRGB();
 	}
 
-	private int fade(Color color, int index, int count) {
+	private int fade(Color color, int delay) {
 		float[] hsb = new float[3];
 		Color.RGBtoHSB(color.getRed(), color.getGreen(), color.getBlue(), hsb);
-		float brightness = Math
-				.abs(((float) (System.currentTimeMillis() % 2000L) / 1000.0F + index / count * 2.0F) % 2.0F - 1.0F);
+		float brightness = Math.abs(((float) (System.currentTimeMillis() % 2000L + delay) / 1000.0F) % 2.0F - 1.0F);
 		brightness = 0.5F + 0.5F * brightness;
 		hsb[2] = brightness % 2.0F;
 		return Color.HSBtoRGB(hsb[0], hsb[1], hsb[2]);

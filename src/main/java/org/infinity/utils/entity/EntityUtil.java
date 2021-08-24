@@ -9,6 +9,7 @@ import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.rotation.RotationUtil;
 
+import net.minecraft.client.network.PlayerListEntry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -209,8 +210,8 @@ public class EntityUtil {
 			side2 = Direction.UP;
 
 		if (hitVec != null) {
-			Helper.MC.interactionManager.interactBlock(Helper.getPlayer(), Helper.MC.world,
-					hand, new BlockHitResult(hitVec, side2, neighbor, false));
+			Helper.MC.interactionManager.interactBlock(Helper.getPlayer(), Helper.MC.world, hand,
+					new BlockHitResult(hitVec, side2, neighbor, false));
 			Helper.getPlayer().swingHand(hand);
 		}
 
@@ -264,13 +265,13 @@ public class EntityUtil {
 		float h = (float) (Helper.getPlayer().getZ() - pos.getZ());
 		return MathHelper.sqrt(f * f + g * g + h * h);
 	}
-	
+
 	public static double getSpeedBPS(Entity entity) {
-        double tX = Math.abs(entity.getX() - entity.prevX);
-        double tZ = Math.abs(entity.getZ() - entity.prevZ);
-        double length = Math.sqrt(tX * tX + tZ * tZ);
-        
-        length *= Helper.MC.getLastFrameDuration();
+		double tX = Math.abs(entity.getX() - entity.prevX);
+		double tZ = Math.abs(entity.getZ() - entity.prevZ);
+		double length = Math.sqrt(tX * tX + tZ * tZ);
+
+		length *= Helper.MC.getLastFrameDuration();
 
 		return length * 20;
 	}
@@ -283,8 +284,7 @@ public class EntityUtil {
 		return Helper.MC.currentScreen != null && Helper.MC.currentScreen.isPauseScreen()
 				? e.getPos().add(0, e.getHeight(), 0)
 				: new Vec3d(e.lastRenderX + (e.getX() - e.lastRenderX) * Helper.MC.getTickDelta(),
-						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.MC.getTickDelta())
-								+ e.getHeight(),
+						(e.lastRenderY + (e.getY() - e.lastRenderY) * Helper.MC.getTickDelta()) + e.getHeight(),
 						e.lastRenderZ + (e.getZ() - e.lastRenderZ) * Helper.MC.getTickDelta());
 	}
 
@@ -293,6 +293,16 @@ public class EntityUtil {
 				Helper.getPlayer().getBoundingBox().offset(0.0D, -height, 0.0D)))
 			return true;
 		return false;
+	}
+
+	public static int getPing(PlayerEntity player) {
+		if (Helper.MC.getNetworkHandler() == null)
+			return 0;
+
+		PlayerListEntry playerListEntry = Helper.MC.getNetworkHandler().getPlayerListEntry(player.getUuid());
+		if (playerListEntry == null)
+			return 0;
+		return playerListEntry.getLatency();
 	}
 
 }

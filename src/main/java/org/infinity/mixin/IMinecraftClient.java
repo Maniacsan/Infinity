@@ -24,4 +24,7 @@ public interface IMinecraftClient {
 	@Invoker("doItemUse")
 	void rightClick();
 
+	@Accessor("currentFps")
+	int getFps();
+
 }

@@ -9,7 +9,7 @@ public class User {
 
 	public User(String name, String role, String photo) {
 		this.name = name;
-		this.role = UserRole.valueOf(role);
+		this.role = UserRole.valueOf(role.toUpperCase());
 		this.photo = photo;
 	}
 

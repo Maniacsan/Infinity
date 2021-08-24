@@ -21,7 +21,6 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3f;
 
@@ -63,20 +62,19 @@ public class Panel {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		categoryButtons.add(
-				new CategoryButton("Combat", InfMain.getModuleManager().getByCategory(Category.COMBAT), this));
-		categoryButtons.add(new CategoryButton("Movement",
-				InfMain.getModuleManager().getByCategory(Category.MOVEMENT), this));
-		categoryButtons.add(
-				new CategoryButton("World", InfMain.getModuleManager().getByCategory(Category.WORLD), this));
-		categoryButtons.add(
-				new CategoryButton("Player", InfMain.getModuleManager().getByCategory(Category.PLAYER), this));
-		categoryButtons.add(
-				new CategoryButton("Visual", InfMain.getModuleManager().getByCategory(Category.VISUAL), this));
 		categoryButtons
-				.add(new CategoryButton("Misc", InfMain.getModuleManager().getByCategory(Category.MISC), this));
-		categoryButtons.add(
-				new CategoryButton(ENABLED, InfMain.getModuleManager().getByCategory(Category.ENABLED), this));
+				.add(new CategoryButton("Combat", InfMain.getModuleManager().getByCategory(Category.COMBAT), this));
+		categoryButtons
+				.add(new CategoryButton("Movement", InfMain.getModuleManager().getByCategory(Category.MOVEMENT), this));
+		categoryButtons
+				.add(new CategoryButton("World", InfMain.getModuleManager().getByCategory(Category.WORLD), this));
+		categoryButtons
+				.add(new CategoryButton("Player", InfMain.getModuleManager().getByCategory(Category.PLAYER), this));
+		categoryButtons
+				.add(new CategoryButton("Visual", InfMain.getModuleManager().getByCategory(Category.VISUAL), this));
+		categoryButtons.add(new CategoryButton("Misc", InfMain.getModuleManager().getByCategory(Category.MISC), this));
+		categoryButtons
+				.add(new CategoryButton(ENABLED, InfMain.getModuleManager().getByCategory(Category.ENABLED), this));
 		categoryButtons.add(new CategoryButton(configPanel.getName(), null, this));
 		categoryButtons.add(new CategoryButton(SEARCH, null, this));
 
@@ -145,12 +143,9 @@ public class Panel {
 			profileName = profileName.substring(0, 18) + "...";
 
 		IFont.legacy16.drawString(matrices, profileName, x + 119, y + 5, -1);
-		
-		String role = InfMain.getUser().getRole().name();
-		if (role.equalsIgnoreCase("YouTube"))
-			role = Formatting.RED + "You" + Formatting.BLACK + "Tube";
-		IFont.legacy14.drawString(matrices,
-				"License: " + ColorUtils.getUserRoleColor() + role, x + 119, y + 17, -1);
+
+		String role = InfMain.getUser().getRole().getName();
+		IFont.legacy14.drawString(matrices, "License: " + ColorUtils.getUserRoleColor() + role, x + 119, y + 17, -1);
 		RenderUtil.drawImage(matrices, false, x + 95, y + 5, 20, 20,
 				InfMain.getDirection() + File.separator + "profile" + File.separator + "photo.png");
 
@@ -178,9 +173,8 @@ public class Panel {
 		matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion((float) _lanim));
 		matrices.translate(-lx, -ly, 0);
 
-		RenderUtil.drawTexture(matrices,
-				new Identifier("infinity", "textures/game/circle_logo.png"),
-				x + 26, y + 6, 39, 39);
+		RenderUtil.drawTexture(matrices, new Identifier("infinity", "textures/game/circle_logo.png"), x + 26, y + 6, 39,
+				39);
 
 		GlStateManager._disableBlend();
 		matrices.pop();

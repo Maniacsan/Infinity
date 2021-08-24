@@ -43,23 +43,23 @@ public class Helper {
 	}
 
 	public static boolean isUser() {
-		return InfMain.getUser().getRole().equals(UserRole.User);
+		return InfMain.getUser().getRole().equals(UserRole.USER);
 	}
 
 	public static boolean isPremium() {
-		return InfMain.getUser().getRole().equals(UserRole.Premium);
+		return InfMain.getUser().getRole().equals(UserRole.PREMIUM);
 	}
 
 	public static boolean isModerator() {
-		return InfMain.getUser().getRole().equals(UserRole.Moderator);
+		return InfMain.getUser().getRole().equals(UserRole.MODERATOR);
 	}
 	
 	public static boolean isYouTube() {
-		return InfMain.getUser().getRole().equals(UserRole.YouTube);
+		return InfMain.getUser().getRole().equals(UserRole.YOUTUBE);
 	}
 
 	public static boolean isAdmin() {
-		return InfMain.getUser().getRole().equals(UserRole.Admin);
+		return InfMain.getUser().getRole().equals(UserRole.ADMIN);
 	}
 
 	public static boolean isCut(int code) {

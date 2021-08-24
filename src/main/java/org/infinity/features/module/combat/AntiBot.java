@@ -81,7 +81,7 @@ public class AntiBot extends Module {
 					} else if (mode.getCurrentMode().equalsIgnoreCase("Matrix 6.1.1")) {
 						boolean botContains = RotationUtil.isInFOV(bot, Helper.getPlayer(), 60)
 								&& Helper.getPlayer().distanceTo(bot) > 9 && bot.handSwinging
-								&& bot.getAttacking() == null && bot.canTarget(Helper.getPlayer()) && bot.age < 80;
+								&& bot.getAttacking() == null && bot.canTarget(Helper.getPlayer());
 						boolean speedAnalysis = bot.getStatusEffect(StatusEffects.SPEED) == null
 								&& bot.getStatusEffect(StatusEffects.JUMP_BOOST) == null
 								&& bot.getStatusEffect(StatusEffects.LEVITATION) == null && !bot.isTouchingWater()

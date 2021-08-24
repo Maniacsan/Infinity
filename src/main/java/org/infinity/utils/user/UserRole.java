@@ -1,11 +1,14 @@
 package org.infinity.utils.user;
 
-public enum UserRole {
-	
-	Admin("Admin"), Moderator("Moderator"), YouTube("YouTube"), Premium("Premium"), User("User");
+import net.minecraft.util.Formatting;
 
-    public String name;
-    
+public enum UserRole {
+
+	ADMIN("Admin"), MODERATOR("Moderator"), YOUTUBE(Formatting.RED + "You" + Formatting.BLACK + "Tube"),
+	PREMIUM("Premium"), USER("User");
+
+	public String name;
+
 	UserRole(String name) {
 		this.name = name;
 	}
