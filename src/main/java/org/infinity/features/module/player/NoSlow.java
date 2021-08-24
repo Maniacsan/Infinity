@@ -12,7 +12,6 @@ import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
 import org.infinity.utils.MoveUtil;
-import org.infinity.utils.entity.EntityUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
@@ -20,6 +19,7 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 @ModuleInfo(category = Category.PLAYER, desc = "Do not slow down when using / eating", key = -2, name = "NoSlow", visible = true)
@@ -96,7 +96,7 @@ public class NoSlow extends Module {
 				if (event.getPacket() instanceof PlayerMoveC2SPacket) {
 					if (Helper.getPlayer().isUsingItem() && !Helper.getPlayer().hasVehicle()) {
 						Helper.sendPacket(new PlayerActionC2SPacket(Action.ABORT_DESTROY_BLOCK,
-								EntityUtil.getPlayerPosFloor(), Direction.DOWN));
+								new BlockPos(-1, -1, -1), Direction.DOWN));
 					}
 				}
 			}

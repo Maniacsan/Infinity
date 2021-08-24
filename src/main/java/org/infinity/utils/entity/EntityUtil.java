@@ -114,7 +114,7 @@ public class EntityUtil {
 		if (!(entity instanceof LivingEntity) || entity == Helper.getPlayer() || entity instanceof ArmorStandEntity)
 			return false;
 
-		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getEntityName());
+		boolean isFriend = InfMain.getFriend().getFriendList().contains(entity.getName().getString());
 
 		if (!friends && isFriend)
 			return false;

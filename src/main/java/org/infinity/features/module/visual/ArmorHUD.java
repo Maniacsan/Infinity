@@ -5,6 +5,7 @@ import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
 import org.infinity.features.Setting;
 import org.infinity.font.IFont;
+import org.infinity.main.InfMain;
 import org.infinity.utils.Helper;
 import org.infinity.utils.render.Render2D;
 import org.infinity.utils.render.RenderUtil;
@@ -24,11 +25,13 @@ public class ArmorHUD extends Module {
 			return;
 
 		float scale = (float) this.scale.getCurrentValueDouble();
+		
+		HUD hud = ((HUD)InfMain.getModuleManager().get(HUD.class));
 
 		matrices.push();
 		matrices.scale(scale, scale, 1);
-
-		int y = 1;
+		
+		int y = hud.isEnabled() && hud.watermark.isToggle() ? 16 : 1;
 		for (int i = Helper.getPlayer().getInventory().armor.size() - 1; i >= 0; i--) {
 			ItemStack armor = Helper.getPlayer().getInventory().armor.get(i);
 

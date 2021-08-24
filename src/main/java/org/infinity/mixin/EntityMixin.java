@@ -106,7 +106,6 @@ public abstract class EntityMixin {
 			float j = MathHelper.cos(f);
 			float k = MathHelper.sin(f);
 			ci.setReturnValue(new Vec3d((double) (i * j), (double) (-k), (double) (h * j)));
-			ci.cancel();
 		}
 	}
 }

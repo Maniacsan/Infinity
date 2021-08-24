@@ -212,7 +212,7 @@ public class HUD extends Module {
 	private int rainbow(int delay, double speed) {
 		double rainbow = Math.ceil((System.currentTimeMillis() + delay) / speed);
 		rainbow %= 360.0D;
-		return Color.getHSBColor((float) -((rainbow / 360.0F)), 0.7F, 0.8F).getRGB();
+		return Color.getHSBColor((float) -((rainbow / 360.0F)), 0.9F, 0.7F).getRGB();
 	}
 
 	private int fade(Color color, int delay) {

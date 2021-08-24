@@ -1,13 +1,10 @@
 package org.infinity.features.module.player;
 
-import org.infinity.event.ClickEvent;
 import org.infinity.event.PacketEvent;
 import org.infinity.features.Category;
 import org.infinity.features.Module;
 import org.infinity.features.ModuleInfo;
-import org.infinity.features.Setting;
 import org.infinity.utils.Helper;
-import org.infinity.utils.InvUtil;
 
 import com.darkmagician6.eventapi.EventTarget;
 import com.darkmagician6.eventapi.types.EventType;
@@ -15,8 +12,6 @@ import com.darkmagician6.eventapi.types.EventType;
 import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket.Action;
@@ -25,10 +20,6 @@ import net.minecraft.util.math.BlockPos;
 
 @ModuleInfo(category = Category.PLAYER, desc = "Automatically takes the desired tool when digging, attacking", key = -2, name = "AutoTool", visible = true)
 public class AutoTool extends Module {
-
-	private Setting destroyShield = new Setting(this, "Destroy Shield (Axe)", true);
-
-	private int preSlot = -2;
 
 	@EventTarget
 	public void onPacket(PacketEvent event) {
@@ -46,39 +37,6 @@ public class AutoTool extends Module {
 						if (slot < 9) {
 							Helper.getPlayer().getInventory().selectedSlot = slot;
 							Helper.getPlayer().networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(slot));
-						}
-					}
-				}
-			}
-		}
-	}
-
-	@EventTarget
-	public void onClick(ClickEvent event) {
-		int slotAxe = InvUtil.findAxe();
-
-		if (destroyShield.isToggle()) {
-
-			Entity target = Helper.MC.targetedEntity;
-			if (target instanceof PlayerEntity) {
-				if (((PlayerEntity) target).isBlocking()) {
-					if (slotAxe != -2) {
-						preSlot = Helper.getPlayer().getInventory().selectedSlot;
-						Helper.getPlayer().getInventory().selectedSlot = slotAxe;
-
-						if (preSlot != -2) {
-							(new Thread() {
-								@Override
-								public void run() {
-									try {
-										Thread.sleep(150);
-
-										Helper.getPlayer().getInventory().selectedSlot = preSlot;
-									} catch (Exception e) {
-										e.printStackTrace();
-									}
-								}
-							}).start();
 						}
 					}
 				}

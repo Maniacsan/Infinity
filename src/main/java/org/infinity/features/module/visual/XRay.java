@@ -46,17 +46,22 @@ public class XRay extends Module {
 	private Setting down = new Setting(this, "Down Distance", 10.0D, 1.0D, 50.0D)
 			.setVisible(() -> orebfuscator.isToggle());
 
-	public Setting block = new Setting(this, "Blocks", blocks, new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE,
-			Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE, Blocks.IRON_ORE, Blocks.LAPIS_ORE,
-			Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE, Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE,
-			Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK, Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB,
-			Blocks.NETHER_BRICK_STAIRS, Blocks.NETHER_BRICK_WALL, Blocks.NETHER_PORTAL, Blocks.NETHERITE_BLOCK,
-			Blocks.BEACON, Blocks.BEDROCK, Blocks.BIRCH_PLANKS, Blocks.SAND, Blocks.LOOM, Blocks.COMPOSTER,
-			Blocks.BARREL, Blocks.SMOKER, Blocks.HONEYCOMB_BLOCK, Blocks.HONEY_BLOCK, Blocks.SOUL_CAMPFIRE,
-			Blocks.BEE_NEST, Blocks.SLIME_BLOCK, Blocks.ANVIL, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.OBSIDIAN,
-			Blocks.OBSERVER, Blocks.QUARTZ_BLOCK, Blocks.GILDED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE, Blocks.BLUE_ICE,
-			Blocks.SEA_LANTERN, Blocks.REDSTONE_LAMP, Blocks.SPONGE, Blocks.WET_SPONGE, Blocks.TNT, Blocks.CHEST,
-			Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS, Blocks.CRYING_OBSIDIAN)));
+	public Setting block = new Setting(this, "Blocks", blocks,
+			new ArrayList<Block>(Arrays.asList(Blocks.DIAMOND_ORE, Blocks.COAL_ORE, Blocks.EMERALD_ORE, Blocks.GOLD_ORE,
+					Blocks.IRON_ORE, Blocks.LAPIS_ORE, Blocks.NETHER_GOLD_ORE, Blocks.NETHER_QUARTZ_ORE,
+					Blocks.REDSTONE_ORE, Blocks.ORANGE_CONCRETE, Blocks.STONE, Blocks.DIAMOND_BLOCK, Blocks.GOLD_BLOCK,
+					Blocks.NETHER_BRICK_FENCE, Blocks.NETHER_BRICK_SLAB, Blocks.NETHER_BRICK_STAIRS,
+					Blocks.NETHER_BRICK_WALL, Blocks.NETHER_PORTAL, Blocks.NETHERITE_BLOCK, Blocks.BEACON,
+					Blocks.BEDROCK, Blocks.BIRCH_PLANKS, Blocks.SAND, Blocks.LOOM, Blocks.COMPOSTER, Blocks.BARREL,
+					Blocks.SMOKER, Blocks.HONEYCOMB_BLOCK, Blocks.HONEY_BLOCK, Blocks.SOUL_CAMPFIRE, Blocks.BEE_NEST,
+					Blocks.SLIME_BLOCK, Blocks.ANVIL, Blocks.BOOKSHELF, Blocks.JACK_O_LANTERN, Blocks.OBSIDIAN,
+					Blocks.OBSERVER, Blocks.QUARTZ_BLOCK, Blocks.GILDED_BLACKSTONE, Blocks.POLISHED_BLACKSTONE,
+					Blocks.BLUE_ICE, Blocks.SEA_LANTERN, Blocks.REDSTONE_LAMP, Blocks.SPONGE, Blocks.WET_SPONGE,
+					Blocks.TNT, Blocks.CHEST, Blocks.FURNACE, Blocks.JUKEBOX, Blocks.NOTE_BLOCK, Blocks.ANCIENT_DEBRIS,
+					Blocks.CRYING_OBSIDIAN, Blocks.AMETHYST_BLOCK, Blocks.AMETHYST_CLUSTER, Blocks.COPPER_ORE,
+					Blocks.DEEPSLATE_COAL_ORE, Blocks.DEEPSLATE_COPPER_ORE, Blocks.DEEPSLATE_DIAMOND_ORE,
+					Blocks.DEEPSLATE_EMERALD_ORE, Blocks.DEEPSLATE_GOLD_ORE, Blocks.DEEPSLATE_IRON_ORE,
+					Blocks.DEEPSLATE_LAPIS_ORE, Blocks.DEEPSLATE_REDSTONE_ORE)));
 
 	private Timer updater = new Timer();
 	private Timer find = new Timer();

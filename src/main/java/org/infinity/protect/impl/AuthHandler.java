@@ -5,7 +5,7 @@ import org.infinity.event.protect.StartProcessEvent;
 import org.infinity.event.protect.SuccessEvent;
 import org.infinity.main.InfMain;
 import org.infinity.protect.Handler;
-import org.infinity.ui.FirstStartUI;
+import org.infinity.utils.ConnectUtil;
 import org.infinity.utils.Helper;
 
 import com.darkmagician6.eventapi.EventManager;
@@ -30,9 +30,7 @@ public class AuthHandler extends Handler {
 			SuccessEvent successEvent = new SuccessEvent();
 			EventManager.call(successEvent);
 
-			if (InfMain.firstStart)
-				Helper.openScreen(new FirstStartUI());
-			else
+			if (ConnectUtil.checkUpdate() && ConnectUtil.checkJarSize())
 				Helper.openScreen(new TitleScreen(true));
 
 		}

@@ -28,8 +28,7 @@ public class TargetInfo extends Module {
 	private Setting range = new Setting(this, "Range", 6D, 1D, 12.0D);
 
 	private float fade;
-	private float scale;
-
+	
 	private Entity target;
 
 	@Override
@@ -62,8 +61,8 @@ public class TargetInfo extends Module {
 
 		Render2D.drawRectWH(matrices, wc, hc, 145, 51, new Color(0, 0, 0, 220).getRGB());
 
-		Render2D.drawRectWH(matrices, wc + 2, hc + 2, 33, 47, 0x90151515);
-		Render2D.drawRectWH(matrices, wc + 37, hc + 2, 105, 34, 0x90151515);
+		Render2D.drawRectWH(matrices, wc + 2, hc + 2, 33, 47, 0xFF151515);
+		Render2D.drawRectWH(matrices, wc + 37, hc + 2, 105, 34, 0xFF151515);
 
 		InventoryScreen.drawEntity(wc + 18, hc + 45, 20, 45, -target.getPitch(), (LivingEntity) target);
 

@@ -145,6 +145,7 @@ public class KillAura extends Module {
 			}
 		}
 
+		destroyShield();
 		attack(event);
 
 		if (random.nextGaussian() > randomYaw.getCurrentValueDouble())
@@ -196,32 +197,23 @@ public class KillAura extends Module {
 	}
 
 	private void destroyShield() {
-		int slotAxe = InvUtil.findAxe();
-
 		if (!destroyShield.isToggle())
 			return;
 
 		if (target instanceof PlayerEntity) {
-			if (((PlayerEntity) target).isBlocking() && slotAxe != -2) {
-				if (!(Helper.getPlayer().getMainHandStack().getItem() instanceof AxeItem))
-				preSlot = Helper.getPlayer().getInventory().selectedSlot;
-				Helper.getPlayer().getInventory().selectedSlot = slotAxe;
-			}
-			
-			if (preSlot != -2) {
-				(new Thread() {
-					@Override
-					public void run() {
-						try {
-							Thread.sleep(70);
+			int slotAxe = InvUtil.findAxe();
+			if (((PlayerEntity) target).isBlocking()) {
+				if (slotAxe != -2) {
 
-							Helper.getPlayer().getInventory().selectedSlot = preSlot;
-							preSlot = -2;
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-				}).start();
+					if (!(Helper.getPlayer().getMainHandStack().getItem() instanceof AxeItem))
+						preSlot = Helper.getPlayer().getInventory().selectedSlot;
+					Helper.getPlayer().getInventory().selectedSlot = slotAxe;
+				}
+			} else {
+				if (preSlot != -2) {
+					Helper.getPlayer().getInventory().selectedSlot = preSlot;
+					preSlot = -2;
+				}
 			}
 		}
 	}
@@ -230,7 +222,6 @@ public class KillAura extends Module {
 		if (coolDown.isToggle() ? Helper.getPlayer().getAttackCooldownProgress(0.0f) >= 1
 				: timer.hasReached(1000 / aps.getCurrentValueDouble())) {
 			if (Criticals.fall(target)) {
-				destroyShield();
 
 				if (releaseShield.isToggle() && Helper.getPlayer().isBlocking())
 					Helper.sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.RELEASE_USE_ITEM,
