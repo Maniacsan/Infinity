@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "infinity",
-  "version": "1.0.6",
+  "version": "1.0.7",
 
   "name": "Infinity",
   "description": "Minecraft Utility Modification",
@@ -16,7 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "org.infinity.main.MainInitialize"
+      "org.spray.infinity.main.MainInitialize"
     ]
   },
   "mixins": [

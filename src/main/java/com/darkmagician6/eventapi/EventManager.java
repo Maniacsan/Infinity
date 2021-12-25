@@ -18,16 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.infinity.event.protect.StartProcessEvent;
-import org.infinity.main.InfMain;
-import org.infinity.protect.impl.InitProcess;
-import org.infinity.protect.impl.OpenScreenLocker;
-import org.infinity.protect.impl.ProtectHandler;
 import org.jetbrains.annotations.NotNull;
 
 import com.darkmagician6.eventapi.events.Event;
 import com.darkmagician6.eventapi.events.EventStoppable;
-import com.darkmagician6.eventapi.types.EventType;
 import com.darkmagician6.eventapi.types.Priority;
 
 /**
@@ -275,17 +269,6 @@ public final class EventManager {
 				for (final MethodData data : dataList) {
 					invoke(data, event);
 				}
-			}
-		}
-
-		if (event instanceof StartProcessEvent) {
-			StartProcessEvent startEvent = (StartProcessEvent) event;
-			if (startEvent.getType().equals(EventType.ON)) {
-				InfMain.getHandler().getHandler(InitProcess.class).enable();
-				InfMain.getHandler().getHandler(ProtectHandler.class).enable();
-				
-			} else if (startEvent.getType().equals(EventType.POST)) {
-				InfMain.getHandler().getHandler(OpenScreenLocker.class).enable();
 			}
 		}
 

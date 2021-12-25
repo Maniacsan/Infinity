@@ -2,7 +2,6 @@ plugins {
 	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 	id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.30'
 }
 
 archivesBaseName = project.archives_base_name
@@ -37,26 +36,6 @@ dependencies {
 	include group: 'com.viaversion', name: 'viaversion', version: project.via_version
 	implementation group: 'org.yaml', name: 'snakeyaml', version: project.yam_version
     include group: 'org.yaml', name: 'snakeyaml', version: project.yam_version
-    
-	implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
-	implementation group: 'commons-logging', name: 'commons-logging', version: '1.2'
-	implementation group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
-	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-	implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.14'
-    implementation group: 'org.apache.httpcomponents', name: 'httpcore-nio', version: '4.4.14'
-	implementation group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
-	implementation group: 'org.json', name: 'json', version: '20210307'
-	implementation group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
-
-	include group: 'commons-codec', name: 'commons-codec', version: '1.15'
-	include group: 'commons-logging', name: 'commons-logging', version: '1.2'
-	include group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.4'
-	include group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
-	include group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.14'
-    include group: 'org.apache.httpcomponents', name: 'httpcore-nio', version: '4.4.14'
-	include group: 'org.apache.httpcomponents', name: 'httpmime', version: '4.5.13'
-	include group: 'org.json', name: 'json', version: '20210307'
-	include group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
 	
 	dependency group: 'com.github.minndevelopment', name: 'java-discordrpc', version: '2.0.2'
 }

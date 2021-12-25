@@ -1,7 +1,7 @@
 {
   "required": true,
   "compatibilityLevel": "JAVA_16",
-   "package": "org.infinity.mixin",
+   "package": "org.spray.infinity.mixin",
   "client": [
   "ClientPlayerEntityMixin",
   "ClientConnectionMixin",
@@ -29,7 +29,6 @@
   "MouseMixin",
   "RenderTickCounterMixin",
   "WorldRendererMixin",
-  "HandledScreenMixin",
   "EntityRendererMixin",
   "AbstractBlockMixin",
   "BlockMixin",
